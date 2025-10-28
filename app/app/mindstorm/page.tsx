@@ -20,7 +20,7 @@ export default function MindStormPage() {
             <h1 className="text-3xl font-semibold tracking-tight">MindStorm</h1>
             <p className="text-muted-foreground">Your thoughts, clustered into living themes.</p>
           </div>
-          <Button variant="outline" onClick={() => console.log("Re-cluster now")}>Re-cluster now</Button>
+          <Button variant="outline" onClick={handleRecluster}>Re-cluster now</Button>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
