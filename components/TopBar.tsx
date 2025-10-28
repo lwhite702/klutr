@@ -41,7 +41,7 @@ export function TopBar({ showDemoBadge }: TopBarProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => console.log("Profile clicked")}>Profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleProfileClick}>Profile</DropdownMenuItem>
               <DropdownMenuItem onClick={() => console.log("Sign out clicked")}>Sign out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
