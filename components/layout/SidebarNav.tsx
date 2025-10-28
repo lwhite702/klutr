@@ -1,6 +1,5 @@
 "use client"
 
-import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Lightbulb, Brain, Layers, Lock, Eye, Calendar, Trash2 } from "lucide-react"
@@ -8,21 +7,23 @@ import { Lightbulb, Brain, Layers, Lock, Eye, Calendar, Trash2 } from "lucide-re
 const navItems = [
   { href: "/app", label: "Notes", icon: Lightbulb },
   { href: "/app/mindstorm", label: "MindStorm", icon: Brain },
-  { href: "/app/stacks", label: "Smart Stacks", icon: Layers },
+  { href: "/app/stacks", label: "Stacks", icon: Layers },
   { href: "/app/vault", label: "Vault", icon: Lock },
   { href: "/app/insights", label: "Insights", icon: Eye },
-  { href: "/app/memory", label: "Memory Lane", icon: Calendar },
-  { href: "/app/nope", label: "Nope Bin", icon: Trash2 },
+  { href: "/app/memory", label: "Memory", icon: Calendar },
+  { href: "/app/nope", label: "Nope", icon: Trash2 },
 ]
 
-export function SidebarNav() {
-  const pathname = usePathname()
+interface SidebarNavProps {
+  activeRoute: string
+}
 
+export function SidebarNav({ activeRoute }: SidebarNavProps) {
   return (
-    <nav className="flex flex-col gap-1 p-4">
+    <nav className="flex flex-col gap-1 p-4 w-64 border-r bg-background">
       {navItems.map((item) => {
         const Icon = item.icon
-        const isActive = pathname === item.href
+        const isActive = activeRoute === item.href
 
         return (
           <Button

@@ -1,31 +1,70 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+"use client"
+
+import { motion } from "framer-motion"
+import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Smile, Frown, Meh } from "lucide-react"
 
 interface InsightCardProps {
-  week: string
+  weekRange: string
   summary: string
-  sentiment: string
+  mood?: string
 }
 
-const sentimentColors: Record<string, string> = {
-  positive: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  mixed: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
-  determined: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  reflective: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-}
+export function InsightCard({ weekRange, summary, mood }: InsightCardProps) {
+  const getMoodIcon = (mood?: string) => {
+    switch (mood?.toLowerCase()) {
+      case 'positive':
+        return <Smile className="h-4 w-4 text-green-500" />
+      case 'negative':
+        return <Frown className="h-4 w-4 text-red-500" />
+      case 'neutral':
+        return <Meh className="h-4 w-4 text-yellow-500" />
+      default:
+        return null
+    }
+  }
 
-export function InsightCard({ week, summary, sentiment }: InsightCardProps) {
+  const getMoodVariant = (mood?: string) => {
+    switch (mood?.toLowerCase()) {
+      case 'positive':
+        return 'default'
+      case 'negative':
+        return 'destructive'
+      case 'neutral':
+        return 'secondary'
+      default:
+        return 'outline'
+    }
+  }
+
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">{week}</CardTitle>
-          <Badge className={sentimentColors[sentiment] || sentimentColors.mixed}>{sentiment}</Badge>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2 }}
+      whileHover={{ scale: 1.02 }}
+      className="group"
+    >
+      <Card className="p-4 hover:shadow-md transition-shadow">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="font-medium text-sm">
+              {weekRange}
+            </h3>
+            {mood && (
+              <Badge variant={getMoodVariant(mood)} className="text-xs flex items-center gap-1">
+                {getMoodIcon(mood)}
+                {mood}
+              </Badge>
+            )}
+          </div>
+          
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {summary}
+          </p>
         </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground leading-relaxed">{summary}</p>
-      </CardContent>
-    </Card>
+      </Card>
+    </motion.div>
   )
 }

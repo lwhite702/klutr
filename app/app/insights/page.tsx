@@ -1,157 +1,60 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { AppShell } from "@/components/layout/AppShell"
 import { InsightCard } from "@/components/insights/InsightCard"
-import { apiGet, apiPost } from "@/lib/clientApi"
-import { isDemoMode } from "@/lib/onboarding"
-import { Loader2 } from "lucide-react"
 
-const MOCK_INSIGHTS = [
+// Mock data for insights
+const mockInsights = [
   {
-    week: "Oct 20–26",
-    summary:
-      "You're thinking a lot about burnout vs freedom. Multiple notes about escaping client work and building sustainable income. Strong desire for autonomy.",
-    sentiment: "mixed",
+    weekRange: "Jan 8 - Jan 14, 2024",
+    summary: "This week you focused heavily on web development topics, with 8 notes about React and TypeScript. Your productivity peaked mid-week, and you showed particular interest in performance optimization techniques.",
+    mood: "positive"
   },
   {
-    week: "Oct 13–19",
-    summary:
-      "Recurring theme: building a product to exit client work. Several SaaS ideas captured. You're researching pricing models and validation strategies.",
-    sentiment: "determined",
+    weekRange: "Jan 1 - Jan 7, 2024",
+    summary: "A balanced week with notes spanning work projects, personal learning, and creative ideas. You explored new concepts in AI and machine learning, showing curiosity about emerging technologies.",
+    mood: "neutral"
   },
   {
-    week: "Oct 6–12",
-    summary:
-      "Heavy focus on AI and automation. Exploring how to use AI to scale personal productivity. Lots of saved articles and tutorials.",
-    sentiment: "positive",
+    weekRange: "Dec 25 - Dec 31, 2023",
+    summary: "Holiday week with lighter note-taking activity. Focus shifted to personal reflection, family time, and planning for the new year. Several notes about goal-setting and personal growth.",
+    mood: "positive"
   },
   {
-    week: "Sep 29–Oct 5",
-    summary:
-      "Reflection on work-life balance. Notes about spending more time with family and less time on low-value client work. Some anxiety about financial stability.",
-    sentiment: "reflective",
+    weekRange: "Dec 18 - Dec 24, 2023",
+    summary: "End-of-year work sprint with many meeting notes and project deadlines. High stress indicators in your notes, but also good problem-solving and team collaboration themes.",
+    mood: "negative"
   },
+  {
+    weekRange: "Dec 11 - Dec 17, 2023",
+    summary: "Creative week with many brainstorming sessions and side project ideas. Strong focus on innovation and exploring new technologies. Several notes about potential business opportunities.",
+    mood: "positive"
+  }
 ]
 
-interface Insight {
-  week: string
-  summary: string
-  sentiment: string
-}
-
-export default function InsightModePage() {
-  const [insights, setInsights] = useState<Insight[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isGenerating, setIsGenerating] = useState(false)
-  const demoMode = isDemoMode()
-
-  useEffect(() => {
-    async function loadInsights() {
-      if (demoMode) {
-        setInsights(MOCK_INSIGHTS)
-        setIsLoading(false)
-        return
-      }
-
-      try {
-        const data = await apiGet<Insight[]>("/api/insights/list")
-        setInsights(data)
-      } catch (error) {
-        console.error("[v0] Failed to load insights:", error)
-        // Fallback to mock data
-        setInsights(MOCK_INSIGHTS)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    loadInsights()
-  }, [demoMode])
-
-  const handleGenerateSummary = async () => {
-    if (demoMode) {
-      console.log("[v0] Demo mode: pretend generate summary")
-      return
-    }
-
-    setIsGenerating(true)
-    try {
-      const newInsight = await apiPost<Insight>("/api/insights/generate")
-      // Prepend new insight to list
-      setInsights([newInsight, ...insights])
-    } catch (error) {
-      console.error("[v0] Failed to generate insight:", error)
-    } finally {
-      setIsGenerating(false)
-    }
-  }
-
-  if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded w-1/4" />
-          <div className="h-32 bg-muted rounded" />
-          <div className="h-32 bg-muted rounded" />
-        </div>
-      </div>
-    )
-  }
-
+export default function InsightsPage() {
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-start justify-between">
+    <AppShell activeRoute="/app/insights">
+      <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Insights</h1>
-          <p className="text-muted-foreground">AI-powered analysis of your thinking patterns.</p>
+          <h1 className="text-2xl font-bold">Insights</h1>
+          <p className="text-muted-foreground">Weekly summaries of your note-taking patterns</p>
         </div>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="outline" onClick={handleGenerateSummary} disabled={isGenerating}>
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  "Generate Weekly Summary"
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="max-w-xs">
-                We analyze your last 7 days of notes and generate a private reflection. Nothing is shared.
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-
-      <div className="space-y-4">
-        <AnimatePresence mode="popLayout">
-          {insights.map((insight) => (
-            <motion.div
-              key={insight.week}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.15 }}
-            >
-              <InsightCard week={insight.week} summary={insight.summary} sentiment={insight.sentiment} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {insights.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <p>No insights yet. Generate your first weekly summary to get started.</p>
+        
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Weekly Insights</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            {mockInsights.map((insight, index) => (
+              <InsightCard
+                key={index}
+                weekRange={insight.weekRange}
+                summary={insight.summary}
+                mood={insight.mood}
+              />
+            ))}
+          </div>
         </div>
-      )}
-    </div>
+      </div>
+    </AppShell>
   )
 }

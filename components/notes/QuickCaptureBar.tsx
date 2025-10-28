@@ -10,17 +10,24 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Loader2 } from "lucide-react"
 
 interface QuickCaptureBarProps {
-  onCreate: (content: string) => Promise<void>
-  isCreating?: boolean
+  onSubmit?: (text: string) => void
 }
 
-export function QuickCaptureBar({ onCreate, isCreating = false }: QuickCaptureBarProps) {
+export function QuickCaptureBar({ onSubmit }: QuickCaptureBarProps) {
   const [content, setContent] = useState("")
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleSave = async () => {
     if (content.trim()) {
-      await onCreate(content)
+      setIsSaving(true)
+      if (onSubmit) {
+        onSubmit(content)
+      }
       setContent("")
+      // Simulate async operation
+      setTimeout(() => {
+        setIsSaving(false)
+      }, 1000)
     }
   }
 
@@ -39,11 +46,11 @@ export function QuickCaptureBar({ onCreate, isCreating = false }: QuickCaptureBa
         onChange={(e) => setContent(e.target.value)}
         onKeyDown={handleKeyDown}
         className="min-h-[100px] resize-none"
-        disabled={isCreating}
+        disabled={isSaving}
       />
       <div className="flex gap-2">
-        <Button onClick={handleSave} disabled={!content.trim() || isCreating}>
-          {isCreating ? (
+        <Button onClick={handleSave} disabled={!content.trim() || isSaving}>
+          {isSaving ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Saving...

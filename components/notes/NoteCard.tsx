@@ -1,60 +1,63 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import type { NoteDTO } from "@/types/note"
+"use client"
+
+import { motion } from "framer-motion"
+import { Card } from "@/components/ui/card"
 import { ClusterChip } from "./ClusterChip"
 import { TagChip } from "./TagChip"
-import { Loader2 } from "lucide-react"
+import { formatDistanceToNow } from "date-fns"
 
 interface NoteCardProps {
-  note: NoteDTO
-  isPending?: boolean
+  content: string
+  tags: string[]
+  cluster?: string
+  createdAt?: string
+  archived?: boolean
 }
 
-const typeColors: Record<string, string> = {
-  idea: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  task: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  contact: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  link: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
-  voice: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
-  misc: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
-  nope: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  unclassified: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
-}
-
-export function NoteCard({ note, isPending }: NoteCardProps) {
-  const formattedDate = new Date(note.createdAt).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  })
+export function NoteCard({ 
+  content, 
+  tags, 
+  cluster, 
+  createdAt, 
+  archived = false 
+}: NoteCardProps) {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return ""
+    try {
+      return formatDistanceToNow(new Date(dateString), { addSuffix: true })
+    } catch {
+      return ""
+    }
+  }
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-4 space-y-3">
-        {/* Content */}
-        <p className="text-sm line-clamp-5">{note.content}</p>
-
-        {/* Badges Row */}
-        <div className="flex flex-wrap gap-2">
-          <Badge className={typeColors[note.type] || typeColors.misc}>{note.type}</Badge>
-          {isPending && (
-            <Badge variant="secondary" className="animate-pulse">
-              <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-              thinking...
-            </Badge>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2 }}
+      whileHover={{ scale: 1.02 }}
+      className="group"
+    >
+      <Card className={`p-4 hover:shadow-md transition-shadow ${archived ? 'opacity-60' : ''}`}>
+        <div className="space-y-3">
+          <p className="text-sm text-foreground leading-relaxed">
+            {content}
+          </p>
+          
+          <div className="flex flex-wrap gap-2">
+            {cluster && <ClusterChip cluster={cluster} />}
+            {tags.map((tag, index) => (
+              <TagChip key={index} tag={tag} />
+            ))}
+          </div>
+          
+          {createdAt && (
+            <p className="text-xs text-muted-foreground">
+              {formatDate(createdAt)}
+            </p>
           )}
-          <ClusterChip cluster={note.cluster} confidence={note.clusterConfidence} />
-          {note.tags.map((tag) => (
-            <TagChip key={tag} label={tag} />
-          ))}
         </div>
-
-        {/* Footer Row */}
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{formattedDate}</span>
-          {note.archived && <Badge variant="destructive">archived</Badge>}
-        </div>
-      </CardContent>
-    </Card>
+      </Card>
+    </motion.div>
   )
 }

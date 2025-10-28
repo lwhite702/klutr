@@ -1,44 +1,61 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { motion } from "framer-motion"
+import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { TagChip } from "@/components/notes/TagChip"
 
-interface TimelineItem {
-  week: string
+interface WeekData {
+  weekLabel: string
   count: number
   topics: string[]
 }
 
 interface TimelineGridProps {
-  items: TimelineItem[]
-  onRevisit: (week: string) => void
+  weeks: WeekData[]
 }
 
-export function TimelineGrid({ items, onRevisit }: TimelineGridProps) {
+export function TimelineGrid({ weeks }: TimelineGridProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {items.map((item) => (
-        <Card key={item.week} className="hover:shadow-md transition-shadow">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base">{item.week}</CardTitle>
-              <Badge variant="secondary">{item.count} notes</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex flex-wrap gap-2">
-              {item.topics.map((topic) => (
-                <TagChip key={topic} label={topic} />
-              ))}
-            </div>
-            <Button size="sm" variant="outline" className="w-full bg-transparent" onClick={() => onRevisit(item.week)}>
-              Revisit
-            </Button>
-          </CardContent>
-        </Card>
-      ))}
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold">Memory Timeline</h2>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {weeks.map((week, index) => (
+          <motion.div
+            key={week.weekLabel}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, delay: index * 0.1 }}
+            whileHover={{ scale: 1.02 }}
+            className="group"
+          >
+            <Card className="p-4 hover:shadow-md transition-shadow">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-sm">
+                    {week.weekLabel}
+                  </h3>
+                  <Badge variant="secondary" className="text-xs">
+                    {week.count} {week.count === 1 ? 'note' : 'notes'}
+                  </Badge>
+                </div>
+                
+                {week.topics.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground">Key topics:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {week.topics.map((topic, topicIndex) => (
+                        <Badge key={topicIndex} variant="outline" className="text-xs">
+                          {topic}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
     </div>
   )
 }

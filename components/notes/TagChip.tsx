@@ -1,13 +1,14 @@
 import { Badge } from "@/components/ui/badge"
 
 interface TagChipProps {
-  label: string
+  tag: string
+  className?: string
 }
 
-export function TagChip({ label }: TagChipProps) {
+export function TagChip({ tag, className }: TagChipProps) {
   return (
-    <Badge variant="outline" className="rounded-full text-xs lowercase">
-      {label}
+    <Badge variant="outline" className={`text-xs ${className}`}>
+      {tag}
     </Badge>
   )
 }

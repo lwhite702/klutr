@@ -1,39 +1,34 @@
-"use client"
-
-import { Lock } from "lucide-react"
+import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Lock } from "lucide-react"
 
-interface VaultLockScreenProps {
-  onUnlock: () => void
-}
+export function VaultLockScreen() {
+  const handleUnlock = () => {
+    console.log("Unlock vault clicked")
+  }
 
-export function VaultLockScreen({ onUnlock }: VaultLockScreenProps) {
   return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <Card className="w-full max-w-md">
-        <CardContent className="flex flex-col items-center gap-6 p-12">
-          <div className="rounded-full bg-muted p-6">
-            <Lock className="h-12 w-12 text-muted-foreground" />
+    <div className="flex items-center justify-center min-h-[400px]">
+      <Card className="p-8 max-w-md w-full text-center">
+        <div className="space-y-6">
+          <div className="flex justify-center">
+            <div className="p-4 rounded-full bg-muted">
+              <Lock className="h-8 w-8 text-muted-foreground" />
+            </div>
           </div>
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl font-semibold">Vault is locked</h2>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <p className="text-sm text-muted-foreground cursor-help">Your private notes are secure</p>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="max-w-xs">Vault notes are encrypted with your key before they leave your device.</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold">Vault locked</h2>
+            <p className="text-sm text-muted-foreground">
+              Your private notes are encrypted and protected. 
+              Unlock to access your secure vault.
+            </p>
           </div>
-          <Button onClick={onUnlock} size="lg" className="w-full">
+          
+          <Button onClick={handleUnlock} className="w-full">
             Unlock
           </Button>
-        </CardContent>
+        </div>
       </Card>
     </div>
   )
