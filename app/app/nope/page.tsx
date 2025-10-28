@@ -35,7 +35,7 @@ export default function NopeBinPage() {
           {MOCK_NOTES.map((note) => (
             <div key={note.id} className="relative">
               <div className="absolute top-4 right-4 z-10">
-                <Button size="sm" variant="outline" onClick={() => console.log("Restore", note.id)}>
+                <Button size="sm" variant="outline" onClick={() => handleRestore(note.id)}>
                   <RotateCcw className="mr-1 h-3 w-3" />
                   Restore
                 </Button>
