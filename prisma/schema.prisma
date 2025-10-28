@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("NEON_NEON_DATABASE_URL")
+  extensions = [vector]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notes         Note[]
+  tags          Tag[]
+  smartStacks   SmartStack[]
+  weeklyInsights WeeklyInsight[]
+  vaultNotes    VaultNote[]
+
+  @@map("users")
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  content   String   @db.Text
+  type      String   @default("unclassified") // idea, task, contact, link, image, voice, misc, nope, unclassified
+  archived  Boolean  @default(false)
+  
+  embedding Unsupported("vector(1536)")?
+  cluster   String?
+  clusterConfidence Float?
+  clusterUpdatedAt DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tags      NoteTag[]
+
+  @@index([userId, createdAt])
+  @@index([userId, type])
+  @@index([userId, cluster])
+  @@map("notes")
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name      String
+  createdAt DateTime @default(now())
+
+  notes     NoteTag[]
+
+  @@unique([userId, name])
+  @@map("tags")
+}
+
+model NoteTag {
+  noteId    String
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  
+  tagId     String
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, tagId])
+  @@map("note_tags")
+}
+
+model SmartStack {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name      String
+  cluster   String
+  noteCount Int
+  summary   String   @db.Text
+  pinned    Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("smart_stacks")
+}
+
+model WeeklyInsight {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  weekStart DateTime // Monday of that week
+  summary   String   @db.Text
+  sentiment String   // positive, negative, mixed, neutral, determined, etc.
+  noteCount Int
+  
+  createdAt DateTime @default(now())
+
+  @@unique([userId, weekStart])
+  @@index([userId, weekStart])
+  @@map("weekly_insights")
+}
+
+model VaultNote {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  encryptedBlob String   @db.Text
+  
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@map("vault_notes")
+}
