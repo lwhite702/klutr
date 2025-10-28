@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
 export function VaultLockScreen() {
+  const handleUnlock = () => {
+    console.log("Unlock clicked")
+  }
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <Card className="w-full max-w-md">

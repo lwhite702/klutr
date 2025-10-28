@@ -12,6 +12,9 @@ const MOCK_CLUSTERS = [
 ]
 
 export default function MindStormPage() {
+  const handleRecluster = () => {
+    console.log("Re-cluster now")
+  }
   return (
     <AppShell activeRoute="/app/mindstorm" showDemoBadge>
       <div className="max-w-5xl mx-auto space-y-6">

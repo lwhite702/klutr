@@ -20,6 +20,9 @@ const MOCK_INSIGHTS = [
 ]
 
 export default function InsightModePage() {
+  const handleGenerateSummary = () => {
+    console.log("Generate Weekly Summary")
+  }
   return (
     <AppShell activeRoute="/app/insights" showDemoBadge>
       <div className="max-w-4xl mx-auto space-y-6">
