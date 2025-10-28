@@ -16,7 +16,7 @@ export function VaultLockScreen() {
             <h2 className="text-2xl font-semibold">Vault locked</h2>
             <p className="text-sm text-muted-foreground">Your private notes are encrypted and only visible to you.</p>
           </div>
-          <Button onClick={() => console.log("Unlock clicked")} size="lg" className="w-full">
+          <Button onClick={handleUnlock} size="lg" className="w-full">
             Unlock
           </Button>
         </CardContent>
