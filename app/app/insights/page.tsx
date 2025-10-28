@@ -28,7 +28,7 @@ export default function InsightModePage() {
             <h1 className="text-3xl font-semibold tracking-tight">Insights</h1>
             <p className="text-muted-foreground">AI-powered analysis of your thinking patterns.</p>
           </div>
-          <Button variant="outline" onClick={() => console.log("Generate Weekly Summary")}>Generate Weekly Summary</Button>
+          <Button variant="outline" onClick={handleGenerateSummary}>Generate Weekly Summary</Button>
         </div>
 
         <div className="space-y-4">
