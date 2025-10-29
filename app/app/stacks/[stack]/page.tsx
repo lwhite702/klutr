@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
+import { AppShell } from "@/components/layout/AppShell"
 import { Button } from "@/components/ui/button"
 import { NoteCard } from "@/components/notes/NoteCard"
 import type { NoteDTO } from "@/types/note"
@@ -65,38 +66,40 @@ export default function StackDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => router.back()}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">{stackName}</h1>
-          <p className="text-muted-foreground">{notes.length} notes in this stack</p>
+    <AppShell activeRoute="/app/stacks">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => router.back()}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight">{stackName}</h1>
+            <p className="text-muted-foreground">{notes.length} notes in this stack</p>
+          </div>
         </div>
-      </div>
 
-      <div className="grid gap-4">
-        <AnimatePresence mode="popLayout">
-          {notes.map((note) => (
-            <motion.div
-              key={note.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.15 }}
-            >
-              <NoteCard note={note} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {notes.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <p>No notes in this stack yet.</p>
+        <div className="grid gap-4">
+          <AnimatePresence mode="popLayout">
+            {notes.map((note) => (
+              <motion.div
+                key={note.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+              >
+                <NoteCard note={note} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
-      )}
-    </div>
+
+        {notes.length === 0 && (
+          <div className="text-center py-12 text-muted-foreground">
+            <p>No notes in this stack yet.</p>
+          </div>
+        )}
+      </div>
+    </AppShell>
   )
 }

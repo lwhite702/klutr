@@ -45,6 +45,28 @@ Each entry includes:
 - [docs] Created docs/database.md with Prisma schema, RLS policies, and migration guide
 - [docs] Completed comprehensive documentation framework for AI agent governance and technical reference
 
+## 2025-10-29 21:15 ET
+
+- [feature] Merged Opus branch scaffold into main as canonical development branch
+- [ui] Enhanced AppShell component with activeRoute and showDemoBadge props for per-page flexibility
+- [ui] Added demo badge support to TopBar component (shows when showDemoBadge=true)
+- [ui] Removed global AppShell wrapper from app/app/layout.tsx for per-page control
+- [ui] Updated all 8 pages to explicitly render AppShell with activeRoute prop:
+  - /app (Notes) - activeRoute="/app"
+  - /app/mindstorm - activeRoute="/app/mindstorm" with showDemoBadge=true
+  - /app/stacks - activeRoute="/app/stacks"
+  - /app/stacks/[stack] - activeRoute="/app/stacks"
+  - /app/vault - activeRoute="/app/vault"
+  - /app/insights - activeRoute="/app/insights"
+  - /app/memory - activeRoute="/app/memory"
+  - /app/nope - activeRoute="/app/nope"
+- [ui] Preserved Opus component organization (subdirectories: layout/, notes/, stacks/, etc.)
+- [ui] Maintained Opus mock data patterns and animation utilities
+- [ui] Kept "Re-cluster now" button functionality in TopBar and MindStorm page
+- [infra] All routes build successfully with no TypeScript errors
+- [docs] Created main-opus-merge branch for this strategic merge operation
+- [risk] Per-page AppShell rendering enables future layout divergence (Vault could have different shell than MindStorm)
+
 ## 2025-10-29 17:30 ET
 
 - [infra] Created docs/deployment.md with complete Vercel + Supabase deployment architecture

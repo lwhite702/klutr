@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { AppShell } from "@/components/layout/AppShell"
 import { StackCard } from "@/components/stacks/StackCard"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { apiGet } from "@/lib/clientApi"
@@ -97,43 +98,45 @@ export default function SmartStacksPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <div className="flex items-center gap-2">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Smart Stacks</h1>
-          <p className="text-muted-foreground">Curated collections of related notes.</p>
+    <AppShell activeRoute="/app/stacks">
+      <div className="max-w-5xl mx-auto space-y-6">
+        <div className="flex items-center gap-2">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight">Smart Stacks</h1>
+            <p className="text-muted-foreground">Curated collections of related notes.</p>
+          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="max-w-xs">
+                  Stacks are like playlists. We auto-group related thoughts so you don't have to organize.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="max-w-xs">
-                Stacks are like playlists. We auto-group related thoughts so you don't have to organize.
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {stacks.map((stack) => (
-          <StackCard
-            key={stack.name}
-            name={stack.name}
-            noteCount={stack.noteCount}
-            summary={stack.summary}
-            pinned={stack.pinned}
-          />
-        ))}
-      </div>
-
-      {stacks.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <p>No stacks yet. Create some notes and run "Re-cluster now" to generate stacks.</p>
+        <div className="grid gap-4 md:grid-cols-2">
+          {stacks.map((stack) => (
+            <StackCard
+              key={stack.name}
+              name={stack.name}
+              noteCount={stack.noteCount}
+              summary={stack.summary}
+              pinned={stack.pinned}
+            />
+          ))}
         </div>
-      )}
-    </div>
+
+        {stacks.length === 0 && (
+          <div className="text-center py-12 text-muted-foreground">
+            <p>No stacks yet. Create some notes and run "Re-cluster now" to generate stacks.</p>
+          </div>
+        )}
+      </div>
+    </AppShell>
   )
 }

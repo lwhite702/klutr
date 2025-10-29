@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { AppShell } from "@/components/layout/AppShell"
 import { TimelineGrid } from "@/components/memory/TimelineGrid"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
@@ -108,63 +109,65 @@ export default function MemoryLanePage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-2">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Memory Lane</h1>
-            <p className="text-muted-foreground">Travel back through your captured thoughts.</p>
+    <AppShell activeRoute="/app/memory">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-2">
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight">Memory Lane</h1>
+              <p className="text-muted-foreground">Travel back through your captured thoughts.</p>
+            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="max-w-xs">See how your brain changes over time. Track themes across weeks.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs">See how your brain changes over time. Track themes across weeks.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="ideas">Ideas</SelectItem>
+              <SelectItem value="tasks">Tasks</SelectItem>
+              <SelectItem value="personal">Personal</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="ideas">Ideas</SelectItem>
-            <SelectItem value="tasks">Tasks</SelectItem>
-            <SelectItem value="personal">Personal</SelectItem>
-          </SelectContent>
-        </Select>
+
+        <TimelineGrid items={timeline} onRevisit={handleRevisitWeek} />
+
+        {/* Week Detail Sheet */}
+        <Sheet open={!!selectedWeek} onOpenChange={(open) => !open && setSelectedWeek(null)}>
+          <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>Week of {selectedWeek}</SheetTitle>
+              <SheetDescription>{weekNotes.length} notes from this week</SheetDescription>
+            </SheetHeader>
+            <div className="mt-6 space-y-4">
+              {isLoadingWeek ? (
+                <div className="animate-pulse space-y-4">
+                  <div className="h-24 bg-muted rounded" />
+                  <div className="h-24 bg-muted rounded" />
+                </div>
+              ) : (
+                weekNotes.map((note) => <NoteCard key={note.id} note={note} />)
+              )}
+              {!isLoadingWeek && weekNotes.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  <p>No notes found for this week.</p>
+                </div>
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
-
-      <TimelineGrid items={timeline} onRevisit={handleRevisitWeek} />
-
-      {/* Week Detail Sheet */}
-      <Sheet open={!!selectedWeek} onOpenChange={(open) => !open && setSelectedWeek(null)}>
-        <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>Week of {selectedWeek}</SheetTitle>
-            <SheetDescription>{weekNotes.length} notes from this week</SheetDescription>
-          </SheetHeader>
-          <div className="mt-6 space-y-4">
-            {isLoadingWeek ? (
-              <div className="animate-pulse space-y-4">
-                <div className="h-24 bg-muted rounded" />
-                <div className="h-24 bg-muted rounded" />
-              </div>
-            ) : (
-              weekNotes.map((note) => <NoteCard key={note.id} note={note} />)
-            )}
-            {!isLoadingWeek && weekNotes.length === 0 && (
-              <div className="text-center py-12 text-muted-foreground">
-                <p>No notes found for this week.</p>
-              </div>
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
-    </div>
+    </AppShell>
   )
 }

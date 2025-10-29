@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { AppShell } from "@/components/layout/AppShell"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { InsightCard } from "@/components/insights/InsightCard"
@@ -102,56 +103,58 @@ export default function InsightModePage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Insights</h1>
-          <p className="text-muted-foreground">AI-powered analysis of your thinking patterns.</p>
+    <AppShell activeRoute="/app/insights">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight">Insights</h1>
+            <p className="text-muted-foreground">AI-powered analysis of your thinking patterns.</p>
+          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" onClick={handleGenerateSummary} disabled={isGenerating}>
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    "Generate Weekly Summary"
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="max-w-xs">
+                  We analyze your last 7 days of notes and generate a private reflection. Nothing is shared.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="outline" onClick={handleGenerateSummary} disabled={isGenerating}>
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  "Generate Weekly Summary"
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="max-w-xs">
-                We analyze your last 7 days of notes and generate a private reflection. Nothing is shared.
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
 
-      <div className="space-y-4">
-        <AnimatePresence mode="popLayout">
-          {insights.map((insight) => (
-            <motion.div
-              key={insight.week}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.15 }}
-            >
-              <InsightCard week={insight.week} summary={insight.summary} sentiment={insight.sentiment} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {insights.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <p>No insights yet. Generate your first weekly summary to get started.</p>
+        <div className="space-y-4">
+          <AnimatePresence mode="popLayout">
+            {insights.map((insight) => (
+              <motion.div
+                key={insight.week}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.15 }}
+              >
+                <InsightCard week={insight.week} summary={insight.summary} sentiment={insight.sentiment} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
-      )}
-    </div>
+
+        {insights.length === 0 && (
+          <div className="text-center py-12 text-muted-foreground">
+            <p>No insights yet. Generate your first weekly summary to get started.</p>
+          </div>
+        )}
+      </div>
+    </AppShell>
   )
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { AppShell } from "@/components/layout/AppShell"
 import { NoteCard } from "@/components/notes/NoteCard"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -114,57 +115,59 @@ export default function NopeBinPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center gap-2">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Nope Bin</h1>
-          <p className="text-muted-foreground">Stuff we've safely shelved. You can restore it later.</p>
+    <AppShell activeRoute="/app/nope">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-center gap-2">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight">Nope Bin</h1>
+            <p className="text-muted-foreground">Stuff we've safely shelved. You can restore it later.</p>
+          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="max-w-xs">This is the mental compost heap. You can always pull something back out.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="max-w-xs">This is the mental compost heap. You can always pull something back out.</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
 
-      <div className="grid gap-4">
-        <AnimatePresence mode="popLayout">
-          {notes.map((note) => (
-            <motion.div
-              key={note.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.15 }}
-              className="relative"
-            >
-              <div className="absolute top-4 right-4 z-10">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleRestore(note.id)}
-                  disabled={restoringIds.has(note.id)}
-                >
-                  <RotateCcw className="mr-1 h-3 w-3" />
-                  Restore
-                </Button>
-              </div>
-              <NoteCard note={note} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {notes.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <p>Your Nope Bin is empty. Nothing has been archived yet.</p>
+        <div className="grid gap-4">
+          <AnimatePresence mode="popLayout">
+            {notes.map((note) => (
+              <motion.div
+                key={note.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                className="relative"
+              >
+                <div className="absolute top-4 right-4 z-10">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleRestore(note.id)}
+                    disabled={restoringIds.has(note.id)}
+                  >
+                    <RotateCcw className="mr-1 h-3 w-3" />
+                    Restore
+                  </Button>
+                </div>
+                <NoteCard note={note} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
-      )}
-    </div>
+
+        {notes.length === 0 && (
+          <div className="text-center py-12 text-muted-foreground">
+            <p>Your Nope Bin is empty. Nothing has been archived yet.</p>
+          </div>
+        )}
+      </div>
+    </AppShell>
   )
 }
