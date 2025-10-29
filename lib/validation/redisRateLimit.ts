@@ -88,7 +88,7 @@ function createRedisClient(redisUrl?: string): RedisClient {
 
 export function createRedisRateLimit(config: RedisRateLimitConfig) {
   const redis = createRedisClient(config.redisUrl);
-  
+
   return async (req: NextRequest): Promise<boolean> => {
     const key = config.keyGenerator
       ? config.keyGenerator(req)
@@ -108,7 +108,7 @@ export function createRedisRateLimit(config: RedisRateLimitConfig) {
 
       // Increment counter
       await redis.incr(rateLimitKey);
-      
+
       // Set expiration if this is the first request
       if (!currentCount) {
         await redis.expire(rateLimitKey, windowSeconds);
@@ -132,7 +132,7 @@ export function createProductionRateLimit(config: RedisRateLimitConfig) {
 
   // Fallback to in-memory rate limiting
   const inMemoryStore = new Map<string, { count: number; resetTime: number }>();
-  
+
   return (req: NextRequest): boolean => {
     const key = config.keyGenerator
       ? config.keyGenerator(req)

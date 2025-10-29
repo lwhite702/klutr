@@ -33,12 +33,7 @@ const DEFAULT_CSP: CSPConfig = {
     "'unsafe-inline'", // Required for styled-components/Tailwind
     "https://fonts.googleapis.com",
   ],
-  imgSrc: [
-    "'self'",
-    "data:",
-    "https:",
-    "blob:",
-  ],
+  imgSrc: ["'self'", "data:", "https:", "blob:"],
   connectSrc: [
     "'self'",
     "https://api.openai.com",
@@ -46,11 +41,7 @@ const DEFAULT_CSP: CSPConfig = {
     "wss:",
     "ws:",
   ],
-  fontSrc: [
-    "'self'",
-    "https://fonts.gstatic.com",
-    "data:",
-  ],
+  fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
   objectSrc: ["'none'"],
   mediaSrc: ["'self'"],
   frameSrc: ["'none'"],
@@ -91,25 +82,25 @@ export function generateCSPHeader(config: CSPConfig): string {
   Object.entries(config).forEach(([key, value]) => {
     if (value === undefined) return;
 
-    const directive = key.replace(/([A-Z])/g, '-$1').toLowerCase();
-    
-    if (typeof value === 'boolean') {
+    const directive = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+
+    if (typeof value === "boolean") {
       if (value) {
         directives.push(directive);
       }
     } else if (Array.isArray(value)) {
       if (value.length > 0) {
-        directives.push(`${directive} ${value.join(' ')}`);
+        directives.push(`${directive} ${value.join(" ")}`);
       }
     }
   });
 
-  return directives.join('; ');
+  return directives.join("; ");
 }
 
 // Get appropriate CSP config based on environment
 export function getCSPConfig(): CSPConfig {
-  return process.env.NODE_ENV === 'development' ? DEV_CSP : DEFAULT_CSP;
+  return process.env.NODE_ENV === "development" ? DEV_CSP : DEFAULT_CSP;
 }
 
 // Middleware to add security headers
@@ -118,15 +109,21 @@ export function addSecurityHeaders(response: NextResponse): NextResponse {
   const cspHeader = generateCSPHeader(cspConfig);
 
   // Add security headers
-  response.headers.set('Content-Security-Policy', cspHeader);
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  
+  response.headers.set("Content-Security-Policy", cspHeader);
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()"
+  );
+
   // Add HSTS header in production
-  if (process.env.NODE_ENV === 'production') {
-    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  if (process.env.NODE_ENV === "production") {
+    response.headers.set(
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubDomains"
+    );
   }
 
   return response;
@@ -182,18 +179,18 @@ export function createSecureSuccessResponse<T>(
 // Sanitize error messages to prevent XSS
 export function sanitizeErrorMessage(message: string): string {
   return message
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;');
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .replace(/\//g, "&#x2F;");
 }
 
 // Validate and sanitize user input
 export function sanitizeUserInput(input: unknown): string {
-  if (typeof input !== 'string') {
-    return '';
+  if (typeof input !== "string") {
+    return "";
   }
-  
+
   return sanitizeErrorMessage(input);
 }

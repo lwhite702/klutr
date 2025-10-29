@@ -2,8 +2,14 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { validateEncryptedDataServerSide } from "@/lib/encryption/secure";
-import { createSecureSuccessResponse, createSecureErrorResponse } from "@/lib/security/headers";
-import { withValidationAndRateLimit, RATE_LIMITS } from "@/lib/validation/middleware";
+import {
+  createSecureSuccessResponse,
+  createSecureErrorResponse,
+} from "@/lib/security/headers";
+import {
+  withValidationAndRateLimit,
+  RATE_LIMITS,
+} from "@/lib/validation/middleware";
 import { CreateVaultNoteSchema } from "@/lib/validation/schemas";
 
 async function createVaultNoteHandler(req: NextRequest, data: any) {

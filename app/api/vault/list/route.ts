@@ -1,7 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { createSecureSuccessResponse, createSecureErrorResponse } from "@/lib/security/headers";
+import {
+  createSecureSuccessResponse,
+  createSecureErrorResponse,
+} from "@/lib/security/headers";
 import { withRateLimit, RATE_LIMITS } from "@/lib/validation/middleware";
 
 async function listVaultNotesHandler(req: NextRequest) {
