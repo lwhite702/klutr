@@ -184,7 +184,31 @@ pnpm build
 
 The build step runs `next build`, which should reflect Vercel behavior.
 
-## 7. Deploying to Staging / Production
+## 7. UI Development Guidelines
+
+### Shared UI Primitives
+
+The application uses standardized UI primitives that should be reused across pages:
+
+- **AppShell** - Main layout wrapper for all app pages
+- **PageHeader** - Standardized page headers with title, description, and actions
+- **CardGrid** - Responsive grid wrapper for card layouts
+- **ItemCard** - Domain-agnostic card component with thumbnail, tags, and actions
+- **TagChip** - Metadata pill/chip component
+
+These components are located in `/components/ui/` and `/components/layout/`. Always reuse these building blocks instead of creating custom layouts. They use consistent design tokens defined in CSS custom properties (`--radius-card`, `--radius-input`, `--radius-chip`).
+
+### Component Development
+
+When creating new components:
+
+1. Check if existing UI primitives can be reused
+2. Follow the established patterns in `/components/ui/`
+3. Use Tailwind classes with design tokens
+4. Include proper TypeScript interfaces
+5. Test in browser environment (not just TypeScript compilation)
+
+## 8. Deploying to Staging / Production
 
 ### Staging (Vercel + Supabase Staging Project)
 

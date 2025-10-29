@@ -141,6 +141,48 @@ The migration from Neon to Supabase follows these phases (detailed in `/docs/roa
 
 ## Component Organization
 
+### Shared UI Primitives
+
+The application uses standardized UI primitives aligned with the Figma design system:
+
+- **AppShell** (`/components/layout/AppShell.tsx`) - Main layout wrapper for all app pages with responsive sidebar and main content area
+- **PageHeader** (`/components/ui/PageHeader.tsx`) - Standardized page headers with title, optional description, and actions area
+- **CardGrid** (`/components/ui/CardGrid.tsx`) - Responsive grid wrapper (1/2/3/4 columns) for card layouts
+- **ItemCard** (`/components/ui/ItemCard.tsx`) - Domain-agnostic card component with thumbnail, tags, and actions
+- **TagChip** (`/components/notes/TagChip.tsx`) - Metadata pill/chip component with optional custom colors
+
+These components should be reused across pages instead of creating custom layouts. They use consistent design tokens defined in CSS custom properties.
+
+### UI Surface Vocabulary
+
+All pages (MindStorm, Stacks, Vault, Insights, Memory, Nope) share a consistent design language built on shared primitives:
+
+- **Shared Surface Pattern**: SidebarNav + PageHeader + CardGrid + ItemCard
+
+  - SidebarNav provides persistent left rail navigation for all /app routes
+  - PageHeader delivers consistent page-level heading bars
+  - CardGrid enables responsive tile layouts (1–4 columns)
+  - ItemCard supplies bookmark/tile style cards with tags and actions
+
+- **Visual System**: Derived from "Bookmark App — Community" Figma reference (BBQ/Podcast/Wishlist patterns)
+
+  - This design language is canonical for the first shipped aesthetic
+  - MindStorm, Stacks, Vault, Insights, Memory, and Nope all use this visual language so the product feels coherent
+
+- **Responsive Behavior**: Mobile-first with sidebar collapse and adaptive card grids
+- **Accessibility**: ARIA labels on all icon-only buttons, keyboard navigation support
+- **Animation**: framer-motion for consistent card mount animations
+
+This vocabulary establishes the canonical design language for early MindStorm UI development. The Vault screen is allowed to diverge in the future (darker theme) but will still respect the same layout primitives (SidebarNav + PageHeader + CardGrid + ItemCard). See `/docs/ui-map.md` for detailed component specifications and usage patterns.
+
+### Design Tokens
+
+CSS custom properties for consistent styling:
+
+- `--radius-card: 0.75rem` - Standard card border radius
+- `--radius-input: 0.5rem` - Form input border radius
+- `--radius-chip: 9999px` - Full-rounded chip/pill radius
+
 ### `/components` Structure
 
 ```

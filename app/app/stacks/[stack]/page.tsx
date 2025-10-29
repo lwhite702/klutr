@@ -1,108 +1,77 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import { AppShell } from "@/components/layout/AppShell";
-import { Button } from "@/components/ui/button";
-import { NoteCard } from "@/components/notes/NoteCard";
-import type { NoteDTO } from "@/types/note";
-import { apiGet } from "@/lib/clientApi";
-import { isDemoMode } from "@/lib/onboarding";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { CardGrid } from "@/components/ui/CardGrid";
+import { ItemCard } from "@/components/ui/ItemCard";
+import { SortAndFilterStub } from "@/components/stacks/SortAndFilterStub";
+import { mockStackItems } from "@/lib/mockData";
 import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function StackDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const stackName = decodeURIComponent(params.stack as string);
-  const [notes, setNotes] = useState<NoteDTO[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const demoMode = isDemoMode();
+  const stackSlug = params.stack as string;
 
-  useEffect(() => {
-    async function loadStackNotes() {
-      if (demoMode) {
-        // Mock notes for demo
-        setNotes([
-          {
-            id: "1",
-            content: "Example note in this stack",
-            type: "idea",
-            archived: false,
-            createdAt: new Date().toISOString(),
-            tags: ["example"],
-            cluster: stackName,
-            clusterConfidence: 0.9,
-            clusterUpdatedAt: new Date().toISOString(),
-          },
-        ]);
-        setIsLoading(false);
-        return;
-      }
+  // Map stack slug to mock data
+  const stackNameMap: Record<string, string> = {
+    "bbq-weekend": "BBQ Weekend",
+    wishlist: "Wishlist",
+    "listen-next": "Listen Next",
+    "client-work": "Client Work",
+  };
 
-      try {
-        const data = await apiGet<NoteDTO[]>(
-          `/api/stacks/detail?cluster=${encodeURIComponent(stackName)}`
-        );
-        setNotes(data);
-      } catch (error) {
-        console.error("[v0] Failed to load stack notes:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  const stackName = stackNameMap[stackSlug] || "BBQ Weekend";
 
-    loadStackNotes();
-  }, [stackName, demoMode]);
+  // Get items for this stack
+  const stackItems =
+    mockStackItems[stackSlug as keyof typeof mockStackItems] ||
+    mockStackItems.bbq;
 
-  if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded w-1/4" />
-          <div className="h-24 bg-muted rounded" />
-          <div className="h-24 bg-muted rounded" />
-        </div>
-      </div>
-    );
-  }
+  const handleItemClick = (itemId: string) => {
+    console.log("TODO: Open item", itemId);
+  };
+
+  const handleItemFavorite = (itemId: string) => {
+    console.log("TODO: Toggle favorite for item", itemId);
+  };
 
   return (
     <AppShell activeRoute="/app/stacks">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">
-              {stackName}
-            </h1>
-            <p className="text-muted-foreground">
-              {notes.length} notes in this stack
-            </p>
+          <div className="flex-1">
+            <PageHeader
+              title={stackName}
+              description="Curated items from this stack."
+              actions={<SortAndFilterStub />}
+            />
           </div>
         </div>
 
-        <div className="grid gap-4">
-          <AnimatePresence mode="popLayout">
-            {notes.map((note) => (
-              <motion.div
-                key={note.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.15 }}
-              >
-                <NoteCard note={note} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
+        <CardGrid>
+          {stackItems.map((item) => (
+            <ItemCard
+              key={item.id}
+              title={item.title}
+              description={item.description}
+              tags={item.tags}
+              pinned={item.pinned}
+              onClick={() => handleItemClick(item.id)}
+              onFavorite={() => handleItemFavorite(item.id)}
+            />
+          ))}
+        </CardGrid>
 
-        {notes.length === 0 && (
+        {stackItems.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
-            <p>No notes in this stack yet.</p>
+            <p>No items in this stack yet.</p>
           </div>
         )}
       </div>

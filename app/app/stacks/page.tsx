@@ -1,150 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
-import { StackCard } from "@/components/stacks/StackCard";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { apiGet } from "@/lib/clientApi";
-import { isDemoMode } from "@/lib/onboarding";
-import { HelpCircle } from "lucide-react";
-
-const MOCK_STACKS = [
-  {
-    name: "Podcast Ideas",
-    noteCount: 7,
-    summary:
-      "Ideas around creator economy + AI clips. Potential guests and episode formats.",
-    pinned: false,
-  },
-  {
-    name: "2025 Goals",
-    noteCount: 3,
-    summary:
-      "Saving money, building product, time freedom. Focus on sustainable growth.",
-    pinned: true,
-  },
-  {
-    name: "Client Work",
-    noteCount: 5,
-    summary:
-      "Follow-ups and deliverables for freelance clients. Deadlines and project notes.",
-    pinned: false,
-  },
-  {
-    name: "Learning Resources",
-    noteCount: 12,
-    summary:
-      "Courses, tutorials, and articles saved for later. Heavy focus on AI and web development.",
-    pinned: false,
-  },
-  {
-    name: "Side Project Ideas",
-    noteCount: 9,
-    summary:
-      "Various SaaS and product ideas. Some validated, others just random thoughts.",
-    pinned: false,
-  },
-  {
-    name: "Personal",
-    noteCount: 4,
-    summary: "Health goals, relationship notes, and personal reflections.",
-    pinned: false,
-  },
-];
-
-interface Stack {
-  name: string;
-  noteCount: number;
-  summary: string;
-  pinned: boolean;
-}
+import { PageHeader } from "@/components/ui/PageHeader";
+import { CardGrid } from "@/components/ui/CardGrid";
+import { ItemCard } from "@/components/ui/ItemCard";
+import { mockStacks } from "@/lib/mockData";
 
 export default function SmartStacksPage() {
-  const [stacks, setStacks] = useState<Stack[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const demoMode = isDemoMode();
+  const [stacks, setStacks] = useState(mockStacks);
 
-  useEffect(() => {
-    async function loadStacks() {
-      if (demoMode) {
-        setStacks(MOCK_STACKS);
-        setIsLoading(false);
-        return;
-      }
+  const handleStackClick = (stackName: string) => {
+    console.log("TODO: Navigate to stack detail", stackName);
+    // For now, navigate to a mock stack detail page
+    window.location.href = `/app/stacks/${stackName
+      .toLowerCase()
+      .replace(/\s+/g, "-")}`;
+  };
 
-      try {
-        const data = await apiGet<Stack[]>("/api/stacks/list");
-        setStacks(data);
-      } catch (error) {
-        console.error("[v0] Failed to load stacks:", error);
-        // Fallback to mock data
-        setStacks(MOCK_STACKS);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadStacks();
-  }, [demoMode]);
-
-  if (isLoading) {
-    return (
-      <div className="max-w-5xl mx-auto space-y-6">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded w-1/4" />
-          <div className="grid gap-4 md:grid-cols-2">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-40 bg-muted rounded" />
-            ))}
-          </div>
-        </div>
-      </div>
+  const handleStackFavorite = (stackId: string) => {
+    console.log("TODO: Toggle favorite for stack", stackId);
+    setStacks(
+      stacks.map((stack) =>
+        stack.id === stackId ? { ...stack, pinned: !stack.pinned } : stack
+      )
     );
-  }
+  };
 
   return (
     <AppShell activeRoute="/app/stacks">
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center gap-2">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">
-              Smart Stacks
-            </h1>
-            <p className="text-muted-foreground">
-              Curated collections of related notes.
-            </p>
-          </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs">
-                  Stacks are like playlists. We auto-group related thoughts so
-                  you don't have to organize.
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <PageHeader title="Stacks" description="Your saved collections." />
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <CardGrid>
           {stacks.map((stack) => (
-            <StackCard
-              key={stack.name}
-              name={stack.name}
-              noteCount={stack.noteCount}
-              summary={stack.summary}
+            <ItemCard
+              key={stack.id}
+              title={stack.name}
+              description={stack.description}
+              tags={stack.tags}
               pinned={stack.pinned}
+              onClick={() => handleStackClick(stack.name)}
+              onFavorite={() => handleStackFavorite(stack.id)}
             />
           ))}
-        </div>
+        </CardGrid>
 
         {stacks.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">

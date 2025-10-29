@@ -25,6 +25,23 @@ Each entry includes:
 
 ---
 
+## 2025-10-30 22:40 ET
+
+- [ui] Added PageHeader, CardGrid, TagChip, ItemCard components based on Figma bookmark dashboard designs.
+- [ui] Updated /app/\* pages to render with AppShell + PageHeader + CardGrid for consistent layout.
+- [docs] Created ui-map.md and updated architecture.md with UI Surface Vocabulary.
+- [a11y] Added aria-labels to icon actions inside ItemCard.
+
+## 2025-10-28 22:52 ET
+
+- [ui] Added Figma-aligned design tokens (--radius-card, --radius-input, --radius-chip) to globals.css
+- [ui] Created PageHeader component for standardized page headers with title, description, and actions
+- [ui] Created CardGrid responsive grid wrapper (1/2/3/4 cols) for card layouts
+- [ui] Created ItemCard domain-agnostic card with thumbnail, tags, and framer-motion animations
+- [ui] Updated TagChip to accept colorClassName prop for custom styling
+- [docs] Updated architecture.md and dev-setup.md with shared UI primitives guidance
+- [docs] Established UI primitives as standard building blocks across all pages
+
 ## 2025-10-29 15:30 ET
 
 - [docs] Created agents.md with complete Wrelik agent operating rules and Context7 MCP requirement
@@ -132,11 +149,26 @@ Each entry includes:
 - [infra] pgvector extension enabled for embedding support
 - [test] Application now fully functional with database backend
 
-## 2025-10-29 22:15 ET
+## 2025-10-29 23:30 ET
 
-- [devx] Created /docs/dev-setup.md as canonical CLI and environment setup guide
-- [governance] Established requirement that all local dev must use `doppler run --` for env vars
-- [governance] Documented Supabase Edge Functions deployment workflow (planned)
-- [devx] Defined mandatory CLI tooling: Node/pnpm, Doppler, Supabase, Vercel, Prisma, Mintlify
-- [devx] Established browser-level testing requirement (no headless-only validation)
-- [devx] Created change control process requiring dev-setup.md updates for tooling changes
+- [ui] Implemented shared primitives and Figma-style layouts across all 8 app pages
+- [ui] Rebuilt /app pages with consistent card grid aesthetic using AppShell + PageHeader + CardGrid + ItemCard
+- [data] Added lib/mockData.ts as single source of truth for BBQ/Podcast/Wishlist themed mock data
+- [ui] Created SortAndFilterStub component with shadcn/ui DropdownMenu for collection pages
+- [ui] Updated AppShell to pass activeRoute to SidebarNav for proper navigation highlighting
+- [ui] Enhanced PageHeader with text-2xl title sizing and mb-6 spacing for consistent layout
+- [ui] Enhanced ItemCard with actionsRight prop and text-lg title sizing for better hierarchy
+- [ui] Updated all pages to use shared primitives:
+  - /app (All Notes): PageHeader + QuickCaptureBar + CardGrid of mockNotes
+  - /app/stacks: PageHeader + CardGrid of mockStacks with navigation
+  - /app/stacks/[stackSlug]: PageHeader with SortAndFilterStub + CardGrid of stack items
+  - /app/mindstorm: PageHeader with ReclusterButton + CardGrid of clusters (showDemoBadge=true)
+  - /app/vault: PageHeader + VaultLockScreen OR CardGrid of locked ItemCards
+  - /app/insights: PageHeader with GenerateButton + InsightCard components
+  - /app/memory: PageHeader + TimelineGrid component for temporal navigation
+  - /app/nope: PageHeader + CardGrid with Restore action buttons
+- [docs] Created docs/ui-map.md documenting shared primitives and page layout patterns
+- [docs] Updated docs/architecture.md with UI Surface Vocabulary subsection
+- [ux] Added ARIA labels on all icon-only action buttons in ItemCard for accessibility
+- [ux] Established consistent visual system derived from "Bookmark App — Community" Figma reference
+- [risk] All pages use mock data only - no backend/Supabase calls implemented yet

@@ -1,9 +1,17 @@
-"use client"
+"use client";
 
-import { usePathname } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Lightbulb, Brain, Layers, Lock, Eye, Calendar, Trash2 } from "lucide-react"
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Lightbulb,
+  Brain,
+  Layers,
+  Lock,
+  Eye,
+  Calendar,
+  Trash2,
+} from "lucide-react";
 
 const navItems = [
   { href: "/app", label: "Notes", icon: Lightbulb },
@@ -13,16 +21,22 @@ const navItems = [
   { href: "/app/insights", label: "Insights", icon: Eye },
   { href: "/app/memory", label: "Memory Lane", icon: Calendar },
   { href: "/app/nope", label: "Nope Bin", icon: Trash2 },
-]
+];
 
-export function SidebarNav() {
-  const pathname = usePathname()
+interface SidebarNavProps {
+  activeRoute?: string;
+}
+
+export function SidebarNav({ activeRoute }: SidebarNavProps) {
+  const pathname = usePathname();
 
   return (
     <nav className="flex flex-col gap-1 p-4">
       {navItems.map((item) => {
-        const Icon = item.icon
-        const isActive = pathname === item.href
+        const Icon = item.icon;
+        const isActive = activeRoute
+          ? pathname === activeRoute
+          : pathname === item.href;
 
         return (
           <Button
@@ -36,8 +50,8 @@ export function SidebarNav() {
               {item.label}
             </Link>
           </Button>
-        )
+        );
       })}
     </nav>
-  )
+  );
 }
