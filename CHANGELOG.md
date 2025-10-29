@@ -96,3 +96,23 @@ Each entry includes:
 - [test] All 29 routes building successfully (static and dynamic)
 - [test] No linting errors detected in app/, components/, lib/ directories
 - [infra] Build process verified with Doppler environment variable integration
+
+## 2025-10-29 18:45 ET
+
+- [fix] Fixed critical database schema issue - Prisma schema was looking for wrong environment variable
+- [fix] Corrected Prisma schema from NEON_NEON_DATABASE_URL to NEON_DATABASE_URL
+- [infra] Successfully ran Prisma db push to create all database tables
+- [test] Verified all API endpoints now working correctly with proper database connection
+- [test] Tested /api/notes/list, /api/vault/list, /api/stacks/list, /api/insights/list - all returning empty arrays (expected for new database)
+- [infra] Database schema now includes all required tables: users, notes, tags, note_tags, smart_stacks, weekly_insights, vault_notes
+- [infra] pgvector extension enabled for embedding support
+- [test] Application now fully functional with database backend
+
+## 2025-10-29 22:15 ET
+
+- [devx] Created /docs/dev-setup.md as canonical CLI and environment setup guide
+- [governance] Established requirement that all local dev must use `doppler run --` for env vars
+- [governance] Documented Supabase Edge Functions deployment workflow (planned)
+- [devx] Defined mandatory CLI tooling: Node/pnpm, Doppler, Supabase, Vercel, Prisma, Mintlify
+- [devx] Established browser-level testing requirement (no headless-only validation)
+- [devx] Created change control process requiring dev-setup.md updates for tooling changes
