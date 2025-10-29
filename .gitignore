@@ -19,9 +19,17 @@ yarn-error.log*
 # env files
 .env*
 
+# Doppler configuration files
+.doppler/
+doppler.yaml
+doppler.yml
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#Ignore cursor AI rules
+.cursor/rules/codacy.mdc

@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
+    "build": "doppler run -- next build",
+    "dev": "doppler run -- next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "doppler run -- next start",
+    "db:push": "doppler run -- npx prisma db push",
+    "db:generate": "doppler run -- npx prisma generate",
+    "db:studio": "doppler run -- npx prisma studio"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -72,6 +75,7 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "doppler": "^1.0.0",
     "postcss": "^8.5",
     "prisma": "6.18.0",
     "tailwindcss": "^4.1.9",

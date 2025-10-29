@@ -3,7 +3,13 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { SidebarNav } from "./SidebarNav"
 import { TopBar } from "./TopBar"
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+interface AppShellProps {
+  children: React.ReactNode
+  activeRoute: string
+  showDemoBadge?: boolean
+}
+
+export function AppShell({ children, activeRoute, showDemoBadge = false }: AppShellProps) {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Desktop Sidebar */}
@@ -16,7 +22,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar />
+        <TopBar showDemoBadge={showDemoBadge} />
         <ScrollArea className="flex-1">
           <main className="p-6">{children}</main>
         </ScrollArea>

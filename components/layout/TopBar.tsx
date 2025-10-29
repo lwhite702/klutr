@@ -12,7 +12,7 @@ import { isDemoMode } from "@/lib/onboarding"
 import { apiPost } from "@/lib/clientApi"
 import { Loader2 } from "lucide-react"
 
-export function TopBar() {
+export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
   const [demoMode, setDemoMode] = useState(false)
   const [isReclustering, setIsReclustering] = useState(false)
 
@@ -56,7 +56,7 @@ export function TopBar() {
         </div>
 
         <div className="flex items-center gap-2 ml-auto">
-          {demoMode && (
+          {(demoMode || showDemoBadge) && (
             <Badge variant="secondary" className="hidden sm:flex">
               demo
             </Badge>

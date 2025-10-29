@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { NoteDTO } from "@/types/note"
+import { AppShell } from "@/components/layout/AppShell"
 import { QuickCaptureBar } from "@/components/notes/QuickCaptureBar"
 import { NoteCard } from "@/components/notes/NoteCard"
 import { FirstRunHelper } from "@/components/notes/FirstRunHelper"
@@ -159,97 +160,99 @@ export default function NotesPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight">Notes</h1>
-        <p className="text-muted-foreground">Capture everything. We'll organize it.</p>
-      </div>
+    <AppShell activeRoute="/app">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight">Notes</h1>
+          <p className="text-muted-foreground">Capture everything. We'll organize it.</p>
+        </div>
 
-      {showFirstRun ? (
-        <FirstRunHelper onCreateExample={handleCreateExample} />
-      ) : (
-        <>
-          <div className="relative">
-            <QuickCaptureBar onCreate={handleCreateNote} isCreating={isCreating} />
-            {tour.active && tour.step === 1 && (
-              <TourCallout
-                title="Step 1: Dump anything here"
-                description="Type a thought, task, link, or idea. We'll organize it automatically with AI."
-                position="bottom"
-                onNext={tour.nextStep}
-                onClose={tour.endTour}
-              />
-            )}
-          </div>
-
-          <div className="relative flex gap-3">
-            <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All types</SelectItem>
-                <SelectItem value="idea">Idea</SelectItem>
-                <SelectItem value="task">Task</SelectItem>
-                <SelectItem value="contact">Contact</SelectItem>
-                <SelectItem value="link">Link</SelectItem>
-                <SelectItem value="voice">Voice</SelectItem>
-                <SelectItem value="misc">Misc</SelectItem>
-                <SelectItem value="nope">Nope</SelectItem>
-                <SelectItem value="unclassified">Unclassified</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={filterCluster} onValueChange={setFilterCluster}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by cluster" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All clusters</SelectItem>
-                <SelectItem value="Ideas">Ideas</SelectItem>
-                <SelectItem value="Tasks">Tasks</SelectItem>
-                <SelectItem value="Contacts">Contacts</SelectItem>
-                <SelectItem value="Links">Links</SelectItem>
-                <SelectItem value="Images">Images</SelectItem>
-                <SelectItem value="Voice">Voice</SelectItem>
-                <SelectItem value="Misc">Misc</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {tour.active && tour.step === 2 && (
-              <TourCallout
-                title="Step 2: Filter by meaning"
-                description="No folders. Just filter by what it is (type) or what it's about (cluster)."
-                position="bottom"
-                onNext={tour.nextStep}
-                onClose={tour.endTour}
-              />
-            )}
-          </div>
-
-          <div className="grid gap-4">
-            <AnimatePresence mode="popLayout">
-              {filteredNotes.map((note) => (
-                <motion.div
-                  key={note.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <NoteCard note={note} isPending={pendingOps.get(note.id)?.classifying} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-
-          {filteredNotes.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
-              <p>No notes match your filters. Try adjusting them or create a new note.</p>
+        {showFirstRun ? (
+          <FirstRunHelper onCreateExample={handleCreateExample} />
+        ) : (
+          <>
+            <div className="relative">
+              <QuickCaptureBar onCreate={handleCreateNote} isCreating={isCreating} />
+              {tour.active && tour.step === 1 && (
+                <TourCallout
+                  title="Step 1: Dump anything here"
+                  description="Type a thought, task, link, or idea. We'll organize it automatically with AI."
+                  position="bottom"
+                  onNext={tour.nextStep}
+                  onClose={tour.endTour}
+                />
+              )}
             </div>
-          )}
-        </>
-      )}
-    </div>
+
+            <div className="relative flex gap-3">
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All types</SelectItem>
+                  <SelectItem value="idea">Idea</SelectItem>
+                  <SelectItem value="task">Task</SelectItem>
+                  <SelectItem value="contact">Contact</SelectItem>
+                  <SelectItem value="link">Link</SelectItem>
+                  <SelectItem value="voice">Voice</SelectItem>
+                  <SelectItem value="misc">Misc</SelectItem>
+                  <SelectItem value="nope">Nope</SelectItem>
+                  <SelectItem value="unclassified">Unclassified</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filterCluster} onValueChange={setFilterCluster}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by cluster" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All clusters</SelectItem>
+                  <SelectItem value="Ideas">Ideas</SelectItem>
+                  <SelectItem value="Tasks">Tasks</SelectItem>
+                  <SelectItem value="Contacts">Contacts</SelectItem>
+                  <SelectItem value="Links">Links</SelectItem>
+                  <SelectItem value="Images">Images</SelectItem>
+                  <SelectItem value="Voice">Voice</SelectItem>
+                  <SelectItem value="Misc">Misc</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {tour.active && tour.step === 2 && (
+                <TourCallout
+                  title="Step 2: Filter by meaning"
+                  description="No folders. Just filter by what it is (type) or what it's about (cluster)."
+                  position="bottom"
+                  onNext={tour.nextStep}
+                  onClose={tour.endTour}
+                />
+              )}
+            </div>
+
+            <div className="grid gap-4">
+              <AnimatePresence mode="popLayout">
+                {filteredNotes.map((note) => (
+                  <motion.div
+                    key={note.id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <NoteCard note={note} isPending={pendingOps.get(note.id)?.classifying} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {filteredNotes.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground">
+                <p>No notes match your filters. Try adjusting them or create a new note.</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </AppShell>
   )
 }
