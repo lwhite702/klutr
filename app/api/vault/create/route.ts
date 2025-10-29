@@ -1,31 +1,74 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { getCurrentUser } from "@/lib/auth"
-import { prisma } from "@/lib/db"
+import { type NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { validateEncryptedDataServerSide } from "@/lib/encryption/secure";
+import { createSecureSuccessResponse, createSecureErrorResponse } from "@/lib/security/headers";
+import { withValidationAndRateLimit, RATE_LIMITS } from "@/lib/validation/middleware";
+import { CreateVaultNoteSchema } from "@/lib/validation/schemas";
 
-export async function POST(req: NextRequest) {
+async function createVaultNoteHandler(req: NextRequest, data: any) {
   try {
-    const user = await getCurrentUser(req)
-    const body = await req.json()
-    const { encryptedBlob } = body
+    const user = await getCurrentUser(req);
+    const { encryptedBlob } = data;
 
-    if (!encryptedBlob || typeof encryptedBlob !== "string") {
-      return NextResponse.json({ error: "Encrypted blob is required" }, { status: 400 })
+    // Server-side validation of encrypted data structure
+    const validation = validateEncryptedDataServerSide(encryptedBlob);
+    if (!validation.isValid) {
+      return createSecureErrorResponse(
+        `Invalid encrypted data: ${validation.error}`,
+        400,
+        "INVALID_ENCRYPTED_DATA"
+      );
+    }
+
+    // Additional validation: ensure encrypted data is not empty or suspiciously small
+    if (encryptedBlob.encryptedData.length < 16) {
+      return createSecureErrorResponse(
+        "Encrypted data appears to be too short",
+        400,
+        "SUSPICIOUS_ENCRYPTED_DATA"
+      );
+    }
+
+    // Additional validation: check for potential injection attempts in base64 data
+    const suspiciousPatterns = [
+      /<script/i,
+      /javascript:/i,
+      /data:text\/html/i,
+      /vbscript:/i,
+    ];
+
+    const allData = `${encryptedBlob.encryptedData}${encryptedBlob.iv}${encryptedBlob.salt}${encryptedBlob.authTag}`;
+    for (const pattern of suspiciousPatterns) {
+      if (pattern.test(allData)) {
+        return createSecureErrorResponse(
+          "Suspicious content detected in encrypted data",
+          400,
+          "SUSPICIOUS_CONTENT"
+        );
+      }
     }
 
     const vaultNote = await prisma.vaultNote.create({
       data: {
         userId: user.id,
-        encryptedBlob,
+        encryptedBlob: JSON.stringify(encryptedBlob), // Store as JSON string
       },
-    })
+    });
 
-    return NextResponse.json({
+    return createSecureSuccessResponse({
       ok: true,
       id: vaultNote.id,
       createdAt: vaultNote.createdAt.toISOString(),
-    })
+    });
   } catch (error) {
-    console.error("[v0] Create vault note error:", error)
-    return NextResponse.json({ error: "Failed to create vault note" }, { status: 500 })
+    console.error("[v0] Create vault note error:", error);
+    return createSecureErrorResponse("Failed to create vault note", 500);
   }
 }
+
+export const POST = withValidationAndRateLimit(
+  CreateVaultNoteSchema,
+  RATE_LIMITS.VAULT_OPERATIONS,
+  createVaultNoteHandler
+);

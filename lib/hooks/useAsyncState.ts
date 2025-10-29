@@ -28,21 +28,26 @@ export function useAsyncState<T>(
     async (asyncFn: (...args: any[]) => Promise<T>, ...args: any[]) => {
       if (!isMountedRef.current) return null;
 
-      setState(prev => ({ ...prev, loading: true, error: null }));
+      setState((prev) => ({ ...prev, loading: true, error: null }));
 
       try {
         const result = await asyncFn(...args);
-        
+
         if (isMountedRef.current) {
-          setState(prev => ({ ...prev, data: result, loading: false }));
+          setState((prev) => ({ ...prev, data: result, loading: false }));
           return result;
         }
-        
+
         return null;
       } catch (error) {
         if (isMountedRef.current) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-          setState(prev => ({ ...prev, error: errorMessage, loading: false }));
+          const errorMessage =
+            error instanceof Error ? error.message : "Unknown error";
+          setState((prev) => ({
+            ...prev,
+            error: errorMessage,
+            loading: false,
+          }));
         }
         return null;
       }
@@ -58,13 +63,13 @@ export function useAsyncState<T>(
 
   const setData = useCallback((data: T | null) => {
     if (isMountedRef.current) {
-      setState(prev => ({ ...prev, data }));
+      setState((prev) => ({ ...prev, data }));
     }
   }, []);
 
   const setError = useCallback((error: string | null) => {
     if (isMountedRef.current) {
-      setState(prev => ({ ...prev, error }));
+      setState((prev) => ({ ...prev, error }));
     }
   }, []);
 
@@ -89,35 +94,47 @@ export function useAsyncState<T>(
 // Hook for multiple async operations
 export function useMultipleAsyncStates<T extends Record<string, any>>(
   initialState: Partial<T> = {}
-): [T, (key: keyof T, asyncFn: (...args: any[]) => Promise<any>, ...args: any[]) => Promise<any>] {
+): [
+  T,
+  (
+    key: keyof T,
+    asyncFn: (...args: any[]) => Promise<any>,
+    ...args: any[]
+  ) => Promise<any>
+] {
   const [states, setStates] = useState<T>({} as T);
   const isMountedRef = useRef(true);
 
   const execute = useCallback(
-    async (key: keyof T, asyncFn: (...args: any[]) => Promise<any>, ...args: any[]) => {
+    async (
+      key: keyof T,
+      asyncFn: (...args: any[]) => Promise<any>,
+      ...args: any[]
+    ) => {
       if (!isMountedRef.current) return null;
 
-      setStates(prev => ({
+      setStates((prev) => ({
         ...prev,
         [key]: { ...prev[key], loading: true, error: null },
       }));
 
       try {
         const result = await asyncFn(...args);
-        
+
         if (isMountedRef.current) {
-          setStates(prev => ({
+          setStates((prev) => ({
             ...prev,
             [key]: { ...prev[key], data: result, loading: false },
           }));
           return result;
         }
-        
+
         return null;
       } catch (error) {
         if (isMountedRef.current) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-          setStates(prev => ({
+          const errorMessage =
+            error instanceof Error ? error.message : "Unknown error";
+          setStates((prev) => ({
             ...prev,
             [key]: { ...prev[key], error: errorMessage, loading: false },
           }));
@@ -150,7 +167,7 @@ export function useOptimisticUpdate<T>(
   const update = useCallback(
     async (asyncUpdateFn: (currentData: T) => Promise<T>) => {
       setIsUpdating(true);
-      
+
       // Apply optimistic update
       const newOptimisticData = updateFn(data, data);
       setOptimisticData(newOptimisticData);

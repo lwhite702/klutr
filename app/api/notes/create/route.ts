@@ -4,18 +4,21 @@ import { prisma, isDatabaseAvailable } from "@/lib/db";
 import { toNoteDTO } from "@/lib/dto";
 import { classifyNoteContent } from "@/lib/ai/classifyNote";
 import { embedNoteContent } from "@/lib/ai/embedNote";
-import { 
-  withValidationAndRateLimit, 
-  createErrorResponse, 
+import {
+  withValidationAndRateLimit,
+  createErrorResponse,
   createSuccessResponse,
-  RATE_LIMITS 
+  RATE_LIMITS,
 } from "@/lib/validation/middleware";
 import { CreateNoteSchema, NoteDTOSchema } from "@/lib/validation/schemas";
 
 async function createNoteHandler(req: NextRequest, data: any) {
   try {
     if (!isDatabaseAvailable()) {
-      return createErrorResponse("Database not available. Please enable demo mode.", 503);
+      return createErrorResponse(
+        "Database not available. Please enable demo mode.",
+        503
+      );
     }
 
     const user = await getCurrentUser(req);
@@ -58,8 +61,8 @@ async function createNoteHandler(req: NextRequest, data: any) {
                   name: tagName,
                 },
                 update: {},
-              }),
-            ),
+              })
+            )
           );
 
           // Update note with classification and tags
@@ -97,13 +100,13 @@ async function createNoteHandler(req: NextRequest, data: any) {
     // Validate response before sending
     const noteDTO = toNoteDTO(note);
     const validation = NoteDTOSchema.safeParse(noteDTO);
-    
+
     if (!validation.success) {
       console.error("Response validation failed:", validation.error);
       return createErrorResponse("Invalid response format", 500);
     }
 
-    return createSuccessResponse(validation.data);
+            return createSuccessResponse(validation.data, NoteDTOSchema);
   } catch (error) {
     console.error("[v0] Create note error:", error);
     return createErrorResponse("Failed to create note", 500);

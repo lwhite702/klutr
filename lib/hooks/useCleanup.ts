@@ -10,7 +10,7 @@ export function useAsyncEffect(
 
   useEffect(() => {
     isMountedRef.current = true;
-    
+
     const runEffect = async () => {
       try {
         const cleanup = await effect();
@@ -76,10 +76,7 @@ export function useDebouncedAsync<T>(
 }
 
 // Hook for cleanup of intervals
-export function useInterval(
-  callback: () => void,
-  delay: number | null
-) {
+export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback);
   const intervalRef = useRef<NodeJS.Timeout>();
 
@@ -103,10 +100,7 @@ export function useInterval(
 }
 
 // Hook for cleanup of timeouts
-export function useTimeout(
-  callback: () => void,
-  delay: number | null
-) {
+export function useTimeout(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback);
   const timeoutRef = useRef<NodeJS.Timeout>();
 
@@ -143,7 +137,7 @@ export function useEventListener<T extends keyof WindowEventMap>(
 
   useEffect(() => {
     const targetElement = element || window;
-    
+
     if (!targetElement?.addEventListener) {
       return;
     }
@@ -166,7 +160,7 @@ export function useAbortController() {
 
   useEffect(() => {
     abortControllerRef.current = new AbortController();
-    
+
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -183,7 +177,7 @@ export function useFetchWithCleanup() {
 
   useEffect(() => {
     abortControllerRef.current = new AbortController();
-    
+
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();

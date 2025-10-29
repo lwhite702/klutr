@@ -2,7 +2,15 @@ import { z } from "zod";
 
 // Common validation schemas
 export const NoteContentSchema = z.string().min(1).max(10000);
-export const NoteTypeSchema = z.enum(["misc", "idea", "task", "contact", "link", "voice", "nope"]);
+export const NoteTypeSchema = z.enum([
+  "misc",
+  "idea",
+  "task",
+  "contact",
+  "link",
+  "voice",
+  "nope",
+]);
 export const PasswordSchema = z.string().min(8).max(128);
 
 // API Request schemas
@@ -19,7 +27,12 @@ export const UpdateNoteSchema = z.object({
 });
 
 export const CreateVaultNoteSchema = z.object({
-  encryptedBlob: z.string().min(1),
+  encryptedBlob: z.object({
+    encryptedData: z.string().min(1),
+    iv: z.string().min(1),
+    salt: z.string().min(1),
+    authTag: z.string().min(1),
+  }),
   password: PasswordSchema,
 });
 
@@ -68,11 +81,13 @@ export const VaultNoteSchema = z.object({
 
 // OpenAI API response schemas
 export const OpenAIResponseSchema = z.object({
-  choices: z.array(z.object({
-    message: z.object({
-      content: z.string(),
-    }),
-  })),
+  choices: z.array(
+    z.object({
+      message: z.object({
+        content: z.string(),
+      }),
+    })
+  ),
 });
 
 export const SmartStacksResponseSchema = z.object({
@@ -113,5 +128,7 @@ export type VaultNote = z.infer<typeof VaultNoteSchema>;
 
 export type OpenAIResponse = z.infer<typeof OpenAIResponseSchema>;
 export type SmartStacksResponse = z.infer<typeof SmartStacksResponseSchema>;
-export type WeeklyInsightsResponse = z.infer<typeof WeeklyInsightsResponseSchema>;
+export type WeeklyInsightsResponse = z.infer<
+  typeof WeeklyInsightsResponseSchema
+>;
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;

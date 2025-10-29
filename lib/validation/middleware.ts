@@ -12,7 +12,7 @@ export interface RateLimitConfig {
 
 export function createRateLimit(config: RateLimitConfig) {
   return (req: NextRequest): boolean => {
-    const key = config.keyGenerator 
+    const key = config.keyGenerator
       ? config.keyGenerator(req)
       : req.ip || req.headers.get("x-forwarded-for") || "anonymous";
 
@@ -27,7 +27,7 @@ export function createRateLimit(config: RateLimitConfig) {
     }
 
     const current = rateLimitStore.get(key);
-    
+
     if (!current || current.resetTime < now) {
       rateLimitStore.set(key, { count: 1, resetTime: now + config.windowMs });
       return true;
@@ -51,14 +51,17 @@ export function validateRequest<T>(
     if (result.success) {
       return { success: true, data: result.data };
     }
-    return { 
-      success: false, 
-      error: result.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')
+    return {
+      success: false,
+      error: result.error.errors
+        .map((e) => `${e.path.join(".")}: ${e.message}`)
+        .join(", "),
     };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown validation error'
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "Unknown validation error",
     };
   }
 }
@@ -78,7 +81,20 @@ export function createErrorResponse(
   );
 }
 
-export function createSuccessResponse<T>(data: T): NextResponse {
+export function createSuccessResponse<T>(
+  data: T,
+  schema?: z.ZodSchema<T>
+): NextResponse {
+  // Validate response data if schema provided
+  if (schema) {
+    const validation = schema.safeParse(data);
+    if (!validation.success) {
+      console.error("Response validation failed:", validation.error);
+      return createErrorResponse("Invalid response format", 500, "RESPONSE_VALIDATION_ERROR");
+    }
+    return NextResponse.json(validation.data);
+  }
+  
   return NextResponse.json(data);
 }
 
@@ -86,16 +102,16 @@ export function createSuccessResponse<T>(data: T): NextResponse {
 export const RATE_LIMITS = {
   // General API endpoints
   GENERAL: { limit: 100, windowMs: 15 * 60 * 1000 }, // 100 requests per 15 minutes
-  
+
   // Note creation (more restrictive)
   CREATE_NOTE: { limit: 20, windowMs: 15 * 60 * 1000 }, // 20 notes per 15 minutes
-  
+
   // AI operations (very restrictive)
   AI_OPERATIONS: { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 AI calls per 15 minutes
-  
+
   // Vault operations (very restrictive for security)
   VAULT_OPERATIONS: { limit: 10, windowMs: 15 * 60 * 1000 }, // 10 vault ops per 15 minutes
-  
+
   // Reclustering (very restrictive)
   RECLUSTER: { limit: 3, windowMs: 60 * 60 * 1000 }, // 3 reclusters per hour
 } as const;
@@ -107,7 +123,7 @@ export function withRateLimit(
 ) {
   return async (req: NextRequest): Promise<NextResponse> => {
     const rateLimit = createRateLimit(config);
-    
+
     if (!rateLimit(req)) {
       return createErrorResponse(
         "Rate limit exceeded. Please try again later.",
@@ -142,7 +158,11 @@ export function withValidationAndRateLimit<T>(
     try {
       body = await req.json();
     } catch (error) {
-      return createErrorResponse("Invalid JSON in request body", 400, "INVALID_JSON");
+      return createErrorResponse(
+        "Invalid JSON in request body",
+        400,
+        "INVALID_JSON"
+      );
     }
 
     const validation = validateRequest(schema, body);
