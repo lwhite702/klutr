@@ -1,4 +1,5 @@
 <!-- 2ab73f88-d3e2-43d2-b940-c6c8f88e6620 36e58bfc-d085-43c8-8ec4-46f57ee8b6d5 -->
+
 # Branch Merge: Opus → Main with GPT-5 Strategic Enhancements
 
 ## Current State Analysis
@@ -65,14 +66,14 @@ For each page in `/app/app/`:
 Each page should:
 
 ```tsx
-import { AppShell } from "@/components/layout/AppShell"
+import { AppShell } from "@/components/layout/AppShell";
 
 export default function PageName() {
   return (
     <AppShell activeRoute="/app/pagename">
       {/* existing page content */}
     </AppShell>
-  )
+  );
 }
 ```
 
