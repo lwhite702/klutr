@@ -1,20 +1,26 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { AppShell } from "@/components/layout/AppShell"
-import { NoteCard } from "@/components/notes/NoteCard"
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import type { NoteDTO } from "@/types/note"
-import { apiGet, apiPatch } from "@/lib/clientApi"
-import { isDemoMode } from "@/lib/onboarding"
-import { HelpCircle, RotateCcw } from "lucide-react"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { AppShell } from "@/components/layout/AppShell";
+import { NoteCard } from "@/components/notes/NoteCard";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import type { NoteDTO } from "@/types/note";
+import { apiGet, apiPatch } from "@/lib/clientApi";
+import { isDemoMode } from "@/lib/onboarding";
+import { HelpCircle, RotateCcw } from "lucide-react";
 
 const MOCK_NOTES: NoteDTO[] = [
   {
     id: "1",
-    content: "Maybe start a newsletter? Nah, too much work and everyone has one already.",
+    content:
+      "Maybe start a newsletter? Nah, too much work and everyone has one already.",
     type: "nope",
     archived: true,
     createdAt: "2025-10-17T15:30:00Z",
@@ -25,7 +31,8 @@ const MOCK_NOTES: NoteDTO[] = [
   },
   {
     id: "2",
-    content: "Build a Chrome extension for... actually, no one uses Chrome extensions anymore.",
+    content:
+      "Build a Chrome extension for... actually, no one uses Chrome extensions anymore.",
     type: "nope",
     archived: true,
     createdAt: "2025-10-15T09:20:00Z",
@@ -45,62 +52,62 @@ const MOCK_NOTES: NoteDTO[] = [
     clusterConfidence: null,
     clusterUpdatedAt: null,
   },
-]
+];
 
 export default function NopeBinPage() {
-  const [notes, setNotes] = useState<NoteDTO[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [restoringIds, setRestoringIds] = useState<Set<string>>(new Set())
-  const demoMode = isDemoMode()
+  const [notes, setNotes] = useState<NoteDTO[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [restoringIds, setRestoringIds] = useState<Set<string>>(new Set());
+  const demoMode = isDemoMode();
 
   useEffect(() => {
     async function loadNopeNotes() {
       if (demoMode) {
-        setNotes(MOCK_NOTES)
-        setIsLoading(false)
-        return
+        setNotes(MOCK_NOTES);
+        setIsLoading(false);
+        return;
       }
 
       try {
-        const data = await apiGet<NoteDTO[]>("/api/notes/nope")
-        setNotes(data)
+        const data = await apiGet<NoteDTO[]>("/api/notes/nope");
+        setNotes(data);
       } catch (error) {
-        console.error("[v0] Failed to load nope notes:", error)
-        setNotes(MOCK_NOTES)
+        console.error("[v0] Failed to load nope notes:", error);
+        setNotes(MOCK_NOTES);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
 
-    loadNopeNotes()
-  }, [demoMode])
+    loadNopeNotes();
+  }, [demoMode]);
 
   const handleRestore = async (noteId: string) => {
     if (demoMode) {
-      console.log("[v0] Demo mode: restore note", noteId)
-      setNotes(notes.filter((n) => n.id !== noteId))
-      return
+      console.log("[v0] Demo mode: restore note", noteId);
+      setNotes(notes.filter((n) => n.id !== noteId));
+      return;
     }
 
-    setRestoringIds(new Set(restoringIds).add(noteId))
+    setRestoringIds(new Set(restoringIds).add(noteId));
     try {
       await apiPatch("/api/notes/update", {
         id: noteId,
         archived: false,
         type: "misc",
-      })
+      });
       // Remove from list
-      setNotes(notes.filter((n) => n.id !== noteId))
+      setNotes(notes.filter((n) => n.id !== noteId));
     } catch (error) {
-      console.error("[v0] Failed to restore note:", error)
+      console.error("[v0] Failed to restore note:", error);
     } finally {
       setRestoringIds((prev) => {
-        const next = new Set(prev)
-        next.delete(noteId)
-        return next
-      })
+        const next = new Set(prev);
+        next.delete(noteId);
+        return next;
+      });
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -111,7 +118,7 @@ export default function NopeBinPage() {
           <div className="h-24 bg-muted rounded" />
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -120,7 +127,9 @@ export default function NopeBinPage() {
         <div className="flex items-center gap-2">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight">Nope Bin</h1>
-            <p className="text-muted-foreground">Stuff we've safely shelved. You can restore it later.</p>
+            <p className="text-muted-foreground">
+              Stuff we've safely shelved. You can restore it later.
+            </p>
           </div>
           <TooltipProvider>
             <Tooltip>
@@ -128,7 +137,10 @@ export default function NopeBinPage() {
                 <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
               </TooltipTrigger>
               <TooltipContent>
-                <p className="max-w-xs">This is the mental compost heap. You can always pull something back out.</p>
+                <p className="max-w-xs">
+                  This is the mental compost heap. You can always pull something
+                  back out.
+                </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -169,5 +181,5 @@ export default function NopeBinPage() {
         )}
       </div>
     </AppShell>
-  )
+  );
 }
