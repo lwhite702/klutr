@@ -7,9 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.app',
+  title: 'Klutr',
+  description: 'Your second brain - AI-powered note organization that helps you capture, cluster, and discover insights from your thoughts.',
 }
 
 export default function RootLayout({

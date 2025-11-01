@@ -1,4 +1,4 @@
-# Noteornope - AI-Powered Note Organization
+# Klutr - AI-Powered Note Organization
 
 _Automatically synced with your [v0.app](https://v0.app) deployments_
 
@@ -7,7 +7,7 @@ _Automatically synced with your [v0.app](https://v0.app) deployments_
 
 ## Overview
 
-Noteornope is a Next.js 16 app with AI-powered note organization features including clustering, smart stacks, weekly insights, and a secure vault. It uses PostgreSQL (Neon) with pgvector extension for embeddings.
+Klutr is a Next.js 16 app with AI-powered note organization features including clustering, smart stacks, weekly insights, and a secure vault. It uses PostgreSQL (Neon) with pgvector extension for embeddings.
 
 ## Environment Setup
 

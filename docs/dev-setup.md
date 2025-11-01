@@ -6,7 +6,7 @@ updated: 2025-10-29
 
 # Local Development Setup
 
-This document defines how to set up a working local environment for the Wrelik Notes or Nope (MindStorm) app.
+This document defines how to set up a working local environment for the Wrelik Klutr (MindStorm) app.
 
 It covers:
 

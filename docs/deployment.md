@@ -6,7 +6,7 @@ updated: 2025-10-29
 
 # Deployment & Environment Configuration
 
-This document defines the deployment process for the Wrelik **Notes or Nope (MindStorm)** app.
+This document defines the deployment process for the Wrelik **Klutr (MindStorm)** app.
 
 ## Overview
 
@@ -62,7 +62,7 @@ Host user-facing guides and product documentation on Mintlify Cloud.
 
 **Docs Structure:**
 
-```
+```text
 /mintlify/
 ├── overview.mdx
 ├── getting-started.mdx
@@ -155,6 +155,18 @@ vercel
 vercel ls
 ```
 
+### Supabase CLI Setup
+
+The Supabase CLI (v2.54.11) is installed and ready to use. To link to your Supabase project:
+
+```bash
+# Login to Supabase (opens browser for authentication)
+supabase login
+
+# Link to your project
+supabase link --project-ref your-project-ref
+```
+
 ### Supabase Edge Functions
 
 ```bash
@@ -166,6 +178,8 @@ supabase functions deploy generateWeeklyInsights
 # Deploy specific function
 supabase functions deploy embedNotes --project-ref your-project-ref
 ```
+
+**Note:** For local development with Supabase, Docker must be running. The CLI will check Docker connectivity when using local development features.
 
 ### Mintlify Documentation
 
@@ -236,7 +250,7 @@ CREATE POLICY "User can access their own notes" ON notes
 
 ## Directory Structure
 
-```
+```text
 /
 ├── app/                    # Next.js App Router
 │   ├── api/               # API routes
@@ -259,6 +273,41 @@ CREATE POLICY "User can access their own notes" ON notes
 ```
 
 ## Vercel Configuration
+
+### Project Setup
+
+The project is linked to Vercel under `wrelik/klutr` (project ID: `prj_Jz9bhrE2h6rAfmEIkGmRWBpPxG0H`). The project has been linked using:
+
+```bash
+vercel link --project klutr --yes
+```
+
+This creates a `.vercel` directory with project configuration.
+
+**Note:** The project is connected to the GitHub repository `lwhite702/klutr`. If you haven't renamed the repository on GitHub yet, do so in the repository settings, then update the git remote:
+
+```bash
+git remote set-url origin https://github.com/lwhite702/klutr.git
+vercel git connect https://github.com/lwhite702/klutr.git
+```
+
+### Domain Configuration
+
+The domain `klutr.app` has been added to the project. To complete domain setup, configure DNS using one of the following methods:
+
+**Option A: A Record (Recommended)**
+Add an A record to your DNS provider:
+
+```dns
+Type: A
+Name: klutr.app
+Value: 76.76.21.21
+```
+
+**Option B: Nameservers**
+Change your domain's nameservers to Vercel's intended nameservers (check Vercel dashboard for current values).
+
+After DNS configuration, Vercel will automatically verify and configure SSL certificates. You will receive an email notification when verification is complete.
 
 ### `vercel.json`
 
