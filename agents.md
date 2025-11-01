@@ -1,7 +1,7 @@
 # Wrelik Agent Operating Rules
 Version: 1.0
 Status: Required for all contributors (human or AI)
-Last updated: 2025-10-29 (America/New_York)
+Last updated: 2025-10-31 (America/New_York)
 
 This document defines how automated agents (Cursor, MCP agents, AI assistants, etc.) must work in this repository and in all future Wrelik applications.
 If an agent cannot follow these rules, the agent should stop and request human guidance rather than guessing.
@@ -94,7 +94,7 @@ When defining new function names, types, or prop interfaces:
 - Reuse existing naming conventions (camelCase for functions, PascalCase for components, UpperCamelCase for types/interfaces).
 - Carry forward existing props patterns (for example: activeRoute, showDemoBadge, etc.) instead of inventing parallel-but-different props.
 
-**Agents MUST assume that "context7" (the high-level product direction and architectural intent we've already discussed in this repo — Notes or Nope / MindStorm / Stacks / Vault / Insights / Memory / Nope) applies to all code going forward.**
+**Agents MUST assume that "context7" (the high-level product direction and architectural intent we've already discussed in this repo — Klutr / MindStorm / Stacks / Vault / Insights / Memory / Nope) applies to all code going forward.**
 If there is an older pattern in the repo that conflicts with context7, context7 wins.
 
 ### 2.1 Context7 MCP Requirement
@@ -114,7 +114,8 @@ This ensures all code follows current best practices and API patterns.
 **Agents MUST load and reference these documents before generating any output:**
 - `agents.md` (this file) - behavioral standards
 - `PRD.md` - product requirements and vision
-- `BRAND_VOICE.md` - communication standards
+- `BRAND_VOICE.md` - communication standards and writing guidelines
+- `BRAND_GUIDE.md` - comprehensive brand identity and visual guidelines
 
 If any of these files are missing, the agent MUST create them before proceeding with other work.
 
@@ -299,7 +300,7 @@ When you (the agent) touch this repo, you MUST:
 
 1. Always read existing code + docs first. Follow them.
 2. Always update CHANGELOG.md with a timestamped entry in ET (America/New_York).
-3. Always use context7 (our product model: Notes, MindStorm, Stacks, Vault, Insights, Memory, Nope) when naming pages/components.
+3. Always use context7 (our product model: Klutr, MindStorm, Stacks, Vault, Insights, Memory, Nope) when naming pages/components.
 4. Always use MCP tools to gather context (Figma, GitHub, repo tree) before generating code.
 5. Always use Context7 MCP to fetch library documentation before generating code with external dependencies.
 6. Always test in a browser-like environment to confirm the app builds and routes render with no runtime errors.

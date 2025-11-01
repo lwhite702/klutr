@@ -25,6 +25,22 @@ Each entry includes:
 
 ---
 
+## 2025-10-31 21:58 ET
+
+- [docs] Updated agents.md to replace "Notes or Nope" with "Klutr" in context7 product model references
+- [docs] Enhanced agents.md governance binding section to reference new BRAND_GUIDE.md
+- [docs] Completely restructured BRAND_VOICE.md to distinguish Wrelik (company) vs Klutr (product) voices
+- [docs] Added comprehensive Klutr microcopy guidelines to BRAND_VOICE.md covering capture, processing, Nope workflow, inbox, settings, and onboarding
+- [docs] Added "Witty Intelligence" section to BRAND_VOICE.md with principles and examples for incorporating humor into copy
+- [docs] Created BRAND_GUIDE.md with comprehensive brand development framework including naming strategy, target audience, brand story, visual identity, tagline/messaging, and website content map
+- [docs] Established clear voice separation: Wrelik (calm mentor) for company communications, Klutr (friendly wit) for product communications
+- [docs] Updated "last updated" timestamps in agents.md and BRAND_VOICE.md
+
+## 2025-10-31 21:56 ET
+
+- [infra] Pushed rebranding changes to main branch
+- [infra] Updated git remote URL to klutr (will work after GitHub repository rename)
+
 ## 2025-10-31 21:52 ET
 
 - [infra] Updated git remote URL from "Noteornope" to "klutr" (repository: `lwhite702/klutr`)
