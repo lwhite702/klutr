@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "doppler run -- next build",
+    "build": "next build",
     "dev": "doppler run -- next dev",
     "lint": "eslint .",
-    "start": "doppler run -- next start",
+    "start": "next start",
+    "postinstall": "prisma generate",
     "db:push": "doppler run -- npx prisma db push",
-    "db:generate": "doppler run -- npx prisma generate",
+    "db:generate": "npx prisma generate",
     "db:studio": "doppler run -- npx prisma studio"
   },
   "dependencies": {

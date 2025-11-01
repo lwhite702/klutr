@@ -1,15 +1,25 @@
 import { NextResponse } from "next/server"
 import { runWeeklyInsights } from "@/cron/weeklyInsights"
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     // Verify cron secret to prevent unauthorized access
-    // In production, check: req.headers.get('authorization') === `Bearer ${process.env.CRON_SECRET}`
+    const authHeader = request.headers.get('authorization')
+    const expectedSecret = process.env.CRON_SECRET
+    
+    if (!expectedSecret) {
+      console.error("[cron] CRON_SECRET not configured")
+      return NextResponse.json({ error: "Cron secret not configured" }, { status: 500 })
+    }
+    
+    if (authHeader !== `Bearer ${expectedSecret}`) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
 
     const result = await runWeeklyInsights()
     return NextResponse.json(result)
   } catch (error) {
-    console.error("[v0] Cron weekly insights error:", error)
+    console.error("[cron] Cron weekly insights error:", error)
     return NextResponse.json({ error: "Cron job failed" }, { status: 500 })
   }
 }

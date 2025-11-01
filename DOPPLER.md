@@ -64,4 +64,56 @@ The following variables will be added to Doppler during Supabase migration:
 
 ## Deployment
 
-For production deployments (Netlify/Vercel), ensure the environment variables are set in the deployment platform's environment variable settings, or configure Doppler integration if available.
+### Vercel Environment Variable Setup
+
+For Vercel deployments, environment variables must be manually synced from Doppler to Vercel. **Vercel builds do not use Doppler CLI** (the `build` script runs `next build` directly).
+
+#### Sync Process
+
+1. **Export variables from Doppler:**
+   ```bash
+   doppler secrets download --no-file --format env
+   ```
+
+2. **Add each variable to Vercel** for all environments (production, preview, development):
+   ```bash
+   # Production
+   vercel env add NEON_DATABASE_URL production
+   vercel env add OPENAI_API_KEY production
+   vercel env add CRON_SECRET production
+   
+   # Preview (for PR deployments)
+   vercel env add NEON_DATABASE_URL preview
+   vercel env add OPENAI_API_KEY preview
+   vercel env add CRON_SECRET preview
+   
+   # Development (local dev with vercel dev)
+   vercel env add NEON_DATABASE_URL development
+   vercel env add OPENAI_API_KEY development
+   vercel env add CRON_SECRET development
+   ```
+
+3. **Verify variables are set:**
+   ```bash
+   vercel env ls
+   ```
+
+#### Important Notes
+
+- **Build-time variables**: All required variables must be set in Vercel **before** the build runs
+- **Prisma generation**: The `postinstall` script runs during Vercel builds, so `NEON_DATABASE_URL` must be available at build time (even if only for Prisma client generation)
+- **CRON_SECRET**: Required for cron endpoint authentication. Vercel Cron jobs will automatically include this in headers if configured
+- **Do not commit secrets**: Never commit actual secret values to git. Use Vercel's environment variable interface or CLI
+
+#### Alternative: Vercel Dashboard
+
+You can also set variables via the Vercel dashboard:
+1. Go to your project → Settings → Environment Variables
+2. Add each variable manually, selecting the appropriate environments
+3. Copy values from Doppler (use `doppler secrets get VARIABLE_NAME --plain`)
+
+See `VERCEL_SETUP.md` for complete deployment instructions.
+
+### Other Platforms
+
+For other deployment platforms (Netlify, etc.), ensure the environment variables are set in the platform's environment variable settings, or configure Doppler integration if available.

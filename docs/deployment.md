@@ -96,16 +96,17 @@ If a static landing page is introduced (e.g. notesornope.com), host it on Netlif
 
 ### Required Variables
 
-| Variable                        | Description                   | Environment |
-| ------------------------------- | ----------------------------- | ----------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL          | All         |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public client key             | All         |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Server-side admin key         | All         |
-| `SUPABASE_JWT_SECRET`           | JWT signing secret            | All         |
-| `OPENAI_API_KEY`                | OpenAI API access key         | All         |
-| `CRON_SECRET`                   | Protects internal cron routes | All         |
-| `SUPABASE_BUCKET_ATTACHMENTS`   | Public file bucket name       | All         |
-| `SUPABASE_BUCKET_VAULT`         | Encrypted private bucket name | All         |
+| Variable                        | Description                   | Environment | Phase |
+| ------------------------------- | ----------------------------- | ----------- | ----- |
+| `NEON_DATABASE_URL`             | PostgreSQL connection string | All         | Phase 1 (current) |
+| `OPENAI_API_KEY`                | OpenAI API access key         | All         | Phase 1+ |
+| `CRON_SECRET`                   | Protects internal cron routes | All         | Phase 1+ |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL          | All         | Phase 2+ |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public client key             | All         | Phase 2+ |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Server-side admin key         | All         | Phase 2+ |
+| `SUPABASE_JWT_SECRET`           | JWT signing secret            | All         | Phase 2+ |
+| `SUPABASE_BUCKET_ATTACHMENTS`   | Public file bucket name       | All         | Phase 2+ |
+| `SUPABASE_BUCKET_VAULT`         | Encrypted private bucket name | All         | Phase 2+ |
 
 ### Example `.env.local`
 
@@ -144,16 +145,29 @@ pnpm db:generate
 
 ### Vercel Deployment
 
+**Prerequisites:**
+- Link project: `vercel link` (select project "klutr")
+- Sync environment variables from Doppler (see `DOPPLER.md`)
+
 ```bash
+# Deploy to preview (for testing)
+vercel
+
 # Deploy to production
 vercel --prod
 
-# Deploy to preview
-vercel
-
 # Check deployment status
 vercel ls
+
+# View environment variables
+vercel env ls
 ```
+
+**Important:** 
+- Vercel builds use `next build` (no Doppler CLI wrapper)
+- All environment variables must be set in Vercel dashboard/CLI before deployment
+- Prisma client is generated automatically via `postinstall` script
+- See `VERCEL_SETUP.md` for detailed setup instructions
 
 ### Supabase Edge Functions
 
@@ -260,28 +274,37 @@ CREATE POLICY "User can access their own notes" ON notes
 
 ## Vercel Configuration
 
-### `vercel.json`
+### Build Configuration
 
-```json
-{
-  "version": 2,
-  "builds": [{ "src": "next.config.mjs", "use": "@vercel/next" }],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*)", "dest": "/" }
-  ],
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-role-key",
-    "SUPABASE_JWT_SECRET": "@supabase-jwt-secret",
-    "OPENAI_API_KEY": "@openai-api-key",
-    "CRON_SECRET": "@cron-secret",
-    "SUPABASE_BUCKET_ATTACHMENTS": "@supabase-bucket-attachments",
-    "SUPABASE_BUCKET_VAULT": "@supabase-bucket-vault"
-  }
-}
+- **Build Command**: `next build` (no Doppler wrapper - Vercel uses env vars directly)
+- **Install Command**: `npm install` (or `pnpm install`)
+- **Output Directory**: `.next` (default for Next.js)
+- **Prisma Generation**: Automatic via `postinstall` script
+
+### Environment Variables
+
+Environment variables are managed in Vercel dashboard or via CLI (see `DOPPLER.md` for sync instructions). Do not hardcode values in `vercel.json`.
+
+**Current Phase 1 Variables:**
+- `NEON_DATABASE_URL` - Required for database connection
+- `OPENAI_API_KEY` - Required for AI features
+- `CRON_SECRET` - Required for cron endpoint authentication
+
+### Health Check Endpoint
+
+The app includes `/api/health` endpoint for Vercel monitoring:
+
+```bash
+curl https://your-project.vercel.app/api/health
 ```
+
+Returns: `{ status: "ok", timestamp: string, environment: string }`
+
+### Cron Jobs Configuration
+
+If using Vercel Cron, cron jobs must include `Authorization: Bearer ${CRON_SECRET}` header. All cron routes (`/api/cron/*`) validate this secret.
+
+See `VERCEL_SETUP.md` for complete deployment guide.
 
 ## Post-Deploy Checklist
 

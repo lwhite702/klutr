@@ -9,7 +9,7 @@ try {
     prisma: any | undefined;
   };
 
-  if (process.env.NEON_NEON_DATABASE_URL || process.env.DATABASE_URL) {
+  if (process.env.NEON_DATABASE_URL || process.env.DATABASE_URL) {
     prismaInstance = globalForPrisma.prisma ?? new PrismaClientConstructor();
     if (process.env.NODE_ENV !== "production") {
       globalForPrisma.prisma = prismaInstance;

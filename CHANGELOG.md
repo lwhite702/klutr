@@ -25,6 +25,18 @@ Each entry includes:
 
 ---
 
+## 2025-11-01 04:25 ET
+
+- [infra] Fixed package.json build scripts - removed Doppler dependency for Vercel builds (Vercel uses env vars directly)
+- [infra] Removed ignoreBuildErrors from next.config.mjs for production safety
+- [fix] Fixed database URL variable name in lib/db.ts (NEON_NEON_DATABASE_URL → NEON_DATABASE_URL)
+- [security] Implemented CRON_SECRET validation in all 3 cron route files (nightly-cluster, nightly-stacks, weekly-insights)
+- [infra] Added postinstall script to generate Prisma client during Vercel builds
+- [infra] Created /api/health endpoint for Vercel health checks
+- [docs] Created VERCEL_SETUP.md with step-by-step deployment instructions
+- [docs] Updated DOPPLER.md with Vercel environment variable setup section
+- [docs] Updated docs/deployment.md with verified Vercel configuration and Phase 1 variable requirements
+
 ## 2025-10-30 22:40 ET
 
 - [ui] Added PageHeader, CardGrid, TagChip, ItemCard components based on Figma bookmark dashboard designs.
