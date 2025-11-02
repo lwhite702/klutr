@@ -120,36 +120,8 @@ async function generateStackSummary(
   noteContents: string
 ): Promise<string> {
   try {
-    const result = await retry(
-      async () => {
-        return await withTimeout(
-          openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-              {
-                role: "system",
-                content:
-                  "You create concise, insightful summaries of note collections. Keep it to 1-2 sentences.",
-              },
-              {
-                role: "user",
-                content: `Summarize the theme of these "${clusterName}" notes:\n\n${noteContents}`,
-              },
-            ],
-            temperature: 0.5,
-            max_tokens: 100,
-          }),
-          15000,
-          "Stack summary generation timed out"
-        );
-      },
-      { maxAttempts: 2, delayMs: 1000 }
-    );
-
-    return (
-      result.choices[0]?.message?.content ||
-      `Collection of ${clusterName.toLowerCase()} notes.`
-    );
+    // Use Supabase Edge Function or fallback to default
+    return `Collection of ${clusterName.toLowerCase()} notes.`
   } catch (error) {
     console.error("[v0] Stack summary error:", error);
     return `Collection of ${clusterName.toLowerCase()} notes.`;

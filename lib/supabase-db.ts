@@ -86,12 +86,32 @@ export const db = {
           }
         }
       }
+      select?: {
+        id?: boolean
+        content?: boolean
+        userId?: boolean
+        [key: string]: boolean | undefined
+      }
       orderBy?: {
         createdAt?: 'asc' | 'desc'
       }
       take?: number
     }) {
-      let query = supabaseAdmin.from('notes').select('*')
+      // Handle select option
+      let selectFields = '*'
+      if (options.select) {
+        const fields: string[] = []
+        for (const key in options.select) {
+          if (options.select[key]) {
+            // Convert camelCase to snake_case for database fields
+            const dbField = key === 'userId' ? 'user_id' : key
+            fields.push(dbField)
+          }
+        }
+        selectFields = fields.join(', ')
+      }
+      
+      let query = supabaseAdmin.from('notes').select(selectFields)
 
       if (options.where?.userId) {
         query = query.eq('user_id', options.where.userId)
@@ -102,6 +122,9 @@ export const db = {
       if (options.where?.cluster !== undefined) {
         if (options.where.cluster === null) {
           query = query.is('cluster', null)
+        } else if (typeof options.where.cluster === 'object' && 'not' in options.where.cluster && options.where.cluster.not === null) {
+          // Handle Prisma-style { not: null }
+          query = query.not('cluster', 'is', null)
         } else {
           query = query.eq('cluster', options.where.cluster)
         }
@@ -117,6 +140,17 @@ export const db = {
       }
       if (options.where?.embedding === null) {
         query = query.is('embedding', null)
+      }
+      // Handle OR queries - Supabase uses .or() method
+      if (options.where.OR && options.where.OR.length > 0) {
+        const orConditions = options.where.OR.map((or: any) => {
+          if (or.type) return `type.eq.${or.type}`
+          if (or.archived !== undefined) return `archived.eq.${or.archived}`
+          return null
+        }).filter(Boolean)
+        if (orConditions.length > 0) {
+          query = query.or(orConditions.join(','))
+        }
       }
 
       if (options.orderBy?.createdAt) {
@@ -160,14 +194,28 @@ export const db = {
       }
 
       // Convert snake_case to camelCase
-      return (data || []).map((note: any) => ({
-        ...note,
-        userId: note.user_id,
-        createdAt: note.created_at,
-        updatedAt: note.updated_at,
-        clusterConfidence: note.cluster_confidence,
-        clusterUpdatedAt: note.cluster_updated_at,
-      }))
+      return (data || []).map((note: any) => {
+        const result: any = { ...note }
+        // Only convert fields that exist
+        if (note.user_id !== undefined) result.userId = note.user_id
+        if (note.created_at !== undefined) result.createdAt = note.created_at
+        if (note.updated_at !== undefined) result.updatedAt = note.updated_at
+        if (note.cluster_confidence !== undefined) result.clusterConfidence = note.cluster_confidence
+        if (note.cluster_updated_at !== undefined) result.clusterUpdatedAt = note.cluster_updated_at
+        
+        // If select was used, don't add extra fields
+        if (options.select) {
+          const cleanResult: any = {}
+          for (const key in options.select) {
+            if (options.select[key]) {
+              cleanResult[key] = result[key] || result[key === 'userId' ? 'user_id' : key]
+            }
+          }
+          return cleanResult
+        }
+        
+        return result
+      })
     },
 
     async findUnique(options: { 
@@ -181,6 +229,23 @@ export const db = {
         .single()
 
       if (error) throw error
+      
+      // Handle select option
+      if (options.select) {
+        const result: any = {}
+        for (const key in options.select) {
+          if (options.select[key] && data[key]) {
+            result[key] = data[key]
+          }
+        }
+        // Convert snake_case to camelCase for selected fields
+        if (result.user_id !== undefined) {
+          result.userId = result.user_id
+          delete result.user_id
+        }
+        return result
+      }
+      
       return {
         ...data,
         userId: data.user_id,
@@ -419,11 +484,20 @@ export const db = {
       where?: {
         userId?: string
       }
+      orderBy?: {
+        noteCount?: 'asc' | 'desc'
+      }
     }) {
       let query = supabaseAdmin.from('smart_stacks').select('*')
       
       if (options?.where?.userId) {
         query = query.eq('user_id', options.where.userId)
+      }
+
+      if (options?.orderBy?.noteCount) {
+        query = query.order('note_count', {
+          ascending: options.orderBy.noteCount === 'asc',
+        })
       }
 
       const { data, error } = await query
@@ -578,12 +652,30 @@ export const db = {
 
     async findMany(options: {
       where: { userId: string }
+      select?: {
+        id?: boolean
+        createdAt?: boolean
+        [key: string]: boolean | undefined
+      }
       orderBy?: { createdAt: 'asc' | 'desc' }
     }) {
       let query = supabaseAdmin
         .from('vault_notes')
         .select('*')
         .eq('user_id', options.where.userId)
+
+      if (options.select) {
+        const fields: string[] = []
+        for (const key in options.select) {
+          if (options.select[key]) {
+            const dbField = key === 'createdAt' ? 'created_at' : key
+            fields.push(dbField)
+          }
+        }
+        if (fields.length > 0) {
+          query = query.select(fields.join(', '))
+        }
+      }
 
       if (options.orderBy?.createdAt) {
         query = query.order('created_at', {
@@ -594,7 +686,25 @@ export const db = {
       const { data, error } = await query
 
       if (error) throw error
-      return data || []
+      
+      // Convert snake_case to camelCase
+      return (data || []).map((note: any) => {
+        const result: any = {}
+        if (options.select) {
+          for (const key in options.select) {
+            if (options.select[key]) {
+              const dbField = key === 'createdAt' ? 'created_at' : key
+              result[key] = note[dbField]
+            }
+          }
+        } else {
+          result.id = note.id
+          result.createdAt = note.created_at ? new Date(note.created_at) : note.created_at
+          result.userId = note.user_id
+          result.encryptedBlob = note.encrypted_blob
+        }
+        return result
+      })
     },
   },
 
@@ -603,6 +713,10 @@ export const db = {
       where?: {
         userId?: string
       }
+      orderBy?: {
+        weekStart?: 'asc' | 'desc'
+      }
+      take?: number
     }) {
       let query = supabaseAdmin.from('weekly_insights').select('*')
       
@@ -610,28 +724,66 @@ export const db = {
         query = query.eq('user_id', options.where.userId)
       }
 
+      if (options?.orderBy?.weekStart) {
+        query = query.order('week_start', {
+          ascending: options.orderBy.weekStart === 'asc',
+        })
+      }
+
+      if (options?.take) {
+        query = query.limit(options.take)
+      }
+
       const { data, error } = await query
 
       if (error) throw error
-      return data || []
+      return (data || []).map((insight: any) => ({
+        ...insight,
+        userId: insight.user_id,
+        weekStart: new Date(insight.week_start),
+        noteCount: insight.note_count,
+        createdAt: new Date(insight.created_at),
+      }))
     },
 
     async findFirst(options: {
       where: {
         userId: string
-        weekStart: Date
+        weekStart?: Date
+      }
+      orderBy?: {
+        weekStart?: 'asc' | 'desc'
       }
     }) {
-      const { data, error } = await supabaseAdmin
+      let query = supabaseAdmin
         .from('weekly_insights')
         .select('*')
         .eq('user_id', options.where.userId)
-        .eq('week_start', options.where.weekStart.toISOString())
         .limit(1)
-        .maybeSingle()
+
+      if (options.where.weekStart) {
+        query = query.eq('week_start', options.where.weekStart.toISOString())
+      }
+
+      if (options.orderBy?.weekStart) {
+        query = query.order('week_start', {
+          ascending: options.orderBy.weekStart === 'asc',
+        })
+      }
+
+      const { data, error } = await query
 
       if (error) throw error
-      return data
+      if (!data || data.length === 0) return null
+      
+      const insight = data[0]
+      return {
+        ...insight,
+        userId: insight.user_id,
+        weekStart: new Date(insight.week_start),
+        noteCount: insight.note_count,
+        createdAt: new Date(insight.created_at),
+      }
     },
 
     async upsert(options: {

@@ -60,9 +60,11 @@ export async function analyzeTimeline(userId: string): Promise<TimelineWeek[]> {
       const topicsSet = new Set<string>()
       for (const note of notes || []) {
         if (note.cluster) topicsSet.add(note.cluster.toLowerCase())
-        if (note.note_tags) {
+        if (note.note_tags && Array.isArray(note.note_tags)) {
           for (const nt of note.note_tags) {
-            if (nt.tags?.name) topicsSet.add(nt.tags.name)
+            if (nt.tags && typeof nt.tags === 'object' && 'name' in nt.tags) {
+              topicsSet.add((nt.tags as any).name)
+            }
           }
         }
       }
