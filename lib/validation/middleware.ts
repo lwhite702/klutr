@@ -14,7 +14,7 @@ export function createRateLimit(config: RateLimitConfig) {
   return (req: NextRequest): boolean => {
     const key = config.keyGenerator
       ? config.keyGenerator(req)
-      : req.ip || req.headers.get("x-forwarded-for") || "anonymous";
+      : req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "anonymous";
 
     const now = Date.now();
     const windowStart = now - config.windowMs;

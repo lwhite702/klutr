@@ -62,7 +62,7 @@ export default function StackDetailPage() {
               title={item.title}
               description={item.description}
               tags={item.tags}
-              pinned={item.pinned}
+              pinned={'pinned' in item ? item.pinned : false}
               onClick={() => handleItemClick(item.id)}
               onFavorite={() => handleItemFavorite(item.id)}
             />

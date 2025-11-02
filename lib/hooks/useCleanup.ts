@@ -6,7 +6,7 @@ export function useAsyncEffect(
   deps?: React.DependencyList
 ) {
   const isMountedRef = useRef(true);
-  const cleanupRef = useRef<(() => void) | void>();
+  const cleanupRef = useRef<(() => void) | void>(undefined);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -41,7 +41,7 @@ export function useDebouncedAsync<T>(
   asyncFn: (value: T) => Promise<void>,
   delay: number
 ) {
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const isMountedRef = useRef(true);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export function useDebouncedAsync<T>(
 // Hook for cleanup of intervals
 export function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback);
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
     savedCallback.current = callback;
@@ -102,7 +102,7 @@ export function useInterval(callback: () => void, delay: number | null) {
 // Hook for cleanup of timeouts
 export function useTimeout(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
     savedCallback.current = callback;
@@ -156,7 +156,7 @@ export function useEventListener<T extends keyof WindowEventMap>(
 
 // Hook for cleanup of AbortController
 export function useAbortController() {
-  const abortControllerRef = useRef<AbortController>();
+  const abortControllerRef = useRef<AbortController | undefined>(undefined);
 
   useEffect(() => {
     abortControllerRef.current = new AbortController();
@@ -173,7 +173,7 @@ export function useAbortController() {
 
 // Hook for cleanup of fetch requests
 export function useFetchWithCleanup() {
-  const abortControllerRef = useRef<AbortController>();
+  const abortControllerRef = useRef<AbortController | undefined>(undefined);
 
   useEffect(() => {
     abortControllerRef.current = new AbortController();

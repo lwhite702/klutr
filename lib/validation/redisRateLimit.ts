@@ -92,7 +92,7 @@ export function createRedisRateLimit(config: RedisRateLimitConfig) {
   return async (req: NextRequest): Promise<boolean> => {
     const key = config.keyGenerator
       ? config.keyGenerator(req)
-      : req.ip || req.headers.get("x-forwarded-for") || "anonymous";
+      : req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "anonymous";
 
     const rateLimitKey = `rate_limit:${key}`;
     const windowSeconds = Math.floor(config.windowMs / 1000);
@@ -136,7 +136,7 @@ export function createProductionRateLimit(config: RedisRateLimitConfig) {
   return (req: NextRequest): boolean => {
     const key = config.keyGenerator
       ? config.keyGenerator(req)
-      : req.ip || req.headers.get("x-forwarded-for") || "anonymous";
+      : req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "anonymous";
 
     const now = Date.now();
     const windowStart = now - config.windowMs;
