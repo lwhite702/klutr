@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
 import { generateWeeklyInsights } from "@/lib/ai/generateWeeklyInsights"
-import { prisma } from "@/lib/db"
+import { prisma } from "@/lib/supabaseDb"
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     await generateWeeklyInsights(user.id)
 
     // Fetch the latest insight
-    const latestInsight = await prisma.weeklyInsight.findFirst({
+    const latestInsight = await db.weeklyInsight.findFirst({
       where: {
         userId: user.id,
       },
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       createdAt: latestInsight.createdAt.toISOString(),
     })
   } catch (error) {
-    console.error("[v0] Generate insights error:", error)
+    console.error("[klutr] Generate insights error:", error)
     return NextResponse.json({ error: "Failed to generate insights" }, { status: 500 })
   }
 }

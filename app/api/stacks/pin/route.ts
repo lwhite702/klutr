@@ -1,39 +1,22 @@
 import { NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
-import { prisma } from "@/lib/db"
+import { db } from "@/lib/supabaseDb"
 
 export async function POST(req: Request) {
   try {
     const user = await getCurrentUser(req)
-    const { name, pinned } = await req.json()
+    const { id, pinned } = await req.json()
 
-    if (!name) {
-      return NextResponse.json({ error: "Stack name is required" }, { status: 400 })
+    if (!id) {
+      return NextResponse.json({ error: "Stack ID is required" }, { status: 400 })
     }
 
-    // Update or create the stack with pinned status
-    const stack = await prisma.smartStack.upsert({
-      where: {
-        userId_name: {
-          userId: user.id,
-          name,
-        },
-      },
-      update: {
-        pinned,
-      },
-      create: {
-        userId: user.id,
-        name,
-        pinned,
-        noteCount: 0,
-        summary: "",
-      },
-    })
+    // Update the stack's pinned status
+    await db.smartStack.updatePinned(id, pinned)
 
-    return NextResponse.json({ ok: true, stack })
+    return NextResponse.json({ ok: true })
   } catch (error) {
-    console.error("[v0] Failed to pin stack:", error)
+    console.error("[klutr] Failed to pin stack:", error)
     return NextResponse.json({ error: "Failed to pin stack" }, { status: 500 })
   }
 }

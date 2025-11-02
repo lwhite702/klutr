@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
-import { prisma } from "@/lib/db"
+import { prisma } from "@/lib/supabaseDb"
 import { toNoteDTO } from "@/lib/dto"
 
 export async function GET(req: NextRequest) {
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     const weekEnd = new Date(weekStart)
     weekEnd.setDate(weekStart.getDate() + 7)
 
-    const notes = await prisma.note.findMany({
+    const notes = await db.note.findMany({
       where: {
         userId: user.id,
         createdAt: {
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(notes.map(toNoteDTO))
   } catch (error) {
-    console.error("[v0] Notes by week error:", error)
+    console.error("[klutr] Notes by week error:", error)
     return NextResponse.json({ error: "Failed to get notes by week" }, { status: 500 })
   }
 }

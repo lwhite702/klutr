@@ -1,6 +1,7 @@
-import { prisma } from "../db";
+import { db } from "../supabaseDb";
 import { openai } from "../openai";
 import { retry, withTimeout } from "../utils";
+import { getServerSupabase } from "../supabase";
 
 export async function generateWeeklyInsights(userId: string): Promise<void> {
   try {
@@ -16,28 +17,20 @@ export async function generateWeeklyInsights(userId: string): Promise<void> {
     weekEnd.setDate(weekStart.getDate() + 7);
 
     // Fetch notes from the past week
-    const notes = await prisma.note.findMany({
-      where: {
-        userId,
-        createdAt: {
-          gte: weekStart,
-          lt: weekEnd,
-        },
-        archived: false,
-      },
-      select: {
-        content: true,
-        type: true,
-        cluster: true,
-        createdAt: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const supabase = getServerSupabase()
+    const { data: notes, error } = await supabase
+      .from('notes')
+      .select('content, type, cluster, created_at')
+      .eq('user_id', userId)
+      .eq('archived', false)
+      .gte('created_at', weekStart.toISOString())
+      .lt('created_at', weekEnd.toISOString())
+      .order('created_at', { ascending: false })
 
-    if (notes.length === 0) {
-      console.log("[v0] No notes found for weekly insights");
+    if (error) throw error;
+
+    if (!notes || notes.length === 0) {
+      console.log("[klutr] No notes found for weekly insights");
       return;
     }
 
@@ -94,30 +87,17 @@ Respond with JSON:
     };
 
     // Upsert the weekly insight
-    await prisma.weeklyInsight.upsert({
-      where: {
-        userId_weekStart: {
-          userId,
-          weekStart,
-        },
-      },
-      create: {
-        userId,
-        weekStart,
-        summary: parsed.summary,
-        sentiment: parsed.sentiment,
-        noteCount: notes.length,
-      },
-      update: {
-        summary: parsed.summary,
-        sentiment: parsed.sentiment,
-        noteCount: notes.length,
-      },
+    await db.weeklyInsight.upsert({
+      userId,
+      weekStart,
+      summary: parsed.summary,
+      sentiment: parsed.sentiment,
+      noteCount: notes.length,
     });
 
-    console.log(`[v0] Generated weekly insight for ${notes.length} notes`);
+    console.log(`[klutr] Generated weekly insight for ${notes.length} notes`);
   } catch (error) {
-    console.error("[v0] Weekly insights error:", error);
+    console.error("[klutr] Weekly insights error:", error);
     throw new Error(
       `Failed to generate weekly insights: ${
         error instanceof Error ? error.message : "Unknown error"

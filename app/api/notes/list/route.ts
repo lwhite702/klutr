@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
-import { prisma, isDatabaseAvailable } from "@/lib/db"
+import { db, isDatabaseAvailable } from "@/lib/supabaseDb"
 import { toNoteDTO } from "@/lib/dto"
 
 export async function GET(req: NextRequest) {
@@ -26,24 +26,18 @@ export async function GET(req: NextRequest) {
       where.cluster = cluster
     }
 
-    const notes = await prisma.note.findMany({
+    const notes = await db.note.findMany({
       where,
-      include: {
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-      },
       orderBy: {
         createdAt: "desc",
       },
       take: 100,
+      includeTags: true,
     })
 
     return NextResponse.json(notes.map(toNoteDTO))
   } catch (error) {
-    console.error("[v0] List notes error:", error)
+    console.error("[klutr] List notes error:", error)
     return NextResponse.json([])
   }
 }

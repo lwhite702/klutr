@@ -75,7 +75,7 @@ export async function classifyNoteContent(content: string): Promise<Classificati
 
     return parsed
   } catch (error) {
-    console.error("[v0] Classification error:", error)
+    console.error("[klutr] Classification error:", error)
     // Return safe defaults on error
     return {
       type: "unclassified",

@@ -1,4 +1,4 @@
-import { prisma } from "../db"
+import { prisma } from "../supabaseDb"
 
 export type TimelineWeek = {
   week: string
@@ -12,7 +12,7 @@ export async function analyzeTimeline(userId: string): Promise<TimelineWeek[]> {
     const twelveWeeksAgo = new Date()
     twelveWeeksAgo.setDate(twelveWeeksAgo.getDate() - 84)
 
-    const weeklyData = await prisma.$queryRaw<
+    const weeklyData = await db.$queryRaw<
       Array<{
         week: Date
         count: bigint
@@ -37,7 +37,7 @@ export async function analyzeTimeline(userId: string): Promise<TimelineWeek[]> {
       weekEnd.setDate(weekStart.getDate() + 7)
 
       // Get top tags/clusters for this week
-      const notes = await prisma.note.findMany({
+      const notes = await db.note.findMany({
         where: {
           userId,
           createdAt: {
@@ -81,7 +81,7 @@ export async function analyzeTimeline(userId: string): Promise<TimelineWeek[]> {
 
     return timeline
   } catch (error) {
-    console.error("[v0] Timeline analysis error:", error)
+    console.error("[klutr] Timeline analysis error:", error)
     throw new Error(`Failed to analyze timeline: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }

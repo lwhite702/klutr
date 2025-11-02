@@ -24,7 +24,7 @@ export async function embedNoteContent(content: string): Promise<number[]> {
 
     return embedding
   } catch (error) {
-    console.error("[v0] Embedding error:", error)
+    console.error("[klutr] Embedding error:", error)
     throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }

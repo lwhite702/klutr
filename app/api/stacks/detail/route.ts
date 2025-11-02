@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
-import { prisma } from "@/lib/db"
+import { db } from "@/lib/supabaseDb"
 import { toNoteDTO } from "@/lib/dto"
 
 export async function GET(req: NextRequest) {
@@ -13,27 +13,21 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Cluster parameter is required" }, { status: 400 })
     }
 
-    const notes = await prisma.note.findMany({
+    const notes = await db.note.findMany({
       where: {
         userId: user.id,
         cluster,
         archived: false,
       },
-      include: {
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-      },
       orderBy: {
         createdAt: "desc",
       },
+      includeTags: true,
     })
 
     return NextResponse.json(notes.map(toNoteDTO))
   } catch (error) {
-    console.error("[v0] Stack detail error:", error)
+    console.error("[klutr] Stack detail error:", error)
     return NextResponse.json({ error: "Failed to get stack details" }, { status: 500 })
   }
 }

@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
+import { db } from "@/lib/supabaseDb";
 import {
   createSecureSuccessResponse,
   createSecureErrorResponse,
@@ -11,28 +11,16 @@ async function listVaultNotesHandler(req: NextRequest) {
   try {
     const user = await getCurrentUser(req);
 
-    const vaultNotes = await prisma.vaultNote.findMany({
-      where: {
-        userId: user.id,
-      },
-      select: {
-        id: true,
-        createdAt: true,
-        // Never return encryptedBlob - client will decrypt locally
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const vaultNotes = await db.vaultNote.findMany(user.id);
 
     return createSecureSuccessResponse(
       vaultNotes.map((note: any) => ({
         id: note.id,
-        createdAt: note.createdAt.toISOString(),
+        createdAt: note.created_at,
       }))
     );
   } catch (error) {
-    console.error("[v0] List vault notes error:", error);
+    console.error("[klutr] List vault notes error:", error);
     return createSecureErrorResponse("Failed to list vault notes", 500);
   }
 }

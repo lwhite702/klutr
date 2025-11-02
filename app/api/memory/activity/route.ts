@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(timeline)
   } catch (error) {
-    console.error("[v0] Memory activity error:", error)
+    console.error("[klutr] Memory activity error:", error)
     return NextResponse.json({ error: "Failed to get memory activity" }, { status: 500 })
   }
 }

@@ -10,20 +10,34 @@ export type NoteDTO = {
   clusterUpdatedAt?: string | null
 }
 
+/**
+ * Convert a note from database format to DTO
+ * Handles both Prisma (camelCase) and Supabase (snake_case) formats
+ */
 export function toNoteDTO(note: any): NoteDTO {
+  // Handle both camelCase (Prisma) and snake_case (Supabase)
+  const id = note.id
+  const content = note.content
+  const type = note.type
+  const archived = note.archived
+  const createdAt = note.createdAt || note.created_at
+  const cluster = note.cluster ?? null
+  const clusterConfidence = note.clusterConfidence || note.cluster_confidence ?? null
+  const clusterUpdatedAt = note.clusterUpdatedAt || note.cluster_updated_at
+
   return {
-    id: note.id,
-    content: note.content,
-    type: note.type,
-    archived: note.archived,
-    createdAt: typeof note.createdAt === "string" ? note.createdAt : note.createdAt.toISOString(),
-    tags: note.tags?.map((t: any) => t.tag?.name || t) || [],
-    cluster: note.cluster ?? null,
-    clusterConfidence: note.clusterConfidence ?? null,
-    clusterUpdatedAt: note.clusterUpdatedAt
-      ? typeof note.clusterUpdatedAt === "string"
-        ? note.clusterUpdatedAt
-        : note.clusterUpdatedAt.toISOString()
+    id,
+    content,
+    type,
+    archived,
+    createdAt: typeof createdAt === "string" ? createdAt : createdAt?.toISOString() || new Date().toISOString(),
+    tags: note.tags?.map((t: any) => t.tag?.name || t.tags?.name || t) || [],
+    cluster,
+    clusterConfidence,
+    clusterUpdatedAt: clusterUpdatedAt
+      ? typeof clusterUpdatedAt === "string"
+        ? clusterUpdatedAt
+        : clusterUpdatedAt.toISOString()
       : null,
   }
 }

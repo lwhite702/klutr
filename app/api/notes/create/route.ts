@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { prisma, isDatabaseAvailable } from "@/lib/db";
+import { db, isDatabaseAvailable } from "@/lib/supabaseDb";
 import { toNoteDTO } from "@/lib/dto";
 import { classifyNoteContent } from "@/lib/ai/classifyNote";
 import { embedNoteContent } from "@/lib/ai/embedNote";
@@ -16,7 +16,7 @@ async function createNoteHandler(req: NextRequest, data: any) {
   try {
     if (!isDatabaseAvailable()) {
       return createErrorResponse(
-        "Database not available. Please enable demo mode.",
+        "Database not available. Please check configuration.",
         503
       );
     }
@@ -25,19 +25,10 @@ async function createNoteHandler(req: NextRequest, data: any) {
     const { content, type } = data;
 
     // Create the note first
-    const note = await prisma.note.create({
-      data: {
-        userId: user.id,
-        content,
-        type: type || "misc",
-      },
-      include: {
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-      },
+    const note = await db.note.create({
+      userId: user.id,
+      content,
+      type: type || "misc",
     });
 
     // Classify and embed in background (fire-and-forget for better UX)
@@ -49,56 +40,51 @@ async function createNoteHandler(req: NextRequest, data: any) {
           // Upsert tags
           const tagRecords = await Promise.all(
             classification.tags.map((tagName) =>
-              prisma.tag.upsert({
-                where: {
-                  userId_name: {
-                    userId: user.id,
-                    name: tagName,
-                  },
-                },
-                create: {
-                  userId: user.id,
-                  name: tagName,
-                },
-                update: {},
+              db.tag.upsert({
+                userId: user.id,
+                name: tagName,
               })
             )
           );
 
-          // Update note with classification and tags
-          await prisma.note.update({
+          // Link tags to note
+          await Promise.all(
+            tagRecords.map((tag) =>
+              db.noteTag.create(note.id, tag.id)
+            )
+          );
+
+          // Update note with classification
+          await db.note.update({
             where: { id: note.id },
             data: {
               type: classification.type,
-              tags: {
-                create: tagRecords.map((tag) => ({
-                  tagId: tag.id,
-                })),
-              },
             },
           });
         } catch (error) {
-          console.error("[v0] Classification failed:", error);
+          console.error("[klutr] Classification failed:", error);
         }
       })(),
       (async () => {
         try {
           const embedding = await embedNoteContent(content);
 
-          // Store embedding using raw SQL (pgvector)
-          await prisma.$executeRaw`
-            UPDATE notes
-            SET embedding = ${JSON.stringify(embedding)}::vector
-            WHERE id = ${note.id}
-          `;
+          // Store embedding
+          await db.note.updateEmbedding(note.id, embedding);
         } catch (error) {
-          console.error("[v0] Embedding failed:", error);
+          console.error("[klutr] Embedding failed:", error);
         }
       })(),
-    ]).catch((err) => console.error("[v0] Background processing error:", err));
+    ]).catch((err) => console.error("[klutr] Background processing error:", err));
+
+    // Fetch note with tags for response
+    const noteWithTags = await db.note.findUnique({
+      where: { id: note.id },
+      includeTags: true,
+    });
 
     // Validate response before sending
-    const noteDTO = toNoteDTO(note);
+    const noteDTO = toNoteDTO(noteWithTags);
     const validation = NoteDTOSchema.safeParse(noteDTO);
 
     if (!validation.success) {
@@ -106,9 +92,9 @@ async function createNoteHandler(req: NextRequest, data: any) {
       return createErrorResponse("Invalid response format", 500);
     }
 
-            return createSuccessResponse(validation.data, NoteDTOSchema);
+    return createSuccessResponse(validation.data, NoteDTOSchema);
   } catch (error) {
-    console.error("[v0] Create note error:", error);
+    console.error("[klutr] Create note error:", error);
     return createErrorResponse("Failed to create note", 500);
   }
 }

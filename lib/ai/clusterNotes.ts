@@ -1,4 +1,5 @@
-import { prisma } from "../db"
+import { getServerSupabase } from "../supabase"
+import { db } from "../supabaseDb"
 
 const CLUSTER_THRESHOLD = 0.35
 
@@ -10,21 +11,17 @@ type ClusterCentroid = {
 export async function clusterUserNotes(userId: string): Promise<void> {
   try {
     // Step 1: Get all notes with embeddings for this user
-    const notesWithEmbeddings = await prisma.$queryRaw<
-      Array<{
-        id: string
-        type: string
-        embedding: string
-      }>
-    >`
-      SELECT id, type, embedding::text
-      FROM notes
-      WHERE "userId" = ${userId}
-        AND embedding IS NOT NULL
-    `
+    const supabase = getServerSupabase()
+    const { data: notesWithEmbeddings, error } = await supabase
+      .from('notes')
+      .select('id, type, embedding')
+      .eq('user_id', userId)
+      .not('embedding', 'is', null)
 
-    if (notesWithEmbeddings.length === 0) {
-      console.log("[v0] No notes with embeddings found for clustering")
+    if (error) throw error
+
+    if (!notesWithEmbeddings || notesWithEmbeddings.length === 0) {
+      console.log("[klutr] No notes with embeddings found for clustering")
       return
     }
 
@@ -34,7 +31,7 @@ export async function clusterUserNotes(userId: string): Promise<void> {
     for (const note of notesWithEmbeddings) {
       if (note.type === "unclassified" || note.type === "nope") continue
 
-      const embedding = parseEmbedding(note.embedding)
+      const embedding = note.embedding as number[]
       if (!embedding) continue
 
       if (!typeGroups.has(note.type)) {
@@ -65,7 +62,7 @@ export async function clusterUserNotes(userId: string): Promise<void> {
 
     // Step 3: Assign each note to nearest centroid
     for (const note of notesWithEmbeddings) {
-      const embedding = parseEmbedding(note.embedding)
+      const embedding = note.embedding as number[]
       if (!embedding) continue
 
       let bestCluster = "Misc"
@@ -91,32 +88,23 @@ export async function clusterUserNotes(userId: string): Promise<void> {
       }
 
       // Update note with cluster assignment
-      await prisma.note.update({
+      await db.note.update({
         where: { id: note.id },
         data: {
           cluster: bestCluster,
-          clusterConfidence: bestConfidence,
-          clusterUpdatedAt: new Date(),
+          cluster_confidence: bestConfidence,
+          cluster_updated_at: new Date(),
         },
       })
     }
 
-    console.log(`[v0] Clustered ${notesWithEmbeddings.length} notes into ${centroids.length} clusters`)
+    console.log(`[klutr] Clustered ${notesWithEmbeddings.length} notes into ${centroids.length} clusters`)
   } catch (error) {
-    console.error("[v0] Clustering error:", error)
+    console.error("[klutr] Clustering error:", error)
     throw new Error(`Failed to cluster notes: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }
 
-function parseEmbedding(embeddingStr: string): number[] | null {
-  try {
-    // pgvector returns embeddings as "[0.1,0.2,...]"
-    const cleaned = embeddingStr.replace(/^\[|\]$/g, "")
-    return cleaned.split(",").map(Number)
-  } catch {
-    return null
-  }
-}
 
 function calculateCentroid(embeddings: number[][]): number[] {
   if (embeddings.length === 0) return []

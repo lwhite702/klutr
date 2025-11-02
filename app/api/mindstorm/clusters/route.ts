@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
-import { prisma, isDatabaseAvailable } from "@/lib/db"
+import { prisma, isDatabaseAvailable } from "@/lib/supabaseDb"
 
 export async function GET(req: Request) {
   try {
@@ -11,13 +11,13 @@ export async function GET(req: Request) {
     const user = await getCurrentUser(req)
 
     // Get cluster statistics from SmartStacks
-    const stacks = await prisma.smartStack.findMany({
+    const stacks = await db.smartStack.findMany({
       where: { userId: user.id },
       orderBy: { noteCount: "desc" },
     })
 
     // Also get cluster counts from notes directly
-    const clusterCounts = await prisma.$queryRaw<Array<{ cluster: string; count: bigint }>>`
+    const clusterCounts = await db.$queryRaw<Array<{ cluster: string; count: bigint }>>`
       SELECT cluster, COUNT(*) as count
       FROM "Note"
       WHERE "userId" = ${user.id}
@@ -57,7 +57,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(clusters)
   } catch (error) {
-    console.error("[v0] Failed to get clusters:", error)
+    console.error("[klutr] Failed to get clusters:", error)
     return NextResponse.json([])
   }
 }

@@ -9,7 +9,7 @@ export async function GET() {
     const result = await runNightlyStacks()
     return NextResponse.json(result)
   } catch (error) {
-    console.error("[v0] Cron nightly stacks error:", error)
+    console.error("[klutr] Cron nightly stacks error:", error)
     return NextResponse.json({ error: "Cron job failed" }, { status: 500 })
   }
 }

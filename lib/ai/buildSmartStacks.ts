@@ -1,4 +1,4 @@
-import { prisma } from "../db";
+import { db } from "../supabaseDb";
 import { openai } from "../openai";
 import { retry, withTimeout } from "../utils";
 
@@ -16,38 +16,19 @@ export async function buildSmartStacks(
 ): Promise<SmartStackDTO[]> {
   try {
     // Get cluster distribution
-    const clusterGroups = await prisma.note.groupBy({
-      by: ["cluster"],
-      where: {
-        userId,
-        cluster: { not: null },
-        archived: false,
-      },
-      _count: {
-        id: true,
-      },
-      orderBy: {
-        _count: {
-          id: "desc",
-        },
-      },
-    });
+    const clusterGroups: any = await db.note.groupByCluster(userId);
 
     const stacks: SmartStackDTO[] = [];
 
     for (const group of clusterGroups) {
-      if (!group.cluster || group._count.id < 2) continue;
+      if (!group.cluster || group.count < 2) continue;
 
       // Get representative notes from this cluster
-      const notes = await prisma.note.findMany({
+      const notes = await db.note.findMany({
         where: {
           userId,
           cluster: group.cluster,
           archived: false,
-        },
-        select: {
-          content: true,
-          type: true,
         },
         orderBy: {
           createdAt: "desc",
@@ -62,14 +43,14 @@ export async function buildSmartStacks(
       const summary = await generateStackSummary(group.cluster, noteContents);
 
       // Check if stack already exists
-      const existingStack = await prisma.smartStack.findFirst({
+      const existingStack = await db.smartStack.findFirst({
         where: {
           userId,
           cluster: group.cluster,
         },
       });
 
-      const stack = await prisma.smartStack.upsert({
+      const stack = await db.smartStack.upsert({
         where: {
           id: existingStack?.id || "new",
         },
@@ -77,12 +58,12 @@ export async function buildSmartStacks(
           userId,
           name: group.cluster,
           cluster: group.cluster,
-          noteCount: group._count.id,
+          noteCount: group.count,
           summary,
           pinned: false,
         },
         update: {
-          noteCount: group._count.id,
+          noteCount: group.count,
           summary,
         },
       });
@@ -91,16 +72,16 @@ export async function buildSmartStacks(
         id: stack.id,
         name: stack.name,
         cluster: stack.cluster,
-        noteCount: stack.noteCount,
+        noteCount: stack.note_count,
         summary: stack.summary,
         pinned: stack.pinned,
       });
     }
 
-    console.log(`[v0] Built ${stacks.length} smart stacks`);
+    console.log(`[klutr] Built ${stacks.length} smart stacks`);
     return stacks;
   } catch (error) {
-    console.error("[v0] Smart stacks error:", error);
+    console.error("[klutr] Smart stacks error:", error);
     throw new Error(
       `Failed to build smart stacks: ${
         error instanceof Error ? error.message : "Unknown error"
@@ -145,7 +126,7 @@ async function generateStackSummary(
       `Collection of ${clusterName.toLowerCase()} notes.`
     );
   } catch (error) {
-    console.error("[v0] Stack summary error:", error);
+    console.error("[klutr] Stack summary error:", error);
     return `Collection of ${clusterName.toLowerCase()} notes.`;
   }
 }

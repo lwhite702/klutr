@@ -9,7 +9,7 @@ export async function GET() {
     const result = await runWeeklyInsights()
     return NextResponse.json(result)
   } catch (error) {
-    console.error("[v0] Cron weekly insights error:", error)
+    console.error("[klutr] Cron weekly insights error:", error)
     return NextResponse.json({ error: "Cron job failed" }, { status: 500 })
   }
 }

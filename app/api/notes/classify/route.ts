@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getCurrentUser } from "@/lib/auth"
-import { prisma, isDatabaseAvailable } from "@/lib/db"
+import { db, isDatabaseAvailable } from "@/lib/supabaseDb"
 import { toNoteDTO } from "@/lib/dto"
 import { classifyNoteContent } from "@/lib/ai/classifyNote"
 
@@ -19,16 +19,15 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify note belongs to user
-    const note = await prisma.note.findUnique({
+    const note = await db.note.findUnique({
       where: { id },
-      select: { userId: true, content: true },
     })
 
     if (!note) {
       return NextResponse.json({ error: "Note not found" }, { status: 404 })
     }
 
-    if (note.userId !== user.id) {
+    if (note.user_id !== user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
     }
 
@@ -36,52 +35,40 @@ export async function POST(req: NextRequest) {
     const classification = await classifyNoteContent(note.content)
 
     // Clear existing tags
-    await prisma.noteTag.deleteMany({
-      where: { noteId: id },
-    })
+    await db.noteTag.deleteForNote(id)
 
     // Upsert new tags
     const tagRecords = await Promise.all(
       classification.tags.map((tagName) =>
-        prisma.tag.upsert({
-          where: {
-            userId_name: {
-              userId: user.id,
-              name: tagName,
-            },
-          },
-          create: {
-            userId: user.id,
-            name: tagName,
-          },
-          update: {},
+        db.tag.upsert({
+          userId: user.id,
+          name: tagName,
         }),
       ),
     )
 
-    // Update note with new classification and tags
-    const updatedNote = await prisma.note.update({
+    // Link new tags to note
+    await Promise.all(
+      tagRecords.map((tag) => db.noteTag.create(id, tag.id))
+    )
+
+    // Update note with new classification
+    await db.note.update({
       where: { id },
       data: {
         type: classification.type,
-        tags: {
-          create: tagRecords.map((tag) => ({
-            tagId: tag.id,
-          })),
-        },
       },
-      include: {
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-      },
+    })
+
+    // Fetch updated note with tags
+    const updatedNote = await db.note.findUnique({
+      where: { id },
+      includeTags: true,
     })
 
     return NextResponse.json(toNoteDTO(updatedNote))
   } catch (error) {
-    console.error("[v0] Classify note error:", error)
+    console.error("[klutr] Classify note error:", error)
     return NextResponse.json({ error: "Failed to classify note" }, { status: 500 })
   }
 }
