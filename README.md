@@ -7,17 +7,25 @@ _Automatically synced with your [v0.app](https://v0.app) deployments_
 
 ## Overview
 
-Klutr is a Next.js 16 app with AI-powered note organization features including clustering, smart stacks, weekly insights, and a secure vault. It uses PostgreSQL (Neon) with pgvector extension for embeddings.
+Klutr is a Next.js 16 app with AI-powered note organization features including clustering, smart stacks, weekly insights, and a secure vault. It uses **Supabase** as the backend with PostgreSQL and pgvector extension for embeddings.
 
 ## Environment Setup
 
 This project uses [Doppler](https://doppler.com) for environment variable management. See [DOPPLER.md](./DOPPLER.md) for setup instructions.
 
-Required environment variables:
+**Required environment variables:**
 
-- `NEON_NEON_DATABASE_URL` - PostgreSQL connection string from Neon
+- `NEXT_PUBLIC_SUPABASE_URL` - Public Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Client-side Supabase public key
+- `SUPABASE_SERVICE_ROLE_KEY` - Server-side Supabase admin key
 - `OPENAI_API_KEY` - OpenAI API key for AI features
-- `CRON_SECRET` - Secret key for authenticating cron job endpoints
+- `CRON_SECRET` - Secret key for authenticating cron job endpoints (optional)
+
+## Supabase Migration
+
+This app has been migrated to use Supabase as the backend. See:
+- [Supabase Setup Guide](./docs/supabase-setup.md) - Step-by-step setup instructions
+- [Migration Summary](./SUPABASE_MIGRATION.md) - Overview of changes
 
 ## Development
 

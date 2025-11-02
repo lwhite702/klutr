@@ -4,28 +4,44 @@ This project uses Doppler for environment variable management instead of local `
 
 ## Required Environment Variables
 
-### Current Variables (Phase 1)
+### Supabase Variables (Required)
 
-The following environment variables are currently configured in Doppler:
+The following environment variables are required for Supabase:
 
-- `NEON_DATABASE_URL` - PostgreSQL connection string from Neon
-- `OPENAI_API_KEY` - OpenAI API key for AI features
-- `CRON_SECRET` - Secret key for authenticating cron job endpoints
+- `NEXT_PUBLIC_SUPABASE_URL` - Public Supabase project URL (required)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Client-side Supabase public key (required)
+- `SUPABASE_SERVICE_ROLE_KEY` - Server-side Supabase admin key (required, keep secret!)
+- `OPENAI_API_KEY` - OpenAI API key for AI features (used by Edge Functions)
+- `CRON_SECRET` - Secret key for authenticating cron job endpoints (optional)
 
-### Target Variables (Phase 2+)
+### Legacy Variables (Deprecated)
 
-The following variables will be added to Doppler during Supabase migration:
+The following variables are from the previous Neon setup and can be removed:
 
-- `NEXT_PUBLIC_SUPABASE_URL` - Public Supabase project URL
-- `SUPABASE_SERVICE_ROLE_KEY` - Server-side Supabase admin key
-- `SUPABASE_ANON_KEY` - Client-side Supabase public key
+- `NEON_DATABASE_URL` - PostgreSQL connection string from Neon (no longer used)
+- `DATABASE_URL` - Alternative database URL (no longer used)
+
+### Setup Instructions
+
+1. **Get Supabase credentials** from your Supabase project dashboard (Settings ? API)
+2. **Add to Doppler**:
+   ```bash
+   doppler secrets set NEXT_PUBLIC_SUPABASE_URL="https://xxxxx.supabase.co"
+   doppler secrets set NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJ..."
+   doppler secrets set SUPABASE_SERVICE_ROLE_KEY="eyJ..."
+   doppler secrets set OPENAI_API_KEY="sk-..."
+   doppler secrets set CRON_SECRET="your-secret-here"
+   ```
+
+3. **For Edge Functions**, set secrets in Supabase Dashboard:
+   - Go to Edge Functions ? Settings for each function
+   - Add: `OPENAI_API_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
 
 ### Migration Notes
 
 - Doppler handles all environments (dev, staging, production)
 - No `.env` files are committed to the repository
-- Phase 2 setup: Add Supabase variables to Doppler before migration
-- Phase 5 cleanup: Remove Neon variables from Doppler after cutover
+- Supabase migration is complete - Neon variables can be removed
 
 ## Setup Instructions
 

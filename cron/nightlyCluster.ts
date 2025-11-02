@@ -9,18 +9,16 @@
  * Usage: Can be called via an API route or directly as a serverless function
  */
 
-import { prisma } from "../lib/db"
+import { db } from "../lib/db"
+import { embedNoteViaEdgeFunction } from "../lib/edge-functions"
 import { embedNoteContent } from "../lib/ai/embedNote"
-import { clusterUserNotes } from "../lib/ai/clusterNotes"
 
 export async function runNightlyCluster() {
   console.log("[v0] Starting nightly clustering job...")
 
   try {
-    // Get all users
-    const users = await prisma.user.findMany({
-      select: { id: true, email: true },
-    })
+    // Get all users using Supabase
+    const users = await db.getAllUsers()
 
     console.log(`[v0] Processing ${users.length} users`)
 
@@ -29,37 +27,37 @@ export async function runNightlyCluster() {
         console.log(`[v0] Processing user ${user.email}`)
 
         // Find notes without embeddings
-        const notesWithoutEmbeddings = await prisma.note.findMany({
-          where: {
-            userId: user.id,
-            embedding: null,
-            archived: false,
-          },
-          select: {
-            id: true,
-            content: true,
-          },
-          take: 100, // Process in batches
-        })
+        const notesWithoutEmbeddings = await db.getNotesWithoutEmbeddings(user.id, 100)
 
         console.log(`[v0] Found ${notesWithoutEmbeddings.length} notes to embed`)
 
-        // Generate embeddings
+        // Generate embeddings using Edge Function
         for (const note of notesWithoutEmbeddings) {
           try {
-            const embedding = await embedNoteContent(note.content)
-            await prisma.$executeRaw`
-              UPDATE notes
-              SET embedding = ${JSON.stringify(embedding)}::vector
-              WHERE id = ${note.id}
-            `
-          } catch (error) {
-            console.error(`[v0] Failed to embed note ${note.id}:`, error)
+            // Try Edge Function first
+            await embedNoteViaEdgeFunction(note.id, note.content)
+          } catch (edgeError) {
+            console.warn(`[v0] Edge Function embedding failed for note ${note.id}, using fallback:`, edgeError)
+            // Fallback to direct embedding
+            try {
+              const embedding = await embedNoteContent(note.content)
+              await db.updateNoteEmbedding(note.id, embedding)
+            } catch (fallbackError) {
+              console.error(`[v0] Failed to embed note ${note.id}:`, fallbackError)
+            }
           }
         }
 
-        // Run clustering
-        await clusterUserNotes(user.id)
+        // Run clustering using Edge Function
+        try {
+          const { clusterNotesViaEdgeFunction } = await import("../lib/edge-functions")
+          await clusterNotesViaEdgeFunction(user.id)
+        } catch (edgeFunctionError) {
+          console.error(`[v0] Edge Function clustering failed for ${user.email}, falling back:`, edgeFunctionError)
+          // Fallback to direct clustering
+          const { clusterUserNotes } = await import("../lib/ai/clusterNotes")
+          await clusterUserNotes(user.id)
+        }
 
         console.log(`[v0] Completed clustering for user ${user.email}`)
       } catch (error) {

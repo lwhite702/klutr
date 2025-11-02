@@ -40,59 +40,69 @@ async function createNoteHandler(req: NextRequest, data: any) {
       },
     });
 
-    // Classify and embed in background (fire-and-forget for better UX)
+    // Classify and embed in background using Edge Functions (fire-and-forget for better UX)
     Promise.all([
       (async () => {
         try {
-          const classification = await classifyNoteContent(content);
-
-          // Upsert tags
-          const tagRecords = await Promise.all(
-            classification.tags.map((tagName) =>
-              prisma.tag.upsert({
-                where: {
-                  userId_name: {
+          // Use Edge Function for classification
+          const { classifyNoteViaEdgeFunction } = await import("@/lib/edge-functions");
+          await classifyNoteViaEdgeFunction(note.id, content);
+        } catch (error) {
+          console.error("[v0] Classification failed:", error);
+          // Fallback to direct classification if Edge Function fails
+          try {
+            const classification = await classifyNoteContent(content);
+            const tagRecords = await Promise.all(
+              classification.tags.map((tagName) =>
+                prisma.tag.upsert({
+                  where: {
+                    userId_name: {
+                      userId: user.id,
+                      name: tagName,
+                    },
+                  },
+                  create: {
                     userId: user.id,
                     name: tagName,
                   },
+                  update: {},
+                })
+              )
+            );
+            await prisma.note.update({
+              where: { id: note.id },
+              data: {
+                type: classification.type,
+                tags: {
+                  create: tagRecords.map((tag) => ({
+                    tagId: tag.id,
+                  })),
                 },
-                create: {
-                  userId: user.id,
-                  name: tagName,
-                },
-                update: {},
-              })
-            )
-          );
-
-          // Update note with classification and tags
-          await prisma.note.update({
-            where: { id: note.id },
-            data: {
-              type: classification.type,
-              tags: {
-                create: tagRecords.map((tag) => ({
-                  tagId: tag.id,
-                })),
               },
-            },
-          });
-        } catch (error) {
-          console.error("[v0] Classification failed:", error);
+            });
+          } catch (fallbackError) {
+            console.error("[v0] Classification fallback failed:", fallbackError);
+          }
         }
       })(),
       (async () => {
         try {
-          const embedding = await embedNoteContent(content);
-
-          // Store embedding using raw SQL (pgvector)
-          await prisma.$executeRaw`
-            UPDATE notes
-            SET embedding = ${JSON.stringify(embedding)}::vector
-            WHERE id = ${note.id}
-          `;
+          // Use Edge Function for embedding
+          const { embedNoteViaEdgeFunction } = await import("@/lib/edge-functions");
+          await embedNoteViaEdgeFunction(note.id, content);
         } catch (error) {
           console.error("[v0] Embedding failed:", error);
+          // Fallback to direct embedding if Edge Function fails
+          try {
+            const embedding = await embedNoteContent(content);
+            await prisma.$executeRaw`
+              UPDATE notes
+              SET embedding = ${JSON.stringify(embedding)}::vector
+              WHERE id = ${note.id}
+            `;
+          } catch (fallbackError) {
+            console.error("[v0] Embedding fallback failed:", fallbackError);
+          }
         }
       })(),
     ]).catch((err) => console.error("[v0] Background processing error:", err));
