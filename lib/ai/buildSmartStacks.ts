@@ -1,5 +1,5 @@
 import { prisma } from "../db";
-import { openai } from "../openai";
+import { supabase } from "../supabase";
 import { retry, withTimeout } from "../utils";
 
 export type SmartStackDTO = {
@@ -55,11 +55,17 @@ export async function buildSmartStacks(
         take: 5,
       });
 
-      // Generate summary using OpenAI
+      // Generate summary using Supabase Edge Function
       const noteContents = notes
         .map((n: any) => n.content.slice(0, 200))
         .join("\n\n");
-      const summary = await generateStackSummary(group.cluster, noteContents);
+      
+      // Use Edge Function for summary generation
+      const { data: summaryData } = await supabase.functions.invoke('build-stacks', {
+        body: { userId, cluster: group.cluster, noteContents },
+      });
+      
+      const summary = summaryData?.summary || await generateStackSummary(group.cluster, noteContents);
 
       // Check if stack already exists
       const existingStack = await prisma.smartStack.findFirst({

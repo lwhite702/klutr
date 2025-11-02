@@ -1,5 +1,5 @@
 import { prisma } from "../db";
-import { openai } from "../openai";
+import { supabase } from "../supabase";
 import { retry, withTimeout } from "../utils";
 
 export async function generateWeeklyInsights(userId: string): Promise<void> {
@@ -47,34 +47,12 @@ export async function generateWeeklyInsights(userId: string): Promise<void> {
       .map((n: any) => `[${n.type}] ${n.content.slice(0, 200)}`)
       .join("\n\n");
 
-    const prompt = `Analyze these notes from the past week and provide:
-1. A 2-3 sentence summary of the main themes and patterns
-2. The dominant sentiment (choose one: positive, negative, mixed, neutral, determined, anxious, excited, reflective)
-
-Notes:
-${noteSummary}
-
-Respond with JSON:
-{
-  "summary": "...",
-  "sentiment": "..."
-}`;
-
+    // Use Supabase Edge Function for insights generation
     const result = await retry(
       async () => {
         return await withTimeout(
-          openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-              {
-                role: "system",
-                content:
-                  "You are a thoughtful analyst helping someone understand patterns in their thinking.",
-              },
-              { role: "user", content: prompt },
-            ],
-            response_format: { type: "json_object" },
-            temperature: 0.5,
+          supabase.functions.invoke('generate-insights', {
+            body: { userId },
           }),
           30000, // 30 second timeout
           "Insights generation timed out"
@@ -83,37 +61,39 @@ Respond with JSON:
       { maxAttempts: 2, delayMs: 2000 }
     );
 
-    const responseContent = result.choices[0]?.message?.content;
-    if (!responseContent) {
-      throw new Error("No response from OpenAI");
-    }
-
-    const parsed = JSON.parse(responseContent) as {
-      summary: string;
-      sentiment: string;
+    const parsed = result.data || {
+      summary: "Analyzing your notes...",
+      sentiment: "neutral",
     };
 
-    // Upsert the weekly insight
-    await prisma.weeklyInsight.upsert({
+    // Edge function handles the upsert, but we can also do it here if needed
+    const { data: existing } = await prisma.weeklyInsight?.findFirst?.({
       where: {
-        userId_weekStart: {
-          userId,
-          weekStart,
-        },
-      },
-      create: {
         userId,
         weekStart,
-        summary: parsed.summary,
-        sentiment: parsed.sentiment,
-        noteCount: notes.length,
       },
-      update: {
-        summary: parsed.summary,
-        sentiment: parsed.sentiment,
-        noteCount: notes.length,
-      },
-    });
+    }) || { data: null };
+
+    if (existing) {
+      await prisma.weeklyInsight?.update?.({
+        where: { id: existing.id },
+        data: {
+          summary: parsed.summary,
+          sentiment: parsed.sentiment,
+          noteCount: notes.length,
+        },
+      });
+    } else {
+      await prisma.weeklyInsight?.create?.({
+        data: {
+          userId,
+          weekStart,
+          summary: parsed.summary,
+          sentiment: parsed.sentiment,
+          noteCount: notes.length,
+        },
+      });
+    }
 
     console.log(`[v0] Generated weekly insight for ${notes.length} notes`);
   } catch (error) {
