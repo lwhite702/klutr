@@ -97,7 +97,7 @@ export async function PATCH(req: NextRequest) {
         (async () => {
           try {
             const embedding = await embedNoteContent(content)
-            await prisma.$executeRaw`
+            await (prisma as any).$executeRaw`
               UPDATE notes
               SET embedding = ${JSON.stringify(embedding)}::vector
               WHERE id = ${id}

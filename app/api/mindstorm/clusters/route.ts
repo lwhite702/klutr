@@ -17,15 +17,29 @@ export async function GET(req: Request) {
     })
 
     // Also get cluster counts from notes directly
-    const clusterCounts = await prisma.$queryRaw<Array<{ cluster: string; count: bigint }>>`
-      SELECT cluster, COUNT(*) as count
-      FROM "Note"
-      WHERE "userId" = ${user.id}
-        AND cluster IS NOT NULL
-        AND archived = false
-      GROUP BY cluster
-      ORDER BY count DESC
-    `
+    const notes = await prisma.note.findMany({
+      where: {
+        userId: user.id,
+        cluster: { not: null } as any,
+        archived: false,
+      },
+      select: {
+        cluster: true,
+      },
+    })
+
+    // Group by cluster and count
+    const clusterCounts: Array<{ cluster: string; count: number }> = []
+    const clusterMap = new Map<string, number>()
+    for (const note of notes || []) {
+      if (note.cluster) {
+        clusterMap.set(note.cluster, (clusterMap.get(note.cluster) || 0) + 1)
+      }
+    }
+    for (const [cluster, count] of clusterMap.entries()) {
+      clusterCounts.push({ cluster, count })
+    }
+    clusterCounts.sort((a, b) => b.count - a.count)
 
     // Merge data from stacks and direct counts
     const clustersMap = new Map<string, { name: string; noteCount: number; summary: string }>()
@@ -43,11 +57,11 @@ export async function GET(req: Request) {
     for (const row of clusterCounts) {
       const existing = clustersMap.get(row.cluster)
       if (existing) {
-        existing.noteCount = Number(row.count)
+        existing.noteCount = row.count
       } else {
         clustersMap.set(row.cluster, {
           name: row.cluster,
-          noteCount: Number(row.count),
+          noteCount: row.count,
           summary: "A collection of related notes.",
         })
       }

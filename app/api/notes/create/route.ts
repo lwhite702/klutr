@@ -86,7 +86,7 @@ async function createNoteHandler(req: NextRequest, data: any) {
           const embedding = await embedNoteContent(content);
 
           // Store embedding using raw SQL (pgvector)
-          await prisma.$executeRaw`
+          await (prisma as any).$executeRaw`
             UPDATE notes
             SET embedding = ${JSON.stringify(embedding)}::vector
             WHERE id = ${note.id}
