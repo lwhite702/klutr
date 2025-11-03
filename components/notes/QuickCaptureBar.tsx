@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Tooltip } from "@/components/ui/Tooltip"
 import { Loader2 } from "lucide-react"
 
 interface QuickCaptureBarProps {
@@ -52,18 +52,11 @@ export function QuickCaptureBar({ onCreate, isCreating = false }: QuickCaptureBa
             "Save"
           )}
         </Button>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="outline" disabled className="opacity-50 bg-transparent">
-                AI classify
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p className="max-w-xs">We'll auto-tag this note and sort it into a stack when you save.</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Tooltip content="We'll auto-tag this note and sort it into a stack when you save.">
+          <Button variant="outline" disabled className="opacity-50 bg-transparent">
+            AI classify
+          </Button>
+        </Tooltip>
       </div>
       <p className="text-xs text-muted-foreground">Tip: Press Cmd/Ctrl + Enter to save quickly</p>
     </Card>

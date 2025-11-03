@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TagChip } from "@/components/notes/TagChip";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { cn } from "@/lib/utils";
 
 interface ItemCardProps {
@@ -92,40 +93,44 @@ export function ItemCard({
               actionsRight
             ) : (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onFavorite?.();
-                  }}
-                  aria-label={
-                    pinned ? "Remove from favorites" : "Add to favorites"
-                  }
-                  className="h-8 w-8 p-0"
-                >
-                  <Star
-                    className={cn(
-                      "h-4 w-4",
-                      pinned
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-muted-foreground"
-                    )}
-                  />
-                </Button>
+                <Tooltip content={pinned ? "Remove from favorites" : "Add to favorites"}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onFavorite?.();
+                    }}
+                    aria-label={
+                      pinned ? "Remove from favorites" : "Add to favorites"
+                    }
+                    className="h-8 w-8 p-0"
+                  >
+                    <Star
+                      className={cn(
+                        "h-4 w-4",
+                        pinned
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-muted-foreground"
+                      )}
+                    />
+                  </Button>
+                </Tooltip>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClick?.();
-                  }}
-                  aria-label="Open item"
-                  className="h-8 w-8 p-0"
-                >
-                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                </Button>
+                <Tooltip content="Open item in detail view">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClick?.();
+                    }}
+                    aria-label="Open item"
+                    className="h-8 w-8 p-0"
+                  >
+                    <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                </Tooltip>
               </>
             )}
           </div>

@@ -6,7 +6,28 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
 import { VaultLockScreen } from "@/components/vault/VaultLockScreen";
+import { SectionSummary } from "@/components/ui/SectionSummary";
+import { PageTour } from "@/components/tour/PageTour";
+import { HelpCenter } from "@/components/help/HelpCenter";
 import { mockNotes } from "@/lib/mockData";
+
+const tourSteps = [
+  {
+    id: "welcome",
+    title: "Welcome to the Vault!",
+    description: "Your ultra-private archive with local-first encryption. These notes are stored securely and only you have the key.",
+  },
+  {
+    id: "unlock",
+    title: "Unlock to Access",
+    description: "The Vault stays locked until you open it. All data is encrypted at rest and only decrypted when you need it?true privacy by design.",
+  },
+  {
+    id: "storage",
+    title: "Long-Term Storage",
+    description: "Use the Vault for sensitive notes you want to keep forever. Great for passwords, personal reflections, or confidential research.",
+  },
+];
 
 export default function VaultPage() {
   const [locked, setLocked] = useState(true);
@@ -42,8 +63,20 @@ export default function VaultPage() {
             title="Vault"
             description="Your private, encrypted notes. Only you can unlock them."
           />
+          <SectionSummary
+            pageId="vault"
+            title="Local-First Privacy Archive"
+            description="The Vault uses end-to-end encryption to protect your most sensitive notes. Data is encrypted locally before sync?we never see your content."
+            tips={[
+              "All vault notes are encrypted at rest",
+              "Only you have the decryption key",
+              "Perfect for passwords, private journals, or sensitive research",
+            ]}
+          />
           <VaultLockScreen onUnlock={handleUnlock} />
         </div>
+        <PageTour pageId="vault" steps={tourSteps} />
+        <HelpCenter />
       </AppShell>
     );
   }
@@ -54,6 +87,17 @@ export default function VaultPage() {
         <PageHeader
           title="Vault"
           description="Your private, encrypted notes. Only you can unlock them."
+        />
+
+        <SectionSummary
+          pageId="vault"
+          title="Local-First Privacy Archive"
+          description="The Vault uses end-to-end encryption to protect your most sensitive notes. Data is encrypted locally before sync?we never see your content."
+          tips={[
+            "All vault notes are encrypted at rest",
+            "Only you have the decryption key",
+            "Perfect for passwords, private journals, or sensitive research",
+          ]}
         />
 
         <CardGrid>
@@ -79,6 +123,9 @@ export default function VaultPage() {
           </div>
         )}
       </div>
+
+      <PageTour pageId="vault" steps={tourSteps} />
+      <HelpCenter />
     </AppShell>
   );
 }

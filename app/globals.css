@@ -44,6 +44,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /* Brand accent colors - indigo, lime, coral */
+  --color-indigo: oklch(0.45 0.15 275);
+  --color-indigo-foreground: oklch(0.98 0 0);
+  --color-lime: oklch(0.82 0.18 130);
+  --color-lime-foreground: oklch(0.2 0 0);
+  --color-coral: oklch(0.72 0.15 35);
+  --color-coral-foreground: oklch(0.98 0 0);
 }
 
 .dark {
@@ -79,6 +86,13 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+  /* Brand accent colors - adjusted for dark mode */
+  --color-indigo: oklch(0.55 0.18 275);
+  --color-indigo-foreground: oklch(0.98 0 0);
+  --color-lime: oklch(0.75 0.20 130);
+  --color-lime-foreground: oklch(0.15 0 0);
+  --color-coral: oklch(0.65 0.18 35);
+  --color-coral-foreground: oklch(0.98 0 0);
 }
 
 @theme inline {
@@ -120,6 +134,12 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-indigo: var(--color-indigo);
+  --color-indigo-foreground: var(--color-indigo-foreground);
+  --color-lime: var(--color-lime);
+  --color-lime-foreground: var(--color-lime-foreground);
+  --color-coral: var(--color-coral);
+  --color-coral-foreground: var(--color-coral-foreground);
 }
 
 @layer base {

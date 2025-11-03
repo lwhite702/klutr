@@ -3,10 +3,29 @@
 import { useState } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { CardGrid } from "@/components/ui/CardGrid";
-import { ItemCard } from "@/components/ui/ItemCard";
 import { TimelineGrid } from "@/components/memory/TimelineGrid";
+import { SectionSummary } from "@/components/ui/SectionSummary";
+import { PageTour } from "@/components/tour/PageTour";
+import { HelpCenter } from "@/components/help/HelpCenter";
 import { mockMemory } from "@/lib/mockData";
+
+const tourSteps = [
+  {
+    id: "welcome",
+    title: "Welcome to Memory Lane!",
+    description: "Your personal timeline of thoughts and ideas. We resurface older notes at just the right time, helping you rediscover forgotten gems.",
+  },
+  {
+    id: "timeline",
+    title: "Your Thought Timeline",
+    description: "Browse by week to see what you were thinking about in the past. Perfect for spotting recurring themes or revisiting old projects.",
+  },
+  {
+    id: "resurfacing",
+    title: "Smart Resurfacing",
+    description: "Our AI brings back relevant notes based on what you're working on now. It's like having a memory assistant who knows when to remind you of past ideas.",
+  },
+];
 
 export default function MemoryLanePage() {
   const [memoryItems, setMemoryItems] = useState(mockMemory);
@@ -31,7 +50,17 @@ export default function MemoryLanePage() {
           description="What you were thinking across time."
         />
 
-        {/* Use existing TimelineGrid component if available, otherwise fall back to CardGrid */}
+        <SectionSummary
+          pageId="memory"
+          title="Resurfacing & Time Travel"
+          description="Memory Lane brings back older notes when they're most relevant. Browse your timeline to see how your thinking has evolved over weeks and months."
+          tips={[
+            "Notes resurface automatically based on context",
+            "Click any week to see what you captured then",
+            "Great for tracking long-term projects or personal growth",
+          ]}
+        />
+
         <TimelineGrid
           items={memoryItems.map((item) => ({
             week: item.period,
@@ -47,6 +76,9 @@ export default function MemoryLanePage() {
           </div>
         )}
       </div>
+
+      <PageTour pageId="memory" steps={tourSteps} />
+      <HelpCenter />
     </AppShell>
   );
 }

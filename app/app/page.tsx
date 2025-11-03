@@ -6,7 +6,33 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
 import { QuickCaptureBar } from "@/components/notes/QuickCaptureBar";
+import { SectionSummary } from "@/components/ui/SectionSummary";
+import { PageTour } from "@/components/tour/PageTour";
+import { HelpCenter } from "@/components/help/HelpCenter";
 import { mockNotes } from "@/lib/mockData";
+
+const tourSteps = [
+  {
+    id: "welcome",
+    title: "Welcome to your Notes inbox!",
+    description: "This is where all your ideas, links, and files land. Think of it as your brain's catch-all?messy is fine, we'll organize it.",
+  },
+  {
+    id: "capture",
+    title: "Quick Capture Bar",
+    description: "Type, paste links, or drop files here. Our AI will automatically tag and categorize everything. No folders, no fuss.",
+  },
+  {
+    id: "ai-tags",
+    title: "AI Does the Work",
+    description: "Watch those colorful tags appear? That's our AI reading your content and sorting it into categories like 'ideas', 'tasks', or 'reminders'. You can edit them if needed.",
+  },
+  {
+    id: "nope-swipe",
+    title: "Nope the Noise",
+    description: "See something you don't need? Click or swipe to 'Nope' it. Items move to your Nope Bin where you can restore them anytime within 30 days.",
+  },
+];
 
 export default function AllNotesPage() {
   const [notes, setNotes] = useState(mockNotes);
@@ -47,6 +73,17 @@ export default function AllNotesPage() {
       <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader title="All Notes" />
 
+        <SectionSummary
+          pageId="notes"
+          title="Your Brain's Inbox"
+          description="Dump everything here?text, links, files, voice notes. We'll tag and organize it automatically with AI."
+          tips={[
+            "Hit the capture bar to add new content instantly",
+            "AI tags appear within seconds of capture",
+            "Swipe or click 'Nope' to archive items you don't need",
+          ]}
+        />
+
         <QuickCaptureBar onCreate={handleCreateNote} isCreating={isCreating} />
 
         <CardGrid>
@@ -69,6 +106,9 @@ export default function AllNotesPage() {
           </div>
         )}
       </div>
+
+      <PageTour pageId="notes" steps={tourSteps} />
+      <HelpCenter />
     </AppShell>
   );
 }

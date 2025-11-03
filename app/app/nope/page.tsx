@@ -6,8 +6,29 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
 import { Button } from "@/components/ui/button";
+import { SectionSummary } from "@/components/ui/SectionSummary";
+import { PageTour } from "@/components/tour/PageTour";
+import { HelpCenter } from "@/components/help/HelpCenter";
 import { mockNotes } from "@/lib/mockData";
 import { RotateCcw } from "lucide-react";
+
+const tourSteps = [
+  {
+    id: "welcome",
+    title: "Welcome to the Nope Bin!",
+    description: "This is where items you've swiped away end up. Think of it as a safety net?nothing is truly gone until you say so.",
+  },
+  {
+    id: "restore",
+    title: "Easy Restoration",
+    description: "Made a mistake? Click 'Restore' on any item to bring it back to your main Notes. No harm, no foul.",
+  },
+  {
+    id: "auto-delete",
+    title: "Auto-Cleanup",
+    description: "Items in the Nope Bin are auto-deleted after 30 days to keep things tidy. Until then, you can restore anything anytime.",
+  },
+];
 
 export default function NopeBinPage() {
   const [nopeNotes, setNopeNotes] = useState(
@@ -37,6 +58,17 @@ export default function NopeBinPage() {
     <AppShell activeRoute="/app/nope">
       <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader title="Nope Bin" description="Stuff you set aside." />
+
+        <SectionSummary
+          pageId="nope"
+          title="Your Safety Net for Mistakes"
+          description="Nope'd something you actually need? No worries?everything stays here for 30 days. Restore anytime or let it auto-delete."
+          tips={[
+            "Click 'Restore' to bring items back to Notes",
+            "Items auto-delete after 30 days",
+            "Review this bin periodically to catch accidental swipes",
+          ]}
+        />
 
         <CardGrid>
           {nopeNotes.map((note) => (
@@ -72,6 +104,9 @@ export default function NopeBinPage() {
           </div>
         )}
       </div>
+
+      <PageTour pageId="nope" steps={tourSteps} />
+      <HelpCenter />
     </AppShell>
   );
 }
