@@ -25,6 +25,13 @@ Each entry includes:
 
 ---
 
+## 2025-11-03 07:22 ET
+
+- [infra] Verified build configuration - build script is `next build` (simplified, no Doppler wrapper)
+- [infra] Verified postinstall script present: `prisma generate` (ensures Prisma client generation during builds)
+- [infra] Verified no ignoreBuildErrors in next.config.mjs (production safety maintained)
+- [docs] Enhanced DOPPLER.md with comprehensive Doppler CLI installation guide - added multiple installation methods (universal installer, package managers, manual), authentication options, and clarified that CLI is only for local dev (not used in Vercel builds)
+
 ## 2025-11-02 19:09 ET
 
 - [fix] Fixed missing mock data for "client-work" stack - added mockStackItems["client-work"] with work-themed items to match stackNameMap

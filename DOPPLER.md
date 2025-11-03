@@ -29,25 +29,88 @@ The following variables will be added to Doppler during Supabase migration:
 
 ## Setup Instructions
 
-1. **Install Doppler CLI** (if not already installed):
+### Installing Doppler CLI
+
+**Note:** This project does **not** use Doppler CLI integration for production builds. Vercel builds use environment variables configured directly in Vercel. Doppler CLI is only required for local development.
+
+#### Installation Methods
+
+##### Option 1: Universal Installer (Recommended)
+
+```bash
+curl -Ls --tlsv1.2 --proto "=https" --retry 3 https://cli.doppler.com/install.sh | sh
+```
+
+This works on macOS, Linux, and Windows (with WSL/Git Bash).
+
+##### Option 2: Package Managers
+
+- **macOS (Homebrew):**
+
+  ```bash
+  brew install doppler
+  ```
+
+- **macOS/Linux (npm):**
+
+  ```bash
+  npm install -g doppler
+  ```
+
+- **Windows (Scoop):**
+
+  ```bash
+  scoop install doppler
+  ```
+
+- **Windows (Chocolatey):**
+
+  ```bash
+  choco install doppler
+  ```
+
+##### Option 3: Manual Installation
+
+1. Download the appropriate binary from [Doppler's releases page](https://github.com/DopplerHQ/cli/releases)
+2. Extract and add to your PATH
+3. Verify installation:
 
    ```bash
-   curl -Ls --tlsv1.2 --proto "=https" --retry 3 https://cli.doppler.com/install.sh | sh
+   doppler --version
    ```
 
-2. **Login to Doppler**:
+#### Authentication and Project Setup
+
+1. **Login to Doppler** (opens browser for authentication):
 
    ```bash
    doppler login
    ```
 
-3. **Setup Doppler project**:
+   Or use a service token:
+
+   ```bash
+   doppler configure set token <YOUR_TOKEN>
+   ```
+
+2. **Setup Doppler project** (interactive setup):
 
    ```bash
    doppler setup
    ```
 
-4. **Run development server**:
+   When prompted:
+
+   - Select your **project**: `noteornope`
+   - Select your **config**: `dev` (or `prd` for production secrets)
+
+3. **Verify configuration**:
+
+   ```bash
+   doppler configure get
+   ```
+
+4. **Run development server** (with Doppler injecting env vars):
 
    ```bash
    pnpm dev
@@ -55,12 +118,14 @@ The following variables will be added to Doppler during Supabase migration:
 
 ## Available Scripts
 
-- `pnpm dev` - Start development server with Doppler env vars
-- `pnpm build` - Build for production with Doppler env vars
-- `pnpm start` - Start production server with Doppler env vars
-- `pnpm db:push` - Run Prisma database migration with Doppler env vars
-- `pnpm db:generate` - Generate Prisma client with Doppler env vars
-- `pnpm db:studio` - Open Prisma Studio with Doppler env vars
+- `pnpm dev` - Start development server with Doppler env vars (uses `doppler run -- next dev`)
+- `pnpm build` - Build for production (**does not use Doppler** - Vercel uses env vars directly)
+- `pnpm start` - Start production server (**does not use Doppler** - requires env vars in environment)
+- `pnpm db:push` - Run Prisma database migration with Doppler env vars (uses `doppler run -- npx prisma db push`)
+- `pnpm db:generate` - Generate Prisma client (runs automatically via `postinstall` script)
+- `pnpm db:studio` - Open Prisma Studio with Doppler env vars (uses `doppler run -- npx prisma studio`)
+
+**Note:** The `postinstall` script automatically runs `prisma generate` after package installation, ensuring the Prisma client is always generated during builds (including Vercel deployments).
 
 ## Deployment
 
@@ -71,22 +136,24 @@ For Vercel deployments, environment variables must be manually synced from Doppl
 #### Sync Process
 
 1. **Export variables from Doppler:**
+
    ```bash
    doppler secrets download --no-file --format env
    ```
 
 2. **Add each variable to Vercel** for all environments (production, preview, development):
+
    ```bash
    # Production
    vercel env add NEON_DATABASE_URL production
    vercel env add OPENAI_API_KEY production
    vercel env add CRON_SECRET production
-   
+
    # Preview (for PR deployments)
    vercel env add NEON_DATABASE_URL preview
    vercel env add OPENAI_API_KEY preview
    vercel env add CRON_SECRET preview
-   
+
    # Development (local dev with vercel dev)
    vercel env add NEON_DATABASE_URL development
    vercel env add OPENAI_API_KEY development
@@ -94,6 +161,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    ```
 
 3. **Verify variables are set:**
+
    ```bash
    vercel env ls
    ```
@@ -108,6 +176,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
 #### Alternative: Vercel Dashboard
 
 You can also set variables via the Vercel dashboard:
+
 1. Go to your project → Settings → Environment Variables
 2. Add each variable manually, selecting the appropriate environments
 3. Copy values from Doppler (use `doppler secrets get VARIABLE_NAME --plain`)
