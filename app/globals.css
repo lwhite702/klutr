@@ -44,6 +44,14 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Accent colors */
+  --color-indigo: oklch(0.45 0.18 270);
+  --color-indigo-foreground: oklch(0.98 0 0);
+  --color-lime: oklch(0.75 0.18 110);
+  --color-lime-foreground: oklch(0.15 0 0);
+  --color-coral: oklch(0.65 0.22 25);
+  --color-coral-foreground: oklch(0.98 0 0);
 }
 
 .dark {
@@ -79,6 +87,14 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+  
+  /* Accent colors - dark mode */
+  --color-indigo: oklch(0.55 0.18 270);
+  --color-indigo-foreground: oklch(0.98 0 0);
+  --color-lime: oklch(0.70 0.18 110);
+  --color-lime-foreground: oklch(0.15 0 0);
+  --color-coral: oklch(0.68 0.22 25);
+  --color-coral-foreground: oklch(0.98 0 0);
 }
 
 @theme inline {
@@ -120,6 +136,14 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  
+  /* Accent color utilities */
+  --color-brand-indigo: var(--color-indigo);
+  --color-brand-indigo-foreground: var(--color-indigo-foreground);
+  --color-brand-lime: var(--color-lime);
+  --color-brand-lime-foreground: var(--color-lime-foreground);
+  --color-brand-coral: var(--color-coral);
+  --color-brand-coral-foreground: var(--color-coral-foreground);
 }
 
 @layer base {

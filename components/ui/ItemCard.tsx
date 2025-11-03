@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TagChip } from "@/components/notes/TagChip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface ItemCardProps {
@@ -92,40 +93,58 @@ export function ItemCard({
               actionsRight
             ) : (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onFavorite?.();
-                  }}
-                  aria-label={
-                    pinned ? "Remove from favorites" : "Add to favorites"
-                  }
-                  className="h-8 w-8 p-0"
-                >
-                  <Star
-                    className={cn(
-                      "h-4 w-4",
-                      pinned
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-muted-foreground"
-                    )}
-                  />
-                </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onFavorite?.();
+                      }}
+                      aria-label={
+                        pinned ? "Remove from favorites" : "Add to favorites"
+                      }
+                      className="h-8 w-8 p-0"
+                    >
+                      <Star
+                        className={cn(
+                          "h-4 w-4",
+                          pinned
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-muted-foreground"
+                        )}
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{pinned ? "Remove from favorites" : "Add to favorites"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClick?.();
-                  }}
-                  aria-label="Open item"
-                  className="h-8 w-8 p-0"
-                >
-                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onClick?.();
+                      }}
+                      aria-label="Open item"
+                      className="h-8 w-8 p-0"
+                    >
+                      <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Open this item</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               </>
             )}
           </div>

@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { MobileNavSheet } from "./MobileNavSheet"
+import { HelpCenter } from "./HelpCenter"
 import { isDemoMode } from "@/lib/onboarding"
 import { apiPost } from "@/lib/clientApi"
 import { Loader2 } from "lucide-react"
@@ -83,6 +84,8 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
+          <HelpCenter />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
