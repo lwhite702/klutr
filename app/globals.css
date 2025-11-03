@@ -44,6 +44,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --color-indigo: #4338ca;
+  --color-lime: #65a30d;
+  --color-coral: #f97360;
 }
 
 .dark {
@@ -79,6 +82,9 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+  --color-indigo: #6366f1;
+  --color-lime: #a3e635;
+  --color-coral: #fb7185;
 }
 
 @theme inline {

@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { MobileNavSheet } from "./MobileNavSheet"
 import { isDemoMode } from "@/lib/onboarding"
 import { apiPost } from "@/lib/clientApi"
 import { Loader2 } from "lucide-react"
+import { HelpCenterLauncher } from "@/components/help/HelpCenter"
+import { Hint } from "@/components/ui/hint"
 
 export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
   const [demoMode, setDemoMode] = useState(false)
@@ -55,34 +56,36 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
           <Input placeholder="Search your notes..." className="w-full" />
         </div>
 
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-3 ml-auto">
           {(demoMode || showDemoBadge) && (
             <Badge variant="secondary" className="hidden sm:flex">
               demo
             </Badge>
           )}
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" onClick={handleRecluster} disabled={isReclustering}>
-                  {isReclustering ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Re-clustering...
-                    </>
-                  ) : (
-                    "Re-cluster now"
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="max-w-xs">
-                  We embed your notes with AI, compare them in vector space, and group related ideas together.
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={handleRecluster}
+              disabled={isReclustering}
+              className="border-[var(--color-indigo)] text-[var(--color-indigo)] hover:bg-[var(--color-indigo)] hover:text-white"
+            >
+              {isReclustering ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Re-clustering...
+                </>
+              ) : (
+                "Re-cluster now"
+              )}
+            </Button>
+            <Hint
+              title="What re-cluster does"
+              message="We re-embed every note, re-score similarity, then shuffle stacks so MindStorm stays sharp."
+            />
+          </div>
+
+          <HelpCenterLauncher />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

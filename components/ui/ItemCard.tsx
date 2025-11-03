@@ -1,15 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Star, ExternalLink } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TagChip } from "@/components/notes/TagChip";
 import { cn } from "@/lib/utils";
+import { Hint } from "@/components/ui/hint";
 
 interface ItemCardProps {
   thumbnailUrl?: string;
@@ -40,8 +36,9 @@ export function ItemCard({
     >
       <Card
         className={cn(
-          "rounded-[var(--radius-card)] cursor-pointer hover:shadow-md transition-shadow",
-          onClick && "hover:bg-accent/50"
+          "rounded-[var(--radius-card)] cursor-pointer border border-border/70 transition-shadow hover:shadow-md",
+          onClick && "hover:bg-accent/40",
+          pinned && "border-[var(--color-lime)]/60"
         )}
         onClick={onClick}
       >
@@ -56,7 +53,10 @@ export function ItemCard({
         )}
 
         <CardHeader className="pb-3">
-          <h3 className="text-lg font-semibold leading-tight">{title}</h3>
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="text-lg font-semibold leading-tight text-foreground">{title}</h3>
+            {pinned && <span className="rounded-full bg-[var(--color-lime)]/20 px-2 py-0.5 text-xs font-medium text-[var(--color-lime)]">Pinned</span>}
+          </div>
           {description && (
             <p className="text-sm text-muted-foreground line-clamp-2">
               {description}
@@ -66,14 +66,20 @@ export function ItemCard({
 
         {tags.length > 0 && (
           <CardContent className="pt-0 pb-3">
-            <div className="flex flex-wrap gap-1">
-              {tags.map((tag, index) => (
-                <TagChip
-                  key={index}
-                  label={tag.label}
-                  colorClassName={tag.colorClassName}
-                />
-              ))}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap gap-1">
+                {tags.map((tag, index) => (
+                  <TagChip
+                    key={index}
+                    label={tag.label}
+                    colorClassName={tag.colorClassName}
+                  />
+                ))}
+              </div>
+              <Hint
+                title="AI tags"
+                message="These labels come from the classifier ? they keep stacks fresh and make resurfacing smarter."
+              />
             </div>
           </CardContent>
         )}
@@ -87,45 +93,51 @@ export function ItemCard({
             )}
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             {actionsRight ? (
               actionsRight
             ) : (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onFavorite?.();
-                  }}
-                  aria-label={
-                    pinned ? "Remove from favorites" : "Add to favorites"
-                  }
-                  className="h-8 w-8 p-0"
-                >
-                  <Star
-                    className={cn(
-                      "h-4 w-4",
-                      pinned
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-muted-foreground"
-                    )}
-                  />
-                </Button>
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onFavorite?.();
+                    }}
+                    aria-label={
+                      pinned ? "Remove from favorites" : "Add to favorites"
+                    }
+                    className="h-8 w-8 p-0 text-[var(--color-coral)] hover:bg-[var(--color-coral)]/10"
+                  >
+                    <Star
+                      className={cn(
+                        "h-4 w-4",
+                        pinned
+                          ? "fill-[var(--color-coral)] text-[var(--color-coral)]"
+                          : "text-[var(--color-coral)]/60"
+                      )}
+                    />
+                  </Button>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClick?.();
-                  }}
-                  aria-label="Open item"
-                  className="h-8 w-8 p-0"
-                >
-                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClick?.();
+                    }}
+                    aria-label="Open item"
+                    className="h-8 w-8 p-0 text-[var(--color-indigo)] hover:bg-[var(--color-indigo)]/10"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
+                <Hint
+                  title="Need-to-know"
+                  message="Star to bubble it up in favorites. Open jumps into the full note with AI summaries intact."
+                />
               </>
             )}
           </div>

@@ -11,6 +11,12 @@ This design language comes from the "Bookmark App — Community" Figma file and 
   - Renders navigation links to Notes, MindStorm, Stacks, Vault, Insights, Memory, Nope
   - Part of AppShell layout component
 
+- **SectionSummary** → Page-top onboarding strip
+
+  - Lives directly above `PageHeader`
+  - Collapsible summary with quick bullets and “Start walkthrough” action
+  - Persists collapsed state per section (localStorage)
+
 - **PageHeader** → Page-level heading bar (Figma top row on BBQ/Podcast/Wishlist)
 
   - Displays page title, optional description, and action buttons
@@ -40,6 +46,12 @@ This design language comes from the "Bookmark App — Community" Figma file and 
   - Renders: SidebarNav, TopBar, ScrollArea with main content
   - Usage: Wraps all authenticated pages
 
+- **SectionSummary**: Collapsible onboarding banner that introduces each surface
+
+  - Props: `sectionId`, `title`, `description`, `highlights`, `onStartTour`, `tourCompleted`, `accent`
+  - Behavior: Remembers collapsed state, surfaces “Start walkthrough” CTA, shows completion badge once the tour is done
+  - Usage: Every primary page (Notes, MindStorm, Stacks, Vault, Insights, Memory, Nope)
+
 - **PageHeader**: Consistent page title and description layout
 
   - Props: `title` (string), `description` (optional string), `actions` (optional ReactNode)
@@ -65,6 +77,22 @@ This design language comes from the "Bookmark App — Community" Figma file and 
   - Usage: Within ItemCard and other components for tag display
 
 ### Specialized Components
+
+- **SectionTourDialog**: Modal walkthrough powered by `useSectionTour`
+
+  - Props: `title`, `subtitle`, `accent`, `tour`
+  - Behavior: Multi-step dialog with progress indicator, skip/done controls, and accent styling per section
+  - Usage: Auto-opens on first visit to each primary surface and can be replayed from `SectionSummary`
+
+- **HelpCenterLauncher**: Global help dialog mounted in the TopBar
+
+  - Presents witty primers for every section with accent icons
+  - Reinforces how to replay walkthroughs or find specific features quickly
+
+- **Hint**: Tooltip/popover helper that adapts to pointer type
+
+  - Desktop = standard tooltip; touch devices = tap-to-dismiss dialog
+  - Usage: QuickCaptureBar helper, action icons on ItemCard, Restore buttons in Nope, etc.
 
 - **QuickCaptureBar**: Text area and save button for quick note creation
 
@@ -93,16 +121,18 @@ This design language comes from the "Bookmark App — Community" Figma file and 
 
 ## Page Layouts
 
-All pages follow the same structural pattern:
+All pages now follow a guidance-first pattern:
 
 ```tsx
 <AppShell activeRoute="...">
-  <div className="max-w-5xl mx-auto space-y-6">
-    <PageHeader title="..." description="..." actions={...} />
-    <CardGrid>
-      <ItemCard ... />
-    </CardGrid>
-  </div>
+  <>
+    <div className="mx-auto flex max-w-5xl flex-col space-y-6">
+      <SectionSummary ... onStartTour={() => tour.startTour({ restart: true })} />
+      <PageHeader title="..." description="..." actions={...} />
+      {/* page-specific content */}
+    </div>
+    <SectionTourDialog title="..." accent="..." tour={tour} />
+  </>
 </AppShell>
 ```
 
@@ -110,22 +140,22 @@ All pages follow the same structural pattern:
 
 These primitives are reused across all feature pages to maintain visual consistency:
 
-- **`/app`** (All Notes): SidebarNav + PageHeader + QuickCaptureBar + CardGrid of ItemCard for notes
-- **`/app/stacks`** (Smart Stacks): SidebarNav + PageHeader + CardGrid of ItemCard for stacks
-- **`/app/stacks/[stackSlug]`** (Stack Detail): SidebarNav + PageHeader with SortAndFilterStub + CardGrid of stack items
-- **`/app/mindstorm`** (MindStorm): SidebarNav + PageHeader with ReclusterButton + CardGrid of clusters (showDemoBadge=true)
-- **`/app/vault`** (Vault): SidebarNav + PageHeader + VaultLockScreen OR CardGrid of locked ItemCards
-- **`/app/insights`** (Weekly Insights): SidebarNav + PageHeader with GenerateButton + InsightCard components
-- **`/app/memory`** (Memory Lane): SidebarNav + PageHeader + TimelineGrid component
-- **`/app/nope`** (Nope Bin): SidebarNav + PageHeader + CardGrid of ItemCard with Restore actions
+- **`/app`** (All Notes): SectionSummary + PageHeader + QuickCaptureBar + CardGrid of ItemCard for notes + Notes tour dialog
+- **`/app/stacks`** (Smart Stacks): SectionSummary + PageHeader + CardGrid of ItemCard for stacks + Stacks tour dialog
+- **`/app/stacks/[stackSlug]`** (Stack Detail): PageHeader with SortAndFilterStub + CardGrid of stack items (SectionSummary planned)
+- **`/app/mindstorm`** (MindStorm): SectionSummary + PageHeader with ReclusterButton + CardGrid of clusters (showDemoBadge=true) + MindStorm tour dialog
+- **`/app/vault`** (Vault): SectionSummary + PageHeader + VaultLockScreen OR CardGrid of locked ItemCards + Vault tour dialog
+- **`/app/insights`** (Weekly Insights): SectionSummary + PageHeader with GenerateButton + InsightCard components + Insights tour dialog
+- **`/app/memory`** (Memory Lane): SectionSummary + PageHeader + TimelineGrid component + Memory tour dialog
+- **`/app/nope`** (Nope Bin): SectionSummary + PageHeader + CardGrid of ItemCard with Restore actions + Nope tour dialog
 
-All pages share the same structural skeleton: AppShell wraps SidebarNav and content area, PageHeader provides consistent header styling, and CardGrid + ItemCard deliver the bookmark-style tile layout.
+All pages share the same structural skeleton: AppShell wraps SidebarNav and content area, SectionSummary orients the user, PageHeader provides consistent header styling, and feature-specific components (CardGrid + ItemCard, TimelineGrid, InsightCard, etc.) deliver the primary experience.
 
 ## Visual System
 
 The visual system derives from the "Bookmark App — Community" Figma file, specifically the BBQ/Podcast/Wishlist patterns. This design language is canonical for the first shipped aesthetic and establishes the foundation for all feature views:
 
-- **Color Palette**: Neutral backgrounds with accent colors for tags and actions
+- **Color Palette**: Neutral backgrounds with accent pops (`--color-indigo`, `--color-lime`, `--color-coral`) applied to summaries, actions, and help cues
 - **Typography**: Consistent font sizing (text-2xl for headers, text-lg for card titles)
 - **Spacing**: Consistent padding (p-6 md:p-8) and gap spacing (gap-6)
 - **Border Radius**: CSS custom properties for consistent rounded corners
