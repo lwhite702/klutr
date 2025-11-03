@@ -125,6 +125,33 @@ export const mockStackItems = {
       tags: [{ label: "traditional" }, { label: "modern" }],
     },
   ],
+  "client-work": [
+    {
+      id: "cw1",
+      title: "Q4 Product Roadmap",
+      description: "Features: AI clustering, export options, team collaboration.",
+      tags: [{ label: "planning" }, { label: "work" }],
+      pinned: true,
+    },
+    {
+      id: "cw2",
+      title: "User Research Findings",
+      description: "Interview notes from 12 users on note organization preferences.",
+      tags: [{ label: "research" }, { label: "work" }],
+    },
+    {
+      id: "cw3",
+      title: "API Integration Requirements",
+      description: "Third-party services to connect: Slack, Notion, Linear.",
+      tags: [{ label: "work" }, { label: "integration" }],
+    },
+    {
+      id: "cw4",
+      title: "Design System Updates",
+      description: "Component library refresh based on user feedback.",
+      tags: [{ label: "work" }, { label: "design" }],
+    },
+  ],
 };
 
 export const mockClusters = [

@@ -25,6 +25,10 @@ Each entry includes:
 
 ---
 
+## 2025-11-02 19:09 ET
+
+- [fix] Fixed missing mock data for "client-work" stack - added mockStackItems["client-work"] with work-themed items to match stackNameMap
+
 ## 2025-11-01 04:25 ET
 
 - [infra] Fixed package.json build scripts - removed Doppler dependency for Vercel builds (Vercel uses env vars directly)
