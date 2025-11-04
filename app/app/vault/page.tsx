@@ -9,8 +9,10 @@ import { ItemCard } from "@/components/ui/ItemCard";
 import { VaultLockScreen } from "@/components/vault/VaultLockScreen";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
+import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
 import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
-import { getOnboardingSteps } from "@/lib/onboardingSteps";
+import { useSectionTour } from "@/lib/hooks/useSectionExperience";
+import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
 import { mockNotes } from "@/lib/mockData";
 
@@ -19,6 +21,12 @@ export default function VaultPage() {
   const vaultLockRef = useRef<HTMLDivElement>(null);
   const unlockButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Dialog tour for first-time onboarding (auto-starts)
+  const dialogTour = useSectionTour("vault", getDialogTourSteps("vault"), {
+    autoStart: true,
+  });
+
+  // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
     section: "vault",
     steps: getOnboardingSteps("vault").map((step, idx) => {
@@ -34,6 +42,7 @@ export default function VaultPage() {
         };
       return step;
     }),
+    autoTrigger: false,
   });
 
   const handleUnlock = () => {
@@ -67,16 +76,23 @@ export default function VaultPage() {
             title="Vault"
             description="Your private, encrypted notes. Only you can unlock them."
             actions={
-              !onboarding.active && (
+              !onboarding.active && !dialogTour.open && (
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={onboarding.startOnboarding}
+                  onClick={() => dialogTour.startTour()}
                 >
                   Take tour
                 </Button>
               )
             }
+          />
+
+          <SectionTourDialog
+            title="Welcome to Vault"
+            subtitle="Private, encrypted notes that only you can read"
+            accent="coral"
+            tour={dialogTour}
           />
           <SectionSummary
             section="vault"
@@ -127,17 +143,25 @@ export default function VaultPage() {
           title="Vault"
           description="Your private, encrypted notes. Only you can unlock them."
           actions={
-            !onboarding.active && (
+            !onboarding.active && !dialogTour.open && (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onboarding.startOnboarding}
+                onClick={() => dialogTour.startTour()}
               >
                 Take tour
               </Button>
             )
           }
         />
+
+        <SectionTourDialog
+          title="Welcome to Vault"
+          subtitle="Private, encrypted notes that only you can read"
+          accent="coral"
+          tour={dialogTour}
+        />
+
         <SectionSummary
           section="vault"
           summary="Private, encrypted notes that only you can read. Everything is encrypted on your device before upload."

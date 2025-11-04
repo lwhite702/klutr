@@ -8,8 +8,10 @@ import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
+import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
 import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
-import { getOnboardingSteps } from "@/lib/onboardingSteps";
+import { useSectionTour } from "@/lib/hooks/useSectionExperience";
+import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
 import { mockStacks } from "@/lib/mockData";
 
@@ -18,6 +20,12 @@ export default function SmartStacksPage() {
   const stacksRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
 
+  // Dialog tour for first-time onboarding (auto-starts)
+  const dialogTour = useSectionTour("stacks", getDialogTourSteps("stacks"), {
+    autoStart: true,
+  });
+
+  // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
     section: "stacks",
     steps: getOnboardingSteps("stacks").map((step, idx) => {
@@ -33,6 +41,7 @@ export default function SmartStacksPage() {
         };
       return step;
     }),
+    autoTrigger: false,
   });
 
   const handleStackClick = (stackName: string) => {
@@ -59,16 +68,23 @@ export default function SmartStacksPage() {
           title="Stacks"
           description="Your saved collections."
           actions={
-            !onboarding.active && (
+            !onboarding.active && !dialogTour.open && (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onboarding.startOnboarding}
+                onClick={() => dialogTour.startTour()}
               >
                 Take tour
               </Button>
             )
           }
+        />
+
+        <SectionTourDialog
+          title="Welcome to Stacks"
+          subtitle="Collections of related notes organized by tags"
+          accent="lime"
+          tour={dialogTour}
         />
 
         <SectionSummary

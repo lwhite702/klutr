@@ -6,8 +6,10 @@ import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
+import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
 import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
-import { getOnboardingSteps } from "@/lib/onboardingSteps";
+import { useSectionTour } from "@/lib/hooks/useSectionExperience";
+import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
 import { TimelineGrid } from "@/components/memory/TimelineGrid";
 import { mockMemory } from "@/lib/mockData";
@@ -17,6 +19,12 @@ export default function MemoryLanePage() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const memoryItemsRef = useRef<HTMLDivElement>(null);
 
+  // Dialog tour for first-time onboarding (auto-starts)
+  const dialogTour = useSectionTour("memory", getDialogTourSteps("memory"), {
+    autoStart: true,
+  });
+
+  // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
     section: "memory",
     steps: getOnboardingSteps("memory").map((step, idx) => {
@@ -32,6 +40,7 @@ export default function MemoryLanePage() {
         };
       return step;
     }),
+    autoTrigger: false,
   });
 
   const handleRevisitWeek = (week: string) => {
@@ -53,16 +62,23 @@ export default function MemoryLanePage() {
           title="Memory Lane"
           description="What you were thinking across time."
           actions={
-            !onboarding.active && (
+            !onboarding.active && !dialogTour.open && (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onboarding.startOnboarding}
+                onClick={() => dialogTour.startTour()}
               >
                 Take tour
               </Button>
             )
           }
+        />
+
+        <SectionTourDialog
+          title="Welcome to Memory Lane"
+          subtitle="Your note-taking timeline. Rediscover forgotten ideas"
+          accent="lime"
+          tour={dialogTour}
         />
 
         <SectionSummary

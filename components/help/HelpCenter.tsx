@@ -218,3 +218,4 @@ export function HelpCenter({ open, onOpenChange }: HelpCenterProps) {
     </Dialog>
   );
 }
+

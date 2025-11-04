@@ -8,8 +8,10 @@ import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
+import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
 import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
-import { getOnboardingSteps } from "@/lib/onboardingSteps";
+import { useSectionTour } from "@/lib/hooks/useSectionExperience";
+import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -33,6 +35,12 @@ export default function NopeBinPage() {
   const nopeItemsRef = useRef<HTMLDivElement>(null);
   const restoreButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Dialog tour for first-time onboarding (auto-starts)
+  const dialogTour = useSectionTour("nope", getDialogTourSteps("nope"), {
+    autoStart: true,
+  });
+
+  // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
     section: "nope",
     steps: getOnboardingSteps("nope").map((step, idx) => {
@@ -48,6 +56,7 @@ export default function NopeBinPage() {
         };
       return step;
     }),
+    autoTrigger: false,
   });
 
   const handleRestore = (noteId: string) => {
@@ -70,16 +79,23 @@ export default function NopeBinPage() {
           title="Nope Bin"
           description="Stuff you set aside."
           actions={
-            !onboarding.active && (
+            !onboarding.active && !dialogTour.open && (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onboarding.startOnboarding}
+                onClick={() => dialogTour.startTour()}
               >
                 Take tour
               </Button>
             )
           }
+        />
+
+        <SectionTourDialog
+          title="Welcome to Nope Bin"
+          subtitle="Notes you've set aside. Nothing is permanently deleted"
+          accent="indigo"
+          tour={dialogTour}
         />
 
         <SectionSummary

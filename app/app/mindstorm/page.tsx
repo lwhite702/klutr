@@ -8,8 +8,10 @@ import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
+import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
 import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
-import { getOnboardingSteps } from "@/lib/onboardingSteps";
+import { useSectionTour } from "@/lib/hooks/useSectionExperience";
+import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
 import { mockClusters } from "@/lib/mockData";
 
@@ -18,6 +20,12 @@ export default function MindStormPage() {
   const clustersRef = useRef<HTMLDivElement>(null);
   const reclusterButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Dialog tour for first-time onboarding (auto-starts)
+  const dialogTour = useSectionTour("mindstorm", getDialogTourSteps("mindstorm"), {
+    autoStart: true,
+  });
+
+  // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
     section: "mindstorm",
     steps: getOnboardingSteps("mindstorm").map((step, idx) => {
@@ -33,6 +41,7 @@ export default function MindStormPage() {
         };
       return step;
     }),
+    autoTrigger: false,
   });
 
   const handleRecluster = () => {
@@ -79,11 +88,11 @@ export default function MindStormPage() {
           description="Your thoughts grouped by theme."
           actions={
             <>
-              {!onboarding.active && (
+              {!onboarding.active && !dialogTour.open && (
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={onboarding.startOnboarding}
+                  onClick={() => dialogTour.startTour()}
                 >
                   Take tour
                 </Button>
@@ -91,6 +100,13 @@ export default function MindStormPage() {
               <ReclusterButton />
             </>
           }
+        />
+
+        <SectionTourDialog
+          title="Welcome to MindStorm"
+          subtitle="AI groups your notes by theme automatically"
+          accent="indigo"
+          tour={dialogTour}
         />
 
         <SectionSummary

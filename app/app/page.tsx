@@ -9,8 +9,10 @@ import { ItemCard } from "@/components/ui/ItemCard";
 import { QuickCaptureBar } from "@/components/notes/QuickCaptureBar";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
+import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
 import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
-import { getOnboardingSteps } from "@/lib/onboardingSteps";
+import { useSectionTour } from "@/lib/hooks/useSectionExperience";
+import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { mockNotes } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
 
@@ -20,6 +22,12 @@ export default function AllNotesPage() {
   const quickCaptureRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
 
+  // Dialog tour for first-time onboarding (auto-starts)
+  const dialogTour = useSectionTour("notes", getDialogTourSteps("notes"), {
+    autoStart: true,
+  });
+
+  // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
     section: "notes",
     steps: getOnboardingSteps("notes").map((step, idx) => {
@@ -35,6 +43,7 @@ export default function AllNotesPage() {
         };
       return step;
     }),
+    autoTrigger: false, // Don't auto-trigger callout tours
   });
 
   const handleCreateNote = async (content: string) => {
@@ -73,16 +82,23 @@ export default function AllNotesPage() {
         <PageHeader
           title="All Notes"
           actions={
-            !onboarding.active && (
+            !onboarding.active && !dialogTour.open && (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={onboarding.startOnboarding}
+                onClick={() => dialogTour.startTour()}
               >
                 Take tour
               </Button>
             )
           }
+        />
+
+        <SectionTourDialog
+          title="Welcome to Notes"
+          subtitle="Your capture inbox for all thoughts, links, and files"
+          accent="lime"
+          tour={dialogTour}
         />
 
         <SectionSummary

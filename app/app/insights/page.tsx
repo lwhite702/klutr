@@ -6,8 +6,10 @@ import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
+import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
 import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
-import { getOnboardingSteps } from "@/lib/onboardingSteps";
+import { useSectionTour } from "@/lib/hooks/useSectionExperience";
+import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
 import { InsightCard } from "@/components/insights/InsightCard";
 import { mockInsights } from "@/lib/mockData";
@@ -17,6 +19,12 @@ export default function InsightsPage() {
   const insightsRef = useRef<HTMLDivElement>(null);
   const generateButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Dialog tour for first-time onboarding (auto-starts)
+  const dialogTour = useSectionTour("insights", getDialogTourSteps("insights"), {
+    autoStart: true,
+  });
+
+  // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
     section: "insights",
     steps: getOnboardingSteps("insights").map((step, idx) => {
@@ -32,6 +40,7 @@ export default function InsightsPage() {
         };
       return step;
     }),
+    autoTrigger: false,
   });
 
   const handleGenerateSummary = () => {
@@ -74,11 +83,11 @@ export default function InsightsPage() {
           description="Highlights from your recent activity."
           actions={
             <>
-              {!onboarding.active && (
+              {!onboarding.active && !dialogTour.open && (
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={onboarding.startOnboarding}
+                  onClick={() => dialogTour.startTour()}
                 >
                   Take tour
                 </Button>
@@ -86,6 +95,13 @@ export default function InsightsPage() {
               <GenerateButton />
             </>
           }
+        />
+
+        <SectionTourDialog
+          title="Welcome to Insights"
+          subtitle="Weekly summaries highlight patterns in your thinking"
+          accent="indigo"
+          tour={dialogTour}
         />
 
         <SectionSummary
