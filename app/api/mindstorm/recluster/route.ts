@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
         content: true,
       },
       take: 50, // Process in batches
-    })
+    }) as Array<{ id: string; content: string }>
 
     console.log(`[v0] Found ${notesWithoutEmbeddings.length} notes without embeddings`)
 
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
           UPDATE notes
           SET embedding = ${JSON.stringify(embedding)}::vector
           WHERE id = ${note.id}
-        `
+        ` as any
       } catch (error) {
         console.error(`[v0] Failed to embed note ${note.id}:`, error)
         // Continue with other notes

@@ -6,7 +6,7 @@ updated: 2025-10-29
 
 # Deployment & Environment Configuration
 
-This document defines the deployment process for the Wrelik **Notes or Nope (MindStorm)** app.
+This document defines the deployment process for the Wrelik **Klutr (MindStorm)** app.
 
 ## Overview
 
@@ -62,7 +62,7 @@ Host user-facing guides and product documentation on Mintlify Cloud.
 
 **Docs Structure:**
 
-```
+```text
 /mintlify/
 ├── overview.mdx
 ├── getting-started.mdx
@@ -96,17 +96,16 @@ If a static landing page is introduced (e.g. notesornope.com), host it on Netlif
 
 ### Required Variables
 
-| Variable                        | Description                   | Environment | Phase |
-| ------------------------------- | ----------------------------- | ----------- | ----- |
-| `NEON_DATABASE_URL`             | PostgreSQL connection string | All         | Phase 1 (current) |
-| `OPENAI_API_KEY`                | OpenAI API access key         | All         | Phase 1+ |
-| `CRON_SECRET`                   | Protects internal cron routes | All         | Phase 1+ |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL          | All         | Phase 2+ |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public client key             | All         | Phase 2+ |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Server-side admin key         | All         | Phase 2+ |
-| `SUPABASE_JWT_SECRET`           | JWT signing secret            | All         | Phase 2+ |
-| `SUPABASE_BUCKET_ATTACHMENTS`   | Public file bucket name       | All         | Phase 2+ |
-| `SUPABASE_BUCKET_VAULT`         | Encrypted private bucket name | All         | Phase 2+ |
+| Variable                        | Description                   | Environment |
+| ------------------------------- | ----------------------------- | ----------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL          | All         |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public client key             | All         |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Server-side admin key         | All         |
+| `SUPABASE_JWT_SECRET`           | JWT signing secret            | All         |
+| `OPENAI_API_KEY`                | OpenAI API access key         | All         |
+| `CRON_SECRET`                   | Protects internal cron routes | All         |
+| `SUPABASE_BUCKET_ATTACHMENTS`   | Public file bucket name       | All         |
+| `SUPABASE_BUCKET_VAULT`         | Encrypted private bucket name | All         |
 
 ### Example `.env.local`
 
@@ -145,29 +144,28 @@ pnpm db:generate
 
 ### Vercel Deployment
 
-**Prerequisites:**
-- Link project: `vercel link` (select project "klutr")
-- Sync environment variables from Doppler (see `DOPPLER.md`)
-
 ```bash
-# Deploy to preview (for testing)
-vercel
-
 # Deploy to production
 vercel --prod
 
+# Deploy to preview
+vercel
+
 # Check deployment status
 vercel ls
-
-# View environment variables
-vercel env ls
 ```
 
-**Important:** 
-- Vercel builds use `next build` (no Doppler CLI wrapper)
-- All environment variables must be set in Vercel dashboard/CLI before deployment
-- Prisma client is generated automatically via `postinstall` script
-- See `VERCEL_SETUP.md` for detailed setup instructions
+### Supabase CLI Setup
+
+The Supabase CLI (v2.54.11) is installed and ready to use. To link to your Supabase project:
+
+```bash
+# Login to Supabase (opens browser for authentication)
+supabase login
+
+# Link to your project
+supabase link --project-ref your-project-ref
+```
 
 ### Supabase Edge Functions
 
@@ -180,6 +178,8 @@ supabase functions deploy generateWeeklyInsights
 # Deploy specific function
 supabase functions deploy embedNotes --project-ref your-project-ref
 ```
+
+**Note:** For local development with Supabase, Docker must be running. The CLI will check Docker connectivity when using local development features.
 
 ### Mintlify Documentation
 
@@ -250,7 +250,7 @@ CREATE POLICY "User can access their own notes" ON notes
 
 ## Directory Structure
 
-```
+```text
 /
 ├── app/                    # Next.js App Router
 │   ├── api/               # API routes
@@ -274,37 +274,63 @@ CREATE POLICY "User can access their own notes" ON notes
 
 ## Vercel Configuration
 
-### Build Configuration
+### Project Setup
 
-- **Build Command**: `next build` (no Doppler wrapper - Vercel uses env vars directly)
-- **Install Command**: `npm install` (or `pnpm install`)
-- **Output Directory**: `.next` (default for Next.js)
-- **Prisma Generation**: Automatic via `postinstall` script
-
-### Environment Variables
-
-Environment variables are managed in Vercel dashboard or via CLI (see `DOPPLER.md` for sync instructions). Do not hardcode values in `vercel.json`.
-
-**Current Phase 1 Variables:**
-- `NEON_DATABASE_URL` - Required for database connection
-- `OPENAI_API_KEY` - Required for AI features
-- `CRON_SECRET` - Required for cron endpoint authentication
-
-### Health Check Endpoint
-
-The app includes `/api/health` endpoint for Vercel monitoring:
+The project is linked to Vercel under `wrelik/klutr` (project ID: `prj_Jz9bhrE2h6rAfmEIkGmRWBpPxG0H`). The project has been linked using:
 
 ```bash
-curl https://your-project.vercel.app/api/health
+vercel link --project klutr --yes
 ```
 
-Returns: `{ status: "ok", timestamp: string, environment: string }`
+This creates a `.vercel` directory with project configuration.
 
-### Cron Jobs Configuration
+**Note:** The project is connected to the GitHub repository `lwhite702/klutr`. If you haven't renamed the repository on GitHub yet, do so in the repository settings, then update the git remote:
 
-If using Vercel Cron, cron jobs must include `Authorization: Bearer ${CRON_SECRET}` header. All cron routes (`/api/cron/*`) validate this secret.
+```bash
+git remote set-url origin https://github.com/lwhite702/klutr.git
+vercel git connect https://github.com/lwhite702/klutr.git
+```
 
-See `VERCEL_SETUP.md` for complete deployment guide.
+### Domain Configuration
+
+The domain `klutr.app` has been added to the project. To complete domain setup, configure DNS using one of the following methods:
+
+**Option A: A Record (Recommended)**
+Add an A record to your DNS provider:
+
+```dns
+Type: A
+Name: klutr.app
+Value: 76.76.21.21
+```
+
+**Option B: Nameservers**
+Change your domain's nameservers to Vercel's intended nameservers (check Vercel dashboard for current values).
+
+After DNS configuration, Vercel will automatically verify and configure SSL certificates. You will receive an email notification when verification is complete.
+
+### `vercel.json`
+
+```json
+{
+  "version": 2,
+  "builds": [{ "src": "next.config.mjs", "use": "@vercel/next" }],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/" }
+  ],
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase-service-role-key",
+    "SUPABASE_JWT_SECRET": "@supabase-jwt-secret",
+    "OPENAI_API_KEY": "@openai-api-key",
+    "CRON_SECRET": "@cron-secret",
+    "SUPABASE_BUCKET_ATTACHMENTS": "@supabase-bucket-attachments",
+    "SUPABASE_BUCKET_VAULT": "@supabase-bucket-vault"
+  }
+}
+```
 
 ## Post-Deploy Checklist
 

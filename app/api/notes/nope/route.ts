@@ -11,23 +11,56 @@ export async function GET(req: NextRequest) {
 
     const user = await getCurrentUser(req)
 
-    const notes = await prisma.note.findMany({
-      where: {
-        userId: user.id,
-        OR: [{ type: "nope" }, { archived: true }],
-      },
-      include: {
-        tags: {
-          include: {
-            tag: true,
+    // Fetch notes with type "nope" OR archived notes
+    // Since Supabase doesn't support OR directly in the adapter, we'll use two queries
+    const [nopeNotes, archivedNotes] = await Promise.all([
+      prisma.note.findMany({
+        where: {
+          userId: user.id,
+          type: "nope",
+        },
+        include: {
+          tags: {
+            include: {
+              tag: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: 100,
-    })
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 100,
+      }),
+      prisma.note.findMany({
+        where: {
+          userId: user.id,
+          archived: true,
+        },
+        include: {
+          tags: {
+            include: {
+              tag: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 100,
+      }),
+    ])
+
+    // Combine and deduplicate by ID
+    const noteMap = new Map()
+    for (const note of nopeNotes) {
+      noteMap.set(note.id, note)
+    }
+    for (const note of archivedNotes) {
+      if (!noteMap.has(note.id)) {
+        noteMap.set(note.id, note)
+      }
+    }
+    const notes = Array.from(noteMap.values()).slice(0, 100)
 
     return NextResponse.json(notes.map(toNoteDTO))
   } catch (error) {

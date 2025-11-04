@@ -1,4 +1,4 @@
-# Doppler Configuration for Noteornope
+# Doppler Configuration for Klutr
 
 This project uses Doppler for environment variable management instead of local `.env` files.
 

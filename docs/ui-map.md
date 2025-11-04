@@ -1,6 +1,6 @@
 # UI Surface Vocabulary
 
-This document maps the shared design primitives used across all feature views in the Notes or Nope application.
+This document maps the shared design primitives used across all feature views in the Klutr application.
 
 ## Figma → Component Mapping
 

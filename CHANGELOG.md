@@ -38,8 +38,6 @@ Each entry includes:
 - [feature] Defined onboarding step configurations for all sections in onboardingSteps.ts
 - [docs] Updated ui-map.md to document new onboarding system, help center, section summaries, and brand color tokens
 
----
-
 ## 2025-11-03 07:22 ET
 
 - [infra] Verified build configuration - build script is `next build` (simplified, no Doppler wrapper)
@@ -62,6 +60,67 @@ Each entry includes:
 - [docs] Created VERCEL_SETUP.md with step-by-step deployment instructions
 - [docs] Updated DOPPLER.md with Vercel environment variable setup section
 - [docs] Updated docs/deployment.md with verified Vercel configuration and Phase 1 variable requirements
+
+## 2025-10-31 21:58 ET
+
+- [docs] Updated agents.md to replace "Notes or Nope" with "Klutr" in context7 product model references
+- [docs] Enhanced agents.md governance binding section to reference new BRAND_GUIDE.md
+- [docs] Completely restructured BRAND_VOICE.md to distinguish Wrelik (company) vs Klutr (product) voices
+- [docs] Added comprehensive Klutr microcopy guidelines to BRAND_VOICE.md covering capture, processing, Nope workflow, inbox, settings, and onboarding
+- [docs] Added "Witty Intelligence" section to BRAND_VOICE.md with principles and examples for incorporating humor into copy
+- [docs] Created BRAND_GUIDE.md with comprehensive brand development framework including naming strategy, target audience, brand story, visual identity, tagline/messaging, and website content map
+- [docs] Established clear voice separation: Wrelik (calm mentor) for company communications, Klutr (friendly wit) for product communications
+- [docs] Updated "last updated" timestamps in agents.md and BRAND_VOICE.md
+
+## 2025-10-31 21:56 ET
+
+- [infra] Pushed rebranding changes to main branch
+- [infra] Updated git remote URL to klutr (will work after GitHub repository rename)
+
+## 2025-10-31 21:52 ET
+
+- [infra] Updated git remote URL from "Noteornope" to "klutr" (repository: `lwhite702/klutr`)
+- [infra] Git remote now points to the renamed repository
+- [docs] Updated CHANGELOG to document GitHub repository rename
+
+## 2025-10-31 21:51 ET
+
+- [infra] Updated Doppler project name from "note-or-nope" to "klutr"
+- [infra] Verified Doppler configuration is working correctly with new project name
+
+## 2025-10-31 21:50 ET
+
+- [infra] Renamed Vercel project from "noteornope" to "klutr" (project ID: prj_Jz9bhrE2h6rAfmEIkGmRWBpPxG0H)
+- [infra] Installed Supabase CLI v2.54.11 via Homebrew
+- [infra] Verified Vercel CLI configuration with updated project name
+- [docs] Updated deployment.md with Supabase CLI setup instructions
+
+## 2025-10-31 21:49 ET
+
+- [infra] Set up Vercel CLI and linked project to Vercel (wrelik/noteornope)
+- [infra] Added domain klutr.app to Vercel project
+- [infra] Domain configuration pending: requires DNS A record (klutr.app → 76.76.21.21) or nameserver change
+- [docs] Updated deployment.md with Vercel domain configuration details
+
+## 2025-10-31 21:40 ET
+
+- [ui] Rebranded from "Notes or Nope" to "Klutr" across all user-facing content
+- [ui] Updated app/layout.tsx metadata (title, description) to reflect Klutr branding
+- [infra] Updated package.json name field from "my-v0-project" to "klutr"
+- [docs] Updated README.md title and description to reference Klutr
+- [docs] Updated Mintlify documentation files (overview.mdx, getting-started.mdx, notes-guide.mdx) replacing "Notes or Nope" with "Klutr"
+- [docs] Updated PRD.md, DOPPLER.md, docs/ui-map.md, docs/dev-setup.md, docs/deployment.md titles/descriptions to reference Klutr
+- [docs] Verified placeholder logo assets (placeholder-logo.svg, placeholder-logo.png) do not contain old brand name text
+- [risk] Backend code identifiers (API routes, database schema, internal variables) remain unchanged to preserve functionality
+- [risk] Build requires Doppler configuration which is environment-specific; rebranding changes pass linter validation
+
+## 2025-10-29 20:30 ET
+
+- [infra] Migrated to Tailwind CSS v4.1.9 - removed tailwind.config.ts (config now in CSS via @theme)
+- [infra] Removed tailwindcss-animate dependency (using tw-animate-css instead, already integrated)
+- [infra] Removed autoprefixer dependency (handled by Tailwind v4 PostCSS plugin)
+- [infra] Added explicit @source directives in globals.css for content scanning
+- [infra] Verified Next.js 16.0.0 configuration (already up to date)
 
 ## 2025-10-30 22:40 ET
 

@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       create: {
         userId: user.id,
         name,
+        cluster: name, // Use name as cluster for new stacks
         pinned,
         noteCount: 0,
         summary: "",

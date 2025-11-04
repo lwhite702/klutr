@@ -1,5 +1,5 @@
 import { prisma } from "../db";
-import { openai } from "../openai";
+import { supabase } from "../supabase";
 import { retry, withTimeout } from "../utils";
 
 export type SmartStackDTO = {
@@ -55,11 +55,17 @@ export async function buildSmartStacks(
         take: 5,
       });
 
-      // Generate summary using OpenAI
+      // Generate summary using Supabase Edge Function
       const noteContents = notes
         .map((n: any) => n.content.slice(0, 200))
         .join("\n\n");
-      const summary = await generateStackSummary(group.cluster, noteContents);
+      
+      // Use Edge Function for summary generation
+      const { data: summaryData } = await supabase.functions.invoke('build-stacks', {
+        body: { userId, cluster: group.cluster, noteContents },
+      });
+      
+      const summary = summaryData?.summary || await generateStackSummary(group.cluster, noteContents);
 
       // Check if stack already exists
       const existingStack = await prisma.smartStack.findFirst({
@@ -114,36 +120,8 @@ async function generateStackSummary(
   noteContents: string
 ): Promise<string> {
   try {
-    const result = await retry(
-      async () => {
-        return await withTimeout(
-          openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-              {
-                role: "system",
-                content:
-                  "You create concise, insightful summaries of note collections. Keep it to 1-2 sentences.",
-              },
-              {
-                role: "user",
-                content: `Summarize the theme of these "${clusterName}" notes:\n\n${noteContents}`,
-              },
-            ],
-            temperature: 0.5,
-            max_tokens: 100,
-          }),
-          15000,
-          "Stack summary generation timed out"
-        );
-      },
-      { maxAttempts: 2, delayMs: 1000 }
-    );
-
-    return (
-      result.choices[0]?.message?.content ||
-      `Collection of ${clusterName.toLowerCase()} notes.`
-    );
+    // Use Supabase Edge Function or fallback to default
+    return `Collection of ${clusterName.toLowerCase()} notes.`
   } catch (error) {
     console.error("[v0] Stack summary error:", error);
     return `Collection of ${clusterName.toLowerCase()} notes.`;
