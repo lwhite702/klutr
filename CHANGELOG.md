@@ -25,6 +25,11 @@ Each entry includes:
 
 ---
 
+## 2025-01-27 14:30 ET
+
+- [infra] Merged feat-add-dialog-tours-c1915 into main: Integrated dialog tours with quality improvements and accessibility enhancements
+- [infra] Merged main-opus-merge work into feat-add-dialog-tours-c1915 (already included in branch history)
+
 ## 2025-11-03 14:00 ET
 
 - [feature] Added section-specific onboarding walkthroughs for all 7 major sections (Notes, MindStorm, Stacks, Vault, Insights, Memory, Nope) with 1-3 step guided tours per section
