@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export interface TourStep {
   id: string;
@@ -41,6 +41,9 @@ export function useSectionSummary(sectionId: string, defaultExpanded = true) {
     setReady(true);
   }, [sectionId]);
 
+  // Debounce localStorage writes to prevent performance issues
+  const writeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const setAndPersist = useCallback(
     (value: boolean | ((prev: boolean) => boolean)) => {
       setExpanded((prev) => {
@@ -48,15 +51,39 @@ export function useSectionSummary(sectionId: string, defaultExpanded = true) {
           typeof value === "function"
             ? (value as (prev: boolean) => boolean)(prev)
             : value;
-        const storage = getStorage();
-        if (storage) {
-          storage.setItem(SUMMARY_KEY_PREFIX + sectionId, next ? "1" : "0");
+
+        // Clear any pending writes
+        if (writeTimeoutRef.current) {
+          clearTimeout(writeTimeoutRef.current);
         }
+
+        // Debounce localStorage write
+        writeTimeoutRef.current = setTimeout(() => {
+          try {
+            const storage = getStorage();
+            if (storage) {
+              storage.setItem(SUMMARY_KEY_PREFIX + sectionId, next ? "1" : "0");
+            }
+          } catch (error) {
+            // Fallback: silently continue if localStorage fails
+            console.warn("[klutr] Failed to persist summary state:", error);
+          }
+        }, 100); // 100ms debounce
+
         return next;
       });
     },
     [sectionId]
   );
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (writeTimeoutRef.current) {
+        clearTimeout(writeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const toggle = useCallback(
     () => setAndPersist((prev) => !prev),
@@ -88,26 +115,53 @@ export function useSectionTour(
   const key = useMemo(() => TOUR_KEY_PREFIX + sectionId, [sectionId]);
 
   useEffect(() => {
-    const storage = getStorage();
-    const seen = storage?.getItem(key) === "1";
-    setCompleted(seen);
-    if (!seen && steps.length > 0 && options?.autoStart !== false) {
-      setCurrentStepIndex(0);
-      setOpen(true);
+    try {
+      const storage = getStorage();
+      const seen = storage?.getItem(key) === "1";
+      setCompleted(seen);
+      if (!seen && steps.length > 0 && options?.autoStart !== false) {
+        setCurrentStepIndex(0);
+        setOpen(true);
+      }
+    } catch (error) {
+      // Fallback: if localStorage fails, assume tour hasn't been seen
+      console.warn("[klutr] Failed to check tour completion state:", error);
+      setCompleted(false);
+      if (steps.length > 0 && options?.autoStart !== false) {
+        setCurrentStepIndex(0);
+        setOpen(true);
+      }
+    } finally {
+      setReady(true);
     }
-    setReady(true);
   }, [key, steps, options?.autoStart]);
 
   const markSeen = useCallback(() => {
-    const storage = getStorage();
-    storage?.setItem(key, "1");
-    setCompleted(true);
+    try {
+      const storage = getStorage();
+      if (storage) {
+        storage.setItem(key, "1");
+      }
+      setCompleted(true);
+    } catch (error) {
+      // Fallback: silently continue if localStorage fails (e.g., private browsing)
+      console.warn("[klutr] Failed to mark tour as seen:", error);
+      setCompleted(true);
+    }
   }, [key]);
 
   const resetSeen = useCallback(() => {
-    const storage = getStorage();
-    storage?.removeItem(key);
-    setCompleted(false);
+    try {
+      const storage = getStorage();
+      if (storage) {
+        storage.removeItem(key);
+      }
+      setCompleted(false);
+    } catch (error) {
+      // Fallback: continue even if localStorage fails
+      console.warn("[klutr] Failed to reset tour seen state:", error);
+      setCompleted(false);
+    }
   }, [key]);
 
   const startTour = useCallback(
