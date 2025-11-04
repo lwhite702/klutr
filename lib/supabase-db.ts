@@ -122,7 +122,7 @@ export const db = {
       if (options.where?.cluster !== undefined) {
         if (options.where.cluster === null) {
           query = query.is('cluster', null)
-        } else if (typeof options.where.cluster === 'object' && 'not' in options.where.cluster && options.where.cluster.not === null) {
+        } else if (typeof options.where.cluster === 'object' && options.where.cluster !== null && 'not' in options.where.cluster && (options.where.cluster as any).not === null) {
           // Handle Prisma-style { not: null }
           query = query.not('cluster', 'is', null)
         } else {
@@ -142,7 +142,7 @@ export const db = {
         query = query.is('embedding', null)
       }
       // Handle OR queries - Supabase uses .or() method
-      if (options.where.OR && options.where.OR.length > 0) {
+      if (options.where?.OR && options.where.OR.length > 0) {
         const orConditions = options.where.OR.map((or: any) => {
           if (or.type) return `type.eq.${or.type}`
           if (or.archived !== undefined) return `archived.eq.${or.archived}`
@@ -170,11 +170,16 @@ export const db = {
       // If tags are requested, fetch them
       if (options.include?.tags) {
         const notesWithTags = await Promise.all(
-          (data || []).map(async (note) => {
+          (data || []).map(async (note: any) => {
             const { data: noteTags } = await supabaseAdmin
               .from('note_tags')
               .select('tag_id, tags(*)')
               .eq('note_id', note.id)
+
+            const tags = noteTags?.map((nt: any) => ({
+              tagId: nt.tag_id,
+              tag: nt.tags,
+            })) || []
 
             return {
               ...note,
@@ -183,10 +188,7 @@ export const db = {
               updatedAt: note.updated_at,
               clusterConfidence: note.cluster_confidence,
               clusterUpdatedAt: note.cluster_updated_at,
-              tags: noteTags?.map((nt: any) => ({
-                tagId: nt.tag_id,
-                tag: nt.tags,
-              })) || [],
+              tags,
             }
           })
         )
@@ -567,13 +569,14 @@ export const db = {
 
       if (existing) {
         // Update
+        const stackId = (options.where as any).id || existing.id
         const { data: stack, error } = await supabaseAdmin
           .from('smart_stacks')
           .update({
             note_count: options.update.noteCount,
             summary: options.update.summary,
           })
-          .eq('id', options.where.id)
+          .eq('id', stackId)
           .select()
           .single()
 
@@ -843,6 +846,89 @@ export const db = {
         if (error) throw error
         return insight
       }
+    },
+
+    async update(options: {
+      where: { id: string }
+      data: {
+        summary?: string
+        sentiment?: string
+        noteCount?: number
+      }
+    }) {
+      const { data: insight, error } = await supabaseAdmin
+        .from('weekly_insights')
+        .update({
+          ...(options.data.summary !== undefined && { summary: options.data.summary }),
+          ...(options.data.sentiment !== undefined && { sentiment: options.data.sentiment }),
+          ...(options.data.noteCount !== undefined && { note_count: options.data.noteCount }),
+        })
+        .eq('id', options.where.id)
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        ...insight,
+        userId: insight.user_id,
+        weekStart: new Date(insight.week_start),
+        noteCount: insight.note_count,
+        createdAt: new Date(insight.created_at),
+      }
+    },
+
+    async create(options: {
+      data: {
+        userId: string
+        weekStart: Date
+        summary: string
+        sentiment: string
+        noteCount: number
+      }
+    }) {
+      const { data: insight, error } = await supabaseAdmin
+        .from('weekly_insights')
+        .insert({
+          user_id: options.data.userId,
+          week_start: options.data.weekStart.toISOString(),
+          summary: options.data.summary,
+          sentiment: options.data.sentiment,
+          note_count: options.data.noteCount,
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      return {
+        ...insight,
+        userId: insight.user_id,
+        weekStart: new Date(insight.week_start),
+        noteCount: insight.note_count,
+        createdAt: new Date(insight.created_at),
+      }
+    },
+  },
+  user: {
+    async findMany(options?: {
+      select?: {
+        id?: boolean
+        email?: boolean
+        [key: string]: boolean | undefined
+      }
+    }) {
+      const { data: users, error } = await supabaseAdmin
+        .from('users')
+        .select(options?.select?.id !== false ? 'id' : '')
+        .select(options?.select?.email !== false ? 'email' : '')
+
+      if (error) throw error
+
+      return users?.map((u: any) => ({
+        id: u.id,
+        email: u.email,
+      })) || []
     },
   },
 }

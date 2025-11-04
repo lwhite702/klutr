@@ -48,7 +48,7 @@ export async function runNightlyCluster() {
         for (const note of notesWithoutEmbeddings) {
           try {
             const embedding = await embedNoteContent(note.content)
-            await prisma.$executeRaw`
+            await (prisma as any).$executeRaw`
               UPDATE notes
               SET embedding = ${JSON.stringify(embedding)}::vector
               WHERE id = ${note.id}

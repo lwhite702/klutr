@@ -246,6 +246,7 @@ export function SectionTourDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
 

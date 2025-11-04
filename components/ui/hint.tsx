@@ -67,13 +67,13 @@ export function Hint({ title = "Hot tip", message, trigger }: HintProps) {
 
   if (isTouch) {
     const mobileTrigger = isValidElement(triggerNode)
-      ? cloneElement(triggerNode as ReactElement, {
+      ? cloneElement(triggerNode as ReactElement<any>, {
           onClick: (event: ReactMouseEvent) => {
             event.preventDefault();
             event.stopPropagation();
             setOpen(true);
           },
-        })
+        } as any)
       : (
           <span
             role="button"
