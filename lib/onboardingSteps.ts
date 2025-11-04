@@ -1,5 +1,127 @@
 import type { OnboardingStep } from "./hooks/useSectionOnboarding";
+import type { TourStep } from "./hooks/useSectionExperience";
 
+export type TourType = "dialog" | "callout";
+
+export interface OnboardingStepConfig extends OnboardingStep {
+  tourType?: TourType;
+}
+
+// Dialog tour steps (for SectionTourDialog)
+export const dialogTourSteps: Record<string, TourStep[]> = {
+  notes: [
+    {
+      id: "capture",
+      title: "Capture your thoughts",
+      description:
+        "Use the quick capture bar to add notes, files, or voice recordings. Everything you add is automatically tagged and organized.",
+    },
+    {
+      id: "auto-tagging",
+      title: "Auto-tagging",
+      description:
+        "We analyze your notes and add relevant tags automatically. You can also add your own tags to organize your thoughts.",
+    },
+    {
+      id: "archive",
+      title: "Archive what doesn't fit",
+      description:
+        "Swipe left or use the Nope action to archive notes that don't fit your current workflow. Nothing is permanently deleted—you can restore items later.",
+    },
+  ],
+  mindstorm: [
+    {
+      id: "clusters",
+      title: "Related ideas grouped together",
+      description:
+        "AI analyzes your notes and groups similar ideas into clusters. Related thoughts appear together, making connections easier to spot.",
+    },
+    {
+      id: "recluster",
+      title: "Refresh clusters anytime",
+      description:
+        "Click 'Re-cluster now' to update groupings when you add new notes. Clusters improve as you add more content.",
+    },
+  ],
+  stacks: [
+    {
+      id: "collections",
+      title: "Collections of related notes",
+      description:
+        "Stacks are groups of notes organized by topic, project, or theme. Browse your collections to find what you need.",
+    },
+    {
+      id: "tags",
+      title: "Tags organize everything",
+      description:
+        "Notes are automatically grouped by tags and categories. Similar tags create related stacks you can browse.",
+    },
+    {
+      id: "pin",
+      title: "Pin important stacks",
+      description:
+        "Pin stacks you use frequently for quick access. Pinned stacks appear at the top of your list.",
+    },
+  ],
+  vault: [
+    {
+      id: "private-storage",
+      title: "Private, encrypted storage",
+      description:
+        "Your vault encrypts notes on your device before uploading. Only you can read them—we never see your plaintext content.",
+    },
+    {
+      id: "unlock",
+      title: "Unlock with your password",
+      description:
+        "Enter your vault password to unlock and view your encrypted notes. Keys are derived from your password and never stored on our servers.",
+    },
+  ],
+  insights: [
+    {
+      id: "summaries",
+      title: "Weekly summaries",
+      description:
+        "Insights highlight patterns in your thinking. See trends, recurring themes, and activity across your notes.",
+    },
+    {
+      id: "generate",
+      title: "Generate insights anytime",
+      description:
+        "Click 'Generate Summary' to create insights from your recent notes. Insights help you discover connections you might have missed.",
+    },
+  ],
+  memory: [
+    {
+      id: "timeline",
+      title: "Your note-taking timeline",
+      description:
+        "Memory Lane shows your notes organized by time. See what you were thinking across weeks and months.",
+    },
+    {
+      id: "rediscover",
+      title: "Rediscover forgotten ideas",
+      description:
+        "Browse past notes to resurface ideas you've set aside. Temporal organization helps you find notes by when you captured them.",
+    },
+  ],
+  nope: [
+    {
+      id: "archived",
+      title: "Archived notes",
+      description:
+        "Nope Bin holds notes you've set aside. Nothing is permanently deleted—your archived notes stay here until you restore them.",
+    },
+    {
+      id: "restore",
+      title: "Restore anytime",
+      description:
+        "Click 'Restore' on any archived note to bring it back to your main notes. Your archived notes are always recoverable.",
+    },
+  ],
+};
+
+// Callout tour steps (for TourCallout - existing format)
 export const onboardingSteps: Record<string, OnboardingStep[]> = {
   notes: [
     {
@@ -131,4 +253,8 @@ export const onboardingSteps: Record<string, OnboardingStep[]> = {
 
 export function getOnboardingSteps(section: string): OnboardingStep[] {
   return onboardingSteps[section] || [];
+}
+
+export function getDialogTourSteps(section: string): TourStep[] {
+  return dialogTourSteps[section] || [];
 }

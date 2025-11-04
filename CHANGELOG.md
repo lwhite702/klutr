@@ -37,6 +37,17 @@ Each entry includes:
 - [feature] Created useSectionOnboarding hook for managing section-specific walkthroughs
 - [feature] Defined onboarding step configurations for all sections in onboardingSteps.ts
 - [docs] Updated ui-map.md to document new onboarding system, help center, section summaries, and brand color tokens
+- [feature] Added SectionTourDialog component with dialog-based tours for first-time onboarding
+- [feature] Created useSectionExperience hook combining useSectionTour and useSectionSummary
+- [feature] Added hint.tsx component for mobile-friendly contextual hints with touch detection
+- [feature] Updated onboardingSteps.ts to support both dialog and callout tour types
+- [fix] Added localStorage error handling fallback in useSectionTour to prevent crashes in private browsing mode
+- [fix] Added keyboard navigation support for SectionTourDialog (ESC to close, arrow keys to navigate)
+- [fix] Added loading state handling in SectionTourDialog when steps are not yet ready
+- [fix] Added aria-live regions for screen readers in SectionTourDialog to announce step changes
+- [fix] Added prop validation and TypeScript guards for SectionTourDialog to prevent runtime errors
+- [fix] Added debounce for localStorage writes in useSectionSummary to prevent performance issues
+- [ui] Added .sr-only CSS utility class for screen reader only content
 
 ## 2025-11-03 07:22 ET
 
