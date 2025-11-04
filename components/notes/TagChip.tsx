@@ -1,4 +1,12 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 interface TagChipProps {
@@ -53,14 +61,26 @@ export function TagChip({ label, colorClassName }: TagChipProps) {
   const colorClass = colorClassName || getTagColor(label);
 
   return (
-    <Badge
-      variant="outline"
-      className={cn(
-        "rounded-[var(--radius-chip)] text-xs font-medium lowercase border",
-        colorClass
-      )}
-    >
-      {label}
-    </Badge>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Badge
+            variant="outline"
+            className={cn(
+              "rounded-[var(--radius-chip)] text-xs font-medium lowercase border cursor-help",
+              colorClass
+            )}
+          >
+            {label}
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="max-w-xs">
+            Tags help organize notes and create connections between related
+            ideas. Tags are added automatically based on note content.
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

@@ -25,6 +25,21 @@ Each entry includes:
 
 ---
 
+## 2025-11-03 14:00 ET
+
+- [feature] Added section-specific onboarding walkthroughs for all 7 major sections (Notes, MindStorm, Stacks, Vault, Insights, Memory, Nope) with 1-3 step guided tours per section
+- [feature] Created HelpCenter component accessible from global help icon in TopBar with searchable help articles for each section
+- [feature] Added SectionSummary component with collapsible summaries below PageHeader on all section pages
+- [ui] Added contextual tooltips to QuickCaptureBar, TagChip, pin buttons, restore buttons, and vault lock screen
+- [ui] Added brand accent colors (deep indigo, lime green, coral) as CSS custom properties in globals.css for both light and dark themes
+- [ui] Applied brand colors selectively to sidebar navigation icons and section summary borders
+- [feature] Extended onboarding utilities with per-section completion tracking in localStorage
+- [feature] Created useSectionOnboarding hook for managing section-specific walkthroughs
+- [feature] Defined onboarding step configurations for all sections in onboardingSteps.ts
+- [docs] Updated ui-map.md to document new onboarding system, help center, section summaries, and brand color tokens
+
+---
+
 ## 2025-11-03 07:22 ET
 
 - [infra] Verified build configuration - build script is `next build` (simplified, no Doppler wrapper)

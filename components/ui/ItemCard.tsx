@@ -1,6 +1,14 @@
+"use client";
+
 import React from "react";
 import { motion } from "framer-motion";
 import { Star, ExternalLink } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Card,
   CardContent,
@@ -92,27 +100,41 @@ export function ItemCard({
               actionsRight
             ) : (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onFavorite?.();
-                  }}
-                  aria-label={
-                    pinned ? "Remove from favorites" : "Add to favorites"
-                  }
-                  className="h-8 w-8 p-0"
-                >
-                  <Star
-                    className={cn(
-                      "h-4 w-4",
-                      pinned
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-muted-foreground"
-                    )}
-                  />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onFavorite?.();
+                        }}
+                        aria-label={
+                          pinned ? "Remove from favorites" : "Add to favorites"
+                        }
+                        className="h-8 w-8 p-0"
+                        data-onboarding="pin-button"
+                      >
+                        <Star
+                          className={cn(
+                            "h-4 w-4",
+                            pinned
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-muted-foreground"
+                          )}
+                        />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs">
+                        {pinned
+                          ? "Unpin this item to remove it from favorites"
+                          : "Pin this item to mark it as a favorite"}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
 
                 <Button
                   variant="ghost"

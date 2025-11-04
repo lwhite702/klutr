@@ -1,50 +1,62 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { MobileNavSheet } from "./MobileNavSheet"
-import { isDemoMode } from "@/lib/onboarding"
-import { apiPost } from "@/lib/clientApi"
-import { Loader2 } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { MobileNavSheet } from "./MobileNavSheet";
+import { isDemoMode } from "@/lib/onboarding";
+import { apiPost } from "@/lib/clientApi";
+import { Loader2, HelpCircle } from "lucide-react";
+import { HelpCenter } from "@/components/help/HelpCenter";
 
 export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
-  const [demoMode, setDemoMode] = useState(false)
-  const [isReclustering, setIsReclustering] = useState(false)
+  const [demoMode, setDemoMode] = useState(false);
+  const [isReclustering, setIsReclustering] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   useEffect(() => {
-    setDemoMode(isDemoMode())
-  }, [])
+    setDemoMode(isDemoMode());
+  }, []);
 
   const handleRecluster = async () => {
     if (demoMode) {
-      console.log("[v0] Demo mode: pretend recluster")
-      return
+      console.log("[v0] Demo mode: pretend recluster");
+      return;
     }
 
-    setIsReclustering(true)
+    setIsReclustering(true);
     try {
-      await apiPost("/api/mindstorm/recluster")
-      console.log("[v0] Reclustering complete")
+      await apiPost("/api/mindstorm/recluster");
+      console.log("[v0] Reclustering complete");
       // Optionally show a success toast here
     } catch (error) {
-      console.error("[v0] Failed to recluster:", error)
+      console.error("[v0] Failed to recluster:", error);
     } finally {
-      setIsReclustering(false)
+      setIsReclustering(false);
     }
-  }
+  };
 
   const handleProfile = () => {
-    console.log("[v0] Profile clicked")
-  }
+    console.log("[v0] Profile clicked");
+  };
 
   const handleSignOut = () => {
-    console.log("[v0] Sign out clicked")
-  }
+    console.log("[v0] Sign out clicked");
+  };
 
   return (
     <header className="border-b bg-background sticky top-0 z-10">
@@ -65,7 +77,11 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" onClick={handleRecluster} disabled={isReclustering}>
+                <Button
+                  variant="outline"
+                  onClick={handleRecluster}
+                  disabled={isReclustering}
+                >
                   {isReclustering ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -78,8 +94,27 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
               </TooltipTrigger>
               <TooltipContent>
                 <p className="max-w-xs">
-                  We embed your notes with AI, compare them in vector space, and group related ideas together.
+                  We embed your notes with AI, compare them in vector space, and
+                  group related ideas together.
                 </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setHelpOpen(true)}
+                  aria-label="Help & documentation"
+                >
+                  <HelpCircle className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Help & documentation</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -94,12 +129,17 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleProfile}>Profile</DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleProfile}>
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSignOut}>
+                Sign out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
+      <HelpCenter open={helpOpen} onOpenChange={setHelpOpen} />
     </header>
-  )
+  );
 }

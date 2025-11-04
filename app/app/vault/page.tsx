@@ -1,15 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import type React from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
 import { VaultLockScreen } from "@/components/vault/VaultLockScreen";
+import { SectionSummary } from "@/components/ui/SectionSummary";
+import { TourCallout } from "@/components/tour/TourCallout";
+import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
+import { getOnboardingSteps } from "@/lib/onboardingSteps";
+import { Button } from "@/components/ui/button";
 import { mockNotes } from "@/lib/mockData";
 
 export default function VaultPage() {
   const [locked, setLocked] = useState(true);
+  const vaultLockRef = useRef<HTMLDivElement>(null);
+  const unlockButtonRef = useRef<HTMLButtonElement>(null);
+
+  const onboarding = useSectionOnboarding({
+    section: "vault",
+    steps: getOnboardingSteps("vault").map((step, idx) => {
+      if (idx === 0)
+        return {
+          ...step,
+          targetRef: vaultLockRef as React.RefObject<HTMLElement | null>,
+        };
+      if (idx === 1)
+        return {
+          ...step,
+          targetRef: unlockButtonRef as React.RefObject<HTMLElement | null>,
+        };
+      return step;
+    }),
+  });
 
   const handleUnlock = () => {
     console.log("TODO: Unlock vault");
@@ -41,8 +66,55 @@ export default function VaultPage() {
           <PageHeader
             title="Vault"
             description="Your private, encrypted notes. Only you can unlock them."
+            actions={
+              !onboarding.active && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onboarding.startOnboarding}
+                >
+                  Take tour
+                </Button>
+              )
+            }
           />
-          <VaultLockScreen onUnlock={handleUnlock} />
+          <SectionSummary
+            section="vault"
+            summary="Private, encrypted notes that only you can read. Everything is encrypted on your device before upload."
+          />
+          <div
+            ref={vaultLockRef}
+            data-onboarding="vault-lock"
+            className="relative"
+          >
+            {onboarding.active &&
+              onboarding.currentStep &&
+              onboarding.step === 0 && (
+                <TourCallout
+                  title={onboarding.currentStep.title}
+                  description={onboarding.currentStep.description}
+                  position={onboarding.currentStep.position}
+                  onNext={onboarding.nextStep}
+                  onClose={onboarding.endOnboarding}
+                  showNext={!onboarding.isLastStep}
+                />
+              )}
+            <VaultLockScreen
+              onUnlock={() => {
+                handleUnlock();
+                if (onboarding.active && onboarding.step === 1) {
+                  setTimeout(() => {
+                    const btn = document.querySelector(
+                      '[data-onboarding="unlock-button"]'
+                    ) as HTMLElement;
+                    if (btn && unlockButtonRef.current) {
+                      unlockButtonRef.current = btn as HTMLButtonElement;
+                    }
+                  }, 100);
+                }
+              }}
+            />
+          </div>
         </div>
       </AppShell>
     );
@@ -54,6 +126,21 @@ export default function VaultPage() {
         <PageHeader
           title="Vault"
           description="Your private, encrypted notes. Only you can unlock them."
+          actions={
+            !onboarding.active && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onboarding.startOnboarding}
+              >
+                Take tour
+              </Button>
+            )
+          }
+        />
+        <SectionSummary
+          section="vault"
+          summary="Private, encrypted notes that only you can read. Everything is encrypted on your device before upload."
         />
 
         <CardGrid>

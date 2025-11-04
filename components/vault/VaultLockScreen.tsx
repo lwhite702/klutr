@@ -1,12 +1,17 @@
-"use client"
+"use client";
 
-import { Lock } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface VaultLockScreenProps {
-  onUnlock: () => void
+  onUnlock: () => void;
 }
 
 export function VaultLockScreen({ onUnlock }: VaultLockScreenProps) {
@@ -22,19 +27,29 @@ export function VaultLockScreen({ onUnlock }: VaultLockScreenProps) {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <p className="text-sm text-muted-foreground cursor-help">Your private notes are secure</p>
+                  <p className="text-sm text-muted-foreground cursor-help">
+                    Your private notes are secure
+                  </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="max-w-xs">Vault notes are encrypted with your key before they leave your device.</p>
+                  <p className="max-w-xs">
+                    Vault notes are encrypted with your key before they leave
+                    your device.
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
-          <Button onClick={onUnlock} size="lg" className="w-full">
+          <Button
+            onClick={onUnlock}
+            size="lg"
+            className="w-full"
+            data-onboarding="unlock-button"
+          >
             Unlock
           </Button>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

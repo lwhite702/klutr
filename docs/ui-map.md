@@ -27,8 +27,28 @@ This design language comes from the "Bookmark App — Community" Figma file and 
   - Supports favorite/pin functionality and custom actions
 
 - **TagChip** → Pill-style metadata label
+
   - Used for tags, categories, and metadata display
   - Supports custom color variants
+  - Includes tooltip explaining tag system on hover
+
+- **SectionSummary** → Collapsible summary component below PageHeader
+
+  - Displays 1-2 sentence description of section purpose
+  - Remembers collapsed state per section in localStorage
+  - Animated expand/collapse with framer-motion
+  - Used on all section pages to provide context
+
+- **HelpCenter** → Modal dialog with searchable help articles
+
+  - Accessible from help icon in TopBar
+  - Organized by section with search functionality
+  - Provides feature explanations and usage tips
+
+- **TourCallout** → Onboarding tooltip positioned relative to target elements
+  - Used for section-specific walkthroughs
+  - Supports 1-3 step tours per section
+  - Persists completion state per section
 
 ## Shared Surface Primitives
 
@@ -126,6 +146,7 @@ All pages share the same structural skeleton: AppShell wraps SidebarNav and cont
 The visual system derives from the "Bookmark App — Community" Figma file, specifically the BBQ/Podcast/Wishlist patterns. This design language is canonical for the first shipped aesthetic and establishes the foundation for all feature views:
 
 - **Color Palette**: Neutral backgrounds with accent colors for tags and actions
+- **Brand Colors**: Deep indigo (`--color-brand-indigo`), lime green (`--color-brand-lime`), and coral (`--color-brand-coral`) used selectively for section icons, summary borders, and accent elements
 - **Typography**: Consistent font sizing (text-2xl for headers, text-lg for card titles)
 - **Spacing**: Consistent padding (p-6 md:p-8) and gap spacing (gap-6)
 - **Border Radius**: CSS custom properties for consistent rounded corners

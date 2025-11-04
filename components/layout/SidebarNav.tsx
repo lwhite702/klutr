@@ -14,13 +14,48 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { href: "/app", label: "Notes", icon: Lightbulb },
-  { href: "/app/mindstorm", label: "MindStorm", icon: Brain },
-  { href: "/app/stacks", label: "Smart Stacks", icon: Layers },
-  { href: "/app/vault", label: "Vault", icon: Lock },
-  { href: "/app/insights", label: "Insights", icon: Eye },
-  { href: "/app/memory", label: "Memory Lane", icon: Calendar },
-  { href: "/app/nope", label: "Nope Bin", icon: Trash2 },
+  {
+    href: "/app",
+    label: "Notes",
+    icon: Lightbulb,
+    color: "text-[var(--color-brand-lime)]",
+  },
+  {
+    href: "/app/mindstorm",
+    label: "MindStorm",
+    icon: Brain,
+    color: "text-[var(--color-brand-indigo)]",
+  },
+  {
+    href: "/app/stacks",
+    label: "Smart Stacks",
+    icon: Layers,
+    color: "text-[var(--color-brand-lime)]",
+  },
+  {
+    href: "/app/vault",
+    label: "Vault",
+    icon: Lock,
+    color: "text-[var(--color-brand-coral)]",
+  },
+  {
+    href: "/app/insights",
+    label: "Insights",
+    icon: Eye,
+    color: "text-[var(--color-brand-indigo)]",
+  },
+  {
+    href: "/app/memory",
+    label: "Memory Lane",
+    icon: Calendar,
+    color: "text-[var(--color-brand-lime)]",
+  },
+  {
+    href: "/app/nope",
+    label: "Nope Bin",
+    icon: Trash2,
+    color: "text-muted-foreground",
+  },
 ];
 
 interface SidebarNavProps {
@@ -46,7 +81,9 @@ export function SidebarNav({ activeRoute }: SidebarNavProps) {
             asChild
           >
             <Link href={item.href}>
-              <Icon className="h-4 w-4" />
+              <Icon
+                className={`h-4 w-4 ${item.color || "text-muted-foreground"}`}
+              />
               {item.label}
             </Link>
           </Button>

@@ -1,15 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import type React from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
+import { SectionSummary } from "@/components/ui/SectionSummary";
+import { TourCallout } from "@/components/tour/TourCallout";
+import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
+import { getOnboardingSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
 import { mockClusters } from "@/lib/mockData";
 
 export default function MindStormPage() {
   const [clusters, setClusters] = useState(mockClusters);
+  const clustersRef = useRef<HTMLDivElement>(null);
+  const reclusterButtonRef = useRef<HTMLButtonElement>(null);
+
+  const onboarding = useSectionOnboarding({
+    section: "mindstorm",
+    steps: getOnboardingSteps("mindstorm").map((step, idx) => {
+      if (idx === 0)
+        return {
+          ...step,
+          targetRef: clustersRef as React.RefObject<HTMLElement | null>,
+        };
+      if (idx === 1)
+        return {
+          ...step,
+          targetRef: reclusterButtonRef as React.RefObject<HTMLElement | null>,
+        };
+      return step;
+    }),
+  });
 
   const handleRecluster = () => {
     console.log("TODO: Recluster notes");
@@ -25,12 +49,25 @@ export default function MindStormPage() {
 
   const ReclusterButton = () => (
     <Button
+      ref={reclusterButtonRef}
       variant="outline"
       size="sm"
       onClick={handleRecluster}
       aria-label="Re-cluster notes now"
+      data-onboarding="recluster-button"
+      className="relative"
     >
       Re-cluster now
+      {onboarding.active && onboarding.currentStep && onboarding.step === 1 && (
+        <TourCallout
+          title={onboarding.currentStep.title}
+          description={onboarding.currentStep.description}
+          position={onboarding.currentStep.position}
+          onNext={onboarding.nextStep}
+          onClose={onboarding.endOnboarding}
+          showNext={!onboarding.isLastStep}
+        />
+      )}
     </Button>
   );
 
@@ -40,8 +77,41 @@ export default function MindStormPage() {
         <PageHeader
           title="MindStorm"
           description="Your thoughts grouped by theme."
-          actions={<ReclusterButton />}
+          actions={
+            <>
+              {!onboarding.active && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onboarding.startOnboarding}
+                >
+                  Take tour
+                </Button>
+              )}
+              <ReclusterButton />
+            </>
+          }
         />
+
+        <SectionSummary
+          section="mindstorm"
+          summary="AI groups your notes by theme automatically. Related ideas cluster together as you add more notes."
+        />
+
+        <div ref={clustersRef} data-onboarding="clusters" className="relative">
+          {onboarding.active &&
+            onboarding.currentStep &&
+            onboarding.step === 0 && (
+              <TourCallout
+                title={onboarding.currentStep.title}
+                description={onboarding.currentStep.description}
+                position={onboarding.currentStep.position}
+                onNext={onboarding.nextStep}
+                onClose={onboarding.endOnboarding}
+                showNext={!onboarding.isLastStep}
+              />
+            )}
+        </div>
 
         <CardGrid>
           {clusters.map((cluster) => (

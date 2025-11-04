@@ -1,16 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import type React from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
 import { QuickCaptureBar } from "@/components/notes/QuickCaptureBar";
+import { SectionSummary } from "@/components/ui/SectionSummary";
+import { TourCallout } from "@/components/tour/TourCallout";
+import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
+import { getOnboardingSteps } from "@/lib/onboardingSteps";
 import { mockNotes } from "@/lib/mockData";
+import { Button } from "@/components/ui/button";
 
 export default function AllNotesPage() {
   const [notes, setNotes] = useState(mockNotes);
   const [isCreating, setIsCreating] = useState(false);
+  const quickCaptureRef = useRef<HTMLDivElement>(null);
+  const tagsRef = useRef<HTMLDivElement>(null);
+
+  const onboarding = useSectionOnboarding({
+    section: "notes",
+    steps: getOnboardingSteps("notes").map((step, idx) => {
+      if (idx === 0)
+        return {
+          ...step,
+          targetRef: quickCaptureRef as React.RefObject<HTMLElement | null>,
+        };
+      if (idx === 1)
+        return {
+          ...step,
+          targetRef: tagsRef as React.RefObject<HTMLElement | null>,
+        };
+      return step;
+    }),
+  });
 
   const handleCreateNote = async (content: string) => {
     setIsCreating(true);
@@ -45,9 +70,63 @@ export default function AllNotesPage() {
   return (
     <AppShell activeRoute="/app">
       <div className="max-w-5xl mx-auto space-y-6">
-        <PageHeader title="All Notes" />
+        <PageHeader
+          title="All Notes"
+          actions={
+            !onboarding.active && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onboarding.startOnboarding}
+              >
+                Take tour
+              </Button>
+            )
+          }
+        />
 
-        <QuickCaptureBar onCreate={handleCreateNote} isCreating={isCreating} />
+        <SectionSummary
+          section="notes"
+          summary="Your capture inbox is where you dump thoughts, files or voice notes. We tag them and file them for later."
+        />
+
+        <div
+          ref={quickCaptureRef}
+          data-onboarding="quick-capture"
+          className="relative"
+        >
+          <QuickCaptureBar
+            onCreate={handleCreateNote}
+            isCreating={isCreating}
+          />
+          {onboarding.active &&
+            onboarding.currentStep &&
+            onboarding.step === 0 && (
+              <TourCallout
+                title={onboarding.currentStep.title}
+                description={onboarding.currentStep.description}
+                position={onboarding.currentStep.position}
+                onNext={onboarding.nextStep}
+                onClose={onboarding.endOnboarding}
+                showNext={!onboarding.isLastStep}
+              />
+            )}
+        </div>
+
+        <div ref={tagsRef} data-onboarding="tags" className="relative">
+          {onboarding.active &&
+            onboarding.currentStep &&
+            onboarding.step === 1 && (
+              <TourCallout
+                title={onboarding.currentStep.title}
+                description={onboarding.currentStep.description}
+                position={onboarding.currentStep.position}
+                onNext={onboarding.nextStep}
+                onClose={onboarding.endOnboarding}
+                showNext={!onboarding.isLastStep}
+              />
+            )}
+        </div>
 
         <CardGrid>
           {notes.map((note) => (
@@ -62,6 +141,21 @@ export default function AllNotesPage() {
             />
           ))}
         </CardGrid>
+
+        {onboarding.active &&
+          onboarding.currentStep &&
+          onboarding.step === 2 && (
+            <div className="relative" data-onboarding="nope-action">
+              <TourCallout
+                title={onboarding.currentStep.title}
+                description={onboarding.currentStep.description}
+                position={onboarding.currentStep.position}
+                onNext={onboarding.nextStep}
+                onClose={onboarding.endOnboarding}
+                showNext={!onboarding.isLastStep}
+              />
+            </div>
+          )}
 
         {notes.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
