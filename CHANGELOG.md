@@ -25,6 +25,17 @@ Each entry includes:
 
 ---
 
+## 2025-11-04 20:33 ET
+
+- [ui] Added dark mode support with system preference detection and user toggle
+- [ui] Configured ThemeProvider in root layout with `attribute="class"`, `defaultTheme="system"`, `enableSystem`, and localStorage persistence (`storageKey="klutr-theme"`)
+- [ui] Added theme toggle button to TopBar component with sun/moon icons (Sun icon in dark mode, Moon icon in light mode)
+- [ui] Theme toggle respects system preference by default (`prefers-color-scheme`) and allows user override stored in localStorage
+- [ui] All components already use semantic color classes (bg-background, text-foreground, bg-card, etc.) that automatically adapt to dark mode via CSS variables
+- [ui] CSS variables for dark mode already defined in globals.css covering background, foreground, card, border, accent, sidebar, and brand colors
+- [ui] Added suppressHydrationWarning to html element to prevent hydration mismatch during theme initialization
+- [docs] Dark mode implementation is non-breaking - all existing styles remain functional in both light and dark modes
+
 ## 2025-01-27 14:30 ET
 
 - [infra] Merged feat-add-dialog-tours-c1915 into main: Integrated dialog tours with quality improvements and accessibility enhancements

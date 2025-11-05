@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,17 +21,28 @@ import {
 import { MobileNavSheet } from "./MobileNavSheet";
 import { isDemoMode } from "@/lib/onboarding";
 import { apiPost } from "@/lib/clientApi";
-import { Loader2, HelpCircle } from "lucide-react";
+import { Loader2, HelpCircle, Sun, Moon } from "lucide-react";
 import { HelpCenter } from "@/components/help/HelpCenter";
 
 export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [demoMode, setDemoMode] = useState(false);
   const [isReclustering, setIsReclustering] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     setDemoMode(isDemoMode());
   }, []);
+
+  const toggleTheme = () => {
+    if (resolvedTheme === "dark") {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
+  };
 
   const handleRecluster = async () => {
     if (demoMode) {
@@ -115,6 +127,32 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
               </TooltipTrigger>
               <TooltipContent>
                 <p>Help & documentation</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleTheme}
+                  aria-label="Toggle theme"
+                >
+                  {mounted ? (
+                    resolvedTheme === "dark" ? (
+                      <Sun className="h-5 w-5" />
+                    ) : (
+                      <Moon className="h-5 w-5" />
+                    )
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Toggle theme</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
