@@ -34,6 +34,13 @@ Each entry includes:
 - [ui] All components already use semantic color classes (bg-background, text-foreground, bg-card, etc.) that automatically adapt to dark mode via CSS variables
 - [ui] CSS variables for dark mode already defined in globals.css covering background, foreground, card, border, accent, sidebar, and brand colors
 - [ui] Added suppressHydrationWarning to html element to prevent hydration mismatch during theme initialization
+- [ui] Fixed @theme block to reference CSS variables so colors respond to dark mode properly
+- [a11y] Improved dark mode accessibility and contrast ratios to meet WCAG AA standards
+- [a11y] Enhanced form input and textarea visibility in dark mode (changed from 30% to full opacity background)
+- [a11y] Improved muted text brightness in dark mode (increased from 70.8% to 85% lightness for better readability)
+- [a11y] Enhanced button visibility with better shadows and contrast in dark mode
+- [a11y] Improved tag readability by increasing background opacity from 20% to 50% and brightening text colors
+- [a11y] Enhanced icon contrast in ItemCard components for better visibility
 - [docs] Dark mode implementation is non-breaking - all existing styles remain functional in both light and dark modes
 
 ## 2025-01-27 14:30 ET

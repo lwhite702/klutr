@@ -121,7 +121,7 @@ export function ItemCard({
                             "h-4 w-4",
                             pinned
                               ? "fill-yellow-400 text-yellow-400"
-                              : "text-muted-foreground"
+                              : "text-muted-foreground dark:text-foreground/70"
                           )}
                         />
                       </Button>
@@ -146,7 +146,7 @@ export function ItemCard({
                   aria-label="Open item"
                   className="h-8 w-8 p-0"
                 >
-                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                  <ExternalLink className="h-4 w-4 text-muted-foreground dark:text-foreground/70" />
                 </Button>
               </>
             )}
