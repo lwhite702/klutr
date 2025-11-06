@@ -25,6 +25,15 @@ Each entry includes:
 
 ---
 
+## 2025-11-05 20:22 ET
+
+- [infra] Merged feature/dark-mode-support branch into main and pushed to trigger Vercel deployment
+- [fix] Fixed TypeScript build errors for production deployment:
+  - Removed duplicate weeklyInsight property in supabase-db.ts
+  - Made Supabase client initialization build-friendly (allows builds without env vars during build time)
+  - Excluded supabase/ directory from TypeScript compilation (Deno Edge Functions code)
+- [infra] Production build now passes successfully and Vercel deployment is in progress
+
 ## 2025-11-04 20:33 ET
 
 - [ui] Added dark mode support with system preference detection and user toggle
