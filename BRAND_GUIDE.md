@@ -168,6 +168,15 @@ Consistent use of a signature color can improve brand recognition by up to 80%.
 - Use secondary colors for category tags, highlights, and visual interest
 - Maintain sufficient contrast for accessibility (WCAG AA standards)
 
+### Visual Identity Reference
+
+For detailed visual identity specifications including logo variants, exact color hex codes, typography, and usage rules, see **[docs/brand/klutr-brand-guide.md](../docs/brand/klutr-brand-guide.md)**.
+
+The visual identity uses a split brain–bulb icon with:
+- **Coral** (#FF6B6B light / #FF7D7D dark) for the brain (left side)
+- **Mint** (#00C896 light / #33E0B4 dark) for the bulb (right side)
+- **Navy outline** (#2B2E3F) for both outline and filaments (consistent across modes)
+
 ### Typography
 
 **Body Text:**

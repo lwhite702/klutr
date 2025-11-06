@@ -25,6 +25,17 @@ Each entry includes:
 
 ---
 
+## 2025-11-06 01:41 ET
+
+- [ui] Implemented complete Klutr brand identity with new logo assets and visual system
+- [ui] Added brand logo assets (light/dark variants) to /public/brand/ directory
+- [ui] Organized favicon files (32x32, 192x192, apple-touch-icon) in /public/brand/
+- [ui] Updated AppShell component to display Klutr logo with theme-aware switching
+- [ui] Added brand color tokens to CSS (coral, mint, outline, wordmark) with light/dark variants
+- [ui] Configured favicon links in app layout for all required sizes
+- [docs] Created comprehensive brand guide at docs/brand/klutr-brand-guide.md
+- [docs] Updated BRAND_GUIDE.md to reference new visual identity guide
+
 ## 2025-11-05 20:22 ET
 
 - [infra] Merged feature/dark-mode-support branch into main and pushed to trigger Vercel deployment

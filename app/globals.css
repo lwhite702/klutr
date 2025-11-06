@@ -51,6 +51,18 @@
   --brand-indigo-foreground: oklch(0.985 0 0);
   --brand-lime-foreground: oklch(0.145 0 0);
   --brand-coral-foreground: oklch(0.985 0 0);
+  
+  /* Klutr brand tokens */
+  --klutr-wordmark: #2B2E3F;
+  --klutr-background: #F7F7F9;
+  --klutr-coral: #FF6B6B;
+  --klutr-mint: #00C896;
+  --klutr-outline: #2B2E3F;
+  --klutr-surface-dark: #111111;
+  --klutr-text-primary-light: #2B2E3F;
+  --klutr-text-primary-dark: #FFFFFF;
+  --klutr-text-accent-light: #FF6B6B;
+  --klutr-text-accent-dark: #00C896;
 }
 
 .dark {
@@ -93,6 +105,13 @@
   --brand-indigo-foreground: oklch(0.985 0 0);
   --brand-lime-foreground: oklch(0.145 0 0);
   --brand-coral-foreground: oklch(0.985 0 0);
+  
+  /* Klutr brand tokens (dark mode) */
+  --klutr-wordmark: #FFFFFF;
+  --klutr-coral: #FF7D7D;
+  --klutr-mint: #33E0B4;
+  --klutr-outline: #2B2E3F;
+  /* klutr-surface-dark, text colors remain same */
 }
 
 @theme {
@@ -139,6 +158,18 @@
   --color-brand-indigo-foreground: var(--brand-indigo-foreground);
   --color-brand-lime-foreground: var(--brand-lime-foreground);
   --color-brand-coral-foreground: var(--brand-coral-foreground);
+  
+  /* Klutr brand colors */
+  --color-klutr-wordmark: var(--klutr-wordmark);
+  --color-klutr-background: var(--klutr-background);
+  --color-klutr-coral: var(--klutr-coral);
+  --color-klutr-mint: var(--klutr-mint);
+  --color-klutr-outline: var(--klutr-outline);
+  --color-klutr-surface-dark: var(--klutr-surface-dark);
+  --color-klutr-text-primary-light: var(--klutr-text-primary-light);
+  --color-klutr-text-primary-dark: var(--klutr-text-primary-dark);
+  --color-klutr-text-accent-light: var(--klutr-text-accent-light);
+  --color-klutr-text-accent-dark: var(--klutr-text-accent-dark);
 
   /* Border radius */
   --radius-sm: calc(var(--radius) - 4px);
