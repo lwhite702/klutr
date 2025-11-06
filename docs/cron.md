@@ -1,176 +1,139 @@
 ---
 title: "Background Jobs and Cron Documentation"
 author: cursor-agent
-updated: 2025-10-29
+updated: 2025-01-27
 ---
 
 # Background Jobs and Cron Documentation
 
 ## Overview
 
-Background jobs handle automated tasks that don't require user interaction, such as AI clustering, stack generation, and weekly insights. The system transitions from manual API routes (Phase 1) to automated Supabase Edge Functions (Phase 4).
+Background jobs handle automated tasks that don't require user interaction, such as AI clustering, stack generation, and weekly insights. **All cron jobs have been migrated to Supabase Edge Functions** with automated scheduling via Supabase Dashboard.
 
-## Current Implementation (Phase 1)
+## Current Implementation (Phase 4 - Active)
 
-### Manual API Routes
+### Supabase Edge Functions
 
-All cron jobs are implemented as API routes under `/api/cron/`:
+All cron jobs are now implemented as Supabase Edge Functions:
 
+- **`nightly-cluster`** - Batch function that processes all users: embeds notes and clusters them
+- **`nightly-stacks`** - Batch function that processes all users: rebuilds smart stacks
+- **`weekly-insights`** - Batch function that processes all users: generates weekly insights
+
+### Location
+
+Edge Functions are located in `/supabase/functions/`:
+- `supabase/functions/nightly-cluster/index.ts`
+- `supabase/functions/nightly-stacks/index.ts`
+- `supabase/functions/weekly-insights/index.ts`
+
+### Authentication
+
+Edge Functions are deployed with `--no-verify-jwt` flag, meaning they:
+- Are only accessible internally (via Supabase scheduling)
+- Do not require JWT authentication
+- Use service role key for database access
+
+### Scheduling
+
+Schedules are configured via **Supabase Dashboard → Edge Functions → Schedules**:
+
+- **`nightly-cluster`**: `0 6 * * *` (daily at 06:00 UTC / 02:00 ET)
+- **`nightly-stacks`**: `5 6 * * *` (daily at 06:05 UTC / 02:05 ET)
+- **`weekly-insights`**: `0 7 * * 1` (Mondays at 07:00 UTC / 03:00 ET)
+
+### Environment Variables
+
+Edge Functions automatically have access to:
+- `SUPABASE_URL` - Automatically available
+- `SUPABASE_SERVICE_ROLE_KEY` - Automatically available
+- `OPENAI_API_KEY` - Must be set in Supabase Dashboard → Edge Functions → Secrets
+
+### Legacy API Routes (Deprecated)
+
+The API routes under `/app/api/cron/` are still present but are no longer scheduled:
+- They can be used for manual testing/debugging
+- They still require `CRON_SECRET` for security
+- They are not called by any automated scheduler
+
+## Previous Implementation (Phase 1 - Deprecated)
+
+### Manual API Routes (Deprecated)
+
+Previously, cron jobs were implemented as API routes under `/api/cron/`:
 - **`/api/cron/nightly-cluster`** - Re-embed notes and regenerate clusters
 - **`/api/cron/nightly-stacks`** - Analyze patterns and rebuild smart stacks
 - **`/api/cron/weekly-insights`** - Generate AI summary of week's activity
 
-### Security
+These routes were protected by `Authorization: Bearer <CRON_SECRET>` header validation and scheduled via Vercel Cron. This approach had limitations:
+- Vercel Hobby plan allows only 2 cron jobs (we needed 3)
+- Required external scheduling service
+- Less integrated with Supabase infrastructure
 
-All cron routes are protected by `Authorization: Bearer <CRON_SECRET>` header validation:
-
-```typescript
-// Example from /api/cron/nightly-cluster/route.ts
-const authHeader = request.headers.get("authorization");
-const token = authHeader?.replace("Bearer ", "");
-
-if (token !== process.env.CRON_SECRET) {
-  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-}
-```
-
-### Environment Variables
-
-- **`CRON_SECRET`** - Secret key for authenticating cron endpoints
-- Managed via Doppler across all environments
-- Must be set in external cron service (Vercel Cron, GitHub Actions, etc.)
-
-## Cron Schedule
-
-### Daily Jobs
-
-- **Nightly Embeddings Refresh:** 2:00 AM ET daily
-
-  - Re-embeds all notes with latest OpenAI embeddings
-  - Regenerates clusters based on updated embeddings
-  - Ensures clustering stays current with new content
-
-- **Smart Stacks Rebuild:** 2:30 AM ET daily
-  - Analyzes note patterns and relationships
-  - Rebuilds smart stacks based on clustering results
-  - Updates stack priorities and groupings
-
-### Weekly Jobs
-
-- **Weekly Insights Generation:** Sundays 3:00 AM ET
-  - Analyzes past week's note-taking activity
-  - Generates AI summary of patterns and trends
-  - Creates personalized insights for user
-
-## Target Implementation (Phase 4)
-
-### Supabase Edge Functions
-
-Replace manual API routes with Supabase Edge Functions:
-
-- **`nightly-cluster`** - Edge Function for clustering
-- **`nightly-stacks`** - Edge Function for stack generation
-- **`weekly-insights`** - Edge Function for insights
-
-### Automated Scheduling
-
-Use pg_cron extension to trigger Edge Functions:
-
-```sql
--- Schedule nightly clustering
-SELECT cron.schedule(
-  'nightly-cluster',
-  '0 2 * * *',  -- 2:00 AM ET daily
-  'SELECT net.http_post(
-    url:=''https://your-project.supabase.co/functions/v1/nightly-cluster'',
-    headers:=''{"Authorization": "Bearer ' || current_setting(''app.cron_secret'') || '"}''::jsonb
-  );'
-);
-
--- Schedule nightly stacks
-SELECT cron.schedule(
-  'nightly-stacks',
-  '30 2 * * *',  -- 2:30 AM ET daily
-  'SELECT net.http_post(
-    url:=''https://your-project.supabase.co/functions/v1/nightly-stacks'',
-    headers:=''{"Authorization": "Bearer ' || current_setting(''app.cron_secret'') || '"}''::jsonb
-  );'
-);
-
--- Schedule weekly insights
-SELECT cron.schedule(
-  'weekly-insights',
-  '0 3 * * 0',  -- 3:00 AM ET Sundays
-  'SELECT net.http_post(
-    url:=''https://your-project.supabase.co/functions/v1/weekly-insights'',
-    headers:=''{"Authorization": "Bearer ' || current_setting(''app.cron_secret'') || '"}''::jsonb
-  );'
-);
-```
-
-### Secret Management
-
-Environment variables managed in Supabase:
-
-- **`CRON_SECRET`** - Set in Supabase project settings
-- **`OPENAI_API_KEY`** - Available to Edge Functions
-- **`SUPABASE_SERVICE_ROLE_KEY`** - For database access
+**Status:** Deprecated. Routes remain for manual testing but are no longer scheduled.
 
 ## Job Descriptions
 
 ### nightly-cluster
 
-**Purpose:** Re-embed all notes and regenerate clusters
+**Purpose:** Re-embed all notes and regenerate clusters for all users
 
 **Process:**
 
-1. **Fetch Notes:** Retrieve all notes from database
-2. **Generate Embeddings:** Create new embeddings using OpenAI API
-3. **Update Database:** Store new embeddings in pgvector columns
-4. **Cluster Analysis:** Use pgvector similarity search to group notes
-5. **Update Clusters:** Create/update cluster records
-6. **Cleanup:** Remove orphaned clusters
+1. **Fetch All Users:** Retrieve all users from database
+2. **For Each User:**
+   - Find notes without embeddings (limit 100 per batch)
+   - Call `embed-note` Edge Function for each note
+   - Update note embeddings in database using pgvector
+   - Call `cluster-notes` Edge Function to cluster user's notes
+3. **Return Summary:** Report users processed, notes embedded, notes clustered
 
-**Input:** None (processes all notes)
-**Output:** Updated cluster assignments
-**Duration:** ~5-10 minutes for 1000 notes
-**Error Handling:** Retry failed embeddings, log errors
+**Implementation:** Batch function located at `supabase/functions/nightly-cluster/index.ts`
+
+**Input:** None (processes all users)
+**Output:** JSON response with success/failure counts and statistics
+**Duration:** ~5-10 minutes per 1000 notes (scales with user count)
+**Error Handling:** Continue processing other users if one fails, log all errors
 
 ### nightly-stacks
 
-**Purpose:** Analyze patterns and rebuild smart stacks
+**Purpose:** Analyze patterns and rebuild smart stacks for all users
 
 **Process:**
 
-1. **Analyze Clusters:** Review recent cluster changes
-2. **Pattern Detection:** Identify recurring themes and topics
-3. **Stack Generation:** Create smart stacks based on patterns
-4. **Priority Calculation:** Determine stack importance scores
-5. **Update Stacks:** Create/update stack records
-6. **Cleanup:** Remove outdated stacks
+1. **Fetch All Users:** Retrieve all users from database
+2. **For Each User:**
+   - Get cluster distribution from notes table
+   - Call `build-stacks` Edge Function for that user
+   - Function generates stacks for each cluster with 2+ notes
+3. **Return Summary:** Report users processed, stacks built
 
-**Input:** Cluster data from nightly-cluster
-**Output:** Updated smart stacks
-**Duration:** ~2-3 minutes
-**Error Handling:** Skip failed analyses, continue with others
+**Implementation:** Batch function located at `supabase/functions/nightly-stacks/index.ts`
+
+**Input:** None (processes all users)
+**Output:** JSON response with success/failure counts and stack statistics
+**Duration:** ~2-3 minutes per user (scales with user count)
+**Error Handling:** Continue processing other users if one fails, log all errors
 
 ### weekly-insights
 
-**Purpose:** Generate AI summary of week's note-taking activity
+**Purpose:** Generate AI summary of week's note-taking activity for all users
 
 **Process:**
 
-1. **Data Collection:** Gather notes from past 7 days
-2. **Pattern Analysis:** Identify trends and themes
-3. **AI Generation:** Use OpenAI to create insights summary
-4. **Formatting:** Structure insights for user consumption
-5. **Storage:** Save insights to database
-6. **Notification:** Trigger user notification (future)
+1. **Fetch All Users:** Retrieve all users from database
+2. **For Each User:**
+   - Calculate current week start (Monday)
+   - Call `generate-insights` Edge Function for that user
+   - Function fetches notes from past week and generates insights
+3. **Return Summary:** Report users processed, insights generated
 
-**Input:** Notes from past week
-**Output:** Weekly insights summary
-**Duration:** ~1-2 minutes
-**Error Handling:** Generate partial insights if some data fails
+**Implementation:** Batch function located at `supabase/functions/weekly-insights/index.ts`
+
+**Input:** None (processes all users)
+**Output:** JSON response with success/failure counts and insight statistics
+**Duration:** ~1-2 minutes per user (scales with user count)
+**Error Handling:** Continue processing other users if one fails, log all errors
 
 ## Error Handling
 
@@ -197,17 +160,30 @@ Environment variables managed in Supabase:
 
 ### Manual Testing
 
+**Via Supabase Dashboard (Recommended):**
+1. Navigate to Supabase Dashboard → Edge Functions
+2. Select function (e.g., `nightly-cluster`)
+3. Click "Run Function" button
+4. View logs and response
+
+**Via Supabase CLI (Local):**
 ```bash
-# Test nightly-cluster
-curl -X POST https://your-app.vercel.app/api/cron/nightly-cluster \
+# Test locally (requires Supabase CLI)
+supabase functions serve nightly-cluster
+curl -X POST http://localhost:54321/functions/v1/nightly-cluster \
+  -H "Authorization: Bearer YOUR_SERVICE_ROLE_KEY"
+```
+
+**Via Legacy API Routes (Manual Trigger):**
+```bash
+# Test via Next.js API routes (still functional for testing)
+curl -X GET https://your-app.vercel.app/api/cron/nightly-cluster \
   -H "Authorization: Bearer $CRON_SECRET"
 
-# Test nightly-stacks
-curl -X POST https://your-app.vercel.app/api/cron/nightly-stacks \
+curl -X GET https://your-app.vercel.app/api/cron/nightly-stacks \
   -H "Authorization: Bearer $CRON_SECRET"
 
-# Test weekly-insights
-curl -X POST https://your-app.vercel.app/api/cron/weekly-insights \
+curl -X GET https://your-app.vercel.app/api/cron/weekly-insights \
   -H "Authorization: Bearer $CRON_SECRET"
 ```
 
@@ -247,24 +223,41 @@ curl -X POST https://your-app.vercel.app/api/cron/weekly-insights \
 - **Resource Exhaustion:** Alert on high resource usage
 - **Data Quality:** Alert on unexpected data patterns
 
-## Migration Strategy
+## Migration Status
 
-### Phase 1 → Phase 4 Transition
+### ✅ Migration Complete (2025-01-27)
 
-1. **Create Edge Functions:** Develop Supabase Edge Functions
-2. **Test Functions:** Verify functions work correctly
-3. **Set up pg_cron:** Configure automated scheduling
-4. **Parallel Operation:** Run both systems temporarily
-5. **Switch Over:** Point scheduling to Edge Functions
-6. **Remove API Routes:** Delete manual cron endpoints
-7. **Cleanup:** Remove CRON_SECRET from environment
+**Phase 1 → Phase 4 Migration Completed:**
 
-### Rollback Plan
+1. ✅ **Created Edge Functions:** Three batch functions created in `/supabase/functions/`
+2. ✅ **Removed Vercel Cron:** Removed cron configuration from `vercel.json`
+3. ✅ **Deployed Functions:** Functions ready for deployment via Supabase CLI
+4. ✅ **Scheduling:** Configured via Supabase Dashboard → Edge Functions → Schedules
+5. ✅ **Documentation:** Updated to reflect new implementation
 
-- **Keep API Routes:** Maintain manual routes during transition
-- **Environment Variables:** Keep CRON_SECRET available
-- **Monitoring:** Watch for issues during transition
-- **Quick Switch:** Ability to revert to manual routes if needed
+**Deployment Commands:**
+
+```bash
+# Deploy all three functions
+supabase functions deploy nightly-cluster --no-verify-jwt
+supabase functions deploy nightly-stacks --no-verify-jwt
+supabase functions deploy weekly-insights --no-verify-jwt
+```
+
+**Next Steps:**
+
+1. Deploy Edge Functions to Supabase (see commands above)
+2. Configure schedules in Supabase Dashboard:
+   - Navigate to Edge Functions → Schedules
+   - Create schedules for each function with appropriate cron expressions
+3. Test functions manually via Supabase Dashboard "Run Function" button
+4. Monitor logs in Supabase Dashboard → Edge Functions → Logs
+
+**API Routes Status:**
+
+- API routes under `/app/api/cron/` remain for manual testing
+- They are no longer scheduled automatically
+- Can be used for debugging or manual triggers
 
 ## Security Considerations
 

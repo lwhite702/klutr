@@ -25,6 +25,23 @@ Each entry includes:
 
 ---
 
+## 2025-01-27 14:00 ET
+
+- [infra] Migrated all scheduled background tasks from Vercel Cron to Supabase Edge Functions
+- [infra] Removed cron job definitions from vercel.json (resolves Vercel Hobby plan 2-cron limit)
+- [infra] Created three batch Edge Functions for automated processing:
+  - `supabase/functions/nightly-cluster/index.ts` - Processes all users: embeds notes and clusters them
+  - `supabase/functions/nightly-stacks/index.ts` - Processes all users: rebuilds smart stacks
+  - `supabase/functions/weekly-insights/index.ts` - Processes all users: generates weekly insights
+- [infra] Edge Functions are deployed with `--no-verify-jwt` flag for internal scheduling only
+- [infra] Scheduling configured via Supabase Dashboard → Edge Functions → Schedules:
+  - nightly-cluster: `0 6 * * *` (daily at 06:00 UTC / 02:00 ET)
+  - nightly-stacks: `5 6 * * *` (daily at 06:05 UTC / 02:05 ET)
+  - weekly-insights: `0 7 * * 1` (Mondays at 07:00 UTC / 03:00 ET)
+- [docs] Updated docs/cron.md to reflect Phase 4 implementation (Supabase Edge Functions)
+- [docs] Marked legacy API routes under `/app/api/cron/` as deprecated (remain for manual testing)
+- [risk] Edge Functions must be deployed via Supabase CLI and schedules configured in Supabase Dashboard before going live
+
 ## 2025-11-06 01:41 ET
 
 - [ui] Implemented complete Klutr brand identity with new logo assets and visual system
