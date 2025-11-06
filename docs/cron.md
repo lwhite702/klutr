@@ -36,11 +36,24 @@ Edge Functions are deployed with `--no-verify-jwt` flag, meaning they:
 
 ### Scheduling
 
-Schedules are configured via **Supabase Dashboard → Edge Functions → Schedules**:
+Schedules are configured via **Supabase Cron** (pg_cron extension) using SQL migrations:
 
 - **`nightly-cluster`**: `0 6 * * *` (daily at 06:00 UTC / 02:00 ET)
 - **`nightly-stacks`**: `5 6 * * *` (daily at 06:05 UTC / 02:05 ET)
 - **`weekly-insights`**: `0 7 * * 1` (Mondays at 07:00 UTC / 03:00 ET)
+
+**Implementation:**
+- Cron jobs are created via SQL migration (`supabase/migrations/005_cron_jobs.sql`)
+- Jobs use `pg_cron` extension to schedule recurring tasks
+- Jobs use `pg_net` extension to make HTTP POST requests to Edge Functions
+- Secrets (project URL and anon_key) are stored in Supabase Vault for secure access
+- Jobs are stored in `cron.job` table
+- Run history is recorded in `cron.job_run_details` table
+
+**Monitoring:**
+- View jobs in Supabase Dashboard → Integrations → Cron
+- Check run history in `cron.job_run_details` table
+- Monitor Edge Function logs in Dashboard → Edge Functions → Logs
 
 ### Environment Variables
 
@@ -225,20 +238,20 @@ curl -X GET https://your-app.vercel.app/api/cron/weekly-insights \
 
 ## Migration Status
 
-### ✅ Migration Complete (2025-01-27)
+### ✅ Migration Complete (2025-01-27) - Cron Jobs Ready
 
 **Phase 1 → Phase 4 Migration Completed:**
 
 1. ✅ **Created Edge Functions:** Three batch functions created in `/supabase/functions/`
 2. ✅ **Removed Vercel Cron:** Removed cron configuration from `vercel.json`
-3. ✅ **Deployed Functions:** Functions ready for deployment via Supabase CLI
-4. ✅ **Scheduling:** Configured via Supabase Dashboard → Edge Functions → Schedules
-5. ✅ **Documentation:** Updated to reflect new implementation
+3. ✅ **Deployed Functions:** All three functions deployed to Supabase production
+4. ✅ **Created Cron Migration:** SQL migration file created (`supabase/migrations/005_cron_jobs.sql`)
+5. ✅ **Documentation:** Updated to reflect Supabase Cron (pg_cron) implementation
 
-**Deployment Commands:**
+**Deployment Commands (Completed):**
 
 ```bash
-# Deploy all three functions
+# Deploy all three functions (✅ COMPLETED)
 supabase functions deploy nightly-cluster --no-verify-jwt
 supabase functions deploy nightly-stacks --no-verify-jwt
 supabase functions deploy weekly-insights --no-verify-jwt
@@ -246,12 +259,19 @@ supabase functions deploy weekly-insights --no-verify-jwt
 
 **Next Steps:**
 
-1. Deploy Edge Functions to Supabase (see commands above)
-2. Configure schedules in Supabase Dashboard:
-   - Navigate to Edge Functions → Schedules
-   - Create schedules for each function with appropriate cron expressions
-3. Test functions manually via Supabase Dashboard "Run Function" button
-4. Monitor logs in Supabase Dashboard → Edge Functions → Logs
+1. ⏳ **Apply Cron Migration:**
+   - Update `anon_key` in migration file with actual anon key
+   - Run migration: `supabase db push`
+   - Or apply via Supabase Dashboard → SQL Editor
+2. **Verify Cron Jobs:**
+   - Check Supabase Dashboard → Integrations → Cron
+   - Verify all three jobs appear: `nightly-cluster`, `nightly-stacks`, `weekly-insights`
+3. **Test Functions:**
+   - Test manually via Supabase Dashboard "Run Function" button
+   - Or trigger via cron job manually from Dashboard
+4. **Monitor:**
+   - View job runs in Dashboard → Integrations → Cron → Job Runs
+   - Check Edge Function logs in Dashboard → Edge Functions → Logs
 
 **API Routes Status:**
 
