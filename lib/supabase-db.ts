@@ -616,25 +616,6 @@ export const db = {
     },
   },
 
-  weeklyInsight: {
-    async findMany(options?: {
-      where?: {
-        userId?: string
-      }
-    }) {
-      let query = supabaseAdmin.from('weekly_insights').select('*')
-      
-      if (options?.where?.userId) {
-        query = query.eq('user_id', options.where.userId)
-      }
-
-      const { data, error } = await query
-
-      if (error) throw error
-      return data || []
-    },
-  },
-
   vaultNote: {
     async create(options: {
       data: { userId: string; encryptedBlob: string }
