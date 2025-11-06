@@ -32,7 +32,7 @@ export function AppShell({
               alt="Klutr"
               width={120}
               height={40}
-              className="h-8 w-auto"
+              className="h-8 md:h-10 lg:h-12 w-auto"
               priority
             />
           </div>

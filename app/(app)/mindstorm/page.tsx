@@ -2,8 +2,9 @@
 
 import { useState, useRef } from "react";
 import type React from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { CardGrid } from "@/components/ui/CardGrid";
+import { ItemCard } from "@/components/ui/ItemCard";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
 import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
@@ -11,57 +12,60 @@ import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
 import { useSectionTour } from "@/lib/hooks/useSectionExperience";
 import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
-import { InsightCard } from "@/components/insights/InsightCard";
-import { mockInsights } from "@/lib/mockData";
+import { mockClusters } from "@/lib/mockData";
 
-export default function InsightsPage() {
-  const [insights, setInsights] = useState(mockInsights);
-  const insightsRef = useRef<HTMLDivElement>(null);
-  const generateButtonRef = useRef<HTMLButtonElement>(null);
+export default function MindStormPage() {
+  const [clusters, setClusters] = useState(mockClusters);
+  const clustersRef = useRef<HTMLDivElement>(null);
+  const reclusterButtonRef = useRef<HTMLButtonElement>(null);
 
   // Dialog tour for first-time onboarding (auto-starts)
-  const dialogTour = useSectionTour("insights", getDialogTourSteps("insights"), {
+  const dialogTour = useSectionTour("mindstorm", getDialogTourSteps("mindstorm"), {
     autoStart: true,
   });
 
   // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
-    section: "insights",
-    steps: getOnboardingSteps("insights").map((step, idx) => {
+    section: "mindstorm",
+    steps: getOnboardingSteps("mindstorm").map((step, idx) => {
       if (idx === 0)
         return {
           ...step,
-          targetRef: insightsRef as React.RefObject<HTMLElement | null>,
+          targetRef: clustersRef as React.RefObject<HTMLElement | null>,
         };
       if (idx === 1)
         return {
           ...step,
-          targetRef: generateButtonRef as React.RefObject<HTMLElement | null>,
+          targetRef: reclusterButtonRef as React.RefObject<HTMLElement | null>,
         };
       return step;
     }),
     autoTrigger: false,
   });
 
-  const handleGenerateSummary = () => {
-    console.log("TODO: Generate weekly summary");
+  const handleRecluster = () => {
+    console.log("TODO: Recluster notes");
   };
 
-  const handleInsightClick = (insightId: string) => {
-    console.log("TODO: Open insight", insightId);
+  const handleClusterClick = (clusterId: string) => {
+    console.log("TODO: Open cluster", clusterId);
   };
 
-  const GenerateButton = () => (
+  const handleClusterFavorite = (clusterId: string) => {
+    console.log("TODO: Toggle favorite for cluster", clusterId);
+  };
+
+  const ReclusterButton = () => (
     <Button
-      ref={generateButtonRef}
+      ref={reclusterButtonRef}
       variant="outline"
       size="sm"
-      onClick={handleGenerateSummary}
-      aria-label="Generate weekly summary"
-      data-onboarding="generate-button"
+      onClick={handleRecluster}
+      aria-label="Re-cluster notes now"
+      data-onboarding="recluster-button"
       className="relative"
     >
-      Generate Summary
+      Re-cluster now
       {onboarding.active && onboarding.currentStep && onboarding.step === 1 && (
         <TourCallout
           title={onboarding.currentStep.title}
@@ -76,11 +80,10 @@ export default function InsightsPage() {
   );
 
   return (
-    <AppShell activeRoute="/app/insights">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
-          title="Weekly Insights"
-          description="Highlights from your recent activity."
+          title="MindStorm"
+          description="Your thoughts grouped by theme."
           actions={
             <>
               {!onboarding.active && !dialogTour.open && (
@@ -92,24 +95,24 @@ export default function InsightsPage() {
                   Take tour
                 </Button>
               )}
-              <GenerateButton />
+              <ReclusterButton />
             </>
           }
         />
 
         <SectionTourDialog
-          title="Welcome to Insights"
-          subtitle="Weekly summaries highlight patterns in your thinking"
+          title="Welcome to MindStorm"
+          subtitle="AI groups your notes by theme automatically"
           accent="indigo"
           tour={dialogTour}
         />
 
         <SectionSummary
-          section="insights"
-          summary="Weekly summaries highlight patterns in your thinking. See trends and themes across your notes."
+          section="mindstorm"
+          summary="AI groups your notes by theme automatically. Related ideas cluster together as you add more notes."
         />
 
-        <div ref={insightsRef} data-onboarding="insights" className="relative">
+        <div ref={clustersRef} data-onboarding="clusters" className="relative">
           {onboarding.active &&
             onboarding.currentStep &&
             onboarding.step === 0 && (
@@ -124,27 +127,26 @@ export default function InsightsPage() {
             )}
         </div>
 
-        {/* Use existing InsightCard component if available, otherwise fall back to ItemCard */}
-        <div className="space-y-4">
-          {insights.map((insight) => (
-            <InsightCard
-              key={insight.id}
-              week={insight.title}
-              summary={insight.description}
-              sentiment={insight.tags[0]?.label || "mixed"}
+        <CardGrid>
+          {clusters.map((cluster) => (
+            <ItemCard
+              key={cluster.id}
+              title={cluster.title}
+              description={cluster.description}
+              tags={cluster.tags}
+              onClick={() => handleClusterClick(cluster.id)}
+              onFavorite={() => handleClusterFavorite(cluster.id)}
             />
           ))}
-        </div>
+        </CardGrid>
 
-        {insights.length === 0 && (
+        {clusters.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
             <p>
-              No insights yet. Generate your first weekly summary to get
-              started.
+              No clusters yet. Add some notes to see them grouped automatically.
             </p>
           </div>
         )}
       </div>
-    </AppShell>
   );
 }

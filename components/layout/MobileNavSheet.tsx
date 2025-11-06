@@ -1,13 +1,22 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import { useTheme } from "next-themes"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet"
 import { SidebarNav } from "./SidebarNav"
 
 export function MobileNavSheet() {
   const [open, setOpen] = useState(false)
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const isDark = resolvedTheme === "dark";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -18,7 +27,18 @@ export function MobileNavSheet() {
       </SheetTrigger>
       <SheetContent side="left" className="w-64 p-0">
         <SheetHeader className="p-4 border-b">
-          <SheetTitle>Navigation</SheetTitle>
+          <div className="flex items-center">
+            {mounted && (
+              <Image
+                src={isDark ? "/brand/klutr-logo-dark.png" : "/brand/klutr-logo-light.png"}
+                alt="Klutr"
+                width={120}
+                height={40}
+                className="h-10 w-auto"
+                priority
+              />
+            )}
+          </div>
         </SheetHeader>
         <SidebarNav />
       </SheetContent>

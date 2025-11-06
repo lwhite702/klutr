@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import type React from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
@@ -56,8 +55,7 @@ export default function MemoryLanePage() {
   };
 
   return (
-    <AppShell activeRoute="/app/memory">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title="Memory Lane"
           description="What you were thinking across time."
@@ -135,6 +133,5 @@ export default function MemoryLanePage() {
           </div>
         )}
       </div>
-    </AppShell>
   );
 }

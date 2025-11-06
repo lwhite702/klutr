@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import type React from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
@@ -73,8 +72,7 @@ export default function NopeBinPage() {
   };
 
   return (
-    <AppShell activeRoute="/app/nope">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title="Nope Bin"
           description="Stuff you set aside."
@@ -192,6 +190,5 @@ export default function NopeBinPage() {
           </div>
         )}
       </div>
-    </AppShell>
   );
 }

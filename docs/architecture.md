@@ -437,6 +437,59 @@ This document MUST be updated whenever:
 - Migration phases are completed
 - New architectural decisions are made
 
+## Marketing vs App Route Groups
+
+The application uses Next.js route groups to separate public marketing pages from authenticated app pages:
+
+### Route Group Structure
+
+- **`(marketing)`** - Public routes that don't require authentication
+  - `/` - Landing page
+  - `/login` - Login page
+  - Layout: `app/(marketing)/layout.tsx` - Includes SEO metadata, no AppShell
+
+- **`(app)`** - Authenticated routes that require Supabase Auth
+  - `/app` - Main dashboard (all notes)
+  - `/app/mindstorm` - MindStorm clusters
+  - `/app/stacks` - Smart Stacks
+  - `/app/vault` - Encrypted vault
+  - `/app/insights` - Weekly insights
+  - `/app/memory` - Memory Lane timeline
+  - `/app/nope` - Nope Bin
+  - Layout: `app/(app)/layout.tsx` - Wraps all pages with AppShell (Sidebar + TopBar)
+
+### Authentication Middleware
+
+The `middleware.ts` file at the root handles authentication:
+
+- **Public Routes**: `/`, `/login`, `/api/*`, static assets - No authentication required
+- **Protected Routes**: All `/app/*` routes - Require valid Supabase Auth session
+- **Redirect Logic**: Unauthenticated users accessing `/app/*` are redirected to `/login?redirect=/app/...`
+
+### Middleware Implementation
+
+```typescript
+// middleware.ts uses @supabase/ssr createServerClient
+// - Checks session via cookies
+// - Refreshes expired tokens automatically
+// - Redirects unauthenticated users to login
+```
+
+### Layout Hierarchy
+
+```
+app/layout.tsx (root)
+├── ThemeProvider
+├── Analytics
+└── Route Groups:
+    ├── (marketing)/layout.tsx
+    │   └── SEO metadata only
+    └── (app)/layout.tsx
+        └── AppShell wrapper
+            ├── SidebarNav
+            └── TopBar
+```
+
 ## References
 
 - **Roadmap:** `/docs/roadmap.md`

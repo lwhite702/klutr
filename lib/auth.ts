@@ -1,24 +1,104 @@
 /**
- * Auth helper - stub implementation for now
- * TODO: Replace with Supabase Auth when ready
+ * Auth helper - Supabase Auth integration
  * 
- * Structure is ready for Supabase Auth integration:
- * - Database tables support user_id foreign keys
- * - Code uses getCurrentUser() throughout
- * - When enabling auth, update this to use supabase.auth.getUser()
+ * Provides both client-side and server-side authentication helpers.
+ * - getCurrentUser: For API routes and server components
+ * - getServerSession: For server-side session checking (used in middleware)
  */
 
 import { getCurrentUserId } from './supabase'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
+/**
+ * Get current user for API routes and server components
+ * Uses Supabase Auth to get the authenticated user
+ */
 export async function getCurrentUser(req?: Request): Promise<{ id: string; email: string }> {
-  // Stub: return a fake user for development
-  // In production with Supabase Auth enabled, this would be:
-  // const { data: { user } } = await supabase.auth.getUser()
-  // return { id: user.id, email: user.email }
-  
-  const userId = await getCurrentUserId()
+  // For server-side usage, create a server client
+  const cookieStore = await cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll().map((cookie) => ({
+            name: cookie.name,
+            value: cookie.value,
+          }))
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
+
+  if (error || !user) {
+    // Fallback to stub for development if auth is not configured
+    const userId = await getCurrentUserId()
+    return {
+      id: userId,
+      email: 'dev@example.com',
+    }
+  }
+
   return {
-    id: userId,
-    email: 'dev@example.com',
+    id: user.id,
+    email: user.email || 'unknown@example.com',
+  }
+}
+
+/**
+ * Get server-side session for middleware and server components
+ * Returns the user if authenticated, null otherwise
+ */
+export async function getServerSession(): Promise<{ id: string; email: string } | null> {
+  try {
+    const cookieStore = await cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll().map((cookie) => ({
+              name: cookie.name,
+              value: cookie.value,
+            }))
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options)
+            })
+          },
+        },
+      }
+    )
+
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+
+    if (error || !user) {
+      return null
+    }
+
+    return {
+      id: user.id,
+      email: user.email || 'unknown@example.com',
+    }
+  } catch (error) {
+    // If cookies() is not available (e.g., in middleware), return null
+    return null
   }
 }

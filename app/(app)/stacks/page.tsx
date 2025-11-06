@@ -2,39 +2,36 @@
 
 import { useState, useRef } from "react";
 import type React from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
-import { QuickCaptureBar } from "@/components/notes/QuickCaptureBar";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
 import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
 import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
 import { useSectionTour } from "@/lib/hooks/useSectionExperience";
 import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
-import { mockNotes } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
+import { mockStacks } from "@/lib/mockData";
 
-export default function AllNotesPage() {
-  const [notes, setNotes] = useState(mockNotes);
-  const [isCreating, setIsCreating] = useState(false);
-  const quickCaptureRef = useRef<HTMLDivElement>(null);
+export default function SmartStacksPage() {
+  const [stacks, setStacks] = useState(mockStacks);
+  const stacksRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
 
   // Dialog tour for first-time onboarding (auto-starts)
-  const dialogTour = useSectionTour("notes", getDialogTourSteps("notes"), {
+  const dialogTour = useSectionTour("stacks", getDialogTourSteps("stacks"), {
     autoStart: true,
   });
 
   // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
-    section: "notes",
-    steps: getOnboardingSteps("notes").map((step, idx) => {
+    section: "stacks",
+    steps: getOnboardingSteps("stacks").map((step, idx) => {
       if (idx === 0)
         return {
           ...step,
-          targetRef: quickCaptureRef as React.RefObject<HTMLElement | null>,
+          targetRef: stacksRef as React.RefObject<HTMLElement | null>,
         };
       if (idx === 1)
         return {
@@ -43,44 +40,31 @@ export default function AllNotesPage() {
         };
       return step;
     }),
-    autoTrigger: false, // Don't auto-trigger callout tours
+    autoTrigger: false,
   });
 
-  const handleCreateNote = async (content: string) => {
-    setIsCreating(true);
-    console.log("TODO: Create note with content:", content);
-
-    // For now, just add a mock note locally
-    const newNote = {
-      id: Date.now().toString(),
-      title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
-      description: content,
-      tags: [{ label: "unclassified" }],
-      pinned: false,
-    };
-
-    setNotes([newNote, ...notes]);
-    setIsCreating(false);
+  const handleStackClick = (stackName: string) => {
+    console.log("TODO: Navigate to stack detail", stackName);
+    // For now, navigate to a mock stack detail page
+    window.location.href = `/app/stacks/${stackName
+      .toLowerCase()
+      .replace(/\s+/g, "-")}`;
   };
 
-  const handleNoteClick = (noteId: string) => {
-    console.log("TODO: Open note", noteId);
-  };
-
-  const handleNoteFavorite = (noteId: string) => {
-    console.log("TODO: Toggle favorite for note", noteId);
-    setNotes(
-      notes.map((note) =>
-        note.id === noteId ? { ...note, pinned: !note.pinned } : note
+  const handleStackFavorite = (stackId: string) => {
+    console.log("TODO: Toggle favorite for stack", stackId);
+    setStacks(
+      stacks.map((stack) =>
+        stack.id === stackId ? { ...stack, pinned: !stack.pinned } : stack
       )
     );
   };
 
   return (
-    <AppShell activeRoute="/app">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
-          title="All Notes"
+          title="Stacks"
+          description="Your saved collections."
           actions={
             !onboarding.active && !dialogTour.open && (
               <Button
@@ -95,26 +79,18 @@ export default function AllNotesPage() {
         />
 
         <SectionTourDialog
-          title="Welcome to Notes"
-          subtitle="Your capture inbox for all thoughts, links, and files"
+          title="Welcome to Stacks"
+          subtitle="Collections of related notes organized by tags"
           accent="lime"
           tour={dialogTour}
         />
 
         <SectionSummary
-          section="notes"
-          summary="Your capture inbox is where you dump thoughts, files or voice notes. We tag them and file them for later."
+          section="stacks"
+          summary="Collections of related notes organized by tags and categories. Pin important stacks for quick access."
         />
 
-        <div
-          ref={quickCaptureRef}
-          data-onboarding="quick-capture"
-          className="relative"
-        >
-          <QuickCaptureBar
-            onCreate={handleCreateNote}
-            isCreating={isCreating}
-          />
+        <div ref={stacksRef} data-onboarding="stacks" className="relative">
           {onboarding.active &&
             onboarding.currentStep &&
             onboarding.step === 0 && (
@@ -145,15 +121,15 @@ export default function AllNotesPage() {
         </div>
 
         <CardGrid>
-          {notes.map((note) => (
+          {stacks.map((stack) => (
             <ItemCard
-              key={note.id}
-              title={note.title}
-              description={note.description}
-              tags={note.tags}
-              pinned={note.pinned}
-              onClick={() => handleNoteClick(note.id)}
-              onFavorite={() => handleNoteFavorite(note.id)}
+              key={stack.id}
+              title={stack.name}
+              description={stack.description}
+              tags={stack.tags}
+              pinned={stack.pinned}
+              onClick={() => handleStackClick(stack.name)}
+              onFavorite={() => handleStackFavorite(stack.id)}
             />
           ))}
         </CardGrid>
@@ -161,7 +137,7 @@ export default function AllNotesPage() {
         {onboarding.active &&
           onboarding.currentStep &&
           onboarding.step === 2 && (
-            <div className="relative" data-onboarding="nope-action">
+            <div className="relative" data-onboarding="pin-button">
               <TourCallout
                 title={onboarding.currentStep.title}
                 description={onboarding.currentStep.description}
@@ -173,12 +149,14 @@ export default function AllNotesPage() {
             </div>
           )}
 
-        {notes.length === 0 && (
+        {stacks.length === 0 && (
           <div className="text-center py-12 text-muted-foreground">
-            <p>No notes yet. Add your first note above to get started.</p>
+            <p>
+              No stacks yet. Create some notes and run "Re-cluster now" to
+              generate stacks.
+            </p>
           </div>
         )}
       </div>
-    </AppShell>
   );
 }

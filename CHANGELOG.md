@@ -25,6 +25,16 @@ Each entry includes:
 
 ---
 
+## 2025-11-06 17:40 ET
+
+- [infra] Split marketing and app routes using Next.js route groups.
+- [auth] Added Supabase Auth middleware for (app) routes.
+- [seo] Added brand metadata for marketing layout.
+- [ui] Created login page at `/login` with Supabase Auth email/password form.
+- [infra] Installed @supabase/ssr for server-side authentication.
+- [refactor] Moved AppShell wrapper from individual pages to app/(app)/layout.tsx.
+- [docs] Updated architecture.md with route groups section.
+
 ## 2025-01-27 14:00 ET
 
 - [infra] Migrated all scheduled background tasks from Vercel Cron to Supabase Edge Functions

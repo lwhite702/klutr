@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import type React from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
@@ -70,8 +69,7 @@ export default function VaultPage() {
 
   if (locked) {
     return (
-      <AppShell activeRoute="/app/vault">
-        <div className="max-w-5xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
           <PageHeader
             title="Vault"
             description="Your private, encrypted notes. Only you can unlock them."
@@ -132,13 +130,11 @@ export default function VaultPage() {
             />
           </div>
         </div>
-      </AppShell>
     );
   }
 
   return (
-    <AppShell activeRoute="/app/vault">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title="Vault"
           description="Your private, encrypted notes. Only you can unlock them."
@@ -190,6 +186,5 @@ export default function VaultPage() {
           </div>
         )}
       </div>
-    </AppShell>
   );
 }
