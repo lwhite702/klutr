@@ -25,6 +25,18 @@ Each entry includes:
 
 ---
 
+## 2025-11-07 02:00 ET
+
+- [feature] Created feature branch: feature/klutr-brand-redesign for brand redesign phase
+- [infra] Installed @fontsource/inter package for brand typography (Inter for headings)
+- [ui] Configured typography system: Inter for display/headings, Geist as body font fallback (Satoshi unavailable in npm registry)
+- [ui] Added brand color tokens to Tailwind: coral (#FF6B6B), mint (#3EE0C5), charcoal (#111827), cloud (#F8F9FA), slate (#6B7280)
+- [ui] Added gradient tokens: chaos (#FF6B6B) and clarity (#3EE0C5) with .bg-chaos-clarity utility class
+- [feature] Created route placeholders for new feature names: /app/flux, /app/orbit, /app/pulse, /app/vault, /app/stacks
+- [feature] Created animated UI shells for Spark (coral pulsing glow) and Muse (mint rotation) features
+- [infra] Added route redirects: /app → /app/flux, /app/mindstorm → /app/orbit, /app/insights → /app/pulse
+- [docs] Created /docs/internal/brand-redesign.md documenting route migration, typography, and color palette
+
 ## 2025-11-07 01:00 ET
 
 - [ui] Enhanced ItemCard component with larger thumbnails, improved typography, better spacing, and enhanced hover effects with coral accent colors.
