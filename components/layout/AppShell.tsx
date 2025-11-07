@@ -28,7 +28,7 @@ export function AppShell({
         <div className="p-4 border-b">
           <div className="flex items-center">
             <Image
-              src={isDark ? "/brand/klutr-logo-dark.png" : "/brand/klutr-logo-light.png"}
+              src={isDark ? "/logos/klutr-logo-dark-noslogan.svg" : "/logos/klutr-logo-light-noslogan.svg"}
               alt="Klutr"
               width={120}
               height={40}

@@ -51,18 +51,18 @@
   --brand-indigo-foreground: oklch(0.985 0 0);
   --brand-lime-foreground: oklch(0.145 0 0);
   --brand-coral-foreground: oklch(0.985 0 0);
-  
+
   /* Klutr brand tokens */
-  --klutr-wordmark: #2B2E3F;
-  --klutr-background: #F7F7F9;
-  --klutr-coral: #FF6B6B;
-  --klutr-mint: #00C896;
-  --klutr-outline: #2B2E3F;
+  --klutr-wordmark: #2b2e3f;
+  --klutr-background: #f7f7f9;
+  --klutr-coral: #ff6b6b;
+  --klutr-mint: #00c896;
+  --klutr-outline: #2b2e3f;
   --klutr-surface-dark: #111111;
-  --klutr-text-primary-light: #2B2E3F;
-  --klutr-text-primary-dark: #FFFFFF;
-  --klutr-text-accent-light: #FF6B6B;
-  --klutr-text-accent-dark: #00C896;
+  --klutr-text-primary-light: #2b2e3f;
+  --klutr-text-primary-dark: #ffffff;
+  --klutr-text-accent-light: #ff6b6b;
+  --klutr-text-accent-dark: #00c896;
 }
 
 .dark {
@@ -105,12 +105,12 @@
   --brand-indigo-foreground: oklch(0.985 0 0);
   --brand-lime-foreground: oklch(0.145 0 0);
   --brand-coral-foreground: oklch(0.985 0 0);
-  
+
   /* Klutr brand tokens (dark mode) */
-  --klutr-wordmark: #FFFFFF;
-  --klutr-coral: #FF7D7D;
-  --klutr-mint: #33E0B4;
-  --klutr-outline: #2B2E3F;
+  --klutr-wordmark: #ffffff;
+  --klutr-coral: #ff7d7d;
+  --klutr-mint: #33e0b4;
+  --klutr-outline: #2b2e3f;
   /* klutr-surface-dark, text colors remain same */
 }
 
@@ -158,7 +158,7 @@
   --color-brand-indigo-foreground: var(--brand-indigo-foreground);
   --color-brand-lime-foreground: var(--brand-lime-foreground);
   --color-brand-coral-foreground: var(--brand-coral-foreground);
-  
+
   /* Klutr brand colors */
   --color-klutr-wordmark: var(--klutr-wordmark);
   --color-klutr-background: var(--klutr-background);

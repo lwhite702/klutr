@@ -23,6 +23,7 @@ All cron jobs are now implemented as Supabase Edge Functions:
 ### Location
 
 Edge Functions are located in `/supabase/functions/`:
+
 - `supabase/functions/nightly-cluster/index.ts`
 - `supabase/functions/nightly-stacks/index.ts`
 - `supabase/functions/weekly-insights/index.ts`
@@ -30,6 +31,7 @@ Edge Functions are located in `/supabase/functions/`:
 ### Authentication
 
 Edge Functions are deployed with `--no-verify-jwt` flag, meaning they:
+
 - Are only accessible internally (via Supabase scheduling)
 - Do not require JWT authentication
 - Use service role key for database access
@@ -43,6 +45,7 @@ Schedules are configured via **Supabase Cron** (pg_cron extension) using SQL mig
 - **`weekly-insights`**: `0 7 * * 1` (Mondays at 07:00 UTC / 03:00 ET)
 
 **Implementation:**
+
 - Cron jobs are created via SQL migration (`supabase/migrations/005_cron_jobs.sql`)
 - Jobs use `pg_cron` extension to schedule recurring tasks
 - Jobs use `pg_net` extension to make HTTP POST requests to Edge Functions
@@ -51,6 +54,7 @@ Schedules are configured via **Supabase Cron** (pg_cron extension) using SQL mig
 - Run history is recorded in `cron.job_run_details` table
 
 **Monitoring:**
+
 - View jobs in Supabase Dashboard → Integrations → Cron
 - Check run history in `cron.job_run_details` table
 - Monitor Edge Function logs in Dashboard → Edge Functions → Logs
@@ -58,6 +62,7 @@ Schedules are configured via **Supabase Cron** (pg_cron extension) using SQL mig
 ### Environment Variables
 
 Edge Functions automatically have access to:
+
 - `SUPABASE_URL` - Automatically available
 - `SUPABASE_SERVICE_ROLE_KEY` - Automatically available
 - `OPENAI_API_KEY` - Must be set in Supabase Dashboard → Edge Functions → Secrets
@@ -65,6 +70,7 @@ Edge Functions automatically have access to:
 ### Legacy API Routes (Deprecated)
 
 The API routes under `/app/api/cron/` are still present but are no longer scheduled:
+
 - They can be used for manual testing/debugging
 - They still require `CRON_SECRET` for security
 - They are not called by any automated scheduler
@@ -74,11 +80,13 @@ The API routes under `/app/api/cron/` are still present but are no longer schedu
 ### Manual API Routes (Deprecated)
 
 Previously, cron jobs were implemented as API routes under `/api/cron/`:
+
 - **`/api/cron/nightly-cluster`** - Re-embed notes and regenerate clusters
 - **`/api/cron/nightly-stacks`** - Analyze patterns and rebuild smart stacks
 - **`/api/cron/weekly-insights`** - Generate AI summary of week's activity
 
 These routes were protected by `Authorization: Bearer <CRON_SECRET>` header validation and scheduled via Vercel Cron. This approach had limitations:
+
 - Vercel Hobby plan allows only 2 cron jobs (we needed 3)
 - Required external scheduling service
 - Less integrated with Supabase infrastructure
@@ -174,12 +182,14 @@ These routes were protected by `Authorization: Bearer <CRON_SECRET>` header vali
 ### Manual Testing
 
 **Via Supabase Dashboard (Recommended):**
+
 1. Navigate to Supabase Dashboard → Edge Functions
 2. Select function (e.g., `nightly-cluster`)
 3. Click "Run Function" button
 4. View logs and response
 
 **Via Supabase CLI (Local):**
+
 ```bash
 # Test locally (requires Supabase CLI)
 supabase functions serve nightly-cluster
@@ -188,6 +198,7 @@ curl -X POST http://localhost:54321/functions/v1/nightly-cluster \
 ```
 
 **Via Legacy API Routes (Manual Trigger):**
+
 ```bash
 # Test via Next.js API routes (still functional for testing)
 curl -X GET https://your-app.vercel.app/api/cron/nightly-cluster \

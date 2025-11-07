@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Notes or Nope | Organize your mind with AI",
+  title: "Klutr | Free Beta",
   description:
-    "An AI note app for thinkers. Capture anything and let MindStorm organize it — free beta now available.",
+    "Capture notes, links, and lists — let AI organize your thoughts. Free beta now available.",
   openGraph: {
-    title: "Notes or Nope | Free Beta",
-    description: "AI that organizes your ideas — try it free today.",
+    title: "Klutr | Free Beta",
+    description: "Capture notes, links, and lists — let AI organize your thoughts. Free beta now available.",
     url: "https://notesornope.com",
+    images: ["/og-image.png"],
   },
   icons: {
     icon: [

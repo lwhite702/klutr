@@ -25,6 +25,53 @@ Each entry includes:
 
 ---
 
+## 2025-11-07 01:00 ET
+
+- [ui] Enhanced ItemCard component with larger thumbnails, improved typography, better spacing, and enhanced hover effects with coral accent colors.
+- [feature] Added multiple view options: grid, list, collage (masonry), and pin board views with ViewToggle component.
+- [feature] Created PinBoardView component with draggable notes and connecting lines to visualize relationships between notes (perfect for MindStorm).
+- [feature] Created CollageView component for Pinterest-style masonry layout with variable card heights.
+- [feature] Enhanced search functionality with SearchBar component featuring clear button and improved styling.
+- [feature] Added FilterChips component for displaying and managing active filters with coral brand colors.
+- [feature] Added SortDropdown component for sorting by date, title, tags count, or pinned status with ascending/descending options.
+- [ui] Updated CardGrid to support multiple view modes (grid, list, collage) with responsive layouts.
+- [feature] Integrated all new components into All Notes, MindStorm, Stacks, and Vault pages.
+- [ui] Added quick filter buttons (All, Pinned) and improved filtering UI across all pages.
+- [ui] Enhanced visual hierarchy with better card spacing, hover states, and focus indicators using Klutr brand colors.
+- [ui] Improved empty states with contextual messages based on search/filter state.
+- [ui] All new components maintain dark mode compatibility with proper color contrast.
+
+## 2025-11-07 00:20 ET
+
+- [ui] Redesigned landing page based on Figma design structure with all sections implemented.
+- [ui] Updated hero section with larger typography (text-5xl to text-8xl) matching Figma's scale.
+- [feature] Expanded features section from 3 to 6 feature cards: added Write Notes, Plan your day, and Learn facts features.
+- [feature] Added "Notes from Class" section with Math and Physics example cards.
+- [feature] Added "Trusted by Companies" section with logo showcase placeholder.
+- [feature] Added testimonials section with 3 user testimonial cards including ratings and dates.
+- [feature] Added large CTA section with coding illustration and "Ready to take your notes to the next level?" headline.
+- [feature] Added contact form section with "Get in Touch" heading, contact information (phone, email, social links), and form fields (name, email, message).
+- [ui] Enhanced footer with contact information layout and privacy policy link.
+- [ui] All new sections use Klutr brand colors (coral #FF6B6B, mint #00C896) instead of Figma's brown/orange scheme.
+- [ui] Maintained dark mode support throughout all new sections with proper color contrast.
+
+## 2025-11-06 18:10 ET
+
+- [marketing] Implemented Figma landing page at / with Klutr branding.
+- [ui] Hero, features, CTA banner, footer using shadcn/ui.
+- [brand] Integrated Klutr logo assets from /public/brand/.
+- [copy] Highlighted "Free Beta" and AI-powered organization.
+- [seo] Updated metadata with proper title, description, and OpenGraph tags.
+- [docs] Created marketing.md with landing page structure and brand color documentation.
+- [fix] Resolved route conflict by moving app root page from / to /app. Marketing landing page now serves at /, authenticated app pages at /app/\*.
+- [fix] Updated landing page to use Klutr brand voice ("Clear the clutr. Keep the spark." tagline, witty copy).
+- [fix] Replaced incorrect colors with brand colors: Coral (#FF6B6B) for primary CTAs, Mint (#00C896) for beta banner.
+- [fix] Increased logo size from 32px to 48-64px (h-12 md:h-16) for better visibility.
+- [brand] Replaced all PNG logo references with SVG logos from /public/logos/ throughout the app.
+- [brand] Renamed logo SVG files to descriptive names: klutr-logo-light.svg, klutr-logo-dark.svg, klutr-icon-{size}.svg.
+- [brand] Updated headers and navigation to use no-tagline logo variants (klutr-logo-{light|dark}-noslogan.svg) for better readability in compact spaces. Full logos with taglines remain in footer and hero sections.
+- [ui] Fixed dark mode color issues on marketing landing page - all text now uses appropriate dark mode colors (white text on dark backgrounds) instead of light mode colors.
+
 ## 2025-11-06 17:40 ET
 
 - [infra] Split marketing and app routes using Next.js route groups.
