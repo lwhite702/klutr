@@ -28,7 +28,7 @@ interface ItemCardProps {
   onClick?: () => void;
   onFavorite?: () => void;
   actionsRight?: React.ReactNode;
-  variant?: "grid" | "list" | "collage";
+  variant?: "grid" | "list" | "collage" | "pinboard";
 }
 
 export function ItemCard({
@@ -46,6 +46,8 @@ export function ItemCard({
 
   const isList = variant === "list";
   const isCollage = variant === "collage";
+  // Pinboard uses grid layout for individual cards
+  const effectiveVariant = variant === "pinboard" ? "grid" : variant;
 
   return (
     <motion.div

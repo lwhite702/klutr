@@ -160,24 +160,28 @@ export const mockClusters = [
     title: "Outdoor cooking",
     description: "All notes about grilling, smokers, gear, and prep timing.",
     tags: [{ label: "bbq" }, { label: "tools" }, { label: "prep" }],
+    pinned: false,
   },
   {
     id: "c2",
     title: "People to follow up with",
     description: "Reminders to ping Alex, Maya, and Jordan.",
     tags: [{ label: "contact" }, { label: "follow-up" }],
+    pinned: false,
   },
   {
     id: "c3",
     title: "Content ideas",
     description: "Podcast episodes, gear reviews, and listener segments.",
     tags: [{ label: "content" }, { label: "audio" }],
+    pinned: false,
   },
   {
     id: "c4",
     title: "Equipment wishlist",
     description: "Tools and gear to upgrade the outdoor cooking setup.",
     tags: [{ label: "gear" }, { label: "upgrade" }],
+    pinned: false,
   },
 ];
 

@@ -60,7 +60,9 @@ export default function MindStormPage() {
     console.log("TODO: Toggle favorite for cluster", clusterId);
     setClusters(
       clusters.map((cluster) =>
-        cluster.id === clusterId ? { ...cluster, pinned: !cluster.pinned } : cluster
+        cluster.id === clusterId
+          ? { ...cluster, pinned: !(cluster.pinned ?? false) }
+          : cluster
       )
     );
   };

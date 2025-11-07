@@ -11,7 +11,11 @@ interface CardGridProps {
 }
 
 export function CardGrid({ children, className, view = "grid" }: CardGridProps) {
-  if (view === "list") {
+  // Pinboard view is handled by PinBoardView component, not CardGrid
+  // Treat it as grid for type safety
+  const effectiveView = view === "pinboard" ? "grid" : view;
+
+  if (effectiveView === "list") {
     return (
       <div
         className={cn(
@@ -24,7 +28,7 @@ export function CardGrid({ children, className, view = "grid" }: CardGridProps) 
     );
   }
 
-  if (view === "collage") {
+  if (effectiveView === "collage") {
     return (
       <div
         className={cn(
