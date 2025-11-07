@@ -115,10 +115,14 @@
 }
 
 @theme {
-  --font-sans: "Geist", "Geist Fallback";
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
-  --font-display: "Inter", "Geist", sans-serif;
-  --font-body: "Geist", "Inter", sans-serif;
+  --font-sans: "Geist", "Geist Fallback", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", "Courier New", Courier,
+    monospace;
+  --font-display: "Inter", "Geist", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
 
   /* Color definitions - reference CSS variables so they respond to dark mode */
   --color-background: var(--background);
@@ -173,14 +177,14 @@
   --color-klutr-text-accent-light: var(--klutr-text-accent-light);
   --color-klutr-text-accent-dark: var(--klutr-text-accent-dark);
 
-  /* Brand color tokens for Tailwind */
+  /* Brand color tokens for Tailwind - values from lib/theme/colors.ts */
   --color-coral: #ff6b6b;
   --color-mint: #3ee0c5;
   --color-charcoal: #111827;
   --color-cloud: #f8f9fa;
   --color-slate: #6b7280;
 
-  /* Gradient stops */
+  /* Gradient stops - values from lib/theme/colors.ts */
   --color-chaos: #ff6b6b;
   --color-clarity: #3ee0c5;
 

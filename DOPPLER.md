@@ -12,13 +12,20 @@ The following environment variables are currently configured in Doppler:
 - `OPENAI_API_KEY` - OpenAI API key for AI features
 - `CRON_SECRET` - Secret key for authenticating cron job endpoints
 
-### Target Variables (Phase 2+)
+### Phase 2 Variables (AI Integration)
 
-The following variables will be added to Doppler during Supabase migration:
+The following variables are required for Spark and Muse AI features:
 
-- `NEXT_PUBLIC_SUPABASE_URL` - Public Supabase project URL
-- `SUPABASE_SERVICE_ROLE_KEY` - Server-side Supabase admin key
-- `SUPABASE_ANON_KEY` - Client-side Supabase public key
+**Server-only variables (for API routes):**
+- `SUPABASE_URL` - Supabase project URL (server-side only)
+- `SUPABASE_SERVICE_ROLE_KEY` - Server-side Supabase admin key (bypasses RLS)
+- `SUPABASE_ANON_KEY` - Supabase anonymous key (for server-side API routes)
+
+**Client-side variables (NEXT_PUBLIC_ prefix):**
+- `NEXT_PUBLIC_SUPABASE_URL` - Public Supabase project URL (exposed to browser)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Client-side Supabase public key (exposed to browser)
+
+**Note:** The hybrid pattern allows server routes to use service role key for admin operations while client components use the safer anon key.
 
 ### Migration Notes
 
@@ -148,16 +155,31 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add NEON_DATABASE_URL production
    vercel env add OPENAI_API_KEY production
    vercel env add CRON_SECRET production
+   vercel env add SUPABASE_URL production
+   vercel env add SUPABASE_SERVICE_ROLE_KEY production
+   vercel env add SUPABASE_ANON_KEY production
+   vercel env add NEXT_PUBLIC_SUPABASE_URL production
+   vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
 
    # Preview (for PR deployments)
    vercel env add NEON_DATABASE_URL preview
    vercel env add OPENAI_API_KEY preview
    vercel env add CRON_SECRET preview
+   vercel env add SUPABASE_URL preview
+   vercel env add SUPABASE_SERVICE_ROLE_KEY preview
+   vercel env add SUPABASE_ANON_KEY preview
+   vercel env add NEXT_PUBLIC_SUPABASE_URL preview
+   vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY preview
 
    # Development (local dev with vercel dev)
    vercel env add NEON_DATABASE_URL development
    vercel env add OPENAI_API_KEY development
    vercel env add CRON_SECRET development
+   vercel env add SUPABASE_URL development
+   vercel env add SUPABASE_SERVICE_ROLE_KEY development
+   vercel env add SUPABASE_ANON_KEY development
+   vercel env add NEXT_PUBLIC_SUPABASE_URL development
+   vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY development
    ```
 
 3. **Verify variables are set:**

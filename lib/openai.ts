@@ -22,3 +22,17 @@ export const openai = new Proxy({} as OpenAI, {
     return typeof value === 'function' ? value.bind(client) : value
   }
 })
+
+/**
+ * Generate an embedding for the given text using OpenAI's text-embedding-3-small model
+ * @param input - The text to generate an embedding for
+ * @returns A promise that resolves to an array of 1536 numbers representing the embedding
+ */
+export async function getEmbedding(input: string): Promise<number[]> {
+  const client = getOpenAIClient()
+  const res = await client.embeddings.create({
+    model: 'text-embedding-3-small',
+    input,
+  })
+  return res.data[0].embedding
+}

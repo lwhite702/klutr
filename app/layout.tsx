@@ -34,6 +34,9 @@ export const metadata: Metadata = {
       },
     ],
   },
+  other: {
+    "theme-color": "#f8f9fa", // Light mode theme color
+  },
 };
 
 export default function RootLayout({
@@ -43,6 +46,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta
+          name="theme-color"
+          content="#f8f9fa"
+          media="(prefers-color-scheme: light)"
+          key="theme-color-light"
+        />
+        <meta
+          name="theme-color"
+          content="#111827"
+          media="(prefers-color-scheme: dark)"
+          key="theme-color-dark"
+        />
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"

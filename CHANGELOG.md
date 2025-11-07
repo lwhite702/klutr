@@ -25,6 +25,37 @@ Each entry includes:
 
 ---
 
+## 2025-11-07 12:41 ET
+
+- [feature] Implemented Spark AI assistant with streaming responses for contextual note analysis
+- [feature] Implemented Muse creative remix engine with streaming responses for idea combination
+- [infra] Added Supabase integration with hybrid environment variable pattern (server-only and client-side vars)
+- [infra] Added eventsource-parser package for OpenAI streaming response parsing
+- [infra] Created ai_sessions table for tracking AI feature usage (migration 006_ai_sessions.sql)
+- [infra] Added embedding index optimization for vector similarity search
+- [ui] Replaced Spark placeholder with functional UI including note ID input, prompt input, and real-time streaming response display
+- [ui] Replaced Muse placeholder with functional UI including two idea inputs and real-time streaming response display
+- [ui] Added error handling and loading states to Spark and Muse pages
+- [docs] Created /docs/internal/ai-architecture.md documenting AI integration architecture, streaming implementation, and embedding strategy
+- [docs] Created /mintlify/spark.mdx user-facing documentation for Spark feature
+- [docs] Created /mintlify/muse.mdx user-facing documentation for Muse feature
+- [docs] Updated DOPPLER.md with Phase 2 environment variables (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_ANON_KEY, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)
+- [feature] Added getEmbedding() function to /lib/openai.ts for generating text embeddings
+- [feature] Created /lib/ai/stream.ts for streaming LLM responses with eventsource-parser
+- [feature] Created /app/api/spark/route.ts API endpoint for Spark with note context retrieval
+- [feature] Created /app/api/muse/route.ts API endpoint for Muse with idea remixing
+- [feature] Created /lib/hooks/useSpark.ts client hook for Spark streaming interactions
+- [feature] Created /lib/hooks/useMuse.ts client hook for Muse streaming interactions
+- [infra] Updated /lib/supabase.ts to support server-only environment variables for API routes
+
+## 2025-11-07 02:30 ET
+
+- [ui] Added loading states to Spark and Muse animated components with spinner indicators for improved perceived performance
+- [infra] Extracted brand color variables into dedicated theme file: lib/theme/colors.ts for better maintainability
+- [infra] Added TypeScript types for Next.js redirect configuration in types/next-config.d.ts to prevent runtime errors
+- [ui] Enhanced font fallback chains: added system font stack (-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, etc.) to all font definitions
+- [ui] Added theme-color meta tags for mobile browser header consistency (light: #f8f9fa, dark: #111827)
+
 ## 2025-11-07 02:00 ET
 
 - [feature] Created feature branch: feature/klutr-brand-redesign for brand redesign phase
