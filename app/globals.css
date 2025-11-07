@@ -117,6 +117,8 @@
 @theme {
   --font-sans: "Geist", "Geist Fallback";
   --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --font-display: "Inter", "Geist", sans-serif;
+  --font-body: "Geist", "Inter", sans-serif;
 
   /* Color definitions - reference CSS variables so they respond to dark mode */
   --color-background: var(--background);
@@ -171,11 +173,36 @@
   --color-klutr-text-accent-light: var(--klutr-text-accent-light);
   --color-klutr-text-accent-dark: var(--klutr-text-accent-dark);
 
+  /* Brand color tokens for Tailwind */
+  --color-coral: #ff6b6b;
+  --color-mint: #3ee0c5;
+  --color-charcoal: #111827;
+  --color-cloud: #f8f9fa;
+  --color-slate: #6b7280;
+
+  /* Gradient stops */
+  --color-chaos: #ff6b6b;
+  --color-clarity: #3ee0c5;
+
   /* Border radius */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Brand color tokens */
+  --color-coral: var(--color-coral);
+  --color-mint: var(--color-mint);
+  --color-charcoal: var(--color-charcoal);
+  --color-cloud: var(--color-cloud);
+  --color-slate: var(--color-slate);
+  --color-chaos: var(--color-chaos);
+  --color-clarity: var(--color-clarity);
+}
+
+/* Gradient utility class */
+.bg-chaos-clarity {
+  background: linear-gradient(135deg, #ff6b6b 0%, #3ee0c5 100%);
 }
 
 @layer base {
