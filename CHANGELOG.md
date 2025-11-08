@@ -25,6 +25,18 @@ Each entry includes:
 
 ---
 
+## 2025-11-08 19:00 ET
+
+- [fix] Fixed Next.js 16 compatibility issues with BaseHub integration
+- [fix] Updated all query files to await draftMode() (Next.js 16 requires await)
+- [fix] Added type assertions to BaseHub query results to resolve TypeScript errors
+- [fix] Disabled BaseHub Toolbar in production builds due to Next.js 16 incompatibility with inline "use server" directives
+- [infra] Created lib/queries/index.ts for centralized query exports
+- [fix] Fixed preview route to await draftMode()
+- [fix] Fixed feature page description access to use plainText property
+- [infra] Removed fetchOptions from BaseHub queries (not supported in current API)
+- [infra] Build now completes successfully with graceful error handling for missing BASEHUB_TOKEN during build
+
 ## 2025-11-08 18:30 ET
 
 - [feature] Seeded complete Klutr marketing content in BaseHub from comprehensive seed file
