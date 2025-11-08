@@ -27,7 +27,8 @@ export async function GET(req: Request) {
     return new NextResponse("Invalid secret", { status: 401 });
   }
 
-  draftMode().enable();
+  const draft = await draftMode();
+  draft.enable();
 
   // Redirect to home page with preview mode enabled
   return NextResponse.redirect(new URL("/", req.url));

@@ -16,37 +16,45 @@ export interface LegalPage {
  */
 export async function getLegalPage(slug: string): Promise<LegalPage | null> {
   try {
-    const { isEnabled } = draftMode()
+    const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const { marketingSite } = await client.query(
-      {
-        marketingSite: {
-          legal: {
-            __args: {
-              filter: {
-                slug: { _eq: slug },
-              },
+    const result = await client.query({
+      marketingSite: {
+        legal: {
+          __args: {
+            filter: {
+              slug: { _eq: slug },
             },
-            items: {
-              _id: true,
-              _title: true,
-              title: true,
-              slug: true,
-              content: {
-                plainText: true,
-              },
-              lastUpdated: true,
+          },
+          items: {
+            _id: true,
+            _title: true,
+            title: true,
+            slug: true,
+            content: {
+              plainText: true,
             },
+            lastUpdated: true,
           },
         },
       },
-      {
-        fetchOptions: {
-          next: { revalidate: 86400 }, // Revalidate daily
-        },
+    }) as {
+      marketingSite?: {
+        legal?: {
+          items?: Array<{
+            _id: string
+            _title: string
+            title: string
+            slug: string
+            content?: { plainText?: string }
+            lastUpdated: string | null
+          }>
+        }
       }
-    )
+    }
+
+    const marketingSite = result.marketingSite
 
     const page = marketingSite?.legal?.items?.[0]
 

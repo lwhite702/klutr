@@ -18,39 +18,49 @@ export interface HomePageData {
  */
 export async function getHomePage(): Promise<HomePageData | null> {
   try {
-    const { isEnabled } = draftMode()
+    const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const { marketingSite } = await client.query(
-      {
-        marketingSite: {
-          pages: {
-            __args: {
-              filter: {
-                slug: { _eq: 'home' },
-              },
+    const result = await client.query({
+      marketingSite: {
+        pages: {
+          __args: {
+            filter: {
+              slug: { _eq: 'home' },
             },
-            items: {
-              slug: true,
-              title: true,
-              seoTitle: true,
-              metaDescription: true,
-              heroHeadline: true,
-              heroSubtext: {
-                plainText: true,
-              },
-              primaryCTA: true,
-              secondaryCTA: true,
+          },
+          items: {
+            slug: true,
+            title: true,
+            seoTitle: true,
+            metaDescription: true,
+            heroHeadline: true,
+            heroSubtext: {
+              plainText: true,
             },
+            primaryCTA: true,
+            secondaryCTA: true,
           },
         },
       },
-      {
-        fetchOptions: {
-          next: { revalidate: 60 },
-        },
+    }) as {
+      marketingSite?: {
+        pages?: {
+          items?: Array<{
+            slug: string
+            title: string | null
+            seoTitle: string | null
+            metaDescription: string | null
+            heroHeadline: string | null
+            heroSubtext?: { plainText?: string }
+            primaryCTA: string | null
+            secondaryCTA: string | null
+          }>
+        }
       }
-    )
+    }
+
+    const marketingSite = result.marketingSite
 
     const page = marketingSite?.pages?.items?.[0]
 

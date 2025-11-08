@@ -11,25 +11,18 @@ import { ArrowLeft } from "lucide-react"
 export async function generateStaticParams() {
   try {
     const client = basehubClient()
-    const { marketingSite } = await client.query(
-      {
-        marketingSite: {
-          features: {
-            items: {
-              slug: true,
-            },
+    const result = await client.query({
+      marketingSite: {
+        features: {
+          items: {
+            slug: true,
           },
         },
       },
-      {
-        fetchOptions: {
-          next: { revalidate: 3600 }, // Revalidate every hour
-        },
-      }
-    )
+    }) as { marketingSite?: { features?: { items?: Array<{ slug: string }> } } }
 
-    const features = marketingSite?.features?.items || []
-    return features.map((feature: { slug: string }) => ({
+    const features = result.marketingSite?.features?.items || []
+    return features.map((feature) => ({
       slug: feature.slug,
     }))
   } catch (error) {
@@ -45,46 +38,54 @@ interface FeaturePageProps {
 /**
  * Dynamic feature page that fetches content from BaseHub
  * Supports draft mode for previewing unpublished content
+ * Revalidates every 60 seconds
  */
+export const revalidate = 60
+
 export default async function FeaturePage({ params }: FeaturePageProps) {
   const { slug } = await params
-  const { isEnabled } = draftMode()
+  const { isEnabled } = await draftMode()
   const client = basehubClient(isEnabled)
 
   try {
-    const { marketingSite } = await client.query(
-      {
-        marketingSite: {
-          features: {
-            __args: {
-              filter: {
-                slug: { _eq: slug },
-              },
+    const result = await client.query({
+      marketingSite: {
+        features: {
+          __args: {
+            filter: {
+              slug: { _eq: slug },
             },
-            items: {
-              name: true,
-              tagline: true,
-              description: {
-                plainText: true,
-              },
-              illustrationUrl: {
-                url: true,
-                fileName: true,
-                altText: true,
-              },
-              seoKeywords: true,
+          },
+          items: {
+            name: true,
+            tagline: true,
+            description: {
+              plainText: true,
             },
+            illustrationUrl: {
+              url: true,
+              fileName: true,
+              altText: true,
+            },
+            seoKeywords: true,
           },
         },
       },
-      {
-        fetchOptions: {
-          next: { revalidate: 60 },
-        },
+    }) as {
+      marketingSite?: {
+        features?: {
+          items?: Array<{
+            name: string
+            tagline: string
+            description?: { plainText?: string }
+            illustrationUrl?: { url: string; fileName: string; altText: string | null }
+            seoKeywords?: string | null
+          }>
+        }
       }
-    )
+    }
 
-    const feature = marketingSite?.features?.items?.[0]
+    const feature = result.marketingSite?.features?.items?.[0]
 
     if (!feature) {
       return (
@@ -133,10 +134,10 @@ export default async function FeaturePage({ params }: FeaturePageProps) {
                 </div>
               )}
 
-              {feature.description && (
+              {feature.description?.plainText && (
                 <div className="prose prose-lg dark:prose-invert max-w-none">
                   <p className="text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80 leading-relaxed">
-                    {feature.description}
+                    {feature.description.plainText}
                   </p>
                 </div>
               )}

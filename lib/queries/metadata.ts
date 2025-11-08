@@ -14,31 +14,35 @@ export async function getPageMetadata(
   slug: string
 ): Promise<PageMetadata | null> {
   try {
-    const { isEnabled } = draftMode()
+    const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const { marketingSite } = await client.query(
-      {
-        marketingSite: {
-          pages: {
-            __args: {
-              filter: {
-                slug: { _eq: slug },
-              },
+    const result = await client.query({
+      marketingSite: {
+        pages: {
+          __args: {
+            filter: {
+              slug: { _eq: slug },
             },
-            items: {
-              seoTitle: true,
-              metaDescription: true,
-            },
+          },
+          items: {
+            seoTitle: true,
+            metaDescription: true,
           },
         },
       },
-      {
-        fetchOptions: {
-          next: { revalidate: 60 },
-        },
+    }) as {
+      marketingSite?: {
+        pages?: {
+          items?: Array<{
+            seoTitle: string | null
+            metaDescription: string | null
+          }>
+        }
       }
-    )
+    }
+
+    const marketingSite = result.marketingSite
 
     const page = marketingSite?.pages?.items?.[0]
 

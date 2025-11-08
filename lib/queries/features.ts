@@ -22,38 +22,48 @@ export interface FeatureData {
  */
 export async function getFeatures(): Promise<FeatureData[]> {
   try {
-    const { isEnabled } = draftMode()
+    const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const { marketingSite } = await client.query(
-      {
-        marketingSite: {
-          features: {
-            items: {
-              _id: true,
-              _title: true,
-              name: true,
-              slug: true,
-              tagline: true,
-              description: {
-                plainText: true,
-              },
-              illustrationUrl: {
-                url: true,
-                fileName: true,
-                altText: true,
-              },
-              seoKeywords: true,
+    const result = await client.query({
+      marketingSite: {
+        features: {
+          items: {
+            _id: true,
+            _title: true,
+            name: true,
+            slug: true,
+            tagline: true,
+            description: {
+              plainText: true,
             },
+            illustrationUrl: {
+              url: true,
+              fileName: true,
+              altText: true,
+            },
+            seoKeywords: true,
           },
         },
       },
-      {
-        fetchOptions: {
-          next: { revalidate: 60 },
-        },
+    }) as {
+      marketingSite?: {
+        features?: {
+          items?: Array<{
+            _id: string
+            _title: string
+            name: string
+            slug: string
+            tagline: string
+            description?: { plainText?: string }
+            illustrationUrl?: { url: string; fileName: string; altText: string | null }
+            seoKeywords: string | null
+          }>
+        }
       }
-    )
+    }
+
+    const marketingSite = result.marketingSite
 
     const features = marketingSite?.features?.items || []
 

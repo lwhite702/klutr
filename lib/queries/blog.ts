@@ -21,31 +21,40 @@ export interface BlogPost {
  */
 export async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    const { isEnabled } = draftMode()
+    const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const { marketingSite } = await client.query(
-      {
-        marketingSite: {
-          blog: {
-            items: {
-              _id: true,
-              _title: true,
-              title: true,
-              slug: true,
-              category: true,
-              excerpt: true,
-              publishedAt: true,
-            },
+    const result = await client.query({
+      marketingSite: {
+        blog: {
+          items: {
+            _id: true,
+            _title: true,
+            title: true,
+            slug: true,
+            category: true,
+            excerpt: true,
+            publishedAt: true,
           },
         },
       },
-      {
-        fetchOptions: {
-          next: { revalidate: 120 },
-        },
+    }) as {
+      marketingSite?: {
+        blog?: {
+          items?: Array<{
+            _id: string
+            _title: string
+            title: string
+            slug: string
+            category: string | null
+            excerpt: string | null
+            publishedAt: string | null
+          }>
+        }
       }
-    )
+    }
+
+    const marketingSite = result.marketingSite
 
     const posts = marketingSite?.blog?.items || []
 
@@ -81,42 +90,55 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
  */
 export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    const { isEnabled } = draftMode()
+    const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const { marketingSite } = await client.query(
-      {
-        marketingSite: {
-          blog: {
-            __args: {
-              filter: {
-                slug: { _eq: slug },
-              },
+    const result = await client.query({
+      marketingSite: {
+        blog: {
+          __args: {
+            filter: {
+              slug: { _eq: slug },
             },
-            items: {
-              _id: true,
-              _title: true,
-              title: true,
-              slug: true,
-              category: true,
-              excerpt: true,
-              publishedAt: true,
-              seoTitle: true,
-              metaDescription: true,
-              content: {
-                plainText: true,
-              },
-              brandTag: true,
+          },
+          items: {
+            _id: true,
+            _title: true,
+            title: true,
+            slug: true,
+            category: true,
+            excerpt: true,
+            publishedAt: true,
+            seoTitle: true,
+            metaDescription: true,
+            content: {
+              plainText: true,
             },
+            brandTag: true,
           },
         },
       },
-      {
-        fetchOptions: {
-          next: { revalidate: 60 },
-        },
+    }) as {
+      marketingSite?: {
+        blog?: {
+          items?: Array<{
+            _id: string
+            _title: string
+            title: string
+            slug: string
+            category: string | null
+            excerpt: string | null
+            publishedAt: string | null
+            seoTitle: string | null
+            metaDescription: string | null
+            content?: { plainText?: string }
+            brandTag: string | null
+          }>
+        }
       }
-    )
+    }
+
+    const marketingSite = result.marketingSite
 
     const post = marketingSite?.blog?.items?.[0]
 

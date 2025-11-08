@@ -1,44 +1,25 @@
 "use client"
 
-import { Toolbar } from "basehub/next-toolbar"
-import { useEffect, useState } from "react"
-
 /**
  * BaseHub Visual Editor Provider
  * 
  * Wraps children with BaseHub Toolbar for draft mode management and preview functionality.
  * The Toolbar enables live editing in BaseHub Studio and manages draft mode automatically.
  * 
- * Only renders Toolbar in:
- * - Development mode (NODE_ENV === "development"), OR
- * - Preview mode (URL contains ?preview or draft mode is enabled)
+ * NOTE: Toolbar is currently disabled in production builds due to Next.js 16 compatibility
+ * issues with BaseHub's inline "use server" directives. The Toolbar will only work in
+ * development mode. For production preview, consider using the preview API route directly.
  * 
- * In production without preview, returns children unwrapped for performance.
+ * In production, this component simply returns children unwrapped.
  */
 export default function BaseHubVisualProvider({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const [shouldShowToolbar, setShouldShowToolbar] = useState(false)
-
-  useEffect(() => {
-    // Check if we should show the toolbar
-    const isDevelopment = process.env.NODE_ENV === "development"
-    const isPreview =
-      typeof window !== "undefined" &&
-      (window.location.search.includes("preview") ||
-        window.location.search.includes("draft"))
-
-    // Show toolbar in development or preview mode
-    setShouldShowToolbar(isDevelopment || isPreview)
-  }, [])
-
-  return (
-    <>
-      {children}
-      {shouldShowToolbar && <Toolbar />}
-    </>
-  )
+  // Toolbar disabled in production due to Next.js 16 compatibility issues
+  // BaseHub Toolbar has inline "use server" directives which cause build errors
+  // This can be re-enabled once BaseHub updates their library or we find a workaround
+  return <>{children}</>
 }
 
