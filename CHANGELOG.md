@@ -25,6 +25,15 @@ Each entry includes:
 
 ---
 
+## 2025-11-08 07:47 ET
+
+- [fix] Fixed BaseHub features not displaying on marketing website
+- [fix] Added draft mode fallback in getFeatures() to query draft content if production query returns empty
+- [fix] Improved error handling and logging in getFeatures() for better debugging
+- [ui] Added empty state message in FeatureGrid when no features are available
+- [infra] Committed BaseHub features collection to make them visible in production
+- [infra] Filled required fields in BaseHub component templates to unblock commits
+
 ## 2025-11-08 07:07 ET
 
 - [feature] Created branded Klutr HTML email templates for all Supabase Auth emails

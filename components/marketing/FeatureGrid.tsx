@@ -77,7 +77,12 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
           </p>
         </motion.div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => {
+          {features.length === 0 ? (
+            <div className="col-span-full text-center py-12 text-muted-foreground">
+              <p>No features available. Check BaseHub configuration.</p>
+            </div>
+          ) : (
+            features.map((feature, index) => {
             const Icon = featureIcons[feature.name] || Brain
             return (
               <motion.div key={feature.slug} variants={fadeInUp}>
@@ -114,7 +119,8 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
                 </Card>
               </motion.div>
             )
-          })}
+          })
+          )}
         </div>
       </motion.div>
     </section>
