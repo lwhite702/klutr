@@ -1,4 +1,4 @@
-import { getHomePage, getFeatures } from "@/lib/queries"
+import { getHomePage, getFeatures, getLatestChangelogEntries, getUpcomingRoadmapItems } from "@/lib/queries"
 import { getPageMetadata } from "@/lib/queries/metadata"
 import type { Metadata } from "next"
 import MarketingHeader from "@/components/marketing/MarketingHeader"
@@ -48,6 +48,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function MarketingHomePage() {
   const home = await getHomePage()
   const features = await getFeatures()
+  
+  // Fetch footer data
+  const [latestReleases, upcomingItems] = await Promise.all([
+    getLatestChangelogEntries(2),
+    getUpcomingRoadmapItems(2),
+  ])
 
   // Fallback data if BaseHub is unavailable
   const homeData = home || {
@@ -317,7 +323,7 @@ export default async function MarketingHomePage() {
         </section>
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter latestReleases={latestReleases} upcomingItems={upcomingItems} />
     </div>
   )
 }

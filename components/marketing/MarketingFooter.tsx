@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import React from "react"
 import { getLatestChangelogEntries, getUpcomingRoadmapItems } from "@/lib/queries"
 import { Sparkles, Calendar } from "lucide-react"
 
@@ -113,11 +114,13 @@ function FooterWidgets({
   )
 }
 
-export default async function MarketingFooter() {
-  const [latestReleases, upcomingItems] = await Promise.all([
-    getLatestChangelogEntries(2),
-    getUpcomingRoadmapItems(2),
-  ])
+function MarketingFooterContent({
+  latestReleases,
+  upcomingItems,
+}: {
+  latestReleases: Awaited<ReturnType<typeof getLatestChangelogEntries>>
+  upcomingItems: Awaited<ReturnType<typeof getUpcomingRoadmapItems>>
+}) {
   return (
     <footer className="bg-background dark:bg-[var(--klutr-surface-dark)] border-t border-[var(--klutr-outline)]/20 py-12">
       <div className="container mx-auto px-6">
@@ -245,6 +248,19 @@ export default async function MarketingFooter() {
       </div>
     </footer>
   )
+}
+
+// Export the content component as default for use in pages
+export default MarketingFooterContent
+
+// Export async wrapper for pages that want to fetch data
+export async function MarketingFooterWithData() {
+  const [latestReleases, upcomingItems] = await Promise.all([
+    getLatestChangelogEntries(2),
+    getUpcomingRoadmapItems(2),
+  ])
+  
+  return <MarketingFooterContent latestReleases={latestReleases} upcomingItems={upcomingItems} />
 }
 
 function FooterLogo() {

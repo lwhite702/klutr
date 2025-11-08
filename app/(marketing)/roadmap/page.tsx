@@ -1,4 +1,4 @@
-import { getRoadmapItems } from "@/lib/queries"
+import { getRoadmapItems, getLatestChangelogEntries, getUpcomingRoadmapItems } from "@/lib/queries"
 import { getPageMetadata } from "@/lib/queries/metadata"
 import type { Metadata } from "next"
 import MarketingHeader from "@/components/marketing/MarketingHeader"
@@ -82,6 +82,12 @@ function PriorityBadge({ priority }: { priority: string | null }) {
 
 export default async function RoadmapPage() {
   const roadmapItems = await getRoadmapItems()
+  
+  // Fetch footer data
+  const [latestReleases, upcomingItems] = await Promise.all([
+    getLatestChangelogEntries(2),
+    getUpcomingRoadmapItems(2),
+  ])
 
   // Group items by status
   const completed = roadmapItems.filter(item => item.status === "completed")
@@ -251,7 +257,7 @@ export default async function RoadmapPage() {
         </AnimatedSection>
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter latestReleases={latestReleases} upcomingItems={upcomingItems} />
     </div>
   )
 }

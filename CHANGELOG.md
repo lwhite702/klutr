@@ -25,9 +25,9 @@ Each entry includes:
 
 ---
 
-## 2025-11-08 11:37 ET
+## 2025-11-08 12:00 ET
 
-- [fix] Fixed TypeScript build error in MarketingFooter component - refactored FooterWidgets to receive data as props instead of being async
+- [fix] Fixed TypeScript build error with async MarketingFooter - converted to non-async component that receives data as props, updated all marketing pages to fetch footer data and pass as props
 
 ## 2025-11-08 07:58 ET
 
