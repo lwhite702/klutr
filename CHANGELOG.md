@@ -25,6 +25,12 @@ Each entry includes:
 
 ---
 
+## 2025-11-08 12:02 ET
+
+- [infra] Added Vercel Speed Insights for performance metrics collection
+- [infra] Installed @vercel/speed-insights package and integrated SpeedInsights component into root layout
+- [infra] Speed Insights will collect Core Web Vitals and performance data after deployment
+
 ## 2025-11-08 12:00 ET
 
 - [fix] Fixed TypeScript build error with async MarketingFooter - converted to non-async component that receives data as props, updated all marketing pages to fetch footer data and pass as props

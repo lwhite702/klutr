@@ -47,6 +47,7 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.78.0",
     "@vercel/analytics": "1.3.1",
+    "@vercel/speed-insights": "^1.2.0",
     "basehub": "^9.5.3",
     "canvas-confetti": "latest",
     "class-variance-authority": "^0.7.1",
