@@ -9,18 +9,36 @@ import { Button } from "@/components/ui/button"
 export default function MarketingHeader() {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const isDark = resolvedTheme === "dark"
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--klutr-outline)]/20 bg-[var(--klutr-background)]/95 dark:bg-[var(--klutr-surface-dark)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--klutr-background)]/60 dark:supports-[backdrop-filter]:bg-[var(--klutr-surface-dark)]/60">
+    <header
+      className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+        scrolled
+          ? "border-[var(--klutr-outline)]/30 bg-[var(--klutr-background)]/90 dark:bg-[var(--klutr-surface-dark)]/90 shadow-sm"
+          : "border-[var(--klutr-outline)]/20 bg-[var(--klutr-background)]/80 dark:bg-[var(--klutr-surface-dark)]/80"
+      } backdrop-blur-md`}
+    >
       <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {mounted && (
-            <Link href="/" className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="flex items-center gap-2 transition-transform duration-300 hover:scale-105"
+            >
               <Image
                 src={
                   isDark
@@ -28,54 +46,47 @@ export default function MarketingHeader() {
                     : "/logos/klutr-logo-light-noslogan.svg"
                 }
                 alt="Klutr"
-                width={240}
-                height={80}
-                className="h-12 md:h-16 w-auto"
+                width={336}
+                height={112}
+                className="h-16 md:h-20 lg:h-24 w-auto"
                 priority
               />
             </Link>
           )}
           <div className="hidden md:flex items-center gap-8">
             <Link
-              href="#features"
+              href="/"
+              className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
+            >
+              Home
+            </Link>
+            <Link
+              href="/features"
               className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
             >
               Features
             </Link>
             <Link
-              href="#pricing"
+              href="/blog"
               className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
             >
-              Pricing
+              Blog
             </Link>
             <Link
-              href="#discover"
+              href="/help"
               className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
             >
-              Discover
-            </Link>
-            <Link
-              href="#about"
-              className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
-            >
-              About
+              Help
             </Link>
           </div>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" asChild>
-              <Link href="/login" aria-label="Log in to your account">
-                Log in
-              </Link>
-            </Button>
-            <Button
-              className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
-              asChild
-            >
-              <Link href="/login" aria-label="Sign up for free beta">
-                Sign Up
-              </Link>
-            </Button>
-          </div>
+          <Button
+            className="bg-gradient-to-r from-[#FF6B6B] to-[#5ED0BD] hover:opacity-90 text-white shadow-sm"
+            asChild
+          >
+            <Link href="/login" aria-label="Join free beta">
+              Join Free Beta
+            </Link>
+          </Button>
         </div>
       </nav>
     </header>

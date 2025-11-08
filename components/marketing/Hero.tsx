@@ -45,10 +45,10 @@ export default function Hero({
   return (
     <section
       data-bh-collection="pages"
-      className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-20 md:py-32"
+      className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-24 md:py-40"
     >
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-6 max-w-7xl">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div
             initial="initial"
             animate="animate"
@@ -65,9 +65,9 @@ export default function Hero({
               <motion.div variants={fadeInUp}>
                 <h1
                   data-bh-field="heroHeadline"
-                  className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-none"
+                  className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.1] mb-8"
                 >
-                  <span className="text-[var(--klutr-coral)]">
+                  <span className="text-[var(--klutr-coral)] font-semibold">
                     {headlineParts.firstWord}
                   </span>{" "}
                   {headlineParts.remainingWords}
@@ -84,12 +84,12 @@ export default function Hero({
               <motion.p
                 data-bh-field="heroSubtext"
                 variants={fadeInUp}
-                className="text-xl md:text-2xl text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80 max-w-lg font-light"
+                className="text-xl md:text-2xl text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80 max-w-lg font-light leading-relaxed mb-8"
               >
                 {heroSubtext}
               </motion.p>
             )}
-            <motion.div variants={fadeInUp} className="pt-4 flex gap-4">
+            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
               {primaryCTA && (
                 <Button
                   data-bh-field="primaryCTA"
