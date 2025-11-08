@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import posthog from 'posthog-js'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -23,10 +24,12 @@ export function StackCard({ name, noteCount, summary, pinned = false }: StackCar
   const demoMode = isDemoMode()
 
   const handleOpen = () => {
+    posthog.capture('stack_opened', { stack_name: name })
     router.push(`/app/stacks/${encodeURIComponent(name)}`)
   }
 
   const handlePin = async () => {
+    posthog.capture('stack_pin_toggled', { stack_name: name, pinned: !isPinned, demo_mode: demoMode })
     if (demoMode) {
       setIsPinned(!isPinned)
       console.log("[v0] Demo mode: toggle pin for", name)

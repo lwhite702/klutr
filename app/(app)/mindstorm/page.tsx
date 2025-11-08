@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import type React from "react";
+import posthog from 'posthog-js';
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
@@ -49,6 +50,7 @@ export default function MindStormPage() {
   });
 
   const handleRecluster = () => {
+    posthog.capture('mindstorm-recluster-clicked');
     console.log("TODO: Recluster notes");
   };
 
@@ -65,6 +67,11 @@ export default function MindStormPage() {
           : cluster
       )
     );
+  };
+
+  const handleViewChange = (newView: ViewType) => {
+    posthog.capture('mindstorm-view-changed', { view: newView });
+    setView(newView);
   };
 
   // Generate relationships for pin board view
@@ -155,7 +162,7 @@ export default function MindStormPage() {
         </div>
         <ViewToggle
           view={view}
-          onViewChange={setView}
+          onViewChange={handleViewChange}
           availableViews={["grid", "list", "collage", "pinboard"]}
         />
       </div>

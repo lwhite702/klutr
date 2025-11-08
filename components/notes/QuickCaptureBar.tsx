@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import posthog from 'posthog-js'
 
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
@@ -19,6 +20,7 @@ export function QuickCaptureBar({ onCreate, isCreating = false }: QuickCaptureBa
 
   const handleSave = async () => {
     if (content.trim()) {
+      posthog.capture('quick_note_created', { note_length: content.trim().length })
       await onCreate(content)
       setContent("")
     }

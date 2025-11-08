@@ -66,6 +66,33 @@ The following variables are required for BaseHub headless CMS integration:
 
 **Visual Editor Integration:** The BaseHub Toolbar component (from `basehub/next-toolbar`) automatically manages draft mode and enables content editors to see live updates when editing in BaseHub Studio. The Toolbar is mounted in the marketing layout and handles revalidation through Next.js Server Actions. No additional BaseHub Studio configuration is required - the Toolbar works automatically when preview mode is enabled via `/api/preview`.
 
+### Phase 4 Variables (PostHog Analytics & Feature Flags)
+
+The following variables are required for PostHog analytics and feature flag management:
+
+**Client-side variables (NEXT_PUBLIC_ prefix):**
+- `NEXT_PUBLIC_POSTHOG_KEY` - PostHog project API key (exposed to browser, used for client-side analytics and feature flags)
+- `NEXT_PUBLIC_POSTHOG_HOST` - PostHog host URL (defaults to `https://us.posthog.com` to match existing rewrites in `next.config.mjs`)
+
+**Server-only variables:**
+- `POSTHOG_SERVER_KEY` - PostHog project API key for server-side operations (feature flag checks in API routes, cron jobs, etc.)
+
+**Setup:**
+1. Create account at https://posthog.com
+2. Create a new project or use existing project
+3. Get your project API key from PostHog dashboard → Project Settings → API Keys
+4. Add to Doppler:
+   - `NEXT_PUBLIC_POSTHOG_KEY` - Use the same API key for client and server (or separate keys if preferred)
+   - `NEXT_PUBLIC_POSTHOG_HOST` - Set to `https://us.posthog.com` (or your PostHog instance URL)
+   - `POSTHOG_SERVER_KEY` - Use the same API key as `NEXT_PUBLIC_POSTHOG_KEY` (or a separate server key)
+
+**Note:** PostHog is used for:
+- Product analytics and event tracking
+- Feature flags for controlled beta testing and phased rollouts
+- A/B testing and experimentation
+
+The client-side key is exposed to the browser for analytics and feature flag evaluation. The server key is used for server-side feature flag checks in API routes and background jobs.
+
 ### Migration Notes
 
 - Doppler handles all environments (dev, staging, production)
@@ -203,6 +230,9 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add BASEHUB_API_TOKEN production
    vercel env add BASEHUB_PROJECT_ID production
    vercel env add BASEHUB_PREVIEW_SECRET production
+   vercel env add NEXT_PUBLIC_POSTHOG_KEY production
+   vercel env add NEXT_PUBLIC_POSTHOG_HOST production
+   vercel env add POSTHOG_SERVER_KEY production
 
    # Preview (for PR deployments)
    vercel env add NEON_DATABASE_URL preview
@@ -217,6 +247,9 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add BASEHUB_API_TOKEN preview
    vercel env add BASEHUB_PROJECT_ID preview
    vercel env add BASEHUB_PREVIEW_SECRET preview
+   vercel env add NEXT_PUBLIC_POSTHOG_KEY preview
+   vercel env add NEXT_PUBLIC_POSTHOG_HOST preview
+   vercel env add POSTHOG_SERVER_KEY preview
 
    # Development (local dev with vercel dev)
    vercel env add NEON_DATABASE_URL development
@@ -231,6 +264,9 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add BASEHUB_API_TOKEN development
    vercel env add BASEHUB_PROJECT_ID development
    vercel env add BASEHUB_PREVIEW_SECRET development
+   vercel env add NEXT_PUBLIC_POSTHOG_KEY development
+   vercel env add NEXT_PUBLIC_POSTHOG_HOST development
+   vercel env add POSTHOG_SERVER_KEY development
    ```
 
 3. **Verify variables are set:**

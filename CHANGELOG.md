@@ -25,6 +25,35 @@ Each entry includes:
 
 ---
 
+## 2025-11-08 17:40 ET
+
+- [fix] Fixed PostHog client-side initialization - replaced instrumentation-client.ts with PostHogProvider component in root layout (proper Next.js App Router pattern)
+- [fix] Removed invalid import of instrumentation-client.ts from instrumentation.ts - client-side PostHog now initialized via PostHogProvider component
+- [feature] Added PostHog feature flags integration for controlled beta testing and phased rollouts
+- [infra] Created lib/posthog/client.ts - singleton PostHog JS client for browser-side feature flags and analytics
+- [infra] Created lib/posthog/server.ts - PostHog Node client for server-side feature flag checks in API routes
+- [infra] Created lib/featureFlags.ts - centralized feature flag middleware with in-memory caching (5min TTL)
+- [ui] Added FeatureGate component (components/ui/FeatureGate.tsx) for conditional rendering based on feature flags
+- [feature] Added useTrackEvent hook (lib/hooks/useTrackEvent.ts) for PostHog event tracking in React components
+- [feature] Added /debug/flags route to visualize active feature flags for authenticated users
+- [infra] Refactored instrumentation-client.ts to use new lib/posthog/client.ts singleton pattern
+- [docs] Added PostHog environment variables documentation to DOPPLER.md (NEXT_PUBLIC_POSTHOG_KEY, NEXT_PUBLIC_POSTHOG_HOST, POSTHOG_SERVER_KEY)
+- [docs] Created mintlify/feature-flags.mdx user-facing documentation for feature flag usage
+- [docs] Added feature flags architecture section to docs/architecture.md
+- [infra] Feature flags support: spark-beta, muse-ai, orbit-experimental, vault-enhanced, klutr-global-disable (kill switch)
+
+## 2025-11-08 12:41 ET
+
+- [fix] Fixed Bug 1: instrumentation.ts now properly loads instrumentation-client.ts via dynamic import in register() function
+- [fix] Verified Bug 2: Confirmed PostHog init configuration has no invalid `defaults` option (bug was already fixed in previous commit)
+- [infra] Created instrumentation-client.ts file for client-side PostHog initialization via Next.js instrumentation system
+
+## 2025-11-08 12:17 ET
+
+- [fix] Fixed PostHog instrumentation setup - created missing instrumentation.ts entry point file required by Next.js
+- [fix] Fixed PostHog init configuration - removed invalid `defaults: '2025-05-24'` string option (should be object or omitted)
+- [infra] Added instrumentation.ts with register() function to enable Next.js instrumentation system
+
 ## 2025-11-08 12:02 ET
 
 - [infra] Added Vercel Speed Insights for performance metrics collection

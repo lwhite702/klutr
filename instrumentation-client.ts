@@ -1,9 +1,13 @@
-import posthog from "posthog-js"
+/**
+ * PostHog Client-Side Initialization
+ *
+ * This file is loaded by Next.js instrumentation system for client-side initialization.
+ * The actual PostHog client is managed by lib/posthog/client.ts to ensure singleton pattern.
+ */
 
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  api_host: "/ingest",
-  ui_host: "https://us.posthog.com",
-  defaults: '2025-05-24',
-  capture_exceptions: true, // This enables capturing exceptions using Error Tracking, set to false if you don't want this
-  debug: process.env.NODE_ENV === "development",
-});
+import { initPostHog } from "@/lib/posthog/client";
+
+// Initialize PostHog on client-side
+// This is called automatically by Next.js instrumentation system
+initPostHog();
+

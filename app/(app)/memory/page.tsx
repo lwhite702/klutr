@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import type React from "react";
+import posthog from 'posthog-js';
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
@@ -43,6 +44,7 @@ export default function MemoryLanePage() {
   });
 
   const handleRevisitWeek = (week: string) => {
+    posthog.capture('memory_week_revisited', { week: week });
     console.log("TODO: Open week detail", week);
   };
 
@@ -64,7 +66,10 @@ export default function MemoryLanePage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => dialogTour.startTour()}
+                onClick={() => {
+                  posthog.capture('memory_tour_started', { trigger: 'manual_click' });
+                  dialogTour.startTour();
+                }}
               >
                 Take tour
               </Button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useRef } from "react";
+import posthog from "posthog-js";
 import {
   Sparkles,
   ArrowRight,
@@ -214,7 +215,15 @@ export function SectionTourDialog({
             variant="ghost"
             size="sm"
             className="text-muted-foreground"
-            onClick={skipTour}
+            onClick={() => {
+              posthog.capture("tour-skipped", {
+                tour_title: title,
+                step_index: safeStepIndex,
+                step_title: safeCurrentStep?.title,
+                total_steps: totalSteps,
+              });
+              skipTour();
+            }}
           >
             Skip tour
           </Button>
@@ -223,7 +232,16 @@ export function SectionTourDialog({
               type="button"
               variant="outline"
               size="sm"
-              onClick={goToPreviousStep}
+              onClick={() => {
+                posthog.capture("tour-step-navigated", {
+                  tour_title: title,
+                  direction: "previous",
+                  from_step_index: safeStepIndex,
+                  from_step_title: safeCurrentStep?.title,
+                  total_steps: totalSteps,
+                });
+                goToPreviousStep();
+              }}
               aria-label="Go to previous step"
             >
               <ArrowLeft className="mr-1 h-4 w-4" aria-hidden="true" />
@@ -235,7 +253,24 @@ export function SectionTourDialog({
             size="sm"
             className="ml-auto text-white shadow hover:opacity-90"
             style={{ backgroundColor: accentColor }}
-            onClick={isLastStep ? finishTour : goToNextStep}
+            onClick={() => {
+              if (isLastStep) {
+                posthog.capture("tour-finished", {
+                  tour_title: title,
+                  total_steps: totalSteps,
+                });
+                finishTour();
+              } else {
+                posthog.capture("tour-step-navigated", {
+                  tour_title: title,
+                  direction: "next",
+                  from_step_index: safeStepIndex,
+                  from_step_title: safeCurrentStep?.title,
+                  total_steps: totalSteps,
+                });
+                goToNextStep();
+              }
+            }}
             aria-label={isLastStep ? "Finish tour" : "Go to next step"}
           >
             {isLastStep ? "Finish" : "Next"}
@@ -249,4 +284,3 @@ export function SectionTourDialog({
     </>
   );
 }
-

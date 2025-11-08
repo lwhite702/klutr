@@ -20,9 +20,12 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  GraduationCap,
+  Sparkles,
   Star,
   Code,
+  Zap,
+  Layers,
+  Search,
 } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -103,54 +106,77 @@ export default async function MarketingHomePage() {
         <FeatureGrid features={features} />
 
         {/* How It Works Section */}
-        <section className="container mx-auto px-6 py-24">
-          <AnimatedSection className="space-y-16">
-            <AnimatedItem className="text-center space-y-6 max-w-3xl mx-auto">
-              <h2 className="text-4xl md:text-5xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] leading-tight">
-                Bring order to your chaos
-              </h2>
-              <p className="text-xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 leading-relaxed">
-                Dump notes, ideas & randomness; we'll sort 'em faster than you can say 'where's that screenshot?'
+        <section className="container mx-auto px-6 py-20">
+          <AnimatedSection className="space-y-12">
+            <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Sparkles className="w-8 h-8 text-[var(--klutr-coral)]" />
+                <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+                  How It Works
+                </h2>
+              </div>
+              <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                Capture, organize, discover—effortlessly
               </p>
             </AnimatedItem>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 gap-6">
               <AnimatedItem>
-                <Card className="h-full border-[var(--klutr-outline)]/20 hover:border-[var(--klutr-coral)]/30 transition-colors">
+                <Card className="h-full border-[var(--klutr-outline)]/20">
                   <CardHeader>
-                    <CardTitle className="text-2xl">Dump it like it's hot</CardTitle>
+                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                      <Zap className="w-6 h-6 text-[var(--klutr-coral)]" />
+                    </div>
+                    <CardTitle className="text-2xl">Capture</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent>
                     <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Capture text, images, or voice notes. No friction, no judgment. Just dump your thoughts.
+                      Dump text, images, or voice notes. No friction, no formatting.
                     </p>
                   </CardContent>
                 </Card>
               </AnimatedItem>
               <AnimatedItem>
-                <Card className="h-full border-[var(--klutr-outline)]/20 hover:border-[var(--klutr-coral)]/30 transition-colors">
+                <Card className="h-full border-[var(--klutr-outline)]/20">
                   <CardHeader>
-                    <CardTitle className="text-2xl">Watch AI do its thing</CardTitle>
+                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
+                      <Layers className="w-6 h-6 text-[var(--klutr-mint)]" />
+                    </div>
+                    <CardTitle className="text-2xl">Organize</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent>
                     <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Our AI instantly organizes your notes into searchable piles. No setup, no configuration.
+                      AI clusters related ideas automatically. No manual filing required.
                     </p>
                   </CardContent>
                 </Card>
               </AnimatedItem>
               <AnimatedItem>
-                <Card className="h-full border-[var(--klutr-outline)]/20 hover:border-[var(--klutr-coral)]/30 transition-colors">
+                <Card className="h-full border-[var(--klutr-outline)]/20">
                   <CardHeader>
-                    <CardTitle className="text-2xl">Revisit your gems</CardTitle>
+                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                      <Search className="w-6 h-6 text-[var(--klutr-coral)]" />
+                    </div>
+                    <CardTitle className="text-2xl">Discover</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent>
                     <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Find forgotten ideas when you need them. Your notes resurface at the right moment.
+                      Find connections you didn't know existed. Turn chaos into clarity.
                     </p>
                   </CardContent>
                 </Card>
               </AnimatedItem>
             </div>
+            <AnimatedItem className="text-center pt-4">
+              <Button
+                size="lg"
+                className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
+                asChild
+              >
+                <Link href="/login" aria-label="Get started with Klutr">
+                  Get Started
+                </Link>
+              </Button>
+            </AnimatedItem>
           </AnimatedSection>
         </section>
 

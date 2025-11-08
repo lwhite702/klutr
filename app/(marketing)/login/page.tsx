@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from 'posthog-js';
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
@@ -42,16 +43,20 @@ function LoginForm() {
       if (signInError) {
         setError(signInError.message);
         setIsLoading(false);
+        posthog.capture('login-failed', { error_message: signInError.message });
         return;
       }
 
       // Redirect to the app or the redirect URL from query params
       const redirectTo = searchParams.get("redirect") || "/app";
+      posthog.capture('login-succeeded', { redirect_to: redirectTo });
       router.push(redirectTo);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      const errorMessage = err instanceof Error ? err.message : "An error occurred";
+      setError(errorMessage);
       setIsLoading(false);
+      posthog.capture('login-failed', { error_message: errorMessage });
     }
   };
 

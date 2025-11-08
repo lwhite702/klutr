@@ -1,0 +1,174 @@
+---
+title: Feature Flags
+description: Learn how to use feature flags for controlled beta testing and phased rollouts
+---
+
+Feature flags allow you to control the rollout of new features without deploying new code. You can enable features for specific users, gradually roll out to more users, or quickly disable features if issues arise.
+
+## How Feature Flags Work
+
+Feature flags are managed in your PostHog dashboard. When you toggle a flag in PostHog, the change takes effect immediately in the app without requiring a new deployment.
+
+The app checks feature flags in two ways:
+
+- **Client-side**: For UI components and user-facing features
+- **Server-side**: For API routes, background jobs, and server-rendered content
+
+## Using FeatureGate Component
+
+The easiest way to conditionally show features is using the `FeatureGate` component:
+
+```tsx
+import { FeatureGate } from "@/components/ui/FeatureGate";
+
+function MyPage() {
+  return (
+    <div>
+      <h1>My Page</h1>
+      
+      <FeatureGate flag="spark-beta">
+        <SparkInterface />
+      </FeatureGate>
+    </div>
+  );
+}
+```
+
+The `FeatureGate` component only renders its children when the feature flag is enabled. If the flag is disabled, nothing is rendered (or you can provide a `fallback` prop).
+
+### With Fallback Content
+
+You can show alternative content when a feature is disabled:
+
+```tsx
+<FeatureGate 
+  flag="muse-ai" 
+  fallback={<div>This feature is coming soon!</div>}
+>
+  <MuseInterface />
+</FeatureGate>
+```
+
+### With Loading State
+
+While the feature flag is being checked, you can show a loading state:
+
+```tsx
+<FeatureGate 
+  flag="orbit-experimental"
+  loading={<div>Loading...</div>}
+>
+  <OrbitView />
+</FeatureGate>
+```
+
+## Checking Flags Programmatically
+
+For more control, you can check feature flags directly in your code:
+
+```tsx
+import { featureEnabled, FEATURE_FLAGS } from "@/lib/featureFlags";
+
+async function MyComponent() {
+  const isEnabled = await featureEnabled(FEATURE_FLAGS.SPARK_BETA);
+  
+  if (isEnabled) {
+    // Show feature
+  }
+}
+```
+
+### Available Flags
+
+Use the `FEATURE_FLAGS` constants to avoid typos:
+
+- `FEATURE_FLAGS.SPARK_BETA` - Spark feature beta
+- `FEATURE_FLAGS.MUSE_AI` - Muse AI feature
+- `FEATURE_FLAGS.ORBIT_EXPERIMENTAL` - Orbit experimental view
+- `FEATURE_FLAGS.VAULT_ENHANCED` - Enhanced vault features
+- `FEATURE_FLAGS.KLUTR_GLOBAL_DISABLE` - Global kill switch
+
+## Server-Side Flag Checks
+
+In API routes or server components, use the server-side function:
+
+```tsx
+import { getFeatureFlag } from "@/lib/posthog/server";
+import { getCurrentUser } from "@/lib/auth";
+
+export async function GET(request: Request) {
+  const user = await getCurrentUser();
+  const isEnabled = await getFeatureFlag("spark-beta", user.id);
+  
+  if (!isEnabled) {
+    return Response.json({ error: "Feature not available" }, { status: 403 });
+  }
+  
+  // ... rest of handler
+}
+```
+
+## Safely Rolling Out Features
+
+Follow these steps for safe feature rollouts:
+
+### 1. Create the Flag in PostHog
+
+1. Go to your PostHog dashboard
+2. Navigate to Feature Flags
+3. Create a new flag with a descriptive key (e.g., `spark-beta`)
+4. Set initial rollout to 0% (disabled)
+
+### 2. Wrap Your Feature
+
+Use `FeatureGate` or programmatic checks to wrap your new feature:
+
+```tsx
+<FeatureGate flag="spark-beta">
+  <NewFeature />
+</FeatureGate>
+```
+
+### 3. Test with Internal Users
+
+1. In PostHog, add yourself to the flag's target users
+2. Test the feature thoroughly
+3. Verify it works as expected
+
+### 4. Gradual Rollout
+
+1. Increase rollout percentage gradually (10%, 25%, 50%, 100%)
+2. Monitor error rates and user feedback
+3. If issues arise, quickly disable the flag
+
+### 5. Full Rollout
+
+Once confident, enable the flag for 100% of users. After a period of stability, you can remove the feature flag check and make the feature permanent.
+
+## Emergency Rollback
+
+If a feature causes issues, you can instantly disable it:
+
+1. Go to PostHog dashboard
+2. Find the feature flag
+3. Set rollout to 0% or disable the flag
+4. The feature disappears immediately without a new deployment
+
+For critical issues, use the global kill switch (`klutr-global-disable`) to disable all experimental features at once.
+
+## Best Practices
+
+- **Use descriptive flag names**: `spark-beta` is better than `flag-1`
+- **Document flag purpose**: Add notes in PostHog about what the flag controls
+- **Clean up old flags**: Remove flag checks after features are fully rolled out
+- **Monitor flag usage**: Check PostHog analytics to see how flags affect user behavior
+- **Fail closed**: If PostHog is unavailable, features are disabled by default
+
+## Debugging Feature Flags
+
+Visit `/debug/flags` (requires authentication) to see all active feature flags for your user. This helps verify flag states during development and testing.
+
+## Need Help?
+
+If you have questions about feature flags or need help setting up a new feature rollout, reach out to the team.
+

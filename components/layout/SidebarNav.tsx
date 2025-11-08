@@ -12,6 +12,7 @@ import {
   Calendar,
   Trash2,
 } from "lucide-react";
+import posthog from 'posthog-js';
 
 const navItems = [
   {
@@ -80,7 +81,12 @@ export function SidebarNav({ activeRoute }: SidebarNavProps) {
             className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
             asChild
           >
-            <Link href={item.href}>
+            <Link href={item.href} onClick={() => {
+              posthog.capture('sidebar_navigation_link_clicked', {
+                target_href: item.href,
+                target_label: item.label,
+              });
+            }}>
               <Icon
                 className={`h-4 w-4 ${item.color || "text-muted-foreground"}`}
               />

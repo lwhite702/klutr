@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from 'posthog-js';
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,7 +42,10 @@ export function VaultLockScreen({ onUnlock }: VaultLockScreenProps) {
             </TooltipProvider>
           </div>
           <Button
-            onClick={onUnlock}
+            onClick={() => {
+              posthog.capture('vault_unlock_attempted');
+              onUnlock();
+            }}
             size="lg"
             className="w-full"
             data-onboarding="unlock-button"

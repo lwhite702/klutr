@@ -342,6 +342,70 @@ ON notes FOR ALL
 USING (auth.uid() = user_id);
 ```
 
+## Feature Flags Architecture
+
+### Overview
+
+PostHog feature flags enable controlled beta testing and phased rollouts without code deployments. Flags are managed in PostHog dashboard and take effect immediately.
+
+### Implementation
+
+- **Client-side**: `lib/posthog/client.ts` - Singleton PostHog JS client for browser
+- **Server-side**: `lib/posthog/server.ts` - PostHog Node client for API routes and server components
+- **Middleware**: `lib/featureFlags.ts` - Centralized flag management with in-memory caching (5min TTL)
+- **Component**: `components/ui/FeatureGate.tsx` - React component for conditional rendering
+
+### Flag Constants
+
+All feature flags are defined in `FEATURE_FLAGS` enum:
+- `spark-beta` - Spark feature beta
+- `muse-ai` - Muse AI feature
+- `orbit-experimental` - Orbit experimental view
+- `vault-enhanced` - Enhanced vault features
+- `klutr-global-disable` - Global kill switch (disables all experimental features)
+
+### Caching Strategy
+
+- In-memory cache with 5-minute TTL
+- Cache key format: `flag:${flag}:${userId || 'anonymous'}`
+- Automatically invalidates expired entries
+- Can be upgraded to Redis for multi-instance deployments
+
+### Fail-Safe Behavior
+
+- **Fail closed**: If PostHog is unavailable, flags default to `false` (disabled)
+- **Kill switch**: `klutr-global-disable` flag disables all experimental features when enabled
+- **Error handling**: All flag checks catch errors and return `false` to prevent app crashes
+
+### Usage Patterns
+
+**Client-side (React components):**
+```tsx
+import { FeatureGate } from "@/components/ui/FeatureGate";
+
+<FeatureGate flag="spark-beta">
+  <SparkInterface />
+</FeatureGate>
+```
+
+**Server-side (API routes):**
+```tsx
+import { getFeatureFlag } from "@/lib/posthog/server";
+
+const enabled = await getFeatureFlag("spark-beta", user.id);
+```
+
+**Programmatic (anywhere):**
+```tsx
+import { featureEnabled, FEATURE_FLAGS } from "@/lib/featureFlags";
+
+const enabled = await featureEnabled(FEATURE_FLAGS.SPARK_BETA, userId);
+```
+
+### Debug Route
+
+`/debug/flags` - Protected route showing all active flags for current user. Useful for development and testing.
+
 ## Data Model
 
 ### Core Prisma Models
