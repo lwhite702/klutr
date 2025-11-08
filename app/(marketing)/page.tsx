@@ -19,23 +19,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
 import {
-  Sparkles,
+  GraduationCap,
   Star,
   Code,
-  Mail,
-  Phone,
-  Twitter,
-  Github,
-  Linkedin,
-  Youtube,
-  MessageCircle,
-  Zap,
-  Layers,
-  Search,
 } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -110,85 +97,62 @@ export default async function MarketingHomePage() {
         <FeatureGrid features={features} />
 
         {/* How It Works Section */}
-        <section className="container mx-auto px-6 py-20">
-          <AnimatedSection className="space-y-12">
-            <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Sparkles className="w-8 h-8 text-[var(--klutr-coral)]" />
-                <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                  How It Works
-                </h2>
-              </div>
-              <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                Capture, organize, discover—effortlessly
+        <section className="container mx-auto px-6 py-24">
+          <AnimatedSection className="space-y-16">
+            <AnimatedItem className="text-center space-y-6 max-w-3xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] leading-tight">
+                Bring order to your chaos
+              </h2>
+              <p className="text-xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 leading-relaxed">
+                Dump notes, ideas & randomness; we'll sort 'em faster than you can say 'where's that screenshot?'
               </p>
             </AnimatedItem>
             <div className="grid md:grid-cols-3 gap-6">
               <AnimatedItem>
-                <Card className="h-full border-[var(--klutr-outline)]/20">
+                <Card className="h-full border-[var(--klutr-outline)]/20 hover:border-[var(--klutr-coral)]/30 transition-colors">
                   <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
-                      <Zap className="w-6 h-6 text-[var(--klutr-coral)]" />
-                    </div>
-                    <CardTitle className="text-2xl">Capture</CardTitle>
+                    <CardTitle className="text-2xl">Dump it like it's hot</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
                     <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Dump text, images, or voice notes. No friction, no formatting.
+                      Capture text, images, or voice notes. No friction, no judgment. Just dump your thoughts.
                     </p>
                   </CardContent>
                 </Card>
               </AnimatedItem>
               <AnimatedItem>
-                <Card className="h-full border-[var(--klutr-outline)]/20">
+                <Card className="h-full border-[var(--klutr-outline)]/20 hover:border-[var(--klutr-coral)]/30 transition-colors">
                   <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
-                      <Layers className="w-6 h-6 text-[var(--klutr-mint)]" />
-                    </div>
-                    <CardTitle className="text-2xl">Organize</CardTitle>
+                    <CardTitle className="text-2xl">Watch AI do its thing</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
                     <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      AI clusters related ideas automatically. No manual filing required.
+                      Our AI instantly organizes your notes into searchable piles. No setup, no configuration.
                     </p>
                   </CardContent>
                 </Card>
               </AnimatedItem>
               <AnimatedItem>
-                <Card className="h-full border-[var(--klutr-outline)]/20">
+                <Card className="h-full border-[var(--klutr-outline)]/20 hover:border-[var(--klutr-coral)]/30 transition-colors">
                   <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
-                      <Search className="w-6 h-6 text-[var(--klutr-coral)]" />
-                    </div>
-                    <CardTitle className="text-2xl">Discover</CardTitle>
+                    <CardTitle className="text-2xl">Revisit your gems</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-4">
                     <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Find connections you didn't know existed. Turn chaos into clarity.
+                      Find forgotten ideas when you need them. Your notes resurface at the right moment.
                     </p>
                   </CardContent>
                 </Card>
               </AnimatedItem>
             </div>
-            <AnimatedItem className="text-center pt-4">
-              <Button
-                size="lg"
-                className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
-                asChild
-              >
-                <Link href="/login" aria-label="Get started with Klutr">
-                  Get Started
-                </Link>
-              </Button>
-            </AnimatedItem>
           </AnimatedSection>
         </section>
 
         {/* Trusted by Companies Section */}
-        <section className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-16">
+        <section className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-20">
           <div className="container mx-auto px-6">
-            <AnimatedFadeIn className="text-center space-y-8">
-              <h2 className="text-2xl md:text-3xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+            <AnimatedFadeIn className="text-center space-y-10">
+              <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
                 Trusted by Companies
               </h2>
               <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 opacity-60">
@@ -204,10 +168,10 @@ export default async function MarketingHomePage() {
         </section>
 
         {/* Testimonials Section */}
-        <section className="container mx-auto px-6 py-20">
-          <AnimatedSection className="space-y-12">
+        <section className="container mx-auto px-6 py-24">
+          <AnimatedSection className="space-y-16">
             <AnimatedItem className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+              <h2 className="text-4xl md:text-5xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
                 What users say
               </h2>
             </AnimatedItem>
@@ -262,20 +226,19 @@ export default async function MarketingHomePage() {
         </section>
 
         {/* Large CTA Section */}
-        <section className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-20">
+        <section className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-28">
           <div className="container mx-auto px-6">
-            <AnimatedFadeIn className="max-w-4xl mx-auto text-center space-y-8">
-              <div className="flex justify-center mb-8">
-                <div className="w-32 h-32 bg-gradient-to-br from-[var(--klutr-coral)]/20 to-[var(--klutr-mint)]/20 rounded-2xl flex items-center justify-center">
-                  <Code className="w-16 h-16 text-[var(--klutr-coral)]" />
+            <AnimatedFadeIn className="max-w-4xl mx-auto text-center space-y-10">
+              <div className="flex justify-center mb-10">
+                <div className="w-40 h-40 bg-gradient-to-br from-[var(--klutr-coral)]/20 to-[var(--klutr-mint)]/20 rounded-3xl flex items-center justify-center shadow-lg">
+                  <Code className="w-20 h-20 text-[var(--klutr-coral)]" />
                 </div>
               </div>
-              <h2 className="text-3xl md:text-5xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                Ready to take your notes to the next level?
+              <h2 className="text-4xl md:text-6xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] leading-tight">
+                Ready to clear the clutr?
               </h2>
-              <p className="text-lg md:text-xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 max-w-2xl mx-auto">
-                Join thousands of users who are already clearing the clutr and
-                keeping their spark alive.
+              <p className="text-xl md:text-2xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 max-w-2xl mx-auto leading-relaxed">
+                Join early users who are already freeing their minds from digital clutter. Capture effortlessly, organize automatically, stay creative.
               </p>
               <Button
                 size="lg"
@@ -290,155 +253,55 @@ export default async function MarketingHomePage() {
           </div>
         </section>
 
-        {/* Contact Form Section */}
-        <section className="container mx-auto px-6 py-20">
-          <AnimatedSection className="grid md:grid-cols-2 gap-12">
-            <AnimatedItem className="space-y-8">
-              <div className="space-y-4">
-                <p className="text-sm text-[var(--klutr-coral)] font-medium">
-                  / get in touch /
-                </p>
-                <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                  We are always ready to help you and answer your question
-                </h2>
-              </div>
-              <div className="space-y-8">
-                <div>
-                  <h3 className="font-semibold mb-4 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                    Call Center
-                  </h3>
-                  <div className="space-y-2 text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                    <p className="flex items-center gap-2">
-                      <Phone className="w-4 h-4" />
-                      000 987 654 321
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <Phone className="w-4 h-4" />
-                      +(123) 456-789-876
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-4 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                    Email
-                  </h3>
-                  <p className="flex items-center gap-2 text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                    <Mail className="w-4 h-4" />
-                    hello@klutr.com
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-4 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                    Social Network
-                  </h3>
-                  <div className="flex gap-4">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)]"
-                      aria-label="Twitter"
-                    >
-                      <Twitter className="w-5 h-5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)]"
-                      aria-label="GitHub"
-                    >
-                      <Github className="w-5 h-5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)]"
-                      aria-label="LinkedIn"
-                    >
-                      <Linkedin className="w-5 h-5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)]"
-                      aria-label="YouTube"
-                    >
-                      <Youtube className="w-5 h-5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)]"
-                      aria-label="Discord"
-                    >
-                      <MessageCircle className="w-5 h-5" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
+        {/* Help & Support Section */}
+        <section className="container mx-auto px-6 py-24">
+          <AnimatedSection className="max-w-3xl mx-auto text-center space-y-10">
+            <AnimatedItem className="space-y-6">
+              <p className="text-sm text-[var(--klutr-coral)] font-medium uppercase tracking-wider">
+                / need help? /
+              </p>
+              <h2 className="text-4xl md:text-5xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] leading-tight">
+                Questions? We've got answers
+              </h2>
+              <p className="text-xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 max-w-2xl mx-auto leading-relaxed">
+                Find guides, tutorials, and answers in our Help Center. Everything you need to get the most out of Klutr.
+              </p>
             </AnimatedItem>
             <AnimatedItem>
-              <Card className="border-[var(--klutr-outline)]/20">
-                <CardHeader>
-                  <CardTitle className="text-2xl">Get in Touch</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <form className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="message">
-                        Tell us your goals and what note taking means to you
-                      </Label>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                          id="name"
-                          placeholder="Your name"
-                          className="border-[var(--klutr-outline)]/30"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">E-Mail</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="your.email@example.com"
-                          className="border-[var(--klutr-outline)]/30"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="message">Message</Label>
-                        <Textarea
-                          id="message"
-                          placeholder="Your message..."
-                          className="min-h-32 border-[var(--klutr-outline)]/30"
-                        />
-                      </div>
-                      <Button
-                        type="submit"
-                        className="w-full bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
-                      >
-                        Submit
-                      </Button>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  size="lg"
+                  className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
+                  asChild
+                >
+                  <Link href="/help" aria-label="Visit Help Center">
+                    Visit Help Center
+                  </Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-[var(--klutr-outline)]/30"
+                  asChild
+                >
+                  <Link href="/docs" aria-label="View Documentation">
+                    View Documentation
+                  </Link>
+                </Button>
+              </div>
             </AnimatedItem>
           </AnimatedSection>
         </section>
 
         {/* Beta CTA Banner */}
-        <section className="bg-[var(--klutr-mint)] dark:bg-[var(--klutr-mint)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] py-16">
+        <section className="bg-[var(--klutr-mint)] dark:bg-[var(--klutr-mint)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] py-24">
           <div className="container mx-auto px-6">
-            <AnimatedFadeIn className="max-w-3xl mx-auto text-center space-y-6">
-              <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+            <AnimatedFadeIn className="max-w-3xl mx-auto text-center space-y-8">
+              <h2 className="text-4xl md:text-5xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] leading-tight">
                 Free Beta now open
               </h2>
-              <p className="text-lg md:text-xl opacity-90">
-                Join early users and help shape the future of note-taking. No
-                credit card required. Just dump your thoughts and watch the
-                magic.
+              <p className="text-xl md:text-2xl opacity-90 leading-relaxed">
+                Join early users and help shape the future of note-taking. No credit card required. Just dump your thoughts and watch the magic.
               </p>
               <Button
                 size="lg"
