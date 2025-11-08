@@ -25,6 +25,15 @@ Each entry includes:
 
 ---
 
+## 2025-11-08 07:58 ET
+
+- [ui] Replaced "Notes from Class" section with "How It Works" section on marketing homepage
+- [ui] Added 3-step process cards: Capture, Organize, Discover with brand-aligned content
+- [ui] Updated section icon from GraduationCap to Sparkles to represent AI-powered organization
+- [ui] Changed grid layout from 2 columns to 3 columns to accommodate new content structure
+- [ui] Updated CTA button text from "Try Now" to "Get Started" with updated aria-label
+- [content] All new copy follows BRAND_VOICE.md guidelines (calm, confident, intelligent)
+
 ## 2025-11-08 07:47 ET
 
 - [fix] Fixed BaseHub features not displaying on marketing website

@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import {
-  GraduationCap,
+  Sparkles,
   Star,
   Code,
   Mail,
@@ -33,6 +33,9 @@ import {
   Linkedin,
   Youtube,
   MessageCircle,
+  Zap,
+  Layers,
+  Search,
 } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -106,53 +109,63 @@ export default async function MarketingHomePage() {
 
         <FeatureGrid features={features} />
 
-        {/* Notes from Class Section */}
+        {/* How It Works Section */}
         <section className="container mx-auto px-6 py-20">
           <AnimatedSection className="space-y-12">
             <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
               <div className="flex items-center justify-center gap-3 mb-4">
-                <GraduationCap className="w-8 h-8 text-[var(--klutr-coral)]" />
+                <Sparkles className="w-8 h-8 text-[var(--klutr-coral)]" />
                 <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                  Notes from Class
+                  How It Works
                 </h2>
               </div>
               <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                Never forget what your teacher says
+                Capture, organize, discover—effortlessly
               </p>
             </AnimatedItem>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               <AnimatedItem>
                 <Card className="h-full border-[var(--klutr-outline)]/20">
                   <CardHeader>
-                    <CardTitle className="text-2xl">Math</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Basic arithmetic and introduction to variables.
-                    </p>
-                    <div className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] p-4 rounded-lg font-mono text-sm">
-                      x = 20 y = -4
-                      <br />
-                      2x + 3y = ?
+                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                      <Zap className="w-6 h-6 text-[var(--klutr-coral)]" />
                     </div>
+                    <CardTitle className="text-2xl">Capture</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                      Dump text, images, or voice notes. No friction, no formatting.
+                    </p>
                   </CardContent>
                 </Card>
               </AnimatedItem>
               <AnimatedItem>
                 <Card className="h-full border-[var(--klutr-outline)]/20">
                   <CardHeader>
-                    <CardTitle className="text-2xl">Physics</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Inertia is the natural tendency of objects in motion to
-                      stay in motion.
-                    </p>
-                    <div className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] p-4 rounded-lg aspect-video flex items-center justify-center">
-                      <p className="text-sm text-muted-foreground">
-                        Physics illustration
-                      </p>
+                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
+                      <Layers className="w-6 h-6 text-[var(--klutr-mint)]" />
                     </div>
+                    <CardTitle className="text-2xl">Organize</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                      AI clusters related ideas automatically. No manual filing required.
+                    </p>
+                  </CardContent>
+                </Card>
+              </AnimatedItem>
+              <AnimatedItem>
+                <Card className="h-full border-[var(--klutr-outline)]/20">
+                  <CardHeader>
+                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                      <Search className="w-6 h-6 text-[var(--klutr-coral)]" />
+                    </div>
+                    <CardTitle className="text-2xl">Discover</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                      Find connections you didn't know existed. Turn chaos into clarity.
+                    </p>
                   </CardContent>
                 </Card>
               </AnimatedItem>
@@ -163,8 +176,8 @@ export default async function MarketingHomePage() {
                 className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
                 asChild
               >
-                <Link href="/login" aria-label="Try Notes from Class">
-                  Try Now
+                <Link href="/login" aria-label="Get started with Klutr">
+                  Get Started
                 </Link>
               </Button>
             </AnimatedItem>
