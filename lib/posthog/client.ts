@@ -48,6 +48,13 @@ export function initPostHog(): void {
     loaded: (posthog) => {
       posthogClient = posthog;
       isInitialized = true;
+      
+      // Set up feature flags ready callback
+      posthog.onFeatureFlags(() => {
+        if (process.env.NODE_ENV === "development") {
+          console.log("[PostHog] Feature flags loaded");
+        }
+      });
     },
   });
 
@@ -167,14 +174,20 @@ export async function getFeatureFlagPayload(flag: string): Promise<any> {
 /**
  * Reload feature flags from PostHog
  * Useful after user identification or when flags need to be refreshed
+ * @returns Promise that resolves when flags are reloaded
  */
-export function reloadFeatureFlags(): void {
+export async function reloadFeatureFlags(): Promise<void> {
   const client = getPostHogClient();
   if (!client) {
     return;
   }
 
-  client.reloadFeatureFlags();
+  return new Promise((resolve) => {
+    client!.onFeatureFlags(() => {
+      resolve();
+    });
+    client!.reloadFeatureFlags();
+  });
 }
 
 /**
@@ -189,10 +202,5 @@ export function captureEvent(eventName: string, properties?: Record<string, any>
   }
 
   client.capture(eventName, properties);
-}
-
-// Auto-initialize on module load (client-side only)
-if (typeof window !== "undefined") {
-  initPostHog();
 }
 

@@ -118,7 +118,8 @@ export async function getFeatureFlagPayload(
 
   try {
     const userId = distinctId || "anonymous";
-    const payload = await client.getFeatureFlagPayload(flag, userId, properties);
+    // PostHog Node client getFeatureFlagPayload doesn't accept properties parameter
+    const payload = await client.getFeatureFlagPayload(flag, userId);
     return payload ?? null;
   } catch (error) {
     console.error(`[PostHog Server] Error getting feature flag payload "${flag}":`, error);
