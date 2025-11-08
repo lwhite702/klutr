@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "db:push": "doppler run -- npx prisma db push",
     "db:generate": "npx prisma generate",
-    "db:studio": "doppler run -- npx prisma studio"
+    "db:studio": "doppler run -- npx prisma studio",
+    "posthog:setup-flags": "echo 'Use POST /api/posthog/setup-flags endpoint or curl -X POST http://localhost:3000/api/posthog/setup-flags'"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",

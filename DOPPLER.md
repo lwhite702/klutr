@@ -76,6 +76,8 @@ The following variables are required for PostHog analytics and feature flag mana
 
 **Server-only variables:**
 - `POSTHOG_SERVER_KEY` - PostHog project API key for server-side operations (feature flag checks in API routes, cron jobs, etc.)
+- `POSTHOG_PERSONAL_API_KEY` - PostHog Personal API Key for management operations (creating/updating feature flags via API) - **Optional, only needed for programmatic flag management**
+- `POSTHOG_PROJECT_ID` - PostHog project ID for API operations - **Optional, only needed for programmatic flag management**
 
 **Setup:**
 1. Create account at https://posthog.com
@@ -85,6 +87,8 @@ The following variables are required for PostHog analytics and feature flag mana
    - `NEXT_PUBLIC_POSTHOG_KEY` - Use the same API key for client and server (or separate keys if preferred)
    - `NEXT_PUBLIC_POSTHOG_HOST` - Set to `https://us.posthog.com` (or your PostHog instance URL)
    - `POSTHOG_SERVER_KEY` - Use the same API key as `NEXT_PUBLIC_POSTHOG_KEY` (or a separate server key)
+   - `POSTHOG_PERSONAL_API_KEY` - (Optional) Get from PostHog → Settings → Personal API Keys (needed for programmatic flag creation)
+   - `POSTHOG_PROJECT_ID` - (Optional) Get from PostHog → Project Settings (needed for programmatic flag creation)
 
 **Note:** PostHog is used for:
 - Product analytics and event tracking
