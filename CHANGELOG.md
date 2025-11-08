@@ -25,6 +25,10 @@ Each entry includes:
 
 ---
 
+## 2025-11-08 11:37 ET
+
+- [fix] Fixed TypeScript build error in MarketingFooter component - refactored FooterWidgets to receive data as props instead of being async
+
 ## 2025-11-08 07:58 ET
 
 - [ui] Replaced "Notes from Class" section with "How It Works" section on marketing homepage

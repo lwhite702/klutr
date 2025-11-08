@@ -3,12 +3,13 @@ import Link from "next/link"
 import { getLatestChangelogEntries, getUpcomingRoadmapItems } from "@/lib/queries"
 import { Sparkles, Calendar } from "lucide-react"
 
-async function FooterWidgets() {
-  const [latestReleases, upcomingItems] = await Promise.all([
-    getLatestChangelogEntries(2),
-    getUpcomingRoadmapItems(2),
-  ])
-
+function FooterWidgets({
+  latestReleases,
+  upcomingItems,
+}: {
+  latestReleases: Awaited<ReturnType<typeof getLatestChangelogEntries>>
+  upcomingItems: Awaited<ReturnType<typeof getUpcomingRoadmapItems>>
+}) {
   return (
     <div className="grid md:grid-cols-2 gap-8 mb-8">
       {/* Latest Release */}
@@ -113,6 +114,10 @@ async function FooterWidgets() {
 }
 
 export default async function MarketingFooter() {
+  const [latestReleases, upcomingItems] = await Promise.all([
+    getLatestChangelogEntries(2),
+    getUpcomingRoadmapItems(2),
+  ])
   return (
     <footer className="bg-background dark:bg-[var(--klutr-surface-dark)] border-t border-[var(--klutr-outline)]/20 py-12">
       <div className="container mx-auto px-6">
@@ -210,7 +215,7 @@ export default async function MarketingFooter() {
           </div>
         </div>
 
-        <FooterWidgets />
+        <FooterWidgets latestReleases={latestReleases} upcomingItems={upcomingItems} />
 
         <div className="pt-8 border-t border-[var(--klutr-outline)]/20 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
