@@ -25,6 +25,91 @@ Each entry includes:
 
 ---
 
+## 2025-11-08 18:30 ET
+
+- [feature] Seeded complete Klutr marketing content in BaseHub from comprehensive seed file
+- [infra] Updated home page content with new hero headline "Bring order to your chaos" and updated CTAs
+- [feature] Created About page in BaseHub with mission, team, and why Klutr exists sections
+- [feature] Created Help & FAQ page in BaseHub with support information
+- [feature] Replaced existing 6 features with 7 new features: Flux, Orbit, Pulse, Vault, Spark, Muse, Stacks
+- [feature] Created 3 blog posts: "The Science of Capturing Thoughts", "Digital Mind Clutter: How AI Can Help", "Designing Clarity: How Coral & Mint Came to Be"
+- [feature] Created Privacy Policy and Terms of Service legal documents in BaseHub
+- [infra] All content committed to BaseHub and ready for use in marketing site
+- [note] Content follows brand voice guidelines and includes SEO metadata for all pages
+
+## 2025-11-08 16:00 ET
+
+- [feature] Integrated BaseHub Visual Editor/Toolbar for live content editing and preview
+- [infra] Created BaseHubVisualProvider component using basehub/next-toolbar for draft mode management
+- [infra] Integrated Visual Editor Provider in marketing layout to enable live editing
+- [feature] Added revalidation API route at /app/api/revalidate/route.ts for BaseHub content updates (Toolbar handles most revalidation automatically via Server Actions)
+- [ui] Added data-bh-\* attributes to Hero component (data-bh-collection="pages", data-bh-field annotations)
+- [ui] Added data-bh-\* attributes to FeatureGrid component (data-bh-collection="features", data-bh-field annotations)
+- [infra] Added NEXT_PUBLIC_BASEHUB_PROJECT_ID to DOPPLER.md documentation for Visual Editor integration
+- [docs] Updated preview route and revalidation route documentation (removed incorrect BaseHub Studio configuration steps)
+- [ui] Added optional "Edit in BaseHub" link to marketing footer (visible in dev/preview mode only)
+- [risk] Linting errors for Hero component are false positives - file is valid Next.js client component syntax
+- [note] BaseHub uses Toolbar component from basehub/next-toolbar (not a separate @basehub/visual-editor package)
+- [note] BaseHub Toolbar handles draft mode and revalidation automatically - no BaseHub Studio configuration required
+
+## 2025-11-08 14:30 ET
+
+- [feature] Added dynamic SEO metadata generation from BaseHub for all marketing pages
+- [infra] Installed marked library for markdown rendering in blog and legal pages
+- [infra] Created metadata query utility in /lib/queries/metadata.ts for fetching SEO fields
+- [infra] Created blog query utilities in /lib/queries/blog.ts (getBlogPosts, getBlogPost) with ISR caching
+- [infra] Created legal query utilities in /lib/queries/legal.ts (getLegalPage) with daily revalidation
+- [ui] Updated marketing layout to use generateMetadata() with dynamic BaseHub SEO data
+- [ui] Added generateMetadata() to home page for dynamic title and description
+- [feature] Created blog listing page at /app/(marketing)/blog/page.tsx with post cards and categories
+- [feature] Created dynamic blog post pages at /app/(marketing)/blog/[slug]/page.tsx with ISR and markdown rendering
+- [feature] Created privacy policy page at /app/(marketing)/privacy/page.tsx with BaseHub content
+- [feature] Created terms of service page at /app/(marketing)/terms/page.tsx with BaseHub content
+- [infra] All new pages support Next.js draft mode for previewing unpublished content
+- [infra] Blog listing revalidates every 120s, blog posts every 60s, legal pages daily (86400s)
+- [risk] Blog and legal collections are currently empty in BaseHub - pages show empty states until content is added
+- [risk] Markdown rendering assumes BaseHub stores content as markdown - may need adjustment if ProseMirror JSON format
+
+## 2025-11-08 02:00 ET
+
+- [feature] Migrated marketing page to use BaseHub CMS for dynamic content
+- [infra] Updated BaseHub client to support Next.js draftMode() parameter for preview functionality
+- [infra] Created query utilities in /lib/queries/ for home page and features (with ISR caching, 60s revalidation)
+- [ui] Created marketing client components: Hero, FeatureGrid, MarketingHeader, MarketingFooter, AnimatedSection
+- [ui] Converted /app/(marketing)/page.tsx from client component to server component with BaseHub data fetching
+- [ui] Hero section now displays dynamic headline, subtext, and CTAs from BaseHub
+- [ui] FeatureGrid displays all features from BaseHub with proper icon mapping and animations
+- [feature] Created dynamic feature pages at /app/(marketing)/features/[slug]/page.tsx with ISR support
+- [feature] Added preview mode API route at /app/api/preview/route.ts for content editors
+- [infra] Added BASEHUB_PREVIEW_SECRET to DOPPLER.md documentation
+- [docs] Updated DOPPLER.md with preview mode usage instructions
+- [risk] Linting errors for "use client" directives are false positives - files are valid Next.js syntax
+- [risk] Other sections (testimonials, contact form, etc.) remain hardcoded until added to BaseHub schema
+
+## 2025-11-08 01:15 ET
+
+- [infra] Created BaseHub schema structure using MCP tools for Klutr marketing site
+- [infra] Created Marketing Site document as root container for all CMS collections
+- [infra] Created Pages collection with Page component template (slug, title, SEO fields, hero content, CTAs)
+- [infra] Seeded home page content in Pages collection with current marketing copy
+- [infra] Created Features collection with Feature component template (name, slug, tagline, description, illustration, SEO keywords)
+- [infra] Seeded 6 features into Features collection: MindStorm, QuickCapture, Smart Stacks, Write Notes, Plan your day, Learn facts
+- [infra] Created Blog collection with BlogPost component template (title, slug, category, content, excerpt, SEO metadata, publishedAt date)
+- [infra] Created Legal collection with LegalDocument component template (title, slug, content, lastUpdated date)
+- [infra] Committed all BaseHub changes: "Initial BaseHub schema setup for Klutr marketing site"
+- [docs] Created /docs/basehub-schema.md documenting complete schema structure, component definitions, collection usage, and GraphQL query examples
+- [docs] Documented 4 components (Page, Feature, BlogPost, LegalDocument) and 4 collections (pages, features, blog, legal)
+- [risk] All components marked as hidden to skip validation on empty template fields
+- [risk] Blog and Legal collections are empty (ready for content)
+
+## 2025-11-08 00:41 ET
+
+- [infra] Installed BaseHub SDK (basehub package) for headless CMS integration
+- [infra] Created BaseHub client in /lib/basehub.ts with support for BASEHUB_TOKEN and BASEHUB_API_TOKEN environment variables
+- [infra] Added BaseHub environment variables to DOPPLER.md (BASEHUB_TOKEN, BASEHUB_API_TOKEN, BASEHUB_PROJECT_ID, BASEHUB_DRAFT, BASEHUB_REF)
+- [docs] Created /docs/basehub-migration.md documenting all hardcoded marketing content for migration to BaseHub
+- [docs] Documented 11 content sections requiring migration: Hero, Navigation, Features, Notes from Class, Trusted by Companies, Testimonials, Large CTA, Contact Form, Beta Banner, Footer, and SEO Metadata
+
 ## 2025-11-07 12:41 ET
 
 - [feature] Implemented Spark AI assistant with streaming responses for contextual note analysis

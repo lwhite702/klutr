@@ -27,6 +27,29 @@ The following variables are required for Spark and Muse AI features:
 
 **Note:** The hybrid pattern allows server routes to use service role key for admin operations while client components use the safer anon key.
 
+### Phase 3 Variables (BaseHub CMS)
+
+The following variables are required for BaseHub headless CMS integration:
+
+**Server-only variables (for API routes and server components):**
+- `BASEHUB_TOKEN` - BaseHub API token for authentication (primary, recommended)
+- `BASEHUB_API_TOKEN` - Alternative name for BaseHub token (supported for compatibility)
+- `BASEHUB_PROJECT_ID` - BaseHub project identifier (optional, for future use)
+
+**Client-side variables (NEXT_PUBLIC_ prefix):**
+- `NEXT_PUBLIC_BASEHUB_PROJECT_ID` - BaseHub project identifier exposed to the browser (required for Visual Editor/Toolbar integration)
+
+**Optional variables:**
+- `BASEHUB_DRAFT` - Set to `"true"` to enable draft mode for previewing unpublished content (defaults to `false`)
+- `BASEHUB_REF` - Specify a branch name or commit ID to query specific content versions (defaults to default branch)
+- `BASEHUB_PREVIEW_SECRET` - Secret key for enabling Next.js draft mode via `/api/preview?secret=...` endpoint (required for content preview)
+
+**Note:** BaseHub uses `BASEHUB_TOKEN` as the primary authentication method. The token can be found in your BaseHub repository's "Connect to Your App" tab. The client in `/lib/basehub.ts` supports both `BASEHUB_TOKEN` and `BASEHUB_API_TOKEN` for flexibility.
+
+**Preview Mode:** To preview unpublished content, visit `/api/preview?secret=YOUR_PREVIEW_SECRET`. This enables Next.js draft mode, which automatically enables BaseHub draft mode in all queries. The preview secret should be a random, secure string (e.g., generated with `openssl rand -hex 32`).
+
+**Visual Editor Integration:** The BaseHub Toolbar component (from `basehub/next-toolbar`) automatically manages draft mode and enables content editors to see live updates when editing in BaseHub Studio. The Toolbar is mounted in the marketing layout and handles revalidation through Next.js Server Actions. No additional BaseHub Studio configuration is required - the Toolbar works automatically when preview mode is enabled via `/api/preview`.
+
 ### Migration Notes
 
 - Doppler handles all environments (dev, staging, production)
@@ -160,6 +183,10 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add SUPABASE_ANON_KEY production
    vercel env add NEXT_PUBLIC_SUPABASE_URL production
    vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
+   vercel env add BASEHUB_TOKEN production
+   vercel env add BASEHUB_API_TOKEN production
+   vercel env add BASEHUB_PROJECT_ID production
+   vercel env add BASEHUB_PREVIEW_SECRET production
 
    # Preview (for PR deployments)
    vercel env add NEON_DATABASE_URL preview
@@ -170,6 +197,10 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add SUPABASE_ANON_KEY preview
    vercel env add NEXT_PUBLIC_SUPABASE_URL preview
    vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY preview
+   vercel env add BASEHUB_TOKEN preview
+   vercel env add BASEHUB_API_TOKEN preview
+   vercel env add BASEHUB_PROJECT_ID preview
+   vercel env add BASEHUB_PREVIEW_SECRET preview
 
    # Development (local dev with vercel dev)
    vercel env add NEON_DATABASE_URL development
@@ -180,6 +211,10 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add SUPABASE_ANON_KEY development
    vercel env add NEXT_PUBLIC_SUPABASE_URL development
    vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY development
+   vercel env add BASEHUB_TOKEN development
+   vercel env add BASEHUB_API_TOKEN development
+   vercel env add BASEHUB_PROJECT_ID development
+   vercel env add BASEHUB_PREVIEW_SECRET development
    ```
 
 3. **Verify variables are set:**

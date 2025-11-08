@@ -1,29 +1,28 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
+import { getHomePage, getFeatures } from "@/lib/queries"
+import { getPageMetadata } from "@/lib/queries/metadata"
+import type { Metadata } from "next"
+import MarketingHeader from "@/components/marketing/MarketingHeader"
+import MarketingFooter from "@/components/marketing/MarketingFooter"
+import Hero from "@/components/marketing/Hero"
+import FeatureGrid from "@/components/marketing/FeatureGrid"
+import {
+  AnimatedSection,
+  AnimatedItem,
+  AnimatedFadeIn,
+} from "@/components/marketing/AnimatedSection"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import {
-  Brain,
-  Zap,
-  Layers,
-  ArrowRight,
-  Pen,
-  Calendar,
-  BookOpen,
   GraduationCap,
   Star,
   Code,
@@ -34,55 +33,40 @@ import {
   Linkedin,
   Youtube,
   MessageCircle,
-} from "lucide-react";
+} from "lucide-react"
 
-export default function LandingPage() {
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const isDark = resolvedTheme === "dark";
+export async function generateMetadata(): Promise<Metadata> {
+  const meta = await getPageMetadata("home")
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  return {
+    title: meta?.seoTitle ?? "Klutr — AI Note App That Brings Order to Your Chaos",
+    description:
+      meta?.metaDescription ??
+      "Capture everything, organize it effortlessly, and discover insights with AI. Klutr transforms your notes into meaning. Free beta now open.",
+    openGraph: {
+      title: meta?.seoTitle ?? "Klutr — AI Note App That Brings Order to Your Chaos",
+      description:
+        meta?.metaDescription ??
+        "Capture everything, organize it effortlessly, and discover insights with AI. Klutr transforms your notes into meaning. Free beta now open.",
+      url: "https://klutr.app",
+      siteName: "Klutr",
+      images: ["/og-image.png"],
+    },
+  }
+}
 
-  const features = [
-    {
-      icon: Brain,
-      title: "MindStorm",
-      description:
-        "AI clusters your notes into meaningful groups. Discover connections you didn't know existed—no manual filing required.",
-    },
-    {
-      icon: Zap,
-      title: "QuickCapture",
-      description:
-        "Dump text, images, or voice notes. No friction, no formatting. Just capture your thoughts and we'll handle the chaos.",
-    },
-    {
-      icon: Layers,
-      title: "Smart Stacks",
-      description:
-        "Intelligent collections that grow with your notes. AI builds stacks based on themes, projects, and patterns you didn't even notice.",
-    },
-    {
-      icon: Pen,
-      title: "Write Notes",
-      description:
-        "Write any notes you want. Capture thoughts, ideas, and insights effortlessly with our intuitive interface.",
-    },
-    {
-      icon: Calendar,
-      title: "Plan your day",
-      description:
-        "Make sure your day is well planned. Organize tasks, set reminders, and stay on top of your schedule.",
-    },
-    {
-      icon: BookOpen,
-      title: "Learn facts",
-      description:
-        "It keeps your mind sharp. Store and organize facts, research, and knowledge for easy retrieval.",
-    },
-  ];
+export default async function MarketingHomePage() {
+  const home = await getHomePage()
+  const features = await getFeatures()
+
+  // Fallback data if BaseHub is unavailable
+  const homeData = home || {
+    heroHeadline: "Clear the clutr. Keep the spark.",
+    heroSubtext:
+      "Klutr is the frictionless inbox for your brain. Dump text, images, or voice notes and we'll organize them into searchable piles so you can stay creative and clutter-free.",
+    primaryCTA: "Try for Free",
+    secondaryCTA: null,
+  }
 
   const testimonials = [
     {
@@ -106,232 +90,26 @@ export default function LandingPage() {
       rating: 5,
       date: "12 January 2015",
     },
-  ];
-
-  const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5 },
-  };
+  ]
 
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-      {/* Header/Navigation */}
-      <header className="sticky top-0 z-50 border-b border-[var(--klutr-outline)]/20 bg-[var(--klutr-background)]/95 dark:bg-[var(--klutr-surface-dark)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--klutr-background)]/60 dark:supports-[backdrop-filter]:bg-[var(--klutr-surface-dark)]/60">
-        <nav className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            {mounted && (
-              <Link href="/" className="flex items-center gap-2">
-                <Image
-                  src={
-                    isDark
-                      ? "/logos/klutr-logo-dark-noslogan.svg"
-                      : "/logos/klutr-logo-light-noslogan.svg"
-                  }
-                  alt="Klutr"
-                  width={240}
-                  height={80}
-                  className="h-12 md:h-16 w-auto"
-                  priority
-                />
-              </Link>
-            )}
-            <div className="hidden md:flex items-center gap-8">
-              <Link
-                href="#features"
-                className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
-              >
-                Features
-              </Link>
-              <Link
-                href="#pricing"
-                className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
-              >
-                Pricing
-              </Link>
-              <Link
-                href="#discover"
-                className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
-              >
-                Discover
-              </Link>
-              <Link
-                href="#about"
-                className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
-              >
-                About
-              </Link>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" asChild>
-                <Link href="/login" aria-label="Log in to your account">
-                  Log in
-                </Link>
-              </Button>
-              <Button
-                className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
-                asChild
-              >
-                <Link href="/login" aria-label="Sign up for free beta">
-                  Sign Up
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </nav>
-      </header>
+      <MarketingHeader />
 
       <main>
-        {/* Hero Section - Redesigned */}
-        <section className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-20 md:py-32">
-          <div className="container mx-auto px-6">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <motion.div
-                initial="initial"
-                animate="animate"
-                variants={{
-                  initial: { opacity: 0 },
-                  animate: {
-                    opacity: 1,
-                    transition: { staggerChildren: 0.2 },
-                  },
-                }}
-                className="space-y-8"
-              >
-                <motion.div variants={fadeInUp}>
-                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-none">
-                    <span className="text-[var(--klutr-coral)]">Clear</span> the
-                    clutr.
-                    <br />
-                    <span className="font-normal">Keep the spark.</span>
-                  </h1>
-                </motion.div>
-                <motion.p
-                  variants={fadeInUp}
-                  className="text-xl md:text-2xl text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80 max-w-lg font-light"
-                >
-                  Klutr is the frictionless inbox for your brain. Dump text,
-                  images, or voice notes and we'll organize them into searchable
-                  piles so you can stay creative and clutter-free.
-                </motion.p>
-                <motion.div variants={fadeInUp} className="pt-4">
-                  <Button
-                    size="lg"
-                    className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white text-lg px-8 py-6 rounded-full"
-                    asChild
-                  >
-                    <Link href="/login" aria-label="Try Klutr for free">
-                      Try for Free
-                    </Link>
-                  </Button>
-                </motion.div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="relative"
-              >
-                <div className="relative aspect-square max-w-lg mx-auto bg-gradient-to-br from-[var(--klutr-coral)]/10 to-[var(--klutr-mint)]/10 rounded-2xl p-8">
-                  <div className="bg-white dark:bg-[var(--klutr-surface-dark)] rounded-xl shadow-2xl p-6 h-full flex items-center justify-center">
-                    <div className="text-center space-y-4">
-                      <div className="text-6xl">📝</div>
-                      <p className="text-sm text-muted-foreground">
-                        App Mockup
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
+        <Hero
+          heroHeadline={homeData.heroHeadline}
+          heroSubtext={homeData.heroSubtext}
+          primaryCTA={homeData.primaryCTA}
+          secondaryCTA={homeData.secondaryCTA}
+        />
 
-        {/* Features Grid Section - Expanded */}
-        <section id="features" className="container mx-auto px-6 py-20">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{
-              initial: { opacity: 0 },
-              animate: {
-                opacity: 1,
-                transition: { staggerChildren: 0.2 },
-              },
-            }}
-            className="space-y-12"
-          >
-            <motion.div
-              variants={fadeInUp}
-              className="text-center space-y-4 max-w-2xl mx-auto"
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                Everything you need to clear the clutr
-              </h2>
-              <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                Capture anything. We organize it. You stay creative.
-              </p>
-            </motion.div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {features.map((feature, index) => {
-                const Icon = feature.icon;
-                return (
-                  <motion.div key={feature.title} variants={fadeInUp}>
-                    <Card className="h-full hover:shadow-lg transition-shadow border-[var(--klutr-outline)]/20">
-                      <CardHeader>
-                        <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
-                          <Icon className="w-6 h-6 text-[var(--klutr-coral)]" />
-                        </div>
-                        <CardTitle className="text-xl">
-                          {feature.title}
-                        </CardTitle>
-                        <CardDescription className="text-base text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                          {feature.description}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-[var(--klutr-coral)] hover:text-[var(--klutr-coral)]/80"
-                          asChild
-                        >
-                          <Link
-                            href="/login"
-                            aria-label={`Try ${feature.title}`}
-                          >
-                            Try Now <ArrowRight className="ml-2 w-4 h-4" />
-                          </Link>
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-        </section>
+        <FeatureGrid features={features} />
 
         {/* Notes from Class Section */}
         <section className="container mx-auto px-6 py-20">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={{
-              initial: { opacity: 0 },
-              animate: {
-                opacity: 1,
-                transition: { staggerChildren: 0.2 },
-              },
-            }}
-            className="space-y-12"
-          >
-            <motion.div
-              variants={fadeInUp}
-              className="text-center space-y-4 max-w-3xl mx-auto"
-            >
+          <AnimatedSection className="space-y-12">
+            <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <GraduationCap className="w-8 h-8 text-[var(--klutr-coral)]" />
                 <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
@@ -341,9 +119,9 @@ export default function LandingPage() {
               <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
                 Never forget what your teacher says
               </p>
-            </motion.div>
+            </AnimatedItem>
             <div className="grid md:grid-cols-2 gap-6">
-              <motion.div variants={fadeInUp}>
+              <AnimatedItem>
                 <Card className="h-full border-[var(--klutr-outline)]/20">
                   <CardHeader>
                     <CardTitle className="text-2xl">Math</CardTitle>
@@ -359,8 +137,8 @@ export default function LandingPage() {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
-              <motion.div variants={fadeInUp}>
+              </AnimatedItem>
+              <AnimatedItem>
                 <Card className="h-full border-[var(--klutr-outline)]/20">
                   <CardHeader>
                     <CardTitle className="text-2xl">Physics</CardTitle>
@@ -377,9 +155,9 @@ export default function LandingPage() {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </AnimatedItem>
             </div>
-            <motion.div variants={fadeInUp} className="text-center pt-4">
+            <AnimatedItem className="text-center pt-4">
               <Button
                 size="lg"
                 className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
@@ -389,23 +167,14 @@ export default function LandingPage() {
                   Try Now
                 </Link>
               </Button>
-            </motion.div>
-          </motion.div>
+            </AnimatedItem>
+          </AnimatedSection>
         </section>
 
         {/* Trusted by Companies Section */}
         <section className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-16">
           <div className="container mx-auto px-6">
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              variants={{
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-              }}
-              className="text-center space-y-8"
-            >
+            <AnimatedFadeIn className="text-center space-y-8">
               <h2 className="text-2xl md:text-3xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
                 Trusted by Companies
               </h2>
@@ -417,33 +186,21 @@ export default function LandingPage() {
                   />
                 ))}
               </div>
-            </motion.div>
+            </AnimatedFadeIn>
           </div>
         </section>
 
         {/* Testimonials Section */}
         <section className="container mx-auto px-6 py-20">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={{
-              initial: { opacity: 0 },
-              animate: {
-                opacity: 1,
-                transition: { staggerChildren: 0.2 },
-              },
-            }}
-            className="space-y-12"
-          >
-            <motion.div variants={fadeInUp} className="text-center">
+          <AnimatedSection className="space-y-12">
+            <AnimatedItem className="text-center">
               <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
                 What users say
               </h2>
-            </motion.div>
+            </AnimatedItem>
             <div className="grid md:grid-cols-3 gap-6">
               {testimonials.map((testimonial, index) => (
-                <motion.div key={index} variants={fadeInUp}>
+                <AnimatedItem key={index}>
                   <Card className="h-full border-[var(--klutr-outline)]/20">
                     <CardHeader>
                       <div className="flex items-center gap-4 mb-4">
@@ -485,25 +242,16 @@ export default function LandingPage() {
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </AnimatedItem>
               ))}
             </div>
-          </motion.div>
+          </AnimatedSection>
         </section>
 
         {/* Large CTA Section */}
         <section className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-20">
           <div className="container mx-auto px-6">
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              variants={{
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-              }}
-              className="max-w-4xl mx-auto text-center space-y-8"
-            >
+            <AnimatedFadeIn className="max-w-4xl mx-auto text-center space-y-8">
               <div className="flex justify-center mb-8">
                 <div className="w-32 h-32 bg-gradient-to-br from-[var(--klutr-coral)]/20 to-[var(--klutr-mint)]/20 rounded-2xl flex items-center justify-center">
                   <Code className="w-16 h-16 text-[var(--klutr-coral)]" />
@@ -525,26 +273,14 @@ export default function LandingPage() {
                   Try Now
                 </Link>
               </Button>
-            </motion.div>
+            </AnimatedFadeIn>
           </div>
         </section>
 
         {/* Contact Form Section */}
         <section className="container mx-auto px-6 py-20">
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={{
-              initial: { opacity: 0 },
-              animate: {
-                opacity: 1,
-                transition: { staggerChildren: 0.2 },
-              },
-            }}
-            className="grid md:grid-cols-2 gap-12"
-          >
-            <motion.div variants={fadeInUp} className="space-y-8">
+          <AnimatedSection className="grid md:grid-cols-2 gap-12">
+            <AnimatedItem className="space-y-8">
               <div className="space-y-4">
                 <p className="text-sm text-[var(--klutr-coral)] font-medium">
                   / get in touch /
@@ -626,8 +362,8 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
-            <motion.div variants={fadeInUp}>
+            </AnimatedItem>
+            <AnimatedItem>
               <Card className="border-[var(--klutr-outline)]/20">
                 <CardHeader>
                   <CardTitle className="text-2xl">Get in Touch</CardTitle>
@@ -675,23 +411,14 @@ export default function LandingPage() {
                   </form>
                 </CardContent>
               </Card>
-            </motion.div>
-          </motion.div>
+            </AnimatedItem>
+          </AnimatedSection>
         </section>
 
         {/* Beta CTA Banner */}
         <section className="bg-[var(--klutr-mint)] dark:bg-[var(--klutr-mint)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] py-16">
           <div className="container mx-auto px-6">
-            <motion.div
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true }}
-              variants={{
-                initial: { opacity: 0, y: 20 },
-                animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-              }}
-              className="max-w-3xl mx-auto text-center space-y-6"
-            >
+            <AnimatedFadeIn className="max-w-3xl mx-auto text-center space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
                 Free Beta now open
               </h2>
@@ -709,116 +436,12 @@ export default function LandingPage() {
                   Get Started Free
                 </Link>
               </Button>
-            </motion.div>
+            </AnimatedFadeIn>
           </div>
         </section>
-
-        {/* Footer */}
-        <footer className="bg-background dark:bg-[var(--klutr-surface-dark)] border-t border-[var(--klutr-outline)]/20 py-12">
-          <div className="container mx-auto px-6">
-            <div className="grid md:grid-cols-4 gap-8 mb-8">
-              <div className="space-y-4">
-                {mounted && (
-                  <Image
-                    src={
-                      isDark
-                        ? "/logos/klutr-logo-dark.svg"
-                        : "/logos/klutr-logo-light.svg"
-                    }
-                    alt="Klutr"
-                    width={200}
-                    height={67}
-                    className="h-10 w-auto"
-                  />
-                )}
-                <p className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                  Clear the clutr. Keep the spark.
-                </p>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                  Product
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <Link
-                      href="#features"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-                    >
-                      Features
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="#pricing"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-                    >
-                      Pricing
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                  Company
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <Link
-                      href="#about"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-                    >
-                      About
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="#discover"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-                    >
-                      Discover
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                  Legal
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <Link
-                      href="/privacy"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-                    >
-                      Privacy
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/terms"
-                      className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-                    >
-                      Terms
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="pt-8 border-t border-[var(--klutr-outline)]/20 flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                &copy; {new Date().getFullYear()} Klutr. All rights reserved.
-              </p>
-              <Link
-                href="/privacy"
-                className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-              >
-                Privacy policy
-              </Link>
-            </div>
-          </div>
-        </footer>
       </main>
+
+      <MarketingFooter />
     </div>
-  );
+  )
 }
