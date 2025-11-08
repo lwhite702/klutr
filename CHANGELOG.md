@@ -28,6 +28,7 @@ Each entry includes:
 ## 2025-11-08 17:40 ET
 
 - [infra] Configured PostHog MCP server via @posthog/wizard - enabled Feature Flags, Dashboards, Insights, Experiments, LLM Analytics, Error Tracking, Workspace, and Documentation tools
+- [feature] Created default PostHog feature flags via API: spark-beta, muse-ai, orbit-experimental, vault-enhanced, klutr-global-disable (all inactive by default)
 - [fix] Fixed PostHog client-side initialization - replaced instrumentation-client.ts with PostHogProvider component in root layout (proper Next.js App Router pattern)
 - [fix] Removed invalid import of instrumentation-client.ts from instrumentation.ts - client-side PostHog now initialized via PostHogProvider component
 - [feature] Added PostHog feature flags integration for controlled beta testing and phased rollouts
