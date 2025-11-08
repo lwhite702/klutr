@@ -25,6 +25,24 @@ Each entry includes:
 
 ---
 
+## 2025-11-08 07:07 ET
+
+- [feature] Created branded Klutr HTML email templates for all Supabase Auth emails
+- [feature] Added 6 email templates: confirm-signup, invite-user, magic-link, change-email, reset-password, reauthentication
+- [docs] Created /docs/internal/email-templates.md with complete Supabase Dashboard upload instructions
+- [docs] Updated resend-setup.md with template customization section and brand color reference
+- [docs] Updated supabase-auth-config.md with custom template upload steps
+- [ui] Templates use Klutr brand colors (Coral #FF6B6B, Mint #3EE0C5) and Inter font family
+- [ui] All templates are responsive with table-based layout for email client compatibility
+
+## 2025-11-08 06:42 ET
+
+- [docs] Added Resend email service setup documentation for Supabase Auth emails
+- [docs] Created /docs/internal/resend-setup.md with complete Resend configuration guide
+- [docs] Updated supabase-auth-config.md with Resend SMTP settings and domain verification steps
+- [docs] Updated DOPPLER.md with RESEND_API_KEY environment variable documentation
+- [infra] Documented Resend integration for transactional emails (confirmation, password reset, etc.)
+
 ## 2025-11-08 19:00 ET
 
 - [fix] Fixed Next.js 16 compatibility issues with BaseHub integration

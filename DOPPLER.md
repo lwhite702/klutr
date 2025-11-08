@@ -27,6 +27,22 @@ The following variables are required for Spark and Muse AI features:
 
 **Note:** The hybrid pattern allows server routes to use service role key for admin operations while client components use the safer anon key.
 
+### Email Service (Resend)
+
+The following variable is required for Supabase email functionality:
+
+**Server-only variables:**
+- `RESEND_API_KEY` - Resend API key for sending transactional emails via Supabase Auth
+
+**Setup:**
+1. Create account at https://resend.com
+2. Generate API key in Resend dashboard
+3. Add to Doppler as `RESEND_API_KEY`
+4. Configure in Supabase Dashboard → Project Settings → Auth → SMTP Settings
+5. Use Resend SMTP settings: `smtp.resend.com:465` with API key as password
+
+**Note:** Resend is used for Supabase Auth emails (confirmation, password reset, etc.). The API key is configured in Supabase dashboard, not directly in the Next.js app.
+
 ### Phase 3 Variables (BaseHub CMS)
 
 The following variables are required for BaseHub headless CMS integration:
