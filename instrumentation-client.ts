@@ -10,4 +10,3 @@ import { initPostHog } from "@/lib/posthog/client";
 // Initialize PostHog on client-side
 // This is called automatically by Next.js instrumentation system
 initPostHog();
-
