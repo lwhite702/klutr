@@ -1,5 +1,0 @@
-{
-  "/(app)/app/flux/page": "app/(app)/app/flux/page.js",
-  "/(marketing)/login/page": "app/(marketing)/login/page.js",
-  "/(marketing)/page": "app/(marketing)/page.js"
-}

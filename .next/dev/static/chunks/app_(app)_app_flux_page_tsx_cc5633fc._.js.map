@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/lee/Noteornope/app/%28app%29/app/flux/page.tsx"],"sourcesContent":["\"use client\";\n\nimport { AppShell } from '@/components/layout/AppShell';\n\nexport default function FluxPage() {\n  return (\n    <AppShell activeRoute=\"/app/flux\">\n      <div className=\"flex h-full items-center justify-center text-slate-400 text-lg\">\n        Flux — Coming soon in the Klutr beta.\n      </div>\n    </AppShell>\n  );\n}\n\n"],"names":[],"mappings":";;;;;AAEA;AAFA;;;AAIe,SAAS;IACtB,qBACE,4TAAC,gJAAQ;QAAC,aAAY;kBACpB,cAAA,4TAAC;YAAI,WAAU;sBAAiE;;;;;;;;;;;AAKtF;KARwB","debugId":null}}]
-}

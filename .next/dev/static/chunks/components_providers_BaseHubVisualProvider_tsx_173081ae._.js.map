@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/lee/Noteornope/components/providers/BaseHubVisualProvider.tsx"],"sourcesContent":["\"use client\"\n\n/**\n * BaseHub Visual Editor Provider\n * \n * Wraps children with BaseHub Toolbar for draft mode management and preview functionality.\n * The Toolbar enables live editing in BaseHub Studio and manages draft mode automatically.\n * \n * NOTE: Toolbar is currently disabled in production builds due to Next.js 16 compatibility\n * issues with BaseHub's inline \"use server\" directives. The Toolbar will only work in\n * development mode. For production preview, consider using the preview API route directly.\n * \n * In production, this component simply returns children unwrapped.\n */\nexport default function BaseHubVisualProvider({\n  children,\n}: {\n  children: React.ReactNode\n}) {\n  // Toolbar disabled in production due to Next.js 16 compatibility issues\n  // BaseHub Toolbar has inline \"use server\" directives which cause build errors\n  // This can be re-enabled once BaseHub updates their library or we find a workaround\n  return <>{children}</>\n}\n\n"],"names":[],"mappings":";;;;;AAAA;;AAce,SAAS,sBAAsB,EAC5C,QAAQ,EAGT;IACC,wEAAwE;IACxE,8EAA8E;IAC9E,oFAAoF;IACpF,qBAAO;kBAAG;;AACZ;KATwB","debugId":null}}]
-}

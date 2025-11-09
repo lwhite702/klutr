@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/lee/Noteornope/instrumentation.ts"],"sourcesContent":["/**\n * Next.js Instrumentation Entry Point\n *\n * This file is required by Next.js to enable the instrumentation system.\n * It loads client-side instrumentation code when running in the browser.\n *\n * Next.js will automatically call register() during app initialization.\n * The instrumentation-client.ts file will only execute its initialization\n * code when running in the browser (it has internal window checks).\n */\nexport async function register() {\n  if (process.env.NEXT_RUNTIME === \"nodejs\") {\n    // Server-side instrumentation can be added here if needed\n    // PostHog server-side client is initialized on-demand in lib/posthog/server.ts\n  }\n\n  if (process.env.NEXT_RUNTIME === \"edge\") {\n    // Edge runtime instrumentation can be added here if needed\n  }\n\n  // Load client-side instrumentation\n  // The client-side code has internal guards to only run in the browser\n  await import(\"./instrumentation-client\");\n}\n"],"names":[],"mappings":"AAAA;;;;;;;;;CASC;;;;AACM,eAAe;IACpB,IAAI,+CAA6B,UAAU;IACzC,0DAA0D;IAC1D,+EAA+E;IACjF;IAEA,IAAI,+CAA6B,QAAQ;IACvC,2DAA2D;IAC7D;IAEA,mCAAmC;IACnC,sEAAsE;IACtE;AACF","debugId":null}}]
-}
