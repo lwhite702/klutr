@@ -1,40 +1,70 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Input } from "@/components/ui/input";
 import { StreamMessage } from "@/components/stream/StreamMessage";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search as SearchIcon } from "lucide-react";
-import { mockStreamDrops, type StreamDrop } from "@/lib/mockData";
+import { Search as SearchIcon, Loader2 } from "lucide-react";
+import { apiGet } from "@/lib/clientApi";
+import { toast } from "sonner";
+import type { StreamDrop } from "@/lib/mockData";
+import type { NoteDTO } from "@/lib/dto";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [results, setResults] = useState<StreamDrop[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Simple fuzzy search implementation
-  const filteredDrops = useMemo(() => {
-    if (!query.trim()) {
-      return [];
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Perform search when debounced query changes
+  useEffect(() => {
+    if (!debouncedQuery.trim()) {
+      setResults([]);
+      return;
     }
 
-    const queryLower = query.toLowerCase();
-    return mockStreamDrops.filter((drop) => {
-      // Search in content
-      if (drop.content.toLowerCase().includes(queryLower)) {
-        return true;
+    const performSearch = async () => {
+      try {
+        setIsSearching(true);
+        setError(null);
+        const response = await apiGet<NoteDTO[]>("/api/stream/search?q=" + encodeURIComponent(debouncedQuery));
+        
+        // Convert NoteDTO to StreamDrop format
+        const streamDrops: StreamDrop[] = response.map((drop) => ({
+          id: drop.id,
+          type: (drop.dropType as StreamDrop["type"]) || "text",
+          content: drop.content,
+          timestamp: new Date(drop.createdAt),
+          tags: drop.tags.map((label) => ({ label })),
+          fileName: drop.fileName || undefined,
+          fileType: drop.fileType || undefined,
+          fileUrl: drop.fileUrl || undefined,
+        }));
+        
+        setResults(streamDrops);
+      } catch (err) {
+        console.error("[v0] Search error:", err);
+        setError("Failed to search. Please try again.");
+        setResults([]);
+      } finally {
+        setIsSearching(false);
       }
-      // Search in tags
-      if (drop.tags.some((tag) => tag.label.toLowerCase().includes(queryLower))) {
-        return true;
-      }
-      // Search in filename
-      if (drop.fileName?.toLowerCase().includes(queryLower)) {
-        return true;
-      }
-      return false;
-    });
-  }, [query]);
+    };
+
+    performSearch();
+  }, [debouncedQuery]);
 
   return (
     <AppShell activeRoute="/app/search">
@@ -55,7 +85,16 @@ export default function SearchPage() {
         </div>
         <ScrollArea className="h-[calc(100vh-250px)]">
           <div className="space-y-4 px-4">
-            {query.trim() === "" ? (
+            {isSearching ? (
+              <div className="text-center py-16">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground">Searching...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-16">
+                <p className="text-destructive text-lg mb-2">{error}</p>
+              </div>
+            ) : query.trim() === "" ? (
               <div className="text-center py-16">
                 <p className="text-muted-foreground text-lg mb-2">
                   Start typing to search
@@ -64,7 +103,7 @@ export default function SearchPage() {
                   Search across all your notes, files, and tags
                 </p>
               </div>
-            ) : filteredDrops.length === 0 ? (
+            ) : results.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-muted-foreground text-lg mb-2">
                   No results found
@@ -76,9 +115,9 @@ export default function SearchPage() {
             ) : (
               <>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Found {filteredDrops.length} result{filteredDrops.length !== 1 ? "s" : ""}
+                  Found {results.length} result{results.length !== 1 ? "s" : ""}
                 </p>
-                {filteredDrops.map((drop) => (
+                {results.map((drop) => (
                   <StreamMessage key={drop.id} drop={drop} isUser={false} />
                 ))}
               </>
@@ -89,4 +128,3 @@ export default function SearchPage() {
     </AppShell>
   );
 }
-

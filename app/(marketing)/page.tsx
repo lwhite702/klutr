@@ -60,9 +60,9 @@ export default async function MarketingHomePage() {
 
   // Fallback data if BaseHub is unavailable
   const homeData = home || {
-    heroHeadline: "Clear the clutr. Keep the spark.",
+    heroHeadline: "Organize Your Chaos",
     heroSubtext:
-      "Klutr is the frictionless inbox for your brain. Dump text, images, or voice notes and we'll organize them into searchable piles so you can stay creative and clutter-free.",
+      "Klutr is a conversational workspace where all your input—text, voice, images, files—flows naturally through a Stream interface and gets automatically organized on the backend. Drop your thoughts like messages in a chat, and we'll handle the rest.",
     primaryCTA: "Try for Free",
     secondaryCTA: null,
   }
@@ -116,7 +116,7 @@ export default async function MarketingHomePage() {
                 </h2>
               </div>
               <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                Capture, organize, discover—effortlessly
+                Drop, tag, board, discover—effortlessly
               </p>
             </AnimatedItem>
             <div className="grid md:grid-cols-2 gap-6">
@@ -126,11 +126,11 @@ export default async function MarketingHomePage() {
                     <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
                       <Zap className="w-6 h-6 text-[var(--klutr-coral)]" />
                     </div>
-                    <CardTitle className="text-2xl">Capture</CardTitle>
+                    <CardTitle className="text-2xl">Drop</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Dump text, images, or voice notes. No friction, no formatting.
+                      Add notes, files, or voice recordings to your Stream. Chat-style interface, zero friction.
                     </p>
                   </CardContent>
                 </Card>
@@ -145,7 +145,7 @@ export default async function MarketingHomePage() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      AI clusters related ideas automatically. No manual filing required.
+                      AI automatically tags your drops and groups them into Boards. No manual filing required.
                     </p>
                   </CardContent>
                 </Card>
@@ -160,7 +160,7 @@ export default async function MarketingHomePage() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Find connections you didn't know existed. Turn chaos into clarity.
+                      Muse provides weekly insights. Search finds connections. Turn chaos into clarity.
                     </p>
                   </CardContent>
                 </Card>
@@ -270,7 +270,7 @@ export default async function MarketingHomePage() {
                 Ready to clear the clutr?
               </h2>
               <p className="text-xl md:text-2xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 max-w-2xl mx-auto leading-relaxed">
-                Join early users who are already freeing their minds from digital clutter. Capture effortlessly, organize automatically, stay creative.
+                Join early users who are already freeing their minds from digital clutter. Drop your thoughts, let AI organize, stay creative.
               </p>
               <Button
                 size="lg"
@@ -333,7 +333,7 @@ export default async function MarketingHomePage() {
                 Free Beta now open
               </h2>
               <p className="text-xl md:text-2xl opacity-90 leading-relaxed">
-                Join early users and help shape the future of note-taking. No credit card required. Just dump your thoughts and watch the magic.
+                Join early users and help shape the future of note-taking. No credit card required. Just drop your thoughts into the Stream and watch the magic.
               </p>
               <Button
                 size="lg"

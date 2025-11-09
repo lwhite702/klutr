@@ -3,20 +3,18 @@
 import { useState, useRef, KeyboardEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Paperclip, Mic, Send } from "lucide-react";
+import { Paperclip, Send } from "lucide-react";
 import { brandColors } from "@/lib/brand.config";
 
 interface StreamInputProps {
   onSend: (content: string) => void;
   onFileUpload?: (files: File[]) => void;
-  onVoiceRecord?: () => void;
   placeholder?: string;
 }
 
 export function StreamInput({
   onSend,
   onFileUpload,
-  onVoiceRecord,
   placeholder = "Type your thoughts...",
 }: StreamInputProps) {
   const [input, setInput] = useState("");
@@ -106,17 +104,6 @@ export function StreamInput({
               >
                 <Paperclip className="h-4 w-4" />
               </Button>
-              {onVoiceRecord && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={onVoiceRecord}
-                  aria-label="Record voice note"
-                >
-                  <Mic className="h-4 w-4" />
-                </Button>
-              )}
             </div>
           </div>
           <Button

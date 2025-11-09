@@ -20,6 +20,7 @@ model User {
   smartStacks   SmartStack[]
   weeklyInsights WeeklyInsight[]
   vaultNotes    VaultNote[]
+  boards        Board[]
 
   @@map("users")
 }
@@ -33,6 +34,12 @@ model Note {
   type      String   @default("unclassified") // idea, task, contact, link, image, voice, misc, nope, unclassified
   archived  Boolean  @default(false)
   
+  // Stream architecture fields
+  dropType  String?  @default("text") // text, file, image, voice
+  fileUrl   String?
+  fileName  String?
+  fileType  String?  // MIME type
+  
   embedding Unsupported("vector(1536)")?
   cluster   String?
   clusterConfidence Float?
@@ -42,10 +49,12 @@ model Note {
   updatedAt DateTime @updatedAt
 
   tags      NoteTag[]
+  boardNotes BoardNote[]
 
   @@index([userId, createdAt])
   @@index([userId, type])
   @@index([userId, cluster])
+  @@index([userId, dropType])
   @@map("notes")
 }
 
@@ -120,4 +129,38 @@ model VaultNote {
 
   @@index([userId])
   @@map("vault_notes")
+}
+
+model Board {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String
+  description String?  @db.Text
+  pinned      Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  boardNotes  BoardNote[]
+
+  @@index([userId])
+  @@index([userId, pinned, updatedAt])
+  @@map("boards")
+}
+
+model BoardNote {
+  boardId    String
+  board      Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  
+  noteId     String
+  note       Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  
+  addedAt    DateTime @default(now())
+
+  @@id([boardId, noteId])
+  @@index([boardId])
+  @@index([noteId])
+  @@map("board_notes")
 }

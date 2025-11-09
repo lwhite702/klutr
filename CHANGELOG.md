@@ -5,6 +5,61 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2025-11-08 22:00 ET
+
+- [docs] Updated BaseHub marketing content to reflect Stream-first architecture
+- [docs] Updated BaseHub home page with new tagline "Organize Your Chaos" and Stream-focused messaging
+- [docs] Updated BaseHub features: Muse (weekly insights), Vault (encrypted notes), added Stream, Boards, Search
+- [docs] Updated Mintlify documentation: muse.mdx (weekly insights), getting-started.mdx (Stream interface)
+- [infra] Fixed BaseHub MCP connectivity issue and successfully updated content via MCP tools
+
+## 2025-11-08 21:00 ET
+
+- [infra] Executed Prisma migration to add Stream and Board tables to database
+- [feature] Created useCurrentUser hook for client-side authentication
+- [fix] Replaced hardcoded user-id placeholders in Stream page with real auth
+- [fix] Added authentication checks before file uploads and voice recordings
+- [docs] Created comprehensive testing checklist in /docs/internal/testing-checklist.md
+- [docs] Created setup guide in /docs/internal/setup-guide.md with Supabase Storage and environment variable documentation
+- [infra] Updated Prisma client after migration
+
+## 2025-11-08 20:30 ET
+
+- [feature] Updated Prisma schema to support Stream drops (dropType, fileUrl, fileName, fileType fields)
+- [feature] Created Board and BoardNote models for auto-organized collections
+- [feature] Created Prisma migration for Stream and Board schema changes
+- [feature] Created POST /api/stream/create route for creating Stream drops with AI tagging
+- [feature] Created GET /api/stream/list route with pagination support
+- [feature] Created GET /api/stream/search route for searching drops by content, filename, and tags
+- [feature] Created POST /api/stream/upload route for file uploads to Supabase Storage
+- [feature] Created DELETE /api/stream/[id] route for deleting Stream drops
+- [feature] Created /api/boards routes: list, create, detail (GET), update (PATCH), delete (DELETE)
+- [feature] Created /app/(app)/settings/page.tsx with profile, preferences, privacy, and data sections
+- [feature] Created Settings components: ProfileSection, PreferencesSection, PrivacySection, DataSection
+- [feature] Implemented Supabase Storage integration for file uploads with validation and optimization
+- [feature] Enhanced tagNotes() with improved keyword-based tagging and scoring
+- [feature] Connected summarizeStream() to OpenAI for real AI summaries
+- [feature] Connected analyzeMuse() to OpenAI for weekly insights generation with JSON response format
+- [feature] Improved suggestBoard() with better board name and description generation
+- [feature] Created VoiceRecorder component with Web Audio API and transcription support
+- [feature] Updated Stream page to connect to real API endpoints with error handling
+- [feature] Updated Boards page to connect to real API with loading states and error handling
+- [feature] Updated Search page to connect to real API with debounced search
+- [feature] Added error boundaries (StreamErrorBoundary) to Stream components
+- [feature] Added skeleton loaders (StreamSkeleton) for loading states
+- [feature] Added keyboard shortcuts (Cmd+K for search, Cmd+N for new drop)
+- [feature] Added toast notifications for user feedback
+- [ui] Created Switch and AlertDialog UI components
+- [ui] Created Alert UI component
+- [infra] Created /lib/storage/upload.ts for file upload utilities
+- [infra] Created /lib/storage/images.ts for image processing utilities
+- [infra] Updated /lib/dto.ts with BoardDTO and Stream field support
+- [infra] Updated /lib/validation/schemas.ts with Stream and Board validation schemas
+- [infra] Created /lib/hooks/useKeyboardShortcuts.ts for keyboard shortcut management
+- [fix] Fixed Stream page to use real API instead of mock data
+- [fix] Fixed Boards page to use real API with proper error handling
+- [fix] Fixed Search page with debounced queries and proper loading states
+
 ## 2025-11-08 20:00 ET
 
 - [feature] Redesigned Klutr into Stream-first architecture with chat-style interface

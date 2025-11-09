@@ -48,34 +48,49 @@ The Stream is the core interface of Klutr's redesigned architecture. It replaces
 
 ## State Management
 
-- Stream drops stored in component state (will migrate to global state/API)
+- Stream drops fetched from `/api/stream/list` on mount
 - Optimistic updates for instant feedback
 - Background AI processing doesn't block UI
+- Error boundaries for graceful error handling
+- Loading states with skeleton loaders
 
 ## AI Integration Points
 
-### Current (Placeholder)
+### Current Implementation
 
-- `tagNotes()` - Simple keyword-based tagging
+- `tagNotes()` - Enhanced keyword-based tagging with scoring
 - `classifyDrop()` - File type classification
-- `summarizeStream()` - Mock stream summaries
-- `suggestBoard()` - Mock board suggestions
-- `analyzeMuse()` - Mock weekly insights
+- `summarizeStream()` - Connected to OpenAI for real summaries
+- `suggestBoard()` - Improved board suggestions with content analysis
+- `analyzeMuse()` - Connected to OpenAI for weekly insights with JSON response
 
-### Future
+### API Routes
+
+- `POST /api/stream/create` - Create new Stream drop with AI tagging
+- `GET /api/stream/list` - List Stream drops with pagination
+- `GET /api/stream/search` - Search drops by content, filename, and tags
+- `POST /api/stream/upload` - Upload files to Supabase Storage
+- `DELETE /api/stream/[id]` - Delete Stream drop
+- `GET /api/boards/list` - List all boards
+- `POST /api/boards/create` - Create new board
+- `GET /api/boards/[id]` - Get board details
+- `PATCH /api/boards/[id]` - Update board
+- `DELETE /api/boards/[id]` - Delete board
+
+### Future Enhancements
 
 - Connect to OpenAI embeddings for semantic tagging
 - Use Supabase vector search for similarity matching
 - Implement real-time AI processing via edge functions
 - Add streaming responses for AI-generated content
+- Voice note transcription via OpenAI Whisper
 
-## Mock Data
+## Data Storage
 
-Stream uses mock data from `/lib/mockData.ts`:
-
-- `mockStreamDrops` - Array of StreamDrop objects
-- `mockBoards` - Array of Board objects
-- `mockMuseInsights` - Array of MuseInsight objects
+- Stream drops stored in PostgreSQL via Prisma
+- Files stored in Supabase Storage bucket `stream-files`
+- Boards stored in PostgreSQL with many-to-many relationship to notes
+- AI embeddings stored in PostgreSQL vector columns (future)
 
 ## Routes
 
@@ -102,11 +117,30 @@ Stream uses mock data from `/lib/mockData.ts`:
 - AI/System messages: Mint (#4CD7C2) background, charcoal text
 - Tags: Mint background with charcoal text
 
+## Error Handling & UX
+
+- Error boundaries (StreamErrorBoundary) for graceful error recovery
+- Skeleton loaders (StreamSkeleton) for loading states
+- Toast notifications for user feedback
+- Retry mechanisms for failed operations
+- Keyboard shortcuts (Cmd+K for search, Cmd+N for new drop)
+- Debounced search queries
+- Optimistic updates with rollback on error
+
+## File Upload
+
+- Files uploaded to Supabase Storage via `/api/stream/upload`
+- File validation (size limits, type restrictions)
+- Image optimization (future: thumbnails via Supabase Image Transform)
+- Voice notes recorded via Web Audio API and uploaded as audio files
+
 ## Future Enhancements
 
 1. Real-time synchronization across devices
-2. Voice note transcription
+2. Voice note transcription via OpenAI Whisper
 3. Image OCR and content extraction
-4. Advanced search with semantic understanding
+4. Advanced search with semantic understanding using embeddings
 5. Collaborative boards (team features)
 6. Export and backup functionality
+7. Pagination and virtual scrolling for large streams
+8. Background job processing for AI operations
