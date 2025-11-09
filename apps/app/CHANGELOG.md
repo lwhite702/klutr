@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2025-11-08 22:55 ET
+
+- [docs] Populated Mintlify docs site with Klutr content from apps/app/mintlify/
+- [brand] Updated docs site branding to "Klutr Help Center" with Coral (#FF6F61) and Mint (#4CD7C2) colors
+- [brand] Copied Klutr logos (light/dark variants) to apps/docs/logo/
+- [docs] Migrated Klutr documentation: overview, getting-started, stream, boards, muse, vault, search
+- [docs] Removed starter template content (essentials/, ai-tools/, api-reference/, development.mdx)
+- [docs] Updated docs.json navigation structure to reflect Klutr features (Getting Started tab with Introduction and Features groups)
+- [infra] Installed Tawk.to chat support on docs site with script injection in docs.json head section
+- [infra] Updated docs navbar and footer links to point to Klutr app and Tawk.to support chat
+- [infra] Verified BaseHub integration for marketing site has proper error handling and fallbacks
+- [infra] Verified brand colors (Coral, Mint) are correctly defined in globals.css and used throughout marketing page
+- [infra] Marketing page uses CSS variables (var(--klutr-coral), var(--klutr-mint)) consistently
+
 ## 2025-11-08 23:05 ET
 
 - [fix] Removed .next/ build artifacts from git tracking (should be in .gitignore)
