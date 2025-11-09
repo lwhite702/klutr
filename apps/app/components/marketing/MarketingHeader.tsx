@@ -73,8 +73,10 @@ export default function MarketingHeader() {
               Blog
             </Link>
             <Link
-              href="/help"
+              href={process.env.NEXT_PUBLIC_DOCS_URL || "https://help.klutr.app"}
               className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Help
             </Link>

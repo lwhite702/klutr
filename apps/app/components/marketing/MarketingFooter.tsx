@@ -177,18 +177,12 @@ function MarketingFooterContent({
               </li>
               <li>
                 <Link
-                  href="/help"
+                  href={process.env.NEXT_PUBLIC_DOCS_URL || "https://help.klutr.app"}
                   className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Help Center
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/docs"
-                  className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-                >
-                  Documentation
                 </Link>
               </li>
             </ul>

@@ -5,24 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 2025-11-08 23:05 ET
-
-- [fix] Removed .next/ build artifacts from git tracking (should be in .gitignore)
-- [fix] Updated .gitignore to properly exclude Next.js build artifacts, cache files, and other generated files
-- [infra] Removed all tracked .next/ files from repository (build artifacts should not be committed)
-
-## 2025-11-08 23:00 ET
-
-- [infra] Restructured codebase into pnpm monorepo with apps/app, apps/docs, and shared packages
-- [infra] Created @klutr/brand package for shared brand configuration (colors, typography, logos)
-- [infra] Created @klutr/utils package for shared utilities (cn, withTimeout, retry)
-- [infra] Moved all app files to apps/app/ and updated all imports to use workspace packages
-- [infra] Cloned Mintlify documentation repo into apps/docs/
-- [fix] Updated help links in MarketingHeader and MarketingFooter to point to docs site (help.klutr.app)
-- [fix] Blog page query is correct - issue is empty BaseHub blog collection (code handles gracefully)
-- [docs] Created monorepo.md documentation explaining workspace structure and workflows
-- [docs] Updated root README.md with monorepo structure and workspace commands
-
 ## 2025-11-08 22:15 ET
 
 - [fix] Created /features index page to fix 404 error on /features route
