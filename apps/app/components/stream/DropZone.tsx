@@ -58,17 +58,15 @@ export function DropZone({ onDrop, accept, children }: DropZoneProps) {
               backgroundColor: `${brandColors.offWhite}CC`,
             }}
           >
-            <div className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 border-dashed"
+            <div className="flex flex-col items-center gap-4 p-8 rounded-2xl border-2 border-dashed bg-[var(--klutr-background)]/90 backdrop-blur-md shadow-2xl"
               style={{
-                borderColor: brandColors.coral,
-                backgroundColor: brandColors.offWhite,
+                borderColor: "var(--klutr-coral)",
               }}
             >
               <Upload
-                className="h-12 w-12"
-                style={{ color: brandColors.coral }}
+                className="h-12 w-12 text-[var(--klutr-coral)]"
               />
-              <p className="text-lg font-medium" style={{ color: brandColors.charcoal }}>
+              <p className="text-lg font-display font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
                 Drop files here to add to your stream
               </p>
             </div>

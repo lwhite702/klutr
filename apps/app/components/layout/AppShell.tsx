@@ -24,8 +24,8 @@ export function AppShell({
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex w-64 border-r bg-background flex-col">
+      {/* Desktop Sidebar - Horizon UI dashboard layout */}
+      <aside className="hidden md:flex w-64 border-r bg-background flex-col rounded-r-2xl">
         <div className="p-4 border-b">
           <div className="flex items-center">
             <motion.div

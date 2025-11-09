@@ -59,15 +59,11 @@ export function StreamMessage({ drop, isUser = false }: StreamMessageProps) {
       className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}
     >
       <div
-        className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+        className={`max-w-[80%] rounded-2xl px-4 py-3 shadow-lg ${
           isUser
-            ? "rounded-br-sm"
-            : "rounded-bl-sm"
+            ? "rounded-br-sm bg-[var(--klutr-coral)] text-white"
+            : "rounded-bl-sm bg-[var(--klutr-mint)]/20 dark:bg-[var(--klutr-mint)]/10 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]"
         }`}
-        style={{
-          backgroundColor: isUser ? brandColors.coral : brandColors.mint,
-          color: isUser ? "#ffffff" : brandColors.charcoal,
-        }}
       >
         <div className="flex items-start gap-2">
           {!isUser && getIcon() && (

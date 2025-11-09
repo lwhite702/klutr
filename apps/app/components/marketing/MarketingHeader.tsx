@@ -67,10 +67,22 @@ export default function MarketingHeader() {
               Features
             </Link>
             <Link
+              href="/pricing"
+              className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
+            >
+              Pricing
+            </Link>
+            <Link
               href="/blog"
               className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
             >
               Blog
+            </Link>
+            <Link
+              href="/about"
+              className="text-sm font-medium text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] hover:text-[var(--klutr-coral)] transition-colors"
+            >
+              About
             </Link>
             <Link
               href={process.env.NEXT_PUBLIC_DOCS_URL || "https://help.klutr.app"}
@@ -82,7 +94,7 @@ export default function MarketingHeader() {
             </Link>
           </div>
           <Button
-            className="bg-gradient-to-r from-[#FF6B6B] to-[#5ED0BD] hover:opacity-90 text-white shadow-sm"
+            className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white rounded-2xl shadow-xl"
             asChild
           >
             <Link href="/login" aria-label="Join free beta">

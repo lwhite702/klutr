@@ -83,7 +83,7 @@ export function StreamInput({
               onFocus={handleFocus}
               onBlur={handleBlur}
               placeholder={placeholder}
-              className="min-h-[44px] max-h-[200px] resize-none pr-20"
+              className="min-h-[44px] max-h-[200px] resize-none pr-20 rounded-2xl font-body"
               rows={1}
             />
             <div className="absolute right-2 bottom-2 flex items-center gap-1">
@@ -109,11 +109,7 @@ export function StreamInput({
           <Button
             onClick={handleSend}
             disabled={!input.trim()}
-            className="h-[44px] px-4"
-            style={{
-              backgroundColor: brandColors.coral,
-              color: "#ffffff",
-            }}
+            className="h-[44px] px-4 bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white rounded-2xl shadow-xl"
           >
             <Send className="h-4 w-4" />
           </Button>

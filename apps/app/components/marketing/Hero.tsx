@@ -65,9 +65,9 @@ export default function Hero({
               <motion.div variants={fadeInUp}>
                 <h1
                   data-bh-field="heroHeadline"
-                  className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[1.1] mb-8"
+                  className="text-5xl md:text-7xl lg:text-8xl font-display font-semibold tracking-tight leading-[1.1] mb-8"
                 >
-                  <span className="text-[var(--klutr-coral)] font-semibold">
+                  <span className="text-[var(--klutr-coral)]">
                     {headlineParts.firstWord}
                   </span>{" "}
                   {headlineParts.remainingWords}
@@ -84,9 +84,9 @@ export default function Hero({
               <motion.p
                 data-bh-field="heroSubtext"
                 variants={fadeInUp}
-                className="text-xl md:text-2xl text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80 max-w-lg font-light leading-relaxed mb-8"
+                className="text-xl md:text-2xl text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80 max-w-lg font-body leading-relaxed mb-8"
               >
-                {heroSubtext}
+                {heroSubtext || "Organize your chaos."}
               </motion.p>
             )}
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
@@ -94,7 +94,7 @@ export default function Hero({
                 <Button
                   data-bh-field="primaryCTA"
                   size="lg"
-                  className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white text-lg px-8 py-6 rounded-full"
+                  className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white text-lg px-8 py-6 rounded-2xl shadow-xl"
                   asChild
                 >
                   <Link href="/login" aria-label={primaryCTA}>
@@ -124,11 +124,29 @@ export default function Hero({
             className="relative"
           >
             <div className="relative aspect-square max-w-lg mx-auto bg-gradient-to-br from-[var(--klutr-coral)]/10 to-[var(--klutr-mint)]/10 rounded-2xl p-8">
-              <div className="bg-white dark:bg-[var(--klutr-surface-dark)] rounded-xl shadow-2xl p-6 h-full flex items-center justify-center">
+              <div className="bg-white dark:bg-[var(--klutr-surface-dark)] rounded-2xl shadow-2xl p-6 h-full flex items-center justify-center">
                 <div className="text-center space-y-4">
-                  <div className="text-6xl">📝</div>
-                  <p className="text-sm text-muted-foreground">
-                    App Mockup
+                  {/* Animated lightbulb hero element */}
+                  <motion.div
+                    animate={{
+                      scale: [1, 1.1, 1],
+                      filter: [
+                        "drop-shadow(0 0 8px rgba(255, 127, 115, 0.4))",
+                        "drop-shadow(0 0 16px rgba(255, 127, 115, 0.6))",
+                        "drop-shadow(0 0 8px rgba(255, 127, 115, 0.4))",
+                      ],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="lightbulb-glow"
+                  >
+                    <div className="text-6xl">💡</div>
+                  </motion.div>
+                  <p className="text-sm text-muted-foreground font-body">
+                    Organize your chaos.
                   </p>
                 </div>
               </div>

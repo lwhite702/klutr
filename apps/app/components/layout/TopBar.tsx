@@ -52,7 +52,7 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
   };
 
   return (
-    <header className="border-b bg-background sticky top-0 z-10">
+    <header className="border-b bg-gradient-to-r from-[var(--klutr-mint)]/10 to-transparent sticky top-0 z-10 backdrop-blur-sm">
       <div className="flex items-center gap-4 p-4">
         <MobileNavSheet />
 

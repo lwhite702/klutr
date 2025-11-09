@@ -45,10 +45,10 @@ export default async function FeaturesPage() {
       <main>
         <AnimatedSection className="container mx-auto px-6 py-24">
           <AnimatedFadeIn className="text-center space-y-4 max-w-3xl mx-auto mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+            <h1 className="text-4xl md:text-5xl font-display font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
               Everything you need to organize your chaos
             </h1>
-            <p className="text-xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+            <p className="text-xl font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
               Klutr is a conversational workspace where all your input—text,
               voice, images, files—flows naturally through a Stream interface
               and gets automatically organized on the backend.

@@ -86,17 +86,17 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
             const Icon = featureIcons[feature.name] || Brain
             return (
               <motion.div key={feature.slug} variants={fadeInUp}>
-                <Card className="h-full hover:shadow-lg transition-shadow border-[var(--klutr-outline)]/20">
+                <Card className="h-full hover:shadow-xl transition-all duration-300 border-[var(--klutr-outline)]/20 rounded-2xl shadow-lg group">
                   <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--klutr-coral)]/10 to-[var(--klutr-mint)]/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                       <Icon className="w-6 h-6 text-[var(--klutr-coral)]" />
                     </div>
-                    <CardTitle data-bh-field="name" className="text-xl">
+                    <CardTitle data-bh-field="name" className="text-xl font-display">
                       {feature.name}
                     </CardTitle>
                     <CardDescription
                       data-bh-field="tagline"
-                      className="text-base text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70"
+                      className="text-base font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70"
                     >
                       {feature.tagline}
                     </CardDescription>
@@ -105,7 +105,7 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-[var(--klutr-coral)] hover:text-[var(--klutr-coral)]/80"
+                      className="text-[var(--klutr-coral)] hover:text-[var(--klutr-coral)]/80 rounded-2xl"
                       asChild
                     >
                       <Link

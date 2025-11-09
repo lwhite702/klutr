@@ -16,15 +16,15 @@ const sentimentColors: Record<string, string> = {
 
 export function InsightCard({ week, summary, sentiment }: InsightCardProps) {
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-xl transition-all duration-300 border-[var(--klutr-outline)]/20 rounded-2xl shadow-lg">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">{week}</CardTitle>
-          <Badge className={sentimentColors[sentiment] || sentimentColors.mixed}>{sentiment}</Badge>
+          <CardTitle className="text-lg font-display">{week}</CardTitle>
+          <Badge className={`${sentimentColors[sentiment] || sentimentColors.mixed} rounded-2xl`}>{sentiment}</Badge>
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground leading-relaxed">{summary}</p>
+        <p className="text-sm font-body text-muted-foreground leading-relaxed">{summary}</p>
       </CardContent>
     </Card>
   )

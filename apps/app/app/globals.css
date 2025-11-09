@@ -32,8 +32,8 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --radius-card: 0.75rem;
+  --radius: 1rem; /* 2xl - Horizon UI primary border radius */
+  --radius-card: 1rem; /* 2xl */
   --radius-input: 0.5rem;
   --radius-chip: 9999px;
   --sidebar: oklch(0.985 0 0);
@@ -52,17 +52,18 @@
   --brand-lime-foreground: oklch(0.145 0 0);
   --brand-coral-foreground: oklch(0.985 0 0);
 
-  /* Klutr brand tokens - Stream architecture redesign */
+  /* Klutr brand tokens - Horizon UI integration */
   --klutr-wordmark: #2c2c2c;
-  --klutr-background: #fafafa;
-  --klutr-coral: #ff6f61;
-  --klutr-mint: #4cd7c2;
+  --klutr-background: #FAFAFA;
+  --klutr-coral: #FF7F73;
+  --klutr-mint: #A7F1D1;
+  --klutr-accent: #FFE8E0;
   --klutr-outline: #2c2c2c;
   --klutr-surface-dark: #111111;
   --klutr-text-primary-light: #2c2c2c;
   --klutr-text-primary-dark: #ffffff;
-  --klutr-text-accent-light: #ff6f61;
-  --klutr-text-accent-dark: #4cd7c2;
+  --klutr-text-accent-light: #FF7F73;
+  --klutr-text-accent-dark: #A7F1D1;
 }
 
 .dark {
@@ -108,8 +109,9 @@
 
   /* Klutr brand tokens (dark mode) */
   --klutr-wordmark: #ffffff;
-  --klutr-coral: #ff7d7d;
-  --klutr-mint: #5de8d4;
+  --klutr-coral: #FF9F93;
+  --klutr-mint: #B7F5E1;
+  --klutr-accent: #FFE8E0;
   --klutr-outline: #2c2c2c;
   /* klutr-surface-dark, text colors remain same */
 }
@@ -121,7 +123,7 @@
     monospace;
   --font-display: "Inter", "Geist", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-body: "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  --font-body: "Satoshi", "Geist", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;
 
   /* Color definitions - reference CSS variables so they respond to dark mode */
@@ -177,36 +179,47 @@
   --color-klutr-text-accent-light: var(--klutr-text-accent-light);
   --color-klutr-text-accent-dark: var(--klutr-text-accent-dark);
 
-  /* Brand color tokens for Tailwind - Stream architecture redesign */
-  --color-coral: #ff6f61;
-  --color-mint: #4cd7c2;
+  /* Brand color tokens for Tailwind - Horizon UI integration */
+  --color-coral: #FF7F73;
+  --color-mint: #A7F1D1;
+  --color-accent: #FFE8E0;
   --color-charcoal: #2c2c2c;
-  --color-cloud: #fafafa;
+  --color-cloud: #FAFAFA;
   --color-slate: #6b7280;
 
-  /* Gradient stops - Stream architecture redesign */
-  --color-chaos: #ff6f61;
-  --color-clarity: #4cd7c2;
+  /* Gradient stops - Horizon UI integration */
+  --color-chaos: #FF7F73;
+  --color-clarity: #A7F1D1;
+  
+  /* Shadow tokens - Horizon UI */
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 
-  /* Border radius */
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* Border radius - Horizon UI tokens */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem; /* 2xl */
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1rem; /* Primary border radius */
 
   /* Brand color tokens */
   --color-coral: var(--color-coral);
   --color-mint: var(--color-mint);
+  --color-accent: var(--color-accent);
   --color-charcoal: var(--color-charcoal);
   --color-cloud: var(--color-cloud);
   --color-slate: var(--color-slate);
   --color-chaos: var(--color-chaos);
   --color-clarity: var(--color-clarity);
+  
+  /* Shadow utilities */
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
 }
 
-/* Gradient utility class */
+/* Gradient utility class - Horizon UI */
 .bg-chaos-clarity {
-  background: linear-gradient(135deg, #ff6f61 0%, #4cd7c2 100%);
+  background: linear-gradient(135deg, #FF7F73 0%, #A7F1D1 100%);
 }
 
 @layer base {
@@ -233,21 +246,21 @@
   border-width: 0;
 }
 
-/* Lightbulb iconography - Stream architecture */
+/* Lightbulb iconography - Horizon UI */
 .lightbulb-glow {
-  filter: drop-shadow(0 0 8px rgba(255, 111, 97, 0.4));
+  filter: drop-shadow(0 0 8px rgba(255, 127, 115, 0.4));
   transition: filter 0.3s ease-in-out;
 }
 
 .lightbulb-glow:hover {
-  filter: drop-shadow(0 0 16px rgba(255, 111, 97, 0.6));
+  filter: drop-shadow(0 0 16px rgba(255, 127, 115, 0.6));
 }
 
 .lightbulb-glow-mint {
-  filter: drop-shadow(0 0 8px rgba(76, 215, 194, 0.4));
+  filter: drop-shadow(0 0 8px rgba(167, 241, 209, 0.4));
   transition: filter 0.3s ease-in-out;
 }
 
 .lightbulb-glow-mint:hover {
-  filter: drop-shadow(0 0 16px rgba(76, 215, 194, 0.6));
+  filter: drop-shadow(0 0 16px rgba(167, 241, 209, 0.6));
 }

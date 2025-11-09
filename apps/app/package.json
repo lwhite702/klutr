@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "postbuild": "next-sitemap || true",
     "dev": "doppler run -- next dev",
     "lint": "eslint .",
     "start": "next start",
@@ -79,6 +80,8 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@testing-library/react": "^16.1.0",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/canvas-confetti": "^1.6.4",
     "@types/node": "^22",
@@ -88,6 +91,7 @@
     "@typescript-eslint/parser": "^8.46.2",
     "doppler": "^1.0.0",
     "eslint": "^9.39.0",
+    "next-sitemap": "^4.2.3",
     "postcss": "^8.5",
     "prisma": "6.18.0",
     "tailwindcss": "^4.1.9",
@@ -95,4 +99,3 @@
     "typescript": "^5"
   }
 }
-
