@@ -1,0 +1,13 @@
+{
+  "sorted_middleware": [],
+  "middleware": {},
+  "instrumentation": {
+    "files": [
+      "server/edge/chunks/5c022_posthog-js_dist_module_1bfba62e.js",
+      "server/edge/chunks/_f77e5607._.js",
+      "server/edge/chunks/turbopack-edge-wrapper_393e6caf.js"
+    ],
+    "name": "instrumentation"
+  },
+  "functions": {}
+}

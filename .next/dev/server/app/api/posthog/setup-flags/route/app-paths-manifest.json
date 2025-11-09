@@ -1,0 +1,3 @@
+{
+  "/api/posthog/setup-flags/route": "app/api/posthog/setup-flags/route.js"
+}

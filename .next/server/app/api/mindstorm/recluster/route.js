@@ -1,0 +1,11 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/mindstorm/recluster/route.js")
+R.c("server/chunks/_22d8736d._.js")
+R.c("server/chunks/f0026_next_e52caaec._.js")
+R.c("server/chunks/[root-of-the-server]__61e26351._.js")
+R.c("server/chunks/[root-of-the-server]__dd48b7c3._.js")
+R.c("server/chunks/[root-of-the-server]__012d3512._.js")
+R.c("server/chunks/_15f35901._.js")
+R.c("server/chunks/node_modules__pnpm_2ae86667._.js")
+R.c("server/chunks/_next-internal_server_app_api_mindstorm_recluster_route_actions_5ddc2191.js")
+R.m(40849)
+module.exports=R.m(40849).exports

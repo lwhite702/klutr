@@ -1,0 +1,372 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/app",
+      "destination": "/app/flux",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/app(?:/)?$"
+    },
+    {
+      "source": "/app/mindstorm",
+      "destination": "/app/orbit",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/app/mindstorm(?:/)?$"
+    },
+    {
+      "source": "/app/insights",
+      "destination": "/app/pulse",
+      "statusCode": 307,
+      "regex": "^(?!/_next)/app/insights(?:/)?$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [
+      {
+        "source": "/ingest/static/:path*",
+        "destination": "https://us-assets.i.posthog.com/static/:path*",
+        "regex": "^/ingest/static(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$"
+      },
+      {
+        "source": "/ingest/:path*",
+        "destination": "https://us.i.posthog.com/:path*",
+        "regex": "^/ingest(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$"
+      }
+    ],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/blog/[slug]",
+      "regex": "^/blog/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/blog/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/features/[slug]",
+      "regex": "^/features/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/features/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/stacks/[stack]",
+      "regex": "^/stacks/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPstack": "nxtPstack"
+      },
+      "namedRegex": "^/stacks/(?<nxtPstack>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/api/cron/nightly-cluster",
+      "regex": "^/api/cron/nightly\\-cluster(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/cron/nightly\\-cluster(?:/)?$"
+    },
+    {
+      "page": "/api/cron/nightly-stacks",
+      "regex": "^/api/cron/nightly\\-stacks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/cron/nightly\\-stacks(?:/)?$"
+    },
+    {
+      "page": "/api/cron/weekly-insights",
+      "regex": "^/api/cron/weekly\\-insights(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/cron/weekly\\-insights(?:/)?$"
+    },
+    {
+      "page": "/api/health",
+      "regex": "^/api/health(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/health(?:/)?$"
+    },
+    {
+      "page": "/api/insights/generate",
+      "regex": "^/api/insights/generate(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/insights/generate(?:/)?$"
+    },
+    {
+      "page": "/api/insights/list",
+      "regex": "^/api/insights/list(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/insights/list(?:/)?$"
+    },
+    {
+      "page": "/api/memory/activity",
+      "regex": "^/api/memory/activity(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/memory/activity(?:/)?$"
+    },
+    {
+      "page": "/api/memory/notes-by-week",
+      "regex": "^/api/memory/notes\\-by\\-week(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/memory/notes\\-by\\-week(?:/)?$"
+    },
+    {
+      "page": "/api/mindstorm/clusters",
+      "regex": "^/api/mindstorm/clusters(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/mindstorm/clusters(?:/)?$"
+    },
+    {
+      "page": "/api/mindstorm/recluster",
+      "regex": "^/api/mindstorm/recluster(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/mindstorm/recluster(?:/)?$"
+    },
+    {
+      "page": "/api/muse",
+      "regex": "^/api/muse(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/muse(?:/)?$"
+    },
+    {
+      "page": "/api/notes/classify",
+      "regex": "^/api/notes/classify(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/notes/classify(?:/)?$"
+    },
+    {
+      "page": "/api/notes/create",
+      "regex": "^/api/notes/create(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/notes/create(?:/)?$"
+    },
+    {
+      "page": "/api/notes/list",
+      "regex": "^/api/notes/list(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/notes/list(?:/)?$"
+    },
+    {
+      "page": "/api/notes/nope",
+      "regex": "^/api/notes/nope(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/notes/nope(?:/)?$"
+    },
+    {
+      "page": "/api/notes/update",
+      "regex": "^/api/notes/update(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/notes/update(?:/)?$"
+    },
+    {
+      "page": "/api/posthog/setup-flags",
+      "regex": "^/api/posthog/setup\\-flags(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/posthog/setup\\-flags(?:/)?$"
+    },
+    {
+      "page": "/api/preview",
+      "regex": "^/api/preview(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/preview(?:/)?$"
+    },
+    {
+      "page": "/api/revalidate",
+      "regex": "^/api/revalidate(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/revalidate(?:/)?$"
+    },
+    {
+      "page": "/api/spark",
+      "regex": "^/api/spark(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/spark(?:/)?$"
+    },
+    {
+      "page": "/api/stacks/detail",
+      "regex": "^/api/stacks/detail(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/stacks/detail(?:/)?$"
+    },
+    {
+      "page": "/api/stacks/list",
+      "regex": "^/api/stacks/list(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/stacks/list(?:/)?$"
+    },
+    {
+      "page": "/api/stacks/pin",
+      "regex": "^/api/stacks/pin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/stacks/pin(?:/)?$"
+    },
+    {
+      "page": "/api/vault/create",
+      "regex": "^/api/vault/create(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/vault/create(?:/)?$"
+    },
+    {
+      "page": "/api/vault/list",
+      "regex": "^/api/vault/list(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/vault/list(?:/)?$"
+    },
+    {
+      "page": "/app",
+      "regex": "^/app(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/app(?:/)?$"
+    },
+    {
+      "page": "/blog",
+      "regex": "^/blog(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/blog(?:/)?$"
+    },
+    {
+      "page": "/changelog",
+      "regex": "^/changelog(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/changelog(?:/)?$"
+    },
+    {
+      "page": "/debug/flags",
+      "regex": "^/debug/flags(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/debug/flags(?:/)?$"
+    },
+    {
+      "page": "/flux",
+      "regex": "^/flux(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/flux(?:/)?$"
+    },
+    {
+      "page": "/insights",
+      "regex": "^/insights(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/insights(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/memory",
+      "regex": "^/memory(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/memory(?:/)?$"
+    },
+    {
+      "page": "/mindstorm",
+      "regex": "^/mindstorm(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/mindstorm(?:/)?$"
+    },
+    {
+      "page": "/muse",
+      "regex": "^/muse(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/muse(?:/)?$"
+    },
+    {
+      "page": "/nope",
+      "regex": "^/nope(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/nope(?:/)?$"
+    },
+    {
+      "page": "/orbit",
+      "regex": "^/orbit(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/orbit(?:/)?$"
+    },
+    {
+      "page": "/privacy",
+      "regex": "^/privacy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy(?:/)?$"
+    },
+    {
+      "page": "/pulse",
+      "regex": "^/pulse(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pulse(?:/)?$"
+    },
+    {
+      "page": "/roadmap",
+      "regex": "^/roadmap(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/roadmap(?:/)?$"
+    },
+    {
+      "page": "/spark",
+      "regex": "^/spark(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/spark(?:/)?$"
+    },
+    {
+      "page": "/stacks",
+      "regex": "^/stacks(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/stacks(?:/)?$"
+    },
+    {
+      "page": "/terms",
+      "regex": "^/terms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/terms(?:/)?$"
+    },
+    {
+      "page": "/vault",
+      "regex": "^/vault(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/vault(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

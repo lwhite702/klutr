@@ -1,0 +1,16 @@
+{
+  "projectId": "prj_lKT2iwWfpzt21YmCUDz6mXs7FbeK",
+  "orgId": "team_lUoPZ9QPFBPeYsQvliNUl5BK",
+  "projectName": "klutr",
+  "settings": {
+    "createdAt": 1761421759573,
+    "framework": "nextjs",
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": null,
+    "directoryListing": false,
+    "nodeVersion": "22.x"
+  }
+}

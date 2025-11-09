@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 46, "column": 0}, "map": {"version":3,"sources":["file:///Users/lee/Noteornope/app/api/health/route.ts"],"sourcesContent":["import { NextResponse } from \"next/server\";\n\n/**\n * Health check endpoint for Vercel monitoring\n * \n * Auth: None (public endpoint)\n * Response: { status: \"ok\", timestamp: string, environment: string }\n * Side effects: None (read-only)\n */\nexport async function GET() {\n  return NextResponse.json({\n    status: \"ok\",\n    timestamp: new Date().toISOString(),\n    environment: process.env.NODE_ENV || \"development\",\n  });\n}\n\n"],"names":[],"mappings":";;;;AAAA;;AASO,eAAe;IACpB,OAAO,+QAAY,CAAC,IAAI,CAAC;QACvB,QAAQ;QACR,WAAW,IAAI,OAAO,WAAW;QACjC,aAAa,mDAAwB;IACvC;AACF","debugId":null}}]
+}

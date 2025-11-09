@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///Users/lee/Noteornope/instrumentation-client.ts"],"sourcesContent":["import posthog from \"posthog-js\"\n\nposthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {\n  api_host: \"/ingest\",\n  ui_host: \"https://us.posthog.com\",\n  capture_exceptions: true, // This enables capturing exceptions using Error Tracking, set to false if you don't want this\n  debug: process.env.NODE_ENV === \"development\",\n});\n"],"names":[],"mappings":";AAEa;AAFb;;AAEA,yNAAO,CAAC,IAAI,sFAAuC;IACjD,UAAU;IACV,SAAS;IACT,oBAAoB;IACpB,OAAO,oDAAyB;AAClC","debugId":null}}]
+}
