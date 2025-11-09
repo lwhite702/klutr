@@ -3,6 +3,7 @@
 import type React from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { motion } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarNav } from "./SidebarNav";
 import { TopBar } from "./TopBar";
@@ -27,14 +28,19 @@ export function AppShell({
       <aside className="hidden md:flex w-64 border-r bg-background flex-col">
         <div className="p-4 border-b">
           <div className="flex items-center">
-            <Image
-              src={isDark ? "/logos/klutr-logo-dark-noslogan.svg" : "/logos/klutr-logo-light-noslogan.svg"}
-              alt="Klutr"
-              width={120}
-              height={40}
-              className="h-8 md:h-10 lg:h-12 w-auto"
-              priority
-            />
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="lightbulb-glow"
+            >
+              <Image
+                src={isDark ? "/logos/klutr-logo-dark-noslogan.svg" : "/logos/klutr-logo-light-noslogan.svg"}
+                alt="Klutr"
+                width={120}
+                height={40}
+                className="h-8 md:h-10 lg:h-12 w-auto"
+                priority
+              />
+            </motion.div>
           </div>
         </div>
         <SidebarNav activeRoute={activeRoute} />

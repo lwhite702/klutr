@@ -52,17 +52,17 @@
   --brand-lime-foreground: oklch(0.145 0 0);
   --brand-coral-foreground: oklch(0.985 0 0);
 
-  /* Klutr brand tokens */
-  --klutr-wordmark: #2b2e3f;
-  --klutr-background: #f7f7f9;
-  --klutr-coral: #ff6b6b;
-  --klutr-mint: #00c896;
-  --klutr-outline: #2b2e3f;
+  /* Klutr brand tokens - Stream architecture redesign */
+  --klutr-wordmark: #2c2c2c;
+  --klutr-background: #fafafa;
+  --klutr-coral: #ff6f61;
+  --klutr-mint: #4cd7c2;
+  --klutr-outline: #2c2c2c;
   --klutr-surface-dark: #111111;
-  --klutr-text-primary-light: #2b2e3f;
+  --klutr-text-primary-light: #2c2c2c;
   --klutr-text-primary-dark: #ffffff;
-  --klutr-text-accent-light: #ff6b6b;
-  --klutr-text-accent-dark: #00c896;
+  --klutr-text-accent-light: #ff6f61;
+  --klutr-text-accent-dark: #4cd7c2;
 }
 
 .dark {
@@ -109,8 +109,8 @@
   /* Klutr brand tokens (dark mode) */
   --klutr-wordmark: #ffffff;
   --klutr-coral: #ff7d7d;
-  --klutr-mint: #33e0b4;
-  --klutr-outline: #2b2e3f;
+  --klutr-mint: #5de8d4;
+  --klutr-outline: #2c2c2c;
   /* klutr-surface-dark, text colors remain same */
 }
 
@@ -177,16 +177,16 @@
   --color-klutr-text-accent-light: var(--klutr-text-accent-light);
   --color-klutr-text-accent-dark: var(--klutr-text-accent-dark);
 
-  /* Brand color tokens for Tailwind - values from lib/theme/colors.ts */
-  --color-coral: #ff6b6b;
-  --color-mint: #3ee0c5;
-  --color-charcoal: #111827;
-  --color-cloud: #f8f9fa;
+  /* Brand color tokens for Tailwind - Stream architecture redesign */
+  --color-coral: #ff6f61;
+  --color-mint: #4cd7c2;
+  --color-charcoal: #2c2c2c;
+  --color-cloud: #fafafa;
   --color-slate: #6b7280;
 
-  /* Gradient stops - values from lib/theme/colors.ts */
-  --color-chaos: #ff6b6b;
-  --color-clarity: #3ee0c5;
+  /* Gradient stops - Stream architecture redesign */
+  --color-chaos: #ff6f61;
+  --color-clarity: #4cd7c2;
 
   /* Border radius */
   --radius-sm: calc(var(--radius) - 4px);
@@ -206,7 +206,7 @@
 
 /* Gradient utility class */
 .bg-chaos-clarity {
-  background: linear-gradient(135deg, #ff6b6b 0%, #3ee0c5 100%);
+  background: linear-gradient(135deg, #ff6f61 0%, #4cd7c2 100%);
 }
 
 @layer base {
@@ -231,4 +231,23 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* Lightbulb iconography - Stream architecture */
+.lightbulb-glow {
+  filter: drop-shadow(0 0 8px rgba(255, 111, 97, 0.4));
+  transition: filter 0.3s ease-in-out;
+}
+
+.lightbulb-glow:hover {
+  filter: drop-shadow(0 0 16px rgba(255, 111, 97, 0.6));
+}
+
+.lightbulb-glow-mint {
+  filter: drop-shadow(0 0 8px rgba(76, 215, 194, 0.4));
+  transition: filter 0.3s ease-in-out;
+}
+
+.lightbulb-glow-mint:hover {
+  filter: drop-shadow(0 0 16px rgba(76, 215, 194, 0.6));
 }

@@ -225,3 +225,172 @@ export const mockMemory = [
     tags: [{ label: "planning" }, { label: "outreach" }],
   },
 ];
+
+// Stream architecture mock data
+export type StreamDropType = "text" | "file" | "image" | "voice";
+
+export interface StreamDrop {
+  id: string;
+  type: StreamDropType;
+  content: string;
+  timestamp: Date;
+  tags: Array<{ label: string }>;
+  fileUrl?: string;
+  fileName?: string;
+  fileType?: string;
+}
+
+export const mockStreamDrops: StreamDrop[] = [
+  {
+    id: "sd1",
+    type: "text",
+    content: "Need to remember to check the grill temperature before guests arrive",
+    timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+    tags: [{ label: "task" }, { label: "bbq" }],
+  },
+  {
+    id: "sd2",
+    type: "text",
+    content: "Alex mentioned a low-and-slow method for ribs. Should ask for details.",
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+    tags: [{ label: "idea" }, { label: "cooking" }],
+  },
+  {
+    id: "sd3",
+    type: "image",
+    content: "Screenshot of smoker setup",
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5 hours ago
+    tags: [{ label: "reference" }, { label: "gear" }],
+    fileUrl: "/placeholder.jpg",
+    fileName: "smoker-setup.jpg",
+    fileType: "image/jpeg",
+  },
+  {
+    id: "sd4",
+    type: "file",
+    content: "BBQ recipe collection",
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+    tags: [{ label: "recipe" }, { label: "reference" }],
+    fileUrl: "/placeholder.pdf",
+    fileName: "bbq-recipes.pdf",
+    fileType: "application/pdf",
+  },
+  {
+    id: "sd5",
+    type: "text",
+    content: "Guest list: Maya (vegetarian), Jordan (nut allergy), 12 adults total",
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
+    tags: [{ label: "contact" }, { label: "logistics" }],
+  },
+  {
+    id: "sd6",
+    type: "voice",
+    content: "Voice note about podcast episode ideas",
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3 days ago
+    tags: [{ label: "content" }, { label: "audio" }],
+    fileUrl: "/placeholder.mp3",
+    fileName: "voice-note.mp3",
+    fileType: "audio/mpeg",
+  },
+];
+
+export interface Board {
+  id: string;
+  name: string;
+  description: string;
+  tags: Array<{ label: string }>;
+  noteCount: number;
+  pinned: boolean;
+  lastActivity: Date;
+}
+
+export const mockBoards: Board[] = [
+  {
+    id: "b1",
+    name: "BBQ Planning",
+    description: "All notes related to the upcoming BBQ weekend",
+    tags: [{ label: "event" }, { label: "bbq" }],
+    noteCount: 8,
+    pinned: true,
+    lastActivity: new Date(Date.now() - 1000 * 60 * 30),
+  },
+  {
+    id: "b2",
+    name: "Gear Research",
+    description: "Equipment and tools I'm considering",
+    tags: [{ label: "research" }, { label: "gear" }],
+    noteCount: 5,
+    pinned: false,
+    lastActivity: new Date(Date.now() - 1000 * 60 * 60 * 2),
+  },
+  {
+    id: "b3",
+    name: "Podcast Ideas",
+    description: "Content ideas and episode planning",
+    tags: [{ label: "content" }, { label: "audio" }],
+    noteCount: 3,
+    pinned: false,
+    lastActivity: new Date(Date.now() - 1000 * 60 * 60 * 24),
+  },
+  {
+    id: "b4",
+    name: "Client Work",
+    description: "Follow-ups and deliverables",
+    tags: [{ label: "work" }],
+    noteCount: 12,
+    pinned: true,
+    lastActivity: new Date(Date.now() - 1000 * 60 * 15),
+  },
+];
+
+export interface MuseInsight {
+  id: string;
+  type: "top-tags" | "recurring-topics" | "idea-patterns";
+  title: string;
+  description: string;
+  data: Record<string, unknown>;
+}
+
+export const mockMuseInsights: MuseInsight[] = [
+  {
+    id: "mi1",
+    type: "top-tags",
+    title: "Top Tags This Week",
+    description: "Your most frequently used tags",
+    data: {
+      tags: [
+        { label: "bbq", count: 12 },
+        { label: "gear", count: 8 },
+        { label: "recipe", count: 6 },
+        { label: "work", count: 5 },
+      ],
+    },
+  },
+  {
+    id: "mi2",
+    type: "recurring-topics",
+    title: "Recurring Topics",
+    description: "Themes that keep appearing in your notes",
+    data: {
+      topics: [
+        "Outdoor cooking techniques",
+        "Equipment upgrades",
+        "Event planning",
+        "Content creation",
+      ],
+    },
+  },
+  {
+    id: "mi3",
+    type: "idea-patterns",
+    title: "Idea Patterns",
+    description: "How your thoughts connect",
+    data: {
+      patterns: [
+        "You often research gear before making purchases",
+        "Event planning notes cluster around logistics and people",
+        "Content ideas frequently reference cooking techniques",
+      ],
+    },
+  },
+];

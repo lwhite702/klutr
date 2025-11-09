@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2025-11-08 20:00 ET
+
+- [feature] Redesigned Klutr into Stream-first architecture with chat-style interface
+- [feature] Created /app/stream route as primary interface with chat-style message feed
+- [feature] Added Stream components: StreamInput, StreamMessage, TagChips, DropZone, AutoSummary
+- [feature] Created /app/boards route with BoardCard components and board detail pages
+- [feature] Updated /app/muse with weekly AI insights UI and InsightCard component
+- [feature] Created /app/search route with natural language search and fuzzy matching
+- [feature] Updated /app/vault with locked/unlocked state and mock encrypted entries
+- [ui] Updated brand colors to Coral #FF6F61 (primary) and Mint #4CD7C2 (accent)
+- [ui] Added lightbulb iconography CSS classes with glow animations
+- [ui] Updated navigation: Stream, Boards, Muse, Vault, Search, Settings
+- [ui] Added "+ Drop" button to TopBar for quick file/note addition
+- [ui] Removed "Re-cluster now" button (Stream handles organization automatically)
+- [ui] Added lightbulb hover animation to logo in AppShell
+- [infra] Created /lib/brand.config.ts for centralized brand configuration
+- [infra] Created AI placeholder functions: tagNotes, summarizeStream, classifyDrop, suggestBoard, analyzeMuse
+- [infra] Added mock data: mockStreamDrops, mockBoards, mockMuseInsights
+- [docs] Created Mintlify docs: stream.mdx, boards.mdx
+- [docs] Updated overview.mdx with Stream-first architecture and new tagline
+- [docs] Created /docs/internal/stream-architecture.md with technical documentation
+- [seo] Updated app metadata: title "Klutr – Organize Your Chaos", new description and keywords
+
 ## Format
 
 Each entry includes:

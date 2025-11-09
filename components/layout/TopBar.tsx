@@ -20,14 +20,13 @@ import {
 } from "@/components/ui/tooltip";
 import { MobileNavSheet } from "./MobileNavSheet";
 import { isDemoMode } from "@/lib/onboarding";
-import { apiPost } from "@/lib/clientApi";
-import { Loader2, HelpCircle, Sun, Moon } from "lucide-react";
+import { HelpCircle, Sun, Moon, Plus } from "lucide-react";
+import { brandColors } from "@/lib/brand.config";
 import { HelpCenter } from "@/components/help/HelpCenter";
 
 export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [demoMode, setDemoMode] = useState(false);
-  const [isReclustering, setIsReclustering] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -41,24 +40,6 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
       setTheme("light");
     } else {
       setTheme("dark");
-    }
-  };
-
-  const handleRecluster = async () => {
-    if (demoMode) {
-      console.log("[v0] Demo mode: pretend recluster");
-      return;
-    }
-
-    setIsReclustering(true);
-    try {
-      await apiPost("/api/mindstorm/recluster");
-      console.log("[v0] Reclustering complete");
-      // Optionally show a success toast here
-    } catch (error) {
-      console.error("[v0] Failed to recluster:", error);
-    } finally {
-      setIsReclustering(false);
     }
   };
 
@@ -76,7 +57,7 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
         <MobileNavSheet />
 
         <div className="flex-1 max-w-md">
-          <Input placeholder="Search your notes..." className="w-full" />
+          <Input placeholder="Search your stream..." className="w-full" />
         </div>
 
         <div className="flex items-center gap-2 ml-auto">
@@ -90,24 +71,22 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="outline"
-                  onClick={handleRecluster}
-                  disabled={isReclustering}
+                  onClick={() => {
+                    // Navigate to stream and focus input
+                    window.location.href = "/app/stream";
+                  }}
+                  style={{
+                    backgroundColor: brandColors.coral,
+                    color: "#ffffff",
+                  }}
                 >
-                  {isReclustering ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Re-clustering...
-                    </>
-                  ) : (
-                    "Re-cluster now"
-                  )}
+                  <Plus className="h-4 w-4 mr-2" />
+                  Drop
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
                 <p className="max-w-xs">
-                  We embed your notes with AI, compare them in vector space, and
-                  group related ideas together.
+                  Quickly add a note, file, or voice recording to your stream
                 </p>
               </TooltipContent>
             </Tooltip>

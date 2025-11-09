@@ -5,56 +5,50 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Lightbulb,
-  Brain,
-  Layers,
+  LayoutDashboard,
+  Sparkles,
   Lock,
-  Eye,
-  Calendar,
-  Trash2,
+  Search,
+  Settings,
 } from "lucide-react";
 import posthog from 'posthog-js';
+import { brandColors } from "@/lib/brand.config";
 
 const navItems = [
   {
-    href: "/app",
-    label: "Notes",
+    href: "/app/stream",
+    label: "Stream",
     icon: Lightbulb,
-    color: "text-[var(--color-brand-lime)]",
+    color: brandColors.coral,
   },
   {
-    href: "/app/mindstorm",
-    label: "MindStorm",
-    icon: Brain,
-    color: "text-[var(--color-brand-indigo)]",
+    href: "/app/boards",
+    label: "Boards",
+    icon: LayoutDashboard,
+    color: brandColors.mint,
   },
   {
-    href: "/app/stacks",
-    label: "Smart Stacks",
-    icon: Layers,
-    color: "text-[var(--color-brand-lime)]",
+    href: "/app/muse",
+    label: "Muse",
+    icon: Sparkles,
+    color: brandColors.mint,
   },
   {
     href: "/app/vault",
     label: "Vault",
     icon: Lock,
-    color: "text-[var(--color-brand-coral)]",
+    color: brandColors.coral,
   },
   {
-    href: "/app/insights",
-    label: "Insights",
-    icon: Eye,
-    color: "text-[var(--color-brand-indigo)]",
+    href: "/app/search",
+    label: "Search",
+    icon: Search,
+    color: "text-muted-foreground",
   },
   {
-    href: "/app/memory",
-    label: "Memory Lane",
-    icon: Calendar,
-    color: "text-[var(--color-brand-lime)]",
-  },
-  {
-    href: "/app/nope",
-    label: "Nope Bin",
-    icon: Trash2,
+    href: "/app/settings",
+    label: "Settings",
+    icon: Settings,
     color: "text-muted-foreground",
   },
 ];
@@ -88,7 +82,17 @@ export function SidebarNav({ activeRoute }: SidebarNavProps) {
               });
             }}>
               <Icon
-                className={`h-4 w-4 ${item.color || "text-muted-foreground"}`}
+                className={`h-4 w-4 ${
+                  typeof item.color === "string" && item.color.startsWith("text-")
+                    ? item.color
+                    : ""
+                }`}
+                style={{
+                  color:
+                    typeof item.color === "string" && !item.color.startsWith("text-")
+                      ? item.color
+                      : undefined,
+                }}
               />
               {item.label}
             </Link>

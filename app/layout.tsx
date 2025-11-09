@@ -16,9 +16,10 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Klutr",
+  title: "Klutr – Organize Your Chaos",
   description:
-    "Your second brain - AI-powered note organization that helps you capture, cluster, and discover insights from your thoughts.",
+    "Chat-style AI note app that turns your mess of ideas into structured clarity.",
+  keywords: ["AI note app", "smart tagging", "organize thoughts", "productivity AI"],
   icons: {
     icon: [
       { url: "/brand/favicon-32x32.png", sizes: "32x32", type: "image/png" },
