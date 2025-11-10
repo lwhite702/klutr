@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2025-10-31 18:30 ET
+
+- [infra] Added automated deployment validation for OpenAI and Supabase connections
+- [infra] Created pre-deploy validation script with OpenAI embedding/classification and Supabase DB/Auth/Storage checks
+- [infra] Created post-deploy validation with CRON_SECRET and app health checks
+- [infra] Added /api/cron/verify endpoint for CRON_SECRET validation
+- [infra] Added /api/health/check-deploy endpoint for runtime diagnostics
+- [infra] Integrated validation into GitHub Actions CI workflow
+- [docs] Created deploy-validation.md with setup instructions and troubleshooting guide
+
 ## 2025-11-08 22:15 ET
 
 - [fix] Created /features index page to fix 404 error on /features route
