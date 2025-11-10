@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [fix] Added try-catch error handling to generateStaticParams functions for blog and features pages
 - [infra] Created minimal ESLint config file (eslint.config.mjs) to resolve ESLint v9 configuration errors
 - [infra] Production build now succeeds without requiring BASEHUB_TOKEN or OPENAI_API_KEY during build time
+- [infra] Updated vercel.json to use corepack for pnpm installation, fixing Vercel deployment build errors
 - [docs] All BaseHub query functions now gracefully handle missing tokens and return empty arrays/null during build
 
 ## 2025-11-08 22:15 ET
