@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DropComposer } from "./DropComposer";
 import { MessageBubble } from "./MessageBubble";
@@ -93,8 +92,7 @@ export function ChatView() {
   };
 
   return (
-    <AppShell activeRoute="/app/chat">
-      <div className="flex h-[calc(100vh-64px)]">
+    <div className="flex h-[calc(100vh-64px)]">
         {/* Left Sidebar - Thread List */}
         <aside className="hidden lg:block w-64 border-r bg-muted/30">
           <ThreadList
@@ -140,8 +138,7 @@ export function ChatView() {
         <aside className="hidden xl:block w-64 border-l bg-muted/30">
           <InsightStrip threadId={selectedThreadId} />
         </aside>
-      </div>
-    </AppShell>
+    </div>
   );
 }
 

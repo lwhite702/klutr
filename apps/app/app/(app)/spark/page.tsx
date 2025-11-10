@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { useSpark } from "@/lib/hooks/useSpark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,8 +17,7 @@ export default function SparkPage() {
   };
 
   return (
-    <AppShell activeRoute="/app/spark">
-      <div className="max-w-2xl mx-auto py-12 px-4">
+    <div className="max-w-2xl mx-auto py-12 px-4">
         <h1 className="text-3xl font-display text-[#ff6b6b] mb-6">Spark</h1>
         <p className="text-slate-400 font-body mb-8">
           Your contextual AI partner. Analyze and expand on your notes with
@@ -103,7 +101,6 @@ export default function SparkPage() {
             </div>
           </div>
         )}
-      </div>
-    </AppShell>
+    </div>
   );
 }
