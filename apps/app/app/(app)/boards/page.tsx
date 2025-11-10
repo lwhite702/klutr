@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { BoardCard } from "@/components/boards/BoardCard";
@@ -115,8 +114,7 @@ export default function BoardsPage() {
   });
 
   return (
-    <AppShell activeRoute="/app/boards">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title="Boards"
           description="Auto-organized collections of related notes"
@@ -165,6 +163,5 @@ export default function BoardsPage() {
           </>
         )}
       </div>
-    </AppShell>
   );
 }

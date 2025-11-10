@@ -26,11 +26,15 @@ export const basehubClient = (draft?: boolean) => {
   const token = process.env.BASEHUB_TOKEN || process.env.BASEHUB_API_TOKEN
 
   if (!token) {
-    // In development, allow missing token with warning
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        'BASEHUB_TOKEN or BASEHUB_API_TOKEN not set. BaseHub queries will fail.'
-      )
+    // Return a mock client that returns empty results instead of throwing
+    // This allows builds to succeed even when BASEHUB_TOKEN is not set
+    return {
+      query: async () => {
+        console.warn(
+          'BASEHUB_TOKEN or BASEHUB_API_TOKEN not set. BaseHub queries will return empty results.'
+        )
+        return {}
+      },
     }
   }
 

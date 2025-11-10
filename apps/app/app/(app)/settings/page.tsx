@@ -1,6 +1,5 @@
 "use client";
 
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ProfileSection } from "@/components/settings/ProfileSection";
 import { PreferencesSection } from "@/components/settings/PreferencesSection";
@@ -9,7 +8,6 @@ import { DataSection } from "@/components/settings/DataSection";
 
 export default function SettingsPage() {
   return (
-    <AppShell activeRoute="/app/settings">
       <div className="max-w-4xl mx-auto space-y-8">
         <PageHeader
           title="Settings"
@@ -23,7 +21,6 @@ export default function SettingsPage() {
           <DataSection />
         </div>
       </div>
-    </AppShell>
   );
 }
 

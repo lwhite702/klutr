@@ -13,6 +13,10 @@ import {
 } from "@/lib/validation/middleware";
 import { ClassifyMessageSchema, ConversationThreadDTOSchema } from "@/lib/validation/schemas";
 
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 async function classifyMessageHandler(req: NextRequest, data: any) {
   try {
     if (!isDatabaseAvailable()) {

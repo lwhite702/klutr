@@ -21,7 +21,15 @@ export interface BlogPost {
  */
 export async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    const { isEnabled } = await draftMode()
+    let isEnabled = false
+    try {
+      const draft = await draftMode()
+      isEnabled = draft.isEnabled
+    } catch {
+      // draftMode() can only be called during request handling
+      // During static generation, it will throw - use false as default
+      isEnabled = false
+    }
     const client = basehubClient(isEnabled)
 
     const result = await client.query({
@@ -90,7 +98,15 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
  */
 export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    const { isEnabled } = await draftMode()
+    let isEnabled = false
+    try {
+      const draft = await draftMode()
+      isEnabled = draft.isEnabled
+    } catch {
+      // draftMode() can only be called during request handling
+      // During static generation, it will throw - use false as default
+      isEnabled = false
+    }
     const client = basehubClient(isEnabled)
 
     const result = await client.query({

@@ -14,7 +14,14 @@ export async function getPageMetadata(
   slug: string
 ): Promise<PageMetadata | null> {
   try {
-    const { isEnabled } = await draftMode()
+    let isEnabled = false
+    try {
+      const draft = await draftMode()
+      isEnabled = draft.isEnabled
+    } catch {
+      // draftMode() can only be called during request handling
+      isEnabled = false
+    }
     const client = basehubClient(isEnabled)
 
     const result = await client.query({

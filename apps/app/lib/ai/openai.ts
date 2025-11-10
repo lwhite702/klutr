@@ -1,8 +1,20 @@
 import OpenAI from "openai";
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazy initialization to avoid build-time errors when API key is missing
+let client: OpenAI | null = null;
+
+function getClient(): OpenAI | null {
+  if (!client) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return null;
+    }
+    client = new OpenAI({
+      apiKey,
+    });
+  }
+  return client;
+}
 
 /**
  * Generate an embedding for message content using OpenAI's text-embedding-3-small model
@@ -14,8 +26,14 @@ export async function generateEmbedding(content: string): Promise<number[]> {
     return [];
   }
 
+  const openaiClient = getClient();
+  if (!openaiClient) {
+    console.warn("[openai] OPENAI_API_KEY not set, skipping embedding generation");
+    return [];
+  }
+
   try {
-    const res = await client.embeddings.create({
+    const res = await openaiClient.embeddings.create({
       model: "text-embedding-3-small",
       input: content,
     });
@@ -47,8 +65,18 @@ export async function classifyMessage(content: string): Promise<{
     };
   }
 
+  const openaiClient = getClient();
+  if (!openaiClient) {
+    console.warn("[openai] OPENAI_API_KEY not set, skipping classification");
+    return {
+      topics: [],
+      summary: "",
+      sentiment: "neutral",
+    };
+  }
+
   try {
-    const res = await client.chat.completions.create({
+    const res = await openaiClient.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.4,
       messages: [

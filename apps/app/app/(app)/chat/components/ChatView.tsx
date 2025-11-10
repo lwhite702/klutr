@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DropComposer } from "./DropComposer";
 import { MessageBubble } from "./MessageBubble";
@@ -93,55 +92,53 @@ export function ChatView() {
   };
 
   return (
-    <AppShell activeRoute="/app/chat">
-      <div className="flex h-[calc(100vh-64px)]">
-        {/* Left Sidebar - Thread List */}
-        <aside className="hidden lg:block w-64 border-r bg-muted/30">
-          <ThreadList
-            threads={threads}
-            selectedThreadId={selectedThreadId}
-            onSelectThread={setSelectedThreadId}
-            isLoading={isLoading}
-          />
-        </aside>
+    <div className="flex h-[calc(100vh-64px)] -m-6 md:-m-8">
+      {/* Left Sidebar - Thread List */}
+      <aside className="hidden lg:block w-64 border-r bg-muted/30">
+        <ThreadList
+          threads={threads}
+          selectedThreadId={selectedThreadId}
+          onSelectThread={setSelectedThreadId}
+          isLoading={isLoading}
+        />
+      </aside>
 
-        {/* Center - Chat Messages */}
-        <div className="flex-1 flex flex-col">
-          <ScrollArea className="flex-1 px-4" ref={scrollRef}>
-            <div className="max-w-4xl mx-auto py-8">
-              {messages.length === 0 ? (
-                <div className="text-center py-16">
-                  <p className="text-muted-foreground text-lg mb-2">
-                    {selectedThreadId ? "No messages yet" : "Select a thread or start a new conversation"}
-                  </p>
-                  <p className="text-muted-foreground text-sm">
-                    Type a message below to get started
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {messages.map((message) => (
-                    <MessageBubble key={message.id} message={message} />
-                  ))}
-                </>
-              )}
-            </div>
-          </ScrollArea>
+      {/* Center - Chat Messages */}
+      <div className="flex-1 flex flex-col">
+        <ScrollArea className="flex-1 px-4" ref={scrollRef}>
+          <div className="max-w-4xl mx-auto py-8">
+            {messages.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-muted-foreground text-lg mb-2">
+                  {selectedThreadId ? "No messages yet" : "Select a thread or start a new conversation"}
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  Type a message below to get started
+                </p>
+              </div>
+            ) : (
+              <>
+                {messages.map((message) => (
+                  <MessageBubble key={message.id} message={message} />
+                ))}
+              </>
+            )}
+          </div>
+        </ScrollArea>
 
-          {/* Bottom - Input */}
-          <div className="p-4 border-t">
-            <div className="max-w-4xl mx-auto">
-              <DropComposer onSend={handleSendMessage} />
-            </div>
+        {/* Bottom - Input */}
+        <div className="p-4 border-t">
+          <div className="max-w-4xl mx-auto">
+            <DropComposer onSend={handleSendMessage} />
           </div>
         </div>
-
-        {/* Right Sidebar - AI Insights */}
-        <aside className="hidden xl:block w-64 border-l bg-muted/30">
-          <InsightStrip threadId={selectedThreadId} />
-        </aside>
       </div>
-    </AppShell>
+
+      {/* Right Sidebar - AI Insights */}
+      <aside className="hidden xl:block w-64 border-l bg-muted/30">
+        <InsightStrip threadId={selectedThreadId} />
+      </aside>
+    </div>
   );
 }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { use } from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StreamMessage } from "@/components/stream/StreamMessage";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,15 +20,13 @@ export default function BoardDetailPage({
 
   if (!board) {
     return (
-      <AppShell activeRoute="/app/boards">
-        <div className="max-w-5xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
           <PageHeader title="Board not found" />
           <Button onClick={() => router.push("/app/boards")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Boards
           </Button>
         </div>
-      </AppShell>
     );
   }
 
@@ -40,8 +37,7 @@ export default function BoardDetailPage({
   );
 
   return (
-    <AppShell activeRoute="/app/boards">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title={board.name}
           description={board.description}
@@ -74,7 +70,6 @@ export default function BoardDetailPage({
           </div>
         </ScrollArea>
       </div>
-    </AppShell>
   );
 }
 

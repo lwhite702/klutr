@@ -1,6 +1,5 @@
 "use client";
 
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { InsightCard } from "@/components/muse/InsightCard";
@@ -8,7 +7,6 @@ import { mockMuseInsights } from "@/lib/mockData";
 
 export default function MusePage() {
   return (
-    <AppShell activeRoute="/app/muse">
       <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title="Muse"
@@ -30,6 +28,5 @@ export default function MusePage() {
           </div>
         )}
       </div>
-    </AppShell>
   );
 }
