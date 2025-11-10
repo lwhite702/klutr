@@ -1,16 +1,20 @@
-import { getFeatures } from "@/lib/queries/features"
-import { getPageMetadata } from "@/lib/queries/metadata"
-import type { Metadata } from "next"
-import MarketingHeader from "@/components/marketing/MarketingHeader"
-import MarketingFooter from "@/components/marketing/MarketingFooter"
-import FeatureGrid from "@/components/marketing/FeatureGrid"
+import { getFeatures } from "@/lib/queries/features";
+import { getPageMetadata } from "@/lib/queries/metadata";
+import {
+  getLatestChangelogEntries,
+  getUpcomingRoadmapItems,
+} from "@/lib/queries";
+import type { Metadata } from "next";
+import MarketingHeader from "@/components/marketing/MarketingHeader";
+import MarketingFooter from "@/components/marketing/MarketingFooter";
+import FeatureGrid from "@/components/marketing/FeatureGrid";
 import {
   AnimatedSection,
   AnimatedFadeIn,
-} from "@/components/marketing/AnimatedSection"
+} from "@/components/marketing/AnimatedSection";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const meta = await getPageMetadata("features")
+  const meta = await getPageMetadata("features");
 
   return {
     title: meta?.seoTitle ?? "Features — Klutr",
@@ -25,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: "https://klutr.app/features",
       siteName: "Klutr",
     },
-  }
+  };
 }
 
 /**
@@ -33,10 +37,14 @@ export async function generateMetadata(): Promise<Metadata> {
  * Lists all features from BaseHub
  * Revalidates every 60 seconds
  */
-export const revalidate = 60
+export const revalidate = 60;
 
 export default async function FeaturesPage() {
-  const features = await getFeatures()
+  const [features, latestReleases, upcomingItems] = await Promise.all([
+    getFeatures(),
+    getLatestChangelogEntries(),
+    getUpcomingRoadmapItems(),
+  ]);
 
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
@@ -59,8 +67,10 @@ export default async function FeaturesPage() {
         </AnimatedSection>
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter
+        latestReleases={latestReleases}
+        upcomingItems={upcomingItems}
+      />
     </div>
-  )
+  );
 }
-

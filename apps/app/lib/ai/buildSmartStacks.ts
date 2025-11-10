@@ -1,6 +1,6 @@
 import { prisma } from "../db";
 import { supabase } from "../supabase";
-import { retry, withTimeout } from "../utils";
+import { retry, withTimeout } from "@klutr/utils";
 
 export type SmartStackDTO = {
   id: string;
@@ -59,13 +59,18 @@ export async function buildSmartStacks(
       const noteContents = notes
         .map((n: any) => n.content.slice(0, 200))
         .join("\n\n");
-      
+
       // Use Edge Function for summary generation
-      const { data: summaryData } = await supabase.functions.invoke('build-stacks', {
-        body: { userId, cluster: group.cluster, noteContents },
-      });
-      
-      const summary = summaryData?.summary || await generateStackSummary(group.cluster, noteContents);
+      const { data: summaryData } = await supabase.functions.invoke(
+        "build-stacks",
+        {
+          body: { userId, cluster: group.cluster, noteContents },
+        }
+      );
+
+      const summary =
+        summaryData?.summary ||
+        (await generateStackSummary(group.cluster, noteContents));
 
       // Check if stack already exists
       const existingStack = await prisma.smartStack.findFirst({
@@ -121,7 +126,7 @@ async function generateStackSummary(
 ): Promise<string> {
   try {
     // Use Supabase Edge Function or fallback to default
-    return `Collection of ${clusterName.toLowerCase()} notes.`
+    return `Collection of ${clusterName.toLowerCase()} notes.`;
   } catch (error) {
     console.error("[v0] Stack summary error:", error);
     return `Collection of ${clusterName.toLowerCase()} notes.`;

@@ -1,32 +1,15 @@
 /**
  * Feature Flags Middleware
- * 
+ *
  * Provides centralized feature flag management with caching.
  * Supports both client-side and server-side flag checks.
  */
 
 import { isFeatureEnabled as clientIsFeatureEnabled } from "./posthog/client";
-import { getFeatureFlag as serverGetFeatureFlag } from "./posthog/server";
 
-/**
- * Feature flag constants
- * Use these constants instead of string literals to avoid typos
- */
-export const FEATURE_FLAGS = {
-  SPARK_BETA: "spark-beta",
-  MUSE_AI: "muse-ai",
-  ORBIT_EXPERIMENTAL: "orbit-experimental",
-  VAULT_ENHANCED: "vault-enhanced",
-  KLUTR_GLOBAL_DISABLE: "klutr-global-disable", // Kill switch
-  CHAT_INTERFACE: "chat-interface",
-  FILE_DROPS: "file-drops",
-  VOICE_CAPTURE: "voice-capture",
-  SMART_THREADS: "smart-threads",
-  EMBEDDINGS: "embeddings",
-  CLASSIFICATION: "classification",
-} as const;
-
-export type FeatureFlag = typeof FEATURE_FLAGS[keyof typeof FEATURE_FLAGS];
+// Re-export constants from separate file to avoid circular dependencies
+export { FEATURE_FLAGS, type FeatureFlag } from "./featureFlags.constants";
+import { FEATURE_FLAGS } from "./featureFlags.constants";
 
 /**
  * Cache entry for feature flags
@@ -80,7 +63,11 @@ function getCachedValue(flag: string, userId?: string): boolean | null {
 /**
  * Set cached flag value
  */
-function setCachedValue(flag: string, userId: string | undefined, value: boolean): void {
+function setCachedValue(
+  flag: string,
+  userId: string | undefined,
+  value: boolean
+): void {
   const key = getCacheKey(flag, userId);
   flagCache.set(key, {
     value,
@@ -91,7 +78,7 @@ function setCachedValue(flag: string, userId: string | undefined, value: boolean
 /**
  * Check if a feature flag is enabled
  * Uses caching to reduce PostHog API calls
- * 
+ *
  * @param flag - Feature flag key (use FEATURE_FLAGS constants)
  * @param userId - User ID for personalized flags (optional)
  * @param useServer - Force server-side check (default: auto-detect)
@@ -128,7 +115,10 @@ export async function featureEnabled(
 
   try {
     if (isServer) {
-      // Server-side check
+      // Server-side check - use dynamic import to avoid bundling in client
+      const { getFeatureFlag: serverGetFeatureFlag } = await import(
+        "./posthog/server"
+      );
       enabled = await serverGetFeatureFlag(flag, userId);
     } else {
       // Client-side check
@@ -166,4 +156,3 @@ export function clearFeatureFlagCacheFor(flag: string, userId?: string): void {
   const key = getCacheKey(flag, userId);
   flagCache.delete(key);
 }
-

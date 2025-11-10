@@ -64,6 +64,7 @@ If you prefer to configure manually, follow these steps:
 ### Step 4: Restart Cursor
 
 After saving the configuration:
+
 1. **Restart Cursor completely** (quit and reopen)
 2. This ensures the MCP server loads properly
 
@@ -82,6 +83,7 @@ Once configured, you can ask the AI to create flags:
 > "Create all the default PostHog feature flags defined in FEATURE_FLAGS"
 
 The AI will create these flags:
+
 - `chat-interface` - Chat Interface (inactive)
 - `file-drops` - File Drops (inactive)
 - `voice-capture` - Voice Capture (inactive)
@@ -119,6 +121,7 @@ doppler run -- npx tsx scripts/setup-posthog-flags.ts
 ```
 
 This requires:
+
 - `POSTHOG_PERSONAL_API_KEY` in Doppler
 - `POSTHOG_PROJECT_ID` in Doppler
 
@@ -135,4 +138,3 @@ After MCP is configured:
 - [PostHog MCP Documentation](https://posthog.com/docs/model-context-protocol)
 - [PostHog MCP GitHub](https://github.com/PostHog/mcp)
 - [MCP Protocol Specification](https://modelcontextprotocol.io)
-

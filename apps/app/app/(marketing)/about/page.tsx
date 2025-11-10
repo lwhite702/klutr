@@ -1,19 +1,29 @@
-import { getPageMetadata } from "@/lib/queries/metadata"
-import type { Metadata } from "next"
-import MarketingHeader from "@/components/marketing/MarketingHeader"
-import MarketingFooter from "@/components/marketing/MarketingFooter"
+import { getPageMetadata } from "@/lib/queries/metadata";
+import {
+  getLatestChangelogEntries,
+  getUpcomingRoadmapItems,
+} from "@/lib/queries";
+import type { Metadata } from "next";
+import MarketingHeader from "@/components/marketing/MarketingHeader";
+import MarketingFooter from "@/components/marketing/MarketingFooter";
 import {
   AnimatedSection,
   AnimatedFadeIn,
   AnimatedItem,
-} from "@/components/marketing/AnimatedSection"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from "next/link"
-import { Lightbulb, Target, Heart } from "lucide-react"
+} from "@/components/marketing/AnimatedSection";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
+import { Lightbulb, Target, Heart } from "lucide-react";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const meta = await getPageMetadata("about")
+  const meta = await getPageMetadata("about");
 
   return {
     title: meta?.seoTitle ?? "About — Klutr",
@@ -28,12 +38,16 @@ export async function generateMetadata(): Promise<Metadata> {
       url: "https://klutr.app/about",
       siteName: "Klutr",
     },
-  }
+  };
 }
 
-export const revalidate = 60
+export const revalidate = 60;
 
 export default async function AboutPage() {
+  const [latestReleases, upcomingItems] = await Promise.all([
+    getLatestChangelogEntries(),
+    getUpcomingRoadmapItems(),
+  ]);
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
       <MarketingHeader />
@@ -56,11 +70,11 @@ export default async function AboutPage() {
             <AnimatedItem className="space-y-6">
               <h2 className="text-3xl font-display font-bold">Our Mission</h2>
               <p className="text-lg font-body leading-relaxed text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80">
-                Klutr exists to help you turn chaos into clarity. We believe that 
-                everyone has brilliant ideas, but they get lost in the noise. Our 
-                mission is to give you a frictionless way to capture everything—text, 
-                voice, images, files—and let AI handle the organization so you can 
-                stay creative.
+                Klutr exists to help you turn chaos into clarity. We believe
+                that everyone has brilliant ideas, but they get lost in the
+                noise. Our mission is to give you a frictionless way to capture
+                everything—text, voice, images, files—and let AI handle the
+                organization so you can stay creative.
               </p>
             </AnimatedItem>
 
@@ -75,8 +89,8 @@ export default async function AboutPage() {
                   </CardHeader>
                   <CardContent>
                     <CardDescription className="font-body">
-                      We solve real problems. No hype, no fluff. Just tools that work 
-                      when you need them.
+                      We solve real problems. No hype, no fluff. Just tools that
+                      work when you need them.
                     </CardDescription>
                   </CardContent>
                 </Card>
@@ -92,8 +106,8 @@ export default async function AboutPage() {
                   </CardHeader>
                   <CardContent>
                     <CardDescription className="font-body">
-                      Smart automation that learns from you. AI that actually helps, 
-                      not just buzzwords.
+                      Smart automation that learns from you. AI that actually
+                      helps, not just buzzwords.
                     </CardDescription>
                   </CardContent>
                 </Card>
@@ -109,8 +123,8 @@ export default async function AboutPage() {
                   </CardHeader>
                   <CardContent>
                     <CardDescription className="font-body">
-                      We reduce stress, not add to it. A calm interface that helps 
-                      you think clearly.
+                      We reduce stress, not add to it. A calm interface that
+                      helps you think clearly.
                     </CardDescription>
                   </CardContent>
                 </Card>
@@ -120,16 +134,18 @@ export default async function AboutPage() {
             <AnimatedItem className="space-y-6">
               <h2 className="text-3xl font-display font-bold">Brand Voice</h2>
               <p className="text-lg font-body leading-relaxed text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80">
-                Klutr speaks like a supportive mentor who codes. We're practical, 
-                clever, and lightly humorous—because organizing your thoughts shouldn't 
-                feel like work. We write like we're explaining something to a smart 
-                colleague who's new to the project. No condescension, no hype, just 
-                clear guidance that helps you succeed.
+                Klutr speaks like a supportive mentor who codes. We're
+                practical, clever, and lightly humorous—because organizing your
+                thoughts shouldn't feel like work. We write like we're
+                explaining something to a smart colleague who's new to the
+                project. No condescension, no hype, just clear guidance that
+                helps you succeed.
               </p>
               <p className="text-lg font-body leading-relaxed text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80">
-                Our tone is helpful, forward-thinking, and calm. We believe in "smart 
-                chaos"—the idea that brilliant ideas often start messy, and that's okay. 
-                We're here to help you find the clarity in the chaos.
+                Our tone is helpful, forward-thinking, and calm. We believe in
+                "smart chaos"—the idea that brilliant ideas often start messy,
+                and that's okay. We're here to help you find the clarity in the
+                chaos.
               </p>
             </AnimatedItem>
 
@@ -138,7 +154,8 @@ export default async function AboutPage() {
                 Ready to clear the clutr?
               </h2>
               <p className="text-lg font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                Join early users who are already freeing their minds from digital clutter.
+                Join early users who are already freeing their minds from
+                digital clutter.
               </p>
               <Button
                 size="lg"
@@ -154,8 +171,10 @@ export default async function AboutPage() {
         </AnimatedSection>
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter
+        latestReleases={latestReleases}
+        upcomingItems={upcomingItems}
+      />
     </div>
-  )
+  );
 }
-

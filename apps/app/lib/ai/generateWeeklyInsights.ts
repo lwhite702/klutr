@@ -1,6 +1,6 @@
 import { prisma } from "../db";
 import { supabase } from "../supabase";
-import { retry, withTimeout } from "../utils";
+import { retry, withTimeout } from "@klutr/utils";
 
 export async function generateWeeklyInsights(userId: string): Promise<void> {
   try {
@@ -51,7 +51,7 @@ export async function generateWeeklyInsights(userId: string): Promise<void> {
     const result = await retry(
       async () => {
         return await withTimeout(
-          supabase.functions.invoke('generate-insights', {
+          supabase.functions.invoke("generate-insights", {
             body: { userId },
           }),
           30000, // 30 second timeout
@@ -67,12 +67,12 @@ export async function generateWeeklyInsights(userId: string): Promise<void> {
     };
 
     // Edge function handles the upsert, but we can also do it here if needed
-    const { data: existing } = await prisma.weeklyInsight?.findFirst?.({
+    const { data: existing } = (await prisma.weeklyInsight?.findFirst?.({
       where: {
         userId,
         weekStart,
       },
-    }) || { data: null };
+    })) || { data: null };
 
     if (existing) {
       await prisma.weeklyInsight?.update?.({

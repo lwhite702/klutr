@@ -1,59 +1,60 @@
-import { supabaseAdmin, getCurrentUserId } from './supabase'
-import { Database } from './types/supabase'
+import { supabaseAdmin, getCurrentUserId } from "./supabase";
+import { Database } from "./types/supabase";
 
 // Type definitions for Supabase tables
-type Note = Database['public']['Tables']['notes']['Row']
-type Tag = Database['public']['Tables']['tags']['Row']
-type NoteTag = Database['public']['Tables']['note_tags']['Row']
-type SmartStack = Database['public']['Tables']['smart_stacks']['Row']
-type WeeklyInsight = Database['public']['Tables']['weekly_insights']['Row']
-type VaultNote = Database['public']['Tables']['vault_notes']['Row']
+type Note = Database["public"]["Tables"]["notes"]["Row"];
+type Tag = Database["public"]["Tables"]["tags"]["Row"];
+type NoteTag = Database["public"]["Tables"]["note_tags"]["Row"];
+type SmartStack = Database["public"]["Tables"]["smart_stacks"]["Row"];
+type WeeklyInsight = Database["public"]["Tables"]["weekly_insights"]["Row"];
+type VaultNote = Database["public"]["Tables"]["vault_notes"]["Row"];
 
 // Database adapter that mimics Prisma-style API for easier migration
 export const db = {
   note: {
     async create(options: {
       data: {
-        userId: string
-        content: string
-        type?: string
-        archived?: boolean
-      }
+        userId: string;
+        content: string;
+        type?: string;
+        archived?: boolean;
+      };
       include?: {
         tags?: {
           include?: {
-            tag: boolean
-          }
-        }
-      }
+            tag: boolean;
+          };
+        };
+      };
     }) {
-      const data = options.data
+      const data = options.data;
       const { data: note, error } = await supabaseAdmin
-        .from('notes')
+        .from("notes")
         .insert({
           user_id: data.userId,
           content: data.content,
-          type: data.type || 'unclassified',
+          type: data.type || "unclassified",
           archived: data.archived || false,
         })
         .select()
-        .single()
+        .single();
 
-      if (error) throw error
-      
+      if (error) throw error;
+
       // Fetch tags if requested
-      let tags: any[] = []
+      let tags: any[] = [];
       if (options.include?.tags) {
         const { data: noteTags } = await supabaseAdmin
-          .from('note_tags')
-          .select('tag_id, tags(*)')
-          .eq('note_id', note.id)
-        tags = noteTags?.map((nt: any) => ({
-          tagId: nt.tag_id,
-          tag: nt.tags,
-        })) || []
+          .from("note_tags")
+          .select("tag_id, tags(*)")
+          .eq("note_id", note.id);
+        tags =
+          noteTags?.map((nt: any) => ({
+            tagId: nt.tag_id,
+            tag: nt.tags,
+          })) || [];
       }
-      
+
       // Convert snake_case to camelCase for compatibility
       return {
         ...note,
@@ -63,123 +64,135 @@ export const db = {
         clusterConfidence: note.cluster_confidence,
         clusterUpdatedAt: note.cluster_updated_at,
         tags,
-      }
+      };
     },
 
     async findMany(options: {
       where?: {
-        userId?: string
-        type?: string
-        cluster?: string | null
-        archived?: boolean
+        userId?: string;
+        type?: string;
+        cluster?: string | null;
+        archived?: boolean;
         createdAt?: {
-          gte?: Date
-          lt?: Date
-        }
-        embedding?: null
-        OR?: Array<{ type?: string } | { archived?: boolean }>
-      }
+          gte?: Date;
+          lt?: Date;
+        };
+        embedding?: null;
+        OR?: Array<{ type?: string } | { archived?: boolean }>;
+      };
       include?: {
         tags?: {
           include?: {
-            tag: boolean
-          }
-        }
-      }
+            tag: boolean;
+          };
+        };
+      };
       select?: {
-        id?: boolean
-        content?: boolean
-        userId?: boolean
-        [key: string]: boolean | undefined
-      }
+        id?: boolean;
+        content?: boolean;
+        userId?: boolean;
+        [key: string]: boolean | undefined;
+      };
       orderBy?: {
-        createdAt?: 'asc' | 'desc'
-      }
-      take?: number
+        createdAt?: "asc" | "desc";
+      };
+      take?: number;
     }) {
       // Handle select option
-      let selectFields = '*'
+      let selectFields = "*";
       if (options.select) {
-        const fields: string[] = []
+        const fields: string[] = [];
         for (const key in options.select) {
           if (options.select[key]) {
             // Convert camelCase to snake_case for database fields
-            const dbField = key === 'userId' ? 'user_id' : key
-            fields.push(dbField)
+            const dbField = key === "userId" ? "user_id" : key;
+            fields.push(dbField);
           }
         }
-        selectFields = fields.join(', ')
+        selectFields = fields.join(", ");
       }
-      
-      let query = supabaseAdmin.from('notes').select(selectFields)
+
+      let query = supabaseAdmin.from("notes").select(selectFields);
 
       if (options.where?.userId) {
-        query = query.eq('user_id', options.where.userId)
+        query = query.eq("user_id", options.where.userId);
       }
       if (options.where?.type) {
-        query = query.eq('type', options.where.type)
+        query = query.eq("type", options.where.type);
       }
       if (options.where?.cluster !== undefined) {
         if (options.where.cluster === null) {
-          query = query.is('cluster', null)
-        } else if (typeof options.where.cluster === 'object' && options.where.cluster !== null && 'not' in options.where.cluster && (options.where.cluster as any).not === null) {
+          query = query.is("cluster", null);
+        } else if (
+          typeof options.where.cluster === "object" &&
+          options.where.cluster !== null &&
+          "not" in options.where.cluster &&
+          (options.where.cluster as any).not === null
+        ) {
           // Handle Prisma-style { not: null }
-          query = query.not('cluster', 'is', null)
+          query = query.not("cluster", "is", null);
         } else {
-          query = query.eq('cluster', options.where.cluster)
+          query = query.eq("cluster", options.where.cluster);
         }
       }
       if (options.where?.archived !== undefined) {
-        query = query.eq('archived', options.where.archived)
+        query = query.eq("archived", options.where.archived);
       }
       if (options.where?.createdAt?.gte) {
-        query = query.gte('created_at', options.where.createdAt.gte.toISOString())
+        query = query.gte(
+          "created_at",
+          options.where.createdAt.gte.toISOString()
+        );
       }
       if (options.where?.createdAt?.lt) {
-        query = query.lt('created_at', options.where.createdAt.lt.toISOString())
+        query = query.lt(
+          "created_at",
+          options.where.createdAt.lt.toISOString()
+        );
       }
       if (options.where?.embedding === null) {
-        query = query.is('embedding', null)
+        query = query.is("embedding", null);
       }
       // Handle OR queries - Supabase uses .or() method
       if (options.where?.OR && options.where.OR.length > 0) {
         const orConditions = options.where.OR.map((or: any) => {
-          if (or.type) return `type.eq.${or.type}`
-          if (or.archived !== undefined) return `archived.eq.${or.archived}`
-          return null
-        }).filter(Boolean)
+          if (or.type) return `type.eq.${or.type}`;
+          if (or.archived !== undefined) return `archived.eq.${or.archived}`;
+          return null;
+        }).filter(Boolean);
         if (orConditions.length > 0) {
-          query = query.or(orConditions.join(','))
+          query = query.or(orConditions.join(","));
         }
       }
 
       if (options.orderBy?.createdAt) {
-        query = query.order('created_at', {
-          ascending: options.orderBy.createdAt === 'asc',
-        })
+        query = query.order("created_at", {
+          ascending: options.orderBy.createdAt === "asc",
+        });
       }
 
       if (options.take) {
-        query = query.limit(options.take)
+        query = query.limit(options.take);
       }
 
-      const { data, error } = await query
+      const { data, error } = await query;
 
-      if (error) throw error
+      if (error) throw error;
 
       // If tags are requested, fetch them
       if (options.include?.tags) {
         const notesWithTags = await Promise.all(
           (data || []).map(async (note: any) => {
             const { data: noteTags } = await supabaseAdmin
-              .from('note_tags')
-              .select('tag_id, tags(*)')
-              .eq('note_id', note.id)
+              .from("note_tags")
+              .select("tag_id, tags(*)")
+              .eq("note_id", note.id);
 
-            const tags = noteTags?.map((nt: any) => ({
-              tagId: nt.tag_id,
-              tag: nt.tags,
-            })) || []
+            const tags =
+              noteTags?.map((nt: any) => ({
+                tagId: nt.tag_id,
+                tag: nt.tags,
+              })) || [];
 
             return {
               ...note,
@@ -189,65 +202,65 @@ export const db = {
               clusterConfidence: note.cluster_confidence,
               clusterUpdatedAt: note.cluster_updated_at,
               tags,
-            }
+            };
           })
-        )
-        return notesWithTags
+        );
+        return notesWithTags;
       }
 
       // Convert snake_case to camelCase
       return (data || []).map((note: any) => {
-        const result: any = { ...note }
+        const result: any = { ...note };
         // Only convert fields that exist
-        if (note.user_id !== undefined) result.userId = note.user_id
-        if (note.created_at !== undefined) result.createdAt = note.created_at
-        if (note.updated_at !== undefined) result.updatedAt = note.updated_at
-        if (note.cluster_confidence !== undefined) result.clusterConfidence = note.cluster_confidence
-        if (note.cluster_updated_at !== undefined) result.clusterUpdatedAt = note.cluster_updated_at
-        
+        if (note.user_id !== undefined) result.userId = note.user_id;
+        if (note.created_at !== undefined) result.createdAt = note.created_at;
+        if (note.updated_at !== undefined) result.updatedAt = note.updated_at;
+        if (note.cluster_confidence !== undefined)
+          result.clusterConfidence = note.cluster_confidence;
+        if (note.cluster_updated_at !== undefined)
+          result.clusterUpdatedAt = note.cluster_updated_at;
+
         // If select was used, don't add extra fields
         if (options.select) {
-          const cleanResult: any = {}
+          const cleanResult: any = {};
           for (const key in options.select) {
             if (options.select[key]) {
-              cleanResult[key] = result[key] || result[key === 'userId' ? 'user_id' : key]
+              cleanResult[key] =
+                result[key] || result[key === "userId" ? "user_id" : key];
             }
           }
-          return cleanResult
+          return cleanResult;
         }
-        
-        return result
-      })
+
+        return result;
+      });
     },
 
-    async findUnique(options: { 
-      where: { id: string }
-      select?: any
-    }) {
+    async findUnique(options: { where: { id: string }; select?: any }) {
       const { data, error } = await supabaseAdmin
-        .from('notes')
-        .select('*')
-        .eq('id', options.where.id)
-        .single()
+        .from("notes")
+        .select("*")
+        .eq("id", options.where.id)
+        .single();
 
-      if (error) throw error
-      
+      if (error) throw error;
+
       // Handle select option
       if (options.select) {
-        const result: any = {}
+        const result: any = {};
         for (const key in options.select) {
           if (options.select[key] && data[key]) {
-            result[key] = data[key]
+            result[key] = data[key];
           }
         }
         // Convert snake_case to camelCase for selected fields
         if (result.user_id !== undefined) {
-          result.userId = result.user_id
-          delete result.user_id
+          result.userId = result.user_id;
+          delete result.user_id;
         }
-        return result
+        return result;
       }
-      
+
       return {
         ...data,
         userId: data.user_id,
@@ -255,89 +268,94 @@ export const db = {
         updatedAt: data.updated_at,
         clusterConfidence: data.cluster_confidence,
         clusterUpdatedAt: data.cluster_updated_at,
-      }
+      };
     },
 
     async findFirst(options: {
       where: {
-        userId?: string
-        cluster?: string
-      }
+        userId?: string;
+        cluster?: string;
+      };
     }) {
-      let query = supabaseAdmin.from('notes').select('*').limit(1)
+      let query = supabaseAdmin.from("notes").select("*").limit(1);
 
       if (options.where.userId) {
-        query = query.eq('user_id', options.where.userId)
+        query = query.eq("user_id", options.where.userId);
       }
       if (options.where.cluster) {
-        query = query.eq('cluster', options.where.cluster)
+        query = query.eq("cluster", options.where.cluster);
       }
 
-      const { data, error } = await query
+      const { data, error } = await query;
 
-      if (error) throw error
-      return data?.[0] || null
+      if (error) throw error;
+      return data?.[0] || null;
     },
 
     async update(options: {
-      where: { id: string }
+      where: { id: string };
       data: {
-        type?: string
-        archived?: boolean
-        cluster?: string | null
-        clusterConfidence?: number | null
-        clusterUpdatedAt?: Date | null
+        type?: string;
+        archived?: boolean;
+        cluster?: string | null;
+        clusterConfidence?: number | null;
+        clusterUpdatedAt?: Date | null;
         tags?: {
-          create?: Array<{ tagId: string }>
-        }
-      }
+          create?: Array<{ tagId: string }>;
+        };
+      };
       include?: {
         tags?: {
           include?: {
-            tag: boolean
-          }
-        }
-      }
+            tag: boolean;
+          };
+        };
+      };
     }) {
-      const updateData: any = {}
-      if (options.data.type !== undefined) updateData.type = options.data.type
-      if (options.data.archived !== undefined) updateData.archived = options.data.archived
-      if (options.data.cluster !== undefined) updateData.cluster = options.data.cluster
-      if (options.data.clusterConfidence !== undefined) updateData.cluster_confidence = options.data.clusterConfidence
+      const updateData: any = {};
+      if (options.data.type !== undefined) updateData.type = options.data.type;
+      if (options.data.archived !== undefined)
+        updateData.archived = options.data.archived;
+      if (options.data.cluster !== undefined)
+        updateData.cluster = options.data.cluster;
+      if (options.data.clusterConfidence !== undefined)
+        updateData.cluster_confidence = options.data.clusterConfidence;
       if (options.data.clusterUpdatedAt !== undefined) {
-        updateData.cluster_updated_at = options.data.clusterUpdatedAt?.toISOString()
+        updateData.cluster_updated_at =
+          options.data.clusterUpdatedAt?.toISOString();
       }
 
       const { data: updatedNote, error } = await supabaseAdmin
-        .from('notes')
+        .from("notes")
         .update(updateData)
-        .eq('id', options.where.id)
+        .eq("id", options.where.id)
         .select()
-        .single()
+        .single();
 
-      if (error) throw error
+      if (error) throw error;
 
       // Handle tag creation
       if (options.data.tags?.create) {
         for (const tagRelation of options.data.tags.create) {
-          await supabaseAdmin.from('note_tags').insert({
+          await supabaseAdmin.from("note_tags").insert({
             note_id: options.where.id,
             tag_id: tagRelation.tagId,
-          })
+          });
         }
       }
 
       // Fetch tags if requested
-      let tags: any[] = []
+      let tags: any[] = [];
       if (options.include?.tags) {
         const { data: noteTags } = await supabaseAdmin
-          .from('note_tags')
-          .select('tag_id, tags(*)')
-          .eq('note_id', options.where.id)
-        tags = noteTags?.map((nt: any) => ({
-          tagId: nt.tag_id,
-          tag: nt.tags,
-        })) || []
+          .from("note_tags")
+          .select("tag_id, tags(*)")
+          .eq("note_id", options.where.id);
+        tags =
+          noteTags?.map((nt: any) => ({
+            tagId: nt.tag_id,
+            tag: nt.tags,
+          })) || [];
       }
 
       return {
@@ -348,24 +366,24 @@ export const db = {
         clusterConfidence: updatedNote.cluster_confidence,
         clusterUpdatedAt: updatedNote.cluster_updated_at,
         tags,
-      }
+      };
     },
 
     async groupBy(options: {
-      by: string[]
+      by: string[];
       where?: {
-        userId?: string
-        cluster?: { not: null } | null
-        archived?: boolean
-      }
+        userId?: string;
+        cluster?: { not: null } | null;
+        archived?: boolean;
+      };
       _count?: {
-        id: boolean
-      }
+        id: boolean;
+      };
       orderBy?: {
         _count?: {
-          id: 'asc' | 'desc'
-        }
-      }
+          id: "asc" | "desc";
+        };
+      };
     }) {
       // For groupBy, we'll use raw SQL through Supabase RPC or fetch and group manually
       // For now, implementing a simplified version
@@ -375,445 +393,450 @@ export const db = {
           cluster: options.where?.cluster === null ? null : undefined,
           archived: options.where?.archived,
         },
-      })
+      });
 
-      const grouped = new Map<string, number>()
+      const grouped = new Map<string, number>();
       for (const note of notes as any[]) {
-        const key = note.cluster || 'null'
-        grouped.set(key, (grouped.get(key) || 0) + 1)
+        const key = note.cluster || "null";
+        grouped.set(key, (grouped.get(key) || 0) + 1);
       }
 
       return Array.from(grouped.entries()).map(([cluster, count]) => ({
-        cluster: cluster === 'null' ? null : cluster,
+        cluster: cluster === "null" ? null : cluster,
         _count: { id: count },
-      }))
+      }));
     },
 
     // Raw SQL execution for embedding updates
     async $executeRaw(query: TemplateStringsArray, ...values: any[]) {
       // Parse the SQL to extract note ID and embedding
       // Expected format: UPDATE notes SET embedding = ${embedding}::vector WHERE id = ${noteId}
-      const sql = query.join('?')
-      if (sql.includes('UPDATE notes') && sql.includes('embedding')) {
+      const sql = query.join("?");
+      if (sql.includes("UPDATE notes") && sql.includes("embedding")) {
         // Extract note ID (last value) and embedding (first value)
-        const embeddingStr = values[0]
-        const noteId = values[1] || values[values.length - 1]
-        
-        let embedding: number[]
+        const embeddingStr = values[0];
+        const noteId = values[1] || values[values.length - 1];
+
+        let embedding: number[];
         if (Array.isArray(embeddingStr)) {
-          embedding = embeddingStr
-        } else if (typeof embeddingStr === 'string') {
+          embedding = embeddingStr;
+        } else if (typeof embeddingStr === "string") {
           try {
-            embedding = JSON.parse(embeddingStr)
+            embedding = JSON.parse(embeddingStr);
           } catch {
             // If it's already a string representation, try to parse it
-            embedding = embeddingStr.split(',').map(Number)
+            embedding = embeddingStr.split(",").map(Number);
           }
         } else {
-          throw new Error('Invalid embedding format')
+          throw new Error("Invalid embedding format");
         }
-        
+
         // Use RPC function to update embedding
-        const { error } = await supabaseAdmin.rpc('update_note_embedding', {
+        const { error } = await supabaseAdmin.rpc("update_note_embedding", {
           note_id_param: noteId,
-          embedding_param: `[${embedding.join(',')}]`, // Convert to pgvector format
-        })
-        
+          embedding_param: `[${embedding.join(",")}]`, // Convert to pgvector format
+        });
+
         if (error) {
-          console.error('RPC embedding update error:', error)
+          console.error("RPC embedding update error:", error);
           // Fallback: direct update
           const { error: updateError } = await supabaseAdmin
-            .from('notes')
+            .from("notes")
             .update({ embedding })
-            .eq('id', noteId)
-          
-          if (updateError) throw updateError
+            .eq("id", noteId);
+
+          if (updateError) throw updateError;
         }
-        return Promise.resolve()
+        return Promise.resolve();
       }
-      console.warn('Raw SQL execution not fully supported. Use RPC functions instead.')
-      return Promise.resolve()
+      console.warn(
+        "Raw SQL execution not fully supported. Use RPC functions instead."
+      );
+      return Promise.resolve();
     },
   },
 
   tag: {
     async upsert(options: {
-      where: { userId_name: { userId: string; name: string } }
-      create: { userId: string; name: string }
-      update: {}
+      where: { userId_name: { userId: string; name: string } };
+      create: { userId: string; name: string };
+      update: {};
     }) {
       // Check if tag exists
       const { data: existing } = await supabaseAdmin
-        .from('tags')
-        .select('id')
-        .eq('user_id', options.where.userId_name.userId)
-        .eq('name', options.where.userId_name.name)
-        .single()
+        .from("tags")
+        .select("id")
+        .eq("user_id", options.where.userId_name.userId)
+        .eq("name", options.where.userId_name.name)
+        .single();
 
       if (existing) {
-        return existing
+        return existing;
       }
 
       // Create new tag
       const { data: tag, error } = await supabaseAdmin
-        .from('tags')
+        .from("tags")
         .insert({
           user_id: options.create.userId,
           name: options.create.name,
         })
         .select()
-        .single()
+        .single();
 
-      if (error) throw error
-      return tag
+      if (error) throw error;
+      return tag;
     },
   },
 
   noteTag: {
     async deleteMany(options: { where: { noteId: string } }) {
       const { error } = await supabaseAdmin
-        .from('note_tags')
+        .from("note_tags")
         .delete()
-        .eq('note_id', options.where.noteId)
+        .eq("note_id", options.where.noteId);
 
-      if (error) throw error
-      return { count: 0 } // Simplified
+      if (error) throw error;
+      return { count: 0 }; // Simplified
     },
   },
 
   smartStack: {
     async findMany(options?: {
       where?: {
-        userId?: string
-      }
+        userId?: string;
+      };
       orderBy?: {
-        noteCount?: 'asc' | 'desc'
-      }
+        noteCount?: "asc" | "desc";
+      };
     }) {
-      let query = supabaseAdmin.from('smart_stacks').select('*')
-      
+      let query = supabaseAdmin.from("smart_stacks").select("*");
+
       if (options?.where?.userId) {
-        query = query.eq('user_id', options.where.userId)
+        query = query.eq("user_id", options.where.userId);
       }
 
       if (options?.orderBy?.noteCount) {
-        query = query.order('note_count', {
-          ascending: options.orderBy.noteCount === 'asc',
-        })
+        query = query.order("note_count", {
+          ascending: options.orderBy.noteCount === "asc",
+        });
       }
 
-      const { data, error } = await query
+      const { data, error } = await query;
 
-      if (error) throw error
+      if (error) throw error;
       return (data || []).map((stack: any) => ({
         ...stack,
         userId: stack.user_id,
         noteCount: stack.note_count,
         createdAt: stack.created_at,
         updatedAt: stack.updated_at,
-      }))
+      }));
     },
 
     async findFirst(options: {
       where: {
-        userId: string
-        cluster: string
-      }
+        userId: string;
+        cluster: string;
+      };
     }) {
       const { data, error } = await supabaseAdmin
-        .from('smart_stacks')
-        .select('*')
-        .eq('user_id', options.where.userId)
-        .eq('cluster', options.where.cluster)
+        .from("smart_stacks")
+        .select("*")
+        .eq("user_id", options.where.userId)
+        .eq("cluster", options.where.cluster)
         .limit(1)
-        .maybeSingle()
+        .maybeSingle();
 
-      if (error) throw error
-      return data
+      if (error) throw error;
+      return data;
     },
 
     async upsert(options: {
-      where: { id: string } | { userId_name: { userId: string; name: string } }
+      where: { id: string } | { userId_name: { userId: string; name: string } };
       create: {
-        userId: string
-        name: string
-        cluster: string
-        noteCount: number
-        summary: string
-        pinned: boolean
-      }
+        userId: string;
+        name: string;
+        cluster: string;
+        noteCount: number;
+        summary: string;
+        pinned: boolean;
+      };
       update: {
-        noteCount?: number
-        summary?: string
-        pinned?: boolean
-      }
+        noteCount?: number;
+        summary?: string;
+        pinned?: boolean;
+      };
     }) {
       // Check if exists
-      let existing: any = null
-      if ('id' in options.where) {
+      let existing: any = null;
+      if ("id" in options.where) {
         const { data } = await supabaseAdmin
-          .from('smart_stacks')
-          .select('*')
-          .eq('id', options.where.id)
-          .maybeSingle()
-        existing = data
-      } else if ('userId_name' in options.where) {
+          .from("smart_stacks")
+          .select("*")
+          .eq("id", options.where.id)
+          .maybeSingle();
+        existing = data;
+      } else if ("userId_name" in options.where) {
         const { data } = await supabaseAdmin
-          .from('smart_stacks')
-          .select('*')
-          .eq('user_id', options.where.userId_name.userId)
-          .eq('name', options.where.userId_name.name)
-          .maybeSingle()
-        existing = data
+          .from("smart_stacks")
+          .select("*")
+          .eq("user_id", options.where.userId_name.userId)
+          .eq("name", options.where.userId_name.name)
+          .maybeSingle();
+        existing = data;
       }
 
       if (existing) {
         // Update
-        const stackId = (options.where as any).id || existing.id
+        const stackId = (options.where as any).id || existing.id;
         const { data: stack, error } = await supabaseAdmin
-          .from('smart_stacks')
+          .from("smart_stacks")
           .update({
             note_count: options.update.noteCount,
             summary: options.update.summary,
           })
-          .eq('id', stackId)
+          .eq("id", stackId)
           .select()
-          .single()
+          .single();
 
-        if (error) throw error
+        if (error) throw error;
         return {
           ...stack,
           userId: stack.user_id,
           noteCount: stack.note_count,
           createdAt: stack.created_at,
           updatedAt: stack.updated_at,
-        }
+        };
       } else {
         // Create - need cluster from existing or create
-        const cluster = existing?.cluster || options.create.cluster || 'Misc'
+        const cluster = existing?.cluster || options.create.cluster || "Misc";
         const { data: stack, error } = await supabaseAdmin
-          .from('smart_stacks')
+          .from("smart_stacks")
           .insert({
             user_id: options.create.userId,
             name: options.create.name,
             cluster: cluster,
             note_count: options.create.noteCount || 0,
-            summary: options.create.summary || '',
+            summary: options.create.summary || "",
             pinned: options.create.pinned || false,
           })
           .select()
-          .single()
+          .single();
 
-        if (error) throw error
+        if (error) throw error;
         return {
           ...stack,
           userId: stack.user_id,
           noteCount: stack.note_count,
           createdAt: stack.created_at,
           updatedAt: stack.updated_at,
-        }
+        };
       }
     },
   },
 
   vaultNote: {
-    async create(options: {
-      data: { userId: string; encryptedBlob: string }
-    }) {
-      const data = options.data
+    async create(options: { data: { userId: string; encryptedBlob: string } }) {
+      const data = options.data;
       const { data: vaultNote, error } = await supabaseAdmin
-        .from('vault_notes')
+        .from("vault_notes")
         .insert({
           user_id: data.userId,
           encrypted_blob: data.encryptedBlob,
         })
         .select()
-        .single()
+        .single();
 
-      if (error) throw error
-      return vaultNote
+      if (error) throw error;
+      return vaultNote;
     },
 
     async findMany(options: {
-      where: { userId: string }
+      where: { userId: string };
       select?: {
-        id?: boolean
-        createdAt?: boolean
-        [key: string]: boolean | undefined
-      }
-      orderBy?: { createdAt: 'asc' | 'desc' }
+        id?: boolean;
+        createdAt?: boolean;
+        [key: string]: boolean | undefined;
+      };
+      orderBy?: { createdAt: "asc" | "desc" };
     }) {
       let query = supabaseAdmin
-        .from('vault_notes')
-        .select('*')
-        .eq('user_id', options.where.userId)
+        .from("vault_notes")
+        .select("*")
+        .eq("user_id", options.where.userId);
 
       if (options.select) {
-        const fields: string[] = []
+        const fields: string[] = [];
         for (const key in options.select) {
           if (options.select[key]) {
-            const dbField = key === 'createdAt' ? 'created_at' : key
-            fields.push(dbField)
+            const dbField = key === "createdAt" ? "created_at" : key;
+            fields.push(dbField);
           }
         }
         if (fields.length > 0) {
-          query = query.select(fields.join(', '))
+          query = query.select(fields.join(", "));
         }
       }
 
       if (options.orderBy?.createdAt) {
-        query = query.order('created_at', {
-          ascending: options.orderBy.createdAt === 'asc',
-        })
+        query = query.order("created_at", {
+          ascending: options.orderBy.createdAt === "asc",
+        });
       }
 
-      const { data, error } = await query
+      const { data, error } = await query;
 
-      if (error) throw error
-      
+      if (error) throw error;
+
       // Convert snake_case to camelCase
       return (data || []).map((note: any) => {
-        const result: any = {}
+        const result: any = {};
         if (options.select) {
           for (const key in options.select) {
             if (options.select[key]) {
-              const dbField = key === 'createdAt' ? 'created_at' : key
-              result[key] = note[dbField]
+              const dbField = key === "createdAt" ? "created_at" : key;
+              result[key] = note[dbField];
             }
           }
         } else {
-          result.id = note.id
-          result.createdAt = note.created_at ? new Date(note.created_at) : note.created_at
-          result.userId = note.user_id
-          result.encryptedBlob = note.encrypted_blob
+          result.id = note.id;
+          result.createdAt = note.created_at
+            ? new Date(note.created_at)
+            : note.created_at;
+          result.userId = note.user_id;
+          result.encryptedBlob = note.encrypted_blob;
         }
-        return result
-      })
+        return result;
+      });
     },
   },
 
   weeklyInsight: {
     async findMany(options?: {
       where?: {
-        userId?: string
-      }
+        userId?: string;
+      };
       orderBy?: {
-        weekStart?: 'asc' | 'desc'
-      }
-      take?: number
+        weekStart?: "asc" | "desc";
+      };
+      take?: number;
     }) {
-      let query = supabaseAdmin.from('weekly_insights').select('*')
-      
+      let query = supabaseAdmin.from("weekly_insights").select("*");
+
       if (options?.where?.userId) {
-        query = query.eq('user_id', options.where.userId)
+        query = query.eq("user_id", options.where.userId);
       }
 
       if (options?.orderBy?.weekStart) {
-        query = query.order('week_start', {
-          ascending: options.orderBy.weekStart === 'asc',
-        })
+        query = query.order("week_start", {
+          ascending: options.orderBy.weekStart === "asc",
+        });
       }
 
       if (options?.take) {
-        query = query.limit(options.take)
+        query = query.limit(options.take);
       }
 
-      const { data, error } = await query
+      const { data, error } = await query;
 
-      if (error) throw error
+      if (error) throw error;
       return (data || []).map((insight: any) => ({
         ...insight,
         userId: insight.user_id,
         weekStart: new Date(insight.week_start),
         noteCount: insight.note_count,
         createdAt: new Date(insight.created_at),
-      }))
+      }));
     },
 
     async findFirst(options: {
       where: {
-        userId: string
-        weekStart?: Date
-      }
+        userId: string;
+        weekStart?: Date;
+      };
       orderBy?: {
-        weekStart?: 'asc' | 'desc'
-      }
+        weekStart?: "asc" | "desc";
+      };
     }) {
       let query = supabaseAdmin
-        .from('weekly_insights')
-        .select('*')
-        .eq('user_id', options.where.userId)
-        .limit(1)
+        .from("weekly_insights")
+        .select("*")
+        .eq("user_id", options.where.userId)
+        .limit(1);
 
       if (options.where.weekStart) {
-        query = query.eq('week_start', options.where.weekStart.toISOString())
+        query = query.eq("week_start", options.where.weekStart.toISOString());
       }
 
       if (options.orderBy?.weekStart) {
-        query = query.order('week_start', {
-          ascending: options.orderBy.weekStart === 'asc',
-        })
+        query = query.order("week_start", {
+          ascending: options.orderBy.weekStart === "asc",
+        });
       }
 
-      const { data, error } = await query
+      const { data, error } = await query;
 
-      if (error) throw error
-      if (!data || data.length === 0) return null
-      
-      const insight = data[0]
+      if (error) throw error;
+      if (!data || data.length === 0) return null;
+
+      const insight = data[0];
       return {
         ...insight,
         userId: insight.user_id,
         weekStart: new Date(insight.week_start),
         noteCount: insight.note_count,
         createdAt: new Date(insight.created_at),
-      }
+      };
     },
 
     async upsert(options: {
       where: {
         userId_weekStart: {
-          userId: string
-          weekStart: Date
-        }
-      }
+          userId: string;
+          weekStart: Date;
+        };
+      };
       create: {
-        userId: string
-        weekStart: Date
-        summary: string
-        sentiment: string
-        noteCount: number
-      }
+        userId: string;
+        weekStart: Date;
+        summary: string;
+        sentiment: string;
+        noteCount: number;
+      };
       update: {
-        summary: string
-        sentiment: string
-        noteCount: number
-      }
+        summary: string;
+        sentiment: string;
+        noteCount: number;
+      };
     }) {
       const { data: existing } = await supabaseAdmin
-        .from('weekly_insights')
-        .select('*')
-        .eq('user_id', options.where.userId_weekStart.userId)
-        .eq('week_start', options.where.userId_weekStart.weekStart.toISOString())
-        .maybeSingle()
+        .from("weekly_insights")
+        .select("*")
+        .eq("user_id", options.where.userId_weekStart.userId)
+        .eq(
+          "week_start",
+          options.where.userId_weekStart.weekStart.toISOString()
+        )
+        .maybeSingle();
 
       if (existing) {
         const { data: insight, error } = await supabaseAdmin
-          .from('weekly_insights')
+          .from("weekly_insights")
           .update({
             summary: options.update.summary,
             sentiment: options.update.sentiment,
             note_count: options.update.noteCount,
           })
-          .eq('id', existing.id)
+          .eq("id", existing.id)
           .select()
-          .single()
+          .single();
 
-        if (error) throw error
-        return insight
+        if (error) throw error;
+        return insight;
       } else {
         const { data: insight, error } = await supabaseAdmin
-          .from('weekly_insights')
+          .from("weekly_insights")
           .insert({
             user_id: options.create.userId,
             week_start: options.create.weekStart.toISOString(),
@@ -822,33 +845,39 @@ export const db = {
             note_count: options.create.noteCount,
           })
           .select()
-          .single()
+          .single();
 
-        if (error) throw error
-        return insight
+        if (error) throw error;
+        return insight;
       }
     },
 
     async update(options: {
-      where: { id: string }
+      where: { id: string };
       data: {
-        summary?: string
-        sentiment?: string
-        noteCount?: number
-      }
+        summary?: string;
+        sentiment?: string;
+        noteCount?: number;
+      };
     }) {
       const { data: insight, error } = await supabaseAdmin
-        .from('weekly_insights')
+        .from("weekly_insights")
         .update({
-          ...(options.data.summary !== undefined && { summary: options.data.summary }),
-          ...(options.data.sentiment !== undefined && { sentiment: options.data.sentiment }),
-          ...(options.data.noteCount !== undefined && { note_count: options.data.noteCount }),
+          ...(options.data.summary !== undefined && {
+            summary: options.data.summary,
+          }),
+          ...(options.data.sentiment !== undefined && {
+            sentiment: options.data.sentiment,
+          }),
+          ...(options.data.noteCount !== undefined && {
+            note_count: options.data.noteCount,
+          }),
         })
-        .eq('id', options.where.id)
+        .eq("id", options.where.id)
         .select()
-        .single()
+        .single();
 
-      if (error) throw error
+      if (error) throw error;
 
       return {
         ...insight,
@@ -856,20 +885,20 @@ export const db = {
         weekStart: new Date(insight.week_start),
         noteCount: insight.note_count,
         createdAt: new Date(insight.created_at),
-      }
+      };
     },
 
     async create(options: {
       data: {
-        userId: string
-        weekStart: Date
-        summary: string
-        sentiment: string
-        noteCount: number
-      }
+        userId: string;
+        weekStart: Date;
+        summary: string;
+        sentiment: string;
+        noteCount: number;
+      };
     }) {
       const { data: insight, error } = await supabaseAdmin
-        .from('weekly_insights')
+        .from("weekly_insights")
         .insert({
           user_id: options.data.userId,
           week_start: options.data.weekStart.toISOString(),
@@ -878,9 +907,9 @@ export const db = {
           note_count: options.data.noteCount,
         })
         .select()
-        .single()
+        .single();
 
-      if (error) throw error
+      if (error) throw error;
 
       return {
         ...insight,
@@ -888,40 +917,347 @@ export const db = {
         weekStart: new Date(insight.week_start),
         noteCount: insight.note_count,
         createdAt: new Date(insight.created_at),
-      }
+      };
     },
   },
   user: {
     async findMany(options?: {
       select?: {
-        id?: boolean
-        email?: boolean
-        [key: string]: boolean | undefined
-      }
+        id?: boolean;
+        email?: boolean;
+        [key: string]: boolean | undefined;
+      };
     }) {
       const { data: users, error } = await supabaseAdmin
-        .from('users')
-        .select(options?.select?.id !== false ? 'id' : '')
-        .select(options?.select?.email !== false ? 'email' : '')
+        .from("users")
+        .select(options?.select?.id !== false ? "id" : "")
+        .select(options?.select?.email !== false ? "email" : "");
 
-      if (error) throw error
+      if (error) throw error;
 
-      return users?.map((u: any) => ({
-        id: u.id,
-        email: u.email,
-      })) || []
+      return (
+        users?.map((u: any) => ({
+          id: u.id,
+          email: u.email,
+        })) || []
+      );
     },
   },
-}
+  board: {
+    async findUnique(options: {
+      where: { id: string };
+      include?: any;
+      select?: any;
+    }) {
+      const selectFields = options.select
+        ? Object.keys(options.select).filter((k) => options.select[k])
+        : "*";
+      const { data: board, error } = await supabaseAdmin
+        .from("boards")
+        .select(selectFields === "*" ? "*" : selectFields.join(","))
+        .eq("id", options.where.id)
+        .single();
+
+      if (error || !board) return null;
+
+      // If only selecting specific fields, return early
+      if (options.select && !options.include) {
+        const result: any = board
+          ? { ...(board as Record<string, any>) }
+          : null;
+        if (result && result.user_id) {
+          result.userId = result.user_id;
+        }
+        return result;
+      }
+
+      let boardNotes: any[] = [];
+      if (options.include?.boardNotes) {
+        const boardId = (board as any)?.id;
+        if (!boardId)
+          return {
+            ...(board as Record<string, any>),
+            userId: (board as any)?.user_id,
+            boardNotes: [],
+          };
+
+        const { data: notes } = await supabaseAdmin
+          .from("board_notes")
+          .select(
+            `
+            *,
+            note:notes(
+              *,
+              tags:note_tags(
+                tag:tags(*)
+              )
+            )
+          `
+          )
+          .eq("board_id", boardId)
+          .order("added_at", { ascending: false });
+
+        boardNotes = (notes || []).map((bn: any) => ({
+          boardId: bn.board_id,
+          noteId: bn.note_id,
+          addedAt: bn.added_at,
+          note: bn.note
+            ? {
+                ...bn.note,
+                tags: (bn.note.tags || []).map((nt: any) => ({
+                  tag: nt.tag,
+                })),
+              }
+            : null,
+        }));
+      }
+
+      return {
+        ...(board as Record<string, any>),
+        userId: (board as any)?.user_id,
+        boardNotes,
+      };
+    },
+    async findMany(options?: { where?: any; include?: any; orderBy?: any }) {
+      const query = supabaseAdmin.from("boards").select("*");
+
+      if (options?.where?.userId) {
+        query.eq("user_id", options.where.userId);
+      }
+
+      const { data: boards, error } = await query;
+
+      if (error || !boards) return [];
+
+      const result = await Promise.all(
+        boards.map(async (board: any) => {
+          let boardNotes: any[] = [];
+          if (options?.include?.boardNotes) {
+            const { data: notes } = await supabaseAdmin
+              .from("board_notes")
+              .select(
+                `
+              *,
+              note:notes(
+                *,
+                tags:note_tags(
+                  tag:tags(*)
+                )
+              )
+            `
+              )
+              .eq("board_id", (board as any)?.id);
+
+            boardNotes = (notes || []).map((bn: any) => ({
+              boardId: bn.board_id,
+              noteId: bn.note_id,
+              addedAt: bn.added_at,
+              note: bn.note
+                ? {
+                    ...bn.note,
+                    tags: (bn.note.tags || []).map((nt: any) => ({
+                      tag: nt.tag,
+                    })),
+                  }
+                : null,
+            }));
+          }
+
+          return {
+            ...board,
+            userId: board.user_id,
+            boardNotes,
+          };
+        })
+      );
+
+      // Apply ordering
+      if (options?.orderBy) {
+        if (Array.isArray(options.orderBy)) {
+          result.sort((a, b) => {
+            for (const order of options.orderBy) {
+              const key = Object.keys(order)[0];
+              const dir = order[key] === "desc" ? -1 : 1;
+              if (a[key] !== b[key]) {
+                return (a[key] > b[key] ? 1 : -1) * dir;
+              }
+            }
+            return 0;
+          });
+        }
+      }
+
+      return result;
+    },
+    async create(options: { data: any; include?: any }) {
+      const { data: board, error } = await supabaseAdmin
+        .from("boards")
+        .insert({
+          user_id: options.data.userId,
+          name: options.data.name,
+          description: options.data.description || null,
+          pinned: options.data.pinned || false,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      let boardNotes: any[] = [];
+      if (options.include?.boardNotes) {
+        // Fetch board notes if requested
+        const { data: notes } = await supabaseAdmin
+          .from("board_notes")
+          .select(
+            `
+            *,
+            note:notes(
+              *,
+              tags:note_tags(
+                tag:tags(*)
+              )
+            )
+          `
+          )
+          .eq("board_id", (board as any)?.id);
+
+        boardNotes = (notes || []).map((bn: any) => ({
+          boardId: bn.board_id,
+          noteId: bn.note_id,
+          addedAt: bn.added_at,
+          note: bn.note
+            ? {
+                ...bn.note,
+                tags: (bn.note.tags || []).map((nt: any) => ({
+                  tag: nt.tag,
+                })),
+              }
+            : null,
+        }));
+      }
+
+      return {
+        ...(board as Record<string, any>),
+        userId: (board as any)?.user_id,
+        boardNotes,
+      };
+    },
+    async update(options: { where: { id: string }; data: any; include?: any }) {
+      const updateData: any = {};
+      if (options.data.name !== undefined) updateData.name = options.data.name;
+      if (options.data.description !== undefined)
+        updateData.description = options.data.description;
+      if (options.data.pinned !== undefined)
+        updateData.pinned = options.data.pinned;
+
+      const { data: board, error } = await supabaseAdmin
+        .from("boards")
+        .update(updateData)
+        .eq("id", options.where.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      let boardNotes: any[] = [];
+      if (options.include?.boardNotes) {
+        const { data: notes } = await supabaseAdmin
+          .from("board_notes")
+          .select(
+            `
+            *,
+            note:notes(
+              *,
+              tags:note_tags(
+                tag:tags(*)
+              )
+            )
+          `
+          )
+          .eq("board_id", (board as any)?.id)
+          .order("added_at", { ascending: false });
+
+        boardNotes = (notes || []).map((bn: any) => ({
+          boardId: bn.board_id,
+          noteId: bn.note_id,
+          addedAt: bn.added_at,
+          note: bn.note
+            ? {
+                ...bn.note,
+                tags: (bn.note.tags || []).map((nt: any) => ({
+                  tag: nt.tag,
+                })),
+              }
+            : null,
+        }));
+      }
+
+      return {
+        ...(board as Record<string, any>),
+        userId: (board as any)?.user_id,
+        boardNotes,
+      };
+    },
+    async delete(options: { where: { id: string } }) {
+      const { error } = await supabaseAdmin
+        .from("boards")
+        .delete()
+        .eq("id", options.where.id);
+
+      if (error) throw error;
+      return { id: options.where.id };
+    },
+  },
+  message: {
+    async create(options: { data: any }) {
+      // TODO: Implement when messages table is migrated to Supabase
+      throw new Error(
+        "Message model not yet migrated to Supabase. Use Prisma client directly."
+      );
+    },
+    async findFirst(options: { where: any }) {
+      // TODO: Implement when messages table is migrated to Supabase
+      throw new Error(
+        "Message model not yet migrated to Supabase. Use Prisma client directly."
+      );
+    },
+    async update(options: { where: any; data: any }) {
+      // TODO: Implement when messages table is migrated to Supabase
+      throw new Error(
+        "Message model not yet migrated to Supabase. Use Prisma client directly."
+      );
+    },
+  },
+  conversationThread: {
+    async create(options: { data: any }) {
+      // TODO: Implement when conversation_threads table is migrated to Supabase
+      throw new Error(
+        "ConversationThread model not yet migrated to Supabase. Use Prisma client directly."
+      );
+    },
+    async findFirst(options: { where: any }) {
+      // TODO: Implement when conversation_threads table is migrated to Supabase
+      throw new Error(
+        "ConversationThread model not yet migrated to Supabase. Use Prisma client directly."
+      );
+    },
+    async update(options: { where: any; data: any }) {
+      // TODO: Implement when conversation_threads table is migrated to Supabase
+      throw new Error(
+        "ConversationThread model not yet migrated to Supabase. Use Prisma client directly."
+      );
+    },
+  },
+};
 
 // Add $queryRaw and $executeRaw at top level for compatibility
 async function $queryRaw(query: TemplateStringsArray, ...values: any[]) {
-  console.warn('$queryRaw not fully supported in Supabase adapter')
-  return Promise.resolve([])
+  console.warn("$queryRaw not fully supported in Supabase adapter");
+  return Promise.resolve([]);
 }
 
 async function $executeRaw(query: TemplateStringsArray, ...values: any[]) {
-  return db.note.$executeRaw(query, ...values)
+  return db.note.$executeRaw(query, ...values);
 }
 
 // Legacy Prisma compatibility
@@ -929,6 +1265,6 @@ export const prisma = {
   ...db,
   $queryRaw,
   $executeRaw,
-} as any
+} as any;
 
-export const isDatabaseAvailable = () => true
+export const isDatabaseAvailable = () => true;

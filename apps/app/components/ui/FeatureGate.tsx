@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { featureEnabled } from "@/lib/featureFlags";
+import { featureEnabledClient } from "@/lib/featureFlags.client";
 
 interface FeatureGateProps {
   /**
@@ -28,21 +28,21 @@ interface FeatureGateProps {
 
 /**
  * FeatureGate Component
- * 
+ *
  * Conditionally renders children based on feature flag status.
  * Supports SSR by returning null on server and checking flag on client mount.
- * 
+ *
  * @example
  * ```tsx
  * <FeatureGate flag="spark-beta">
  *   <SparkInterface />
  * </FeatureGate>
  * ```
- * 
+ *
  * @example
  * ```tsx
- * <FeatureGate 
- *   flag="muse-ai" 
+ * <FeatureGate
+ *   flag="muse-ai"
  *   userId={user.id}
  *   fallback={<div>Feature coming soon</div>}
  * >
@@ -60,8 +60,8 @@ export function FeatureGate({
   const [enabled, setEnabled] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Check feature flag on client mount
-    featureEnabled(flag, userId)
+    // Check feature flag on client mount - use client-only version
+    featureEnabledClient(flag, userId)
       .then((isEnabled) => {
         setEnabled(isEnabled);
       })
@@ -90,4 +90,3 @@ export function FeatureGate({
   // Render children if flag is enabled, otherwise show fallback
   return enabled ? <>{children}</> : <>{fallback}</>;
 }
-

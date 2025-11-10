@@ -1,18 +1,28 @@
-import { getPageMetadata } from "@/lib/queries/metadata"
-import type { Metadata } from "next"
-import MarketingHeader from "@/components/marketing/MarketingHeader"
-import MarketingFooter from "@/components/marketing/MarketingFooter"
+import { getPageMetadata } from "@/lib/queries/metadata";
+import {
+  getLatestChangelogEntries,
+  getUpcomingRoadmapItems,
+} from "@/lib/queries";
+import type { Metadata } from "next";
+import MarketingHeader from "@/components/marketing/MarketingHeader";
+import MarketingFooter from "@/components/marketing/MarketingFooter";
 import {
   AnimatedSection,
   AnimatedFadeIn,
-} from "@/components/marketing/AnimatedSection"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from "next/link"
-import { Check, Sparkles } from "lucide-react"
+} from "@/components/marketing/AnimatedSection";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
+import { Check, Sparkles } from "lucide-react";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const meta = await getPageMetadata("pricing")
+  const meta = await getPageMetadata("pricing");
 
   return {
     title: meta?.seoTitle ?? "Pricing — Klutr",
@@ -27,12 +37,17 @@ export async function generateMetadata(): Promise<Metadata> {
       url: "https://klutr.app/pricing",
       siteName: "Klutr",
     },
-  }
+  };
 }
 
-export const revalidate = 60
+export const revalidate = 60;
 
 export default async function PricingPage() {
+  const [latestReleases, upcomingItems] = await Promise.all([
+    getLatestChangelogEntries(),
+    getUpcomingRoadmapItems(),
+  ]);
+
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
       <MarketingHeader />
@@ -110,22 +125,21 @@ export default async function PricingPage() {
               Questions about pricing?
             </h2>
             <p className="text-lg font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-              We're in beta and everything is free. No hidden fees, no credit card required. 
-              Just drop your thoughts and start organizing your chaos.
+              We're in beta and everything is free. No hidden fees, no credit
+              card required. Just drop your thoughts and start organizing your
+              chaos.
             </p>
-            <Button
-              variant="outline"
-              className="mt-4 rounded-2xl"
-              asChild
-            >
+            <Button variant="outline" className="mt-4 rounded-2xl" asChild>
               <Link href="/help">Visit Help Center</Link>
             </Button>
           </AnimatedFadeIn>
         </AnimatedSection>
       </main>
 
-      <MarketingFooter />
+      <MarketingFooter
+        latestReleases={latestReleases}
+        upcomingItems={upcomingItems}
+      />
     </div>
-  )
+  );
 }
-

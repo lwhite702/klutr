@@ -1,0 +1,12 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /app/
+Disallow: /api/
+Disallow: /debug/
+
+# Host
+Host: https://klutr.app
+
+# Sitemaps
+Sitemap: https://klutr.app/sitemap.xml
