@@ -280,6 +280,30 @@ export async function createDefaultFeatureFlags(): Promise<void> {
       description: "Global kill switch - disables all experimental features when enabled",
       active: false,
     },
+    {
+      key: FEATURE_FLAGS.CHAT_INTERFACE,
+      name: "Chat Interface",
+      description: "Chat-centric interface for multimodal note-taking",
+      active: false,
+    },
+    {
+      key: FEATURE_FLAGS.FILE_DROPS,
+      name: "File Drops",
+      description: "File upload and attachment support in chat",
+      active: false,
+    },
+    {
+      key: FEATURE_FLAGS.VOICE_CAPTURE,
+      name: "Voice Capture",
+      description: "Voice recording and transcription support",
+      active: false,
+    },
+    {
+      key: FEATURE_FLAGS.SMART_THREADS,
+      name: "Smart Threads",
+      description: "AI-powered thread organization and matching",
+      active: false,
+    },
   ];
 
   console.log("[PostHog API] Creating default feature flags...");

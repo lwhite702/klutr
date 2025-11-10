@@ -18,6 +18,10 @@ export const FEATURE_FLAGS = {
   ORBIT_EXPERIMENTAL: "orbit-experimental",
   VAULT_ENHANCED: "vault-enhanced",
   KLUTR_GLOBAL_DISABLE: "klutr-global-disable", // Kill switch
+  CHAT_INTERFACE: "chat-interface",
+  FILE_DROPS: "file-drops",
+  VOICE_CAPTURE: "voice-capture",
+  SMART_THREADS: "smart-threads",
 } as const;
 
 export type FeatureFlag = typeof FEATURE_FLAGS[keyof typeof FEATURE_FLAGS];
