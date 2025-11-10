@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- [feat(ai)] AI embedding + classification pipeline for chat messages
+- [feat(ai)] Background async processing after message creation
+- [feat(ai)] Logging and feature flag integration for safe rollout
+- [lib] Centralized logger utility with timestamp formatting
+- [lib] OpenAI helper functions for embeddings and classification
+- [test] Test placeholders for embedding and classification functions
+
 ## 2025-01-27 00:00 ET
 
 - [feat(chat)] Add ConversationThread and Message models to Prisma schema
