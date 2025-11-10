@@ -5,6 +5,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- [feat(ai)] AI embedding + classification pipeline for chat messages
+- [feat(ai)] Background async processing after message creation
+- [feat(ai)] Logging and feature flag integration for safe rollout
+- [lib] Centralized logger utility with timestamp formatting
+- [lib] OpenAI helper functions for embeddings and classification
+- [test] Test placeholders for embedding and classification functions
+
+## 2025-01-27 00:00 ET
+
+- [feat(chat)] Add ConversationThread and Message models to Prisma schema
+- [feat(chat)] Add chat-centric architecture extension documentation
+- [feat(api)] Scaffold messages API routes (create, embed, classify)
+- [feat(ui)] Add chat UI scaffold (DropComposer, MessageBubble, ThreadList, InsightStrip)
+- [chore(flags)] Add chat-related feature flags (chat-interface, file-drops, voice-capture, smart-threads)
+- [test] Add placeholder tests for messages API
+- [docs] Created `/docs/architecture-chat-extension.md` with migration plan and data flow diagrams
+- [schema] Added ConversationThread model with system_tags and title fields
+- [schema] Added Message model with MessageType enum (text, audio, image, file, link)
+- [schema] Added indexes for efficient thread and message queries
+- [dto] Added MessageDTO and ConversationThreadDTO types and conversion functions
+- [validation] Added zod schemas for message creation, embedding, and classification
+
+**Migration Steps:**
+```bash
+# Install dependencies
+pnpm install
+
+# Validate Prisma schema
+pnpm prisma format
+pnpm prisma validate
+
+# Run migrations locally (when ready)
+pnpm prisma migrate dev --name add_conversation_message_models
+
+# Start dev server
+pnpm dev
+```
+
+**Files Changed:**
+- `/apps/app/docs/architecture-chat-extension.md` (new)
+- `/apps/app/prisma/schema.prisma` (modified)
+- `/apps/app/lib/dto.ts` (modified)
+- `/apps/app/lib/validation/schemas.ts` (modified)
+- `/apps/app/app/api/messages/create/route.ts` (new)
+- `/apps/app/app/api/messages/embed/route.ts` (new)
+- `/apps/app/app/api/messages/classify/route.ts` (new)
+- `/apps/app/app/(app)/chat/page.tsx` (new)
+- `/apps/app/app/(app)/chat/components/ChatView.tsx` (new)
+- `/apps/app/app/(app)/chat/components/DropComposer.tsx` (new)
+- `/apps/app/app/(app)/chat/components/MessageBubble.tsx` (new)
+- `/apps/app/app/(app)/chat/components/ThreadList.tsx` (new)
+- `/apps/app/app/(app)/chat/components/InsightStrip.tsx` (new)
+- `/apps/app/lib/featureFlags.ts` (modified)
+- `/apps/app/lib/posthog/api.ts` (modified)
+
 ## 2025-11-08 22:55 ET
 
 - [docs] Populated Mintlify docs site with Klutr content from apps/app/mintlify/

@@ -68,6 +68,25 @@ export const GenerateInsightSchema = z.object({
   week: z.string().optional(),
 });
 
+// Message validation schemas
+export const MessageTypeSchema = z.enum(["text", "audio", "image", "file", "link"]);
+
+export const CreateMessageSchema = z.object({
+  type: MessageTypeSchema,
+  content: z.string().max(10000).optional(),
+  fileUrl: z.string().url().optional(),
+  url: z.string().url().optional(), // For link type
+  threadId: z.string().optional(), // Optional: create new thread if not provided
+});
+
+export const EmbedMessageSchema = z.object({
+  messageId: z.string(),
+});
+
+export const ClassifyMessageSchema = z.object({
+  messageId: z.string(),
+});
+
 // API Response schemas
 export const NoteDTOSchema = z.object({
   id: z.string().uuid(),
@@ -118,6 +137,27 @@ export const VaultNoteSchema = z.object({
   createdAt: z.string(),
 });
 
+export const MessageDTOSchema = z.object({
+  id: z.string(),
+  type: MessageTypeSchema,
+  content: z.string().nullable(),
+  fileUrl: z.string().nullable(),
+  transcription: z.string().nullable(),
+  metadata: z.record(z.any()).nullable(),
+  threadId: z.string(),
+  userId: z.string(),
+  createdAt: z.string(),
+});
+
+export const ConversationThreadDTOSchema = z.object({
+  id: z.string(),
+  title: z.string().nullable(),
+  system_tags: z.array(z.string()),
+  userId: z.string(),
+  createdAt: z.string(),
+  messageCount: z.number().int().min(0).optional(),
+});
+
 // OpenAI API response schemas
 export const OpenAIResponseSchema = z.object({
   choices: z.array(
@@ -161,6 +201,9 @@ export type GenerateInsightRequest = z.infer<typeof GenerateInsightSchema>;
 export type CreateStreamDropRequest = z.infer<typeof CreateStreamDropSchema>;
 export type CreateBoardRequest = z.infer<typeof CreateBoardSchema>;
 export type UpdateBoardRequest = z.infer<typeof UpdateBoardSchema>;
+export type CreateMessageRequest = z.infer<typeof CreateMessageSchema>;
+export type EmbedMessageRequest = z.infer<typeof EmbedMessageSchema>;
+export type ClassifyMessageRequest = z.infer<typeof ClassifyMessageSchema>;
 
 export type NoteDTO = z.infer<typeof NoteDTOSchema>;
 export type BoardDTO = z.infer<typeof BoardDTOSchema>;
@@ -168,6 +211,8 @@ export type Cluster = z.infer<typeof ClusterSchema>;
 export type Stack = z.infer<typeof StackSchema>;
 export type Insight = z.infer<typeof InsightSchema>;
 export type VaultNote = z.infer<typeof VaultNoteSchema>;
+export type MessageDTO = z.infer<typeof MessageDTOSchema>;
+export type ConversationThreadDTO = z.infer<typeof ConversationThreadDTOSchema>;
 
 export type OpenAIResponse = z.infer<typeof OpenAIResponseSchema>;
 export type SmartStacksResponse = z.infer<typeof SmartStacksResponseSchema>;
