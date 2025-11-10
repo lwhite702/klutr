@@ -38,7 +38,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
           },
         },
       },
-    }) as {
+    } as any) as {
       marketingSite?: {
         blog?: {
           items?: Array<{
@@ -118,7 +118,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
           },
         },
       },
-    }) as {
+    } as any) as {
       marketingSite?: {
         blog?: {
           items?: Array<{

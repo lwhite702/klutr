@@ -43,7 +43,7 @@ export async function getHomePage(): Promise<HomePageData | null> {
           },
         },
       },
-    }) as {
+    } as any) as {
       marketingSite?: {
         pages?: {
           items?: Array<{

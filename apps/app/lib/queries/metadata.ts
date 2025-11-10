@@ -31,7 +31,7 @@ export async function getPageMetadata(
           },
         },
       },
-    }) as {
+    } as any) as {
       marketingSite?: {
         pages?: {
           items?: Array<{

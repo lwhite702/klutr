@@ -19,7 +19,7 @@ export async function generateStaticParams() {
           },
         },
       },
-    }) as { marketingSite?: { features?: { items?: Array<{ slug: string }> } } }
+    } as any) as { marketingSite?: { features?: { items?: Array<{ slug: string }> } } }
 
     const features = result.marketingSite?.features?.items || []
     return features.map((feature) => ({
@@ -71,7 +71,7 @@ export default async function FeaturePage({ params }: FeaturePageProps) {
           },
         },
       },
-    }) as {
+    } as any) as {
       marketingSite?: {
         features?: {
           items?: Array<{

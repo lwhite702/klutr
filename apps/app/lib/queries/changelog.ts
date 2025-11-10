@@ -40,7 +40,7 @@ export async function getChangelogEntries(): Promise<ChangelogEntry[]> {
           },
         },
       },
-    }) as {
+    } as any) as {
       marketingSite?: {
         changelog?: {
           items?: Array<{

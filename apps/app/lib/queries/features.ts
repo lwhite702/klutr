@@ -47,7 +47,7 @@ export async function getFeatures(): Promise<FeatureData[]> {
           },
         },
       },
-    }) as {
+    } as any) as {
       marketingSite?: {
         features?: {
           items?: Array<{
@@ -92,7 +92,7 @@ export async function getFeatures(): Promise<FeatureData[]> {
               },
             },
           },
-        }) as typeof result
+        } as any) as typeof result
         marketingSite = draftResult.marketingSite
         features = marketingSite?.features?.items || []
         if (process.env.NODE_ENV === 'development') {

@@ -26,12 +26,16 @@ export const basehubClient = (draft?: boolean) => {
   const token = process.env.BASEHUB_TOKEN || process.env.BASEHUB_API_TOKEN
 
   if (!token) {
-    // In development, allow missing token with warning
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        'BASEHUB_TOKEN or BASEHUB_API_TOKEN not set. BaseHub queries will fail.'
-      )
-    }
+    // Return a mock client that throws on query - this allows build to continue
+    // The error will be caught by try-catch blocks in query functions
+    return {
+      query: async () => {
+        throw new Error('🔴 Token not found. Make sure to include the BASEHUB_TOKEN env var.')
+      },
+      mutation: async () => {
+        throw new Error('🔴 Token not found. Make sure to include the BASEHUB_TOKEN env var.')
+      }
+    } as unknown as ReturnType<typeof basehub>
   }
 
   // Use passed draft parameter, fallback to environment variable

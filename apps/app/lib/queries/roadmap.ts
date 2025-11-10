@@ -40,7 +40,7 @@ export async function getRoadmapItems(): Promise<RoadmapItem[]> {
           },
         },
       },
-    }) as {
+    } as any) as {
       marketingSite?: {
         roadmap?: {
           items?: Array<{

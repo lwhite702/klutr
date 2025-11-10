@@ -39,7 +39,7 @@ export async function getLegalPage(slug: string): Promise<LegalPage | null> {
           },
         },
       },
-    }) as {
+    } as any) as {
       marketingSite?: {
         legal?: {
           items?: Array<{

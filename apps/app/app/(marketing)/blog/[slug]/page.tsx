@@ -12,8 +12,13 @@ import { getLatestChangelogEntries, getUpcomingRoadmapItems } from '@/lib/querie
 export const revalidate = 60
 
 export async function generateStaticParams() {
-  const posts = await getBlogPosts()
-  return posts.map((post) => ({ slug: post.slug }))
+  try {
+    const posts = await getBlogPosts()
+    return posts.map((post) => ({ slug: post.slug }))
+  } catch (error) {
+    console.error("Error generating static params for blog:", error)
+    return []
+  }
 }
 
 export async function generateMetadata({
