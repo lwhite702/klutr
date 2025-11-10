@@ -304,6 +304,18 @@ export async function createDefaultFeatureFlags(): Promise<void> {
       description: "AI-powered thread organization and matching",
       active: false,
     },
+    {
+      key: FEATURE_FLAGS.EMBEDDINGS,
+      name: "Embeddings",
+      description: "AI embedding generation for message semantic search",
+      active: true,
+    },
+    {
+      key: FEATURE_FLAGS.CLASSIFICATION,
+      name: "Classification",
+      description: "AI classification for message topics and sentiment",
+      active: true,
+    },
   ];
 
   console.log("[PostHog API] Creating default feature flags...");

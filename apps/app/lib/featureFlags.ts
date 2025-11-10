@@ -22,6 +22,8 @@ export const FEATURE_FLAGS = {
   FILE_DROPS: "file-drops",
   VOICE_CAPTURE: "voice-capture",
   SMART_THREADS: "smart-threads",
+  EMBEDDINGS: "embeddings",
+  CLASSIFICATION: "classification",
 } as const;
 
 export type FeatureFlag = typeof FEATURE_FLAGS[keyof typeof FEATURE_FLAGS];
