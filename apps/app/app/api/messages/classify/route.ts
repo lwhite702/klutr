@@ -1,6 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma, isDatabaseAvailable } from "@/lib/db";
+import { classifyMessage } from "@/lib/ai/openai";
+import { log } from "@/lib/logger";
+import { featureEnabled } from "@/lib/featureFlags";
 import { toConversationThreadDTO } from "@/lib/dto";
 import {
   withValidationAndRateLimit,
@@ -22,6 +25,11 @@ async function classifyMessageHandler(req: NextRequest, data: any) {
     const user = await getCurrentUser(req);
     const { messageId } = data;
 
+    // Check feature flag
+    if (!(await featureEnabled("classification", user.id))) {
+      return createErrorResponse("Classification feature is disabled", 403);
+    }
+
     // Find message and verify ownership
     const message = await prisma.message.findFirst({
       where: {
@@ -42,42 +50,44 @@ async function classifyMessageHandler(req: NextRequest, data: any) {
       ? message.transcription 
       : message.content;
 
-    if (!textToClassify) {
+    if (!textToClassify || textToClassify.trim().length === 0) {
       return createErrorResponse("No text content available for classification", 400);
     }
 
-    // TODO: Implement OpenAI classification
-    // const classification = await openai.chat.completions.create({
-    //   model: "gpt-4o-mini",
-    //   messages: [
-    //     {
-    //       role: "system",
-    //       content: "Classify this message and suggest thread title and tags. Return JSON with 'title' and 'tags' array.",
-    //     },
-    //     {
-    //       role: "user",
-    //       content: textToClassify,
-    //     },
-    //   ],
-    // });
-    // 
-    // const result = JSON.parse(classification.choices[0].message.content);
-    // 
-    // // Update thread with classification
-    // const updatedThread = await prisma.conversationThread.update({
-    //   where: { id: message.threadId },
-    //   data: {
-    //     title: result.title || undefined,
-    //     system_tags: result.tags || [],
-    //   },
-    // });
+    // Classify message
+    const classification = await classifyMessage(textToClassify);
 
-    // Placeholder: return current thread
-    const threadDTO = toConversationThreadDTO(message.thread);
+    // Update message metadata
+    await prisma.message.update({
+      where: { id: messageId },
+      data: {
+        metadata: {
+          ...(message.metadata as Record<string, any> || {}),
+          topics: classification.topics,
+          summary: classification.summary,
+          sentiment: classification.sentiment,
+        },
+      },
+    });
 
+    // Update thread with classification (use topics as system_tags)
+    const updatedThread = await prisma.conversationThread.update({
+      where: { id: message.threadId },
+      data: {
+        system_tags: classification.topics.length > 0 
+          ? classification.topics 
+          : message.thread.system_tags,
+        // Update title if thread doesn't have one and we have a summary
+        title: message.thread.title || classification.summary.slice(0, 50) || undefined,
+      },
+    });
+
+    log.info("Classified message", { messageId, topics: classification.topics, sentiment: classification.sentiment });
+
+    const threadDTO = toConversationThreadDTO(updatedThread);
     return createSuccessResponse(threadDTO, ConversationThreadDTOSchema);
   } catch (error) {
-    console.error("[messages] Classify message error:", error);
+    log.error("Classify message error", error);
     return createErrorResponse("Failed to classify message", 500);
   }
 }

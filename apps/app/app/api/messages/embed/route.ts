@@ -1,6 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma, isDatabaseAvailable } from "@/lib/db";
+import { generateEmbedding } from "@/lib/ai/openai";
+import { log } from "@/lib/logger";
+import { featureEnabled } from "@/lib/featureFlags";
 import {
   withValidationAndRateLimit,
   createErrorResponse,
@@ -20,6 +23,11 @@ async function embedMessageHandler(req: NextRequest, data: any) {
 
     const user = await getCurrentUser(req);
     const { messageId } = data;
+
+    // Check feature flag
+    if (!(await featureEnabled("embeddings", user.id))) {
+      return createErrorResponse("Embeddings feature is disabled", 403);
+    }
 
     // Find message and verify ownership
     const message = await prisma.message.findFirst({
@@ -43,25 +51,31 @@ async function embedMessageHandler(req: NextRequest, data: any) {
       ? message.transcription 
       : message.content;
 
-    if (!textToEmbed) {
+    if (!textToEmbed || textToEmbed.trim().length === 0) {
       return createErrorResponse("No text content available for embedding", 400);
     }
 
-    // TODO: Implement OpenAI embedding generation
-    // const embedding = await openai.embeddings.create({
-    //   model: "text-embedding-3-small",
-    //   input: textToEmbed,
-    // });
-    // 
-    // await prisma.$executeRaw`
-    //   UPDATE messages
-    //   SET embedding = ${JSON.stringify(embedding.data[0].embedding)}::vector
-    //   WHERE id = ${messageId}
-    // `;
+    // Generate embedding
+    const embedding = await generateEmbedding(textToEmbed);
 
-    return createSuccessResponse({ message: "Embedding queued (placeholder)" });
+    if (embedding.length === 0) {
+      return createErrorResponse("Failed to generate embedding", 500);
+    }
+
+    // Store embedding using raw SQL (pgvector)
+    await (prisma as any).$executeRaw`
+      UPDATE messages
+      SET embedding = ${JSON.stringify(embedding)}::vector
+      WHERE id = ${messageId}
+    `;
+
+    log.info("Generated embedding", { messageId, length: embedding.length });
+    return createSuccessResponse({ 
+      success: true, 
+      embeddingLength: embedding.length 
+    });
   } catch (error) {
-    console.error("[messages] Embed message error:", error);
+    log.error("Embed message error", error);
     return createErrorResponse("Failed to embed message", 500);
   }
 }
