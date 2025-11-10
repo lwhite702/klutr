@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [infra] Created minimal ESLint config file (eslint.config.mjs) to resolve ESLint v9 configuration errors
 - [infra] Production build now succeeds without requiring BASEHUB_TOKEN or OPENAI_API_KEY during build time
 - [infra] Updated vercel.json to use corepack for pnpm installation, fixing Vercel deployment build errors
+- [feature] Replaced static sitemap.xml with Next.js 15 dynamic sitemap.ts that includes static routes and dynamically fetches blog posts from BaseHub
 - [docs] All BaseHub query functions now gracefully handle missing tokens and return empty arrays/null during build
 
 ## 2025-11-08 22:15 ET
