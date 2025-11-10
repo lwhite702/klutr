@@ -9,12 +9,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- [feat(deploy)] Automated deployment connection validation for OpenAI and Supabase
+- [feat(deploy)] Pre-deploy validation in GitHub Actions CI workflow
+- [feat(deploy)] Post-deploy health check and diagnostics endpoints
+- [infra] `/scripts/validate-deploy.js` - Node.js validation script with retry logic and timeouts
+- [infra] `/scripts/validate-deploy.sh` - Shell wrapper for validation script
+- [api] `/api/cron/verify` - CRON_SECRET validation endpoint for deployment checks
+- [api] `/api/health/check-deploy` - Runtime diagnostics endpoint (DB, env, feature flags)
+- [ci] GitHub Actions workflow with pre-deploy validation job
+- [ci] Validation results upload as CI artifacts (30 day retention)
+- [ci] PR comments for failed validation checks with remediation steps
+- [docs] `/docs/deploy-validation.md` - Comprehensive deployment validation documentation
+- [config] Updated `vercel.json` with cron job definitions
 - [feat(ai)] AI embedding + classification pipeline for chat messages
 - [feat(ai)] Background async processing after message creation
 - [feat(ai)] Logging and feature flag integration for safe rollout
 - [lib] Centralized logger utility with timestamp formatting
 - [lib] OpenAI helper functions for embeddings and classification
 - [test] Test placeholders for embedding and classification functions
+
+### Validation Checks Implemented
+
+- Environment variables sanity check (presence and format validation)
+- OpenAI embedding API test (`text-embedding-3-small`)
+- OpenAI chat completion test (`gpt-4o-mini`)
+- Supabase database connectivity (REST API query)
+- Supabase Auth API test (admin user list)
+- Supabase Storage roundtrip (upload/download/cleanup)
+- CRON_SECRET validation
+- App health check (post-deploy only)
+
+### Configuration
+
+**Required GitHub Secrets:**
+- `DOPPLER_TOKEN` (preferred) OR
+- `OPENAI_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`
+
+**Vercel Environment Variables:**
+- All GitHub secrets plus `NEXT_PUBLIC_*` variants
+- Configured via Doppler integration (recommended) or manual entry
+
+**Validation Features:**
+- 3 retry attempts with exponential backoff (base 400ms)
+- 10 second timeout per check
+- Structured JSON output with detailed error messages
+- Security: Token masking in all logs
+- Cleanup: Automatic removal of test artifacts
+- Audit trail: Results saved to `tmp/deploy-validate-<timestamp>.json`
 
 ## 2025-01-27 00:00 ET
 

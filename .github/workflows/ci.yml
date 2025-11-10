@@ -1,0 +1,157 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, "feature/*", "cursor/*" ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  validate-deployment:
+    name: Validate Deployment Connections
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.0
+      
+      - name: Install Doppler CLI
+        run: |
+          curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | sudo gpg --dearmor -o /usr/share/keyrings/doppler-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/doppler-archive-keyring.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | sudo tee /etc/apt/sources.list.d/doppler-cli.list
+          sudo apt-get update && sudo apt-get install -y doppler
+      
+      - name: Setup Doppler token
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+        run: |
+          if [ -z "$DOPPLER_TOKEN" ]; then
+            echo "Warning: DOPPLER_TOKEN not set. Falling back to env vars from secrets."
+          else
+            echo "Doppler CLI configured"
+          fi
+      
+      - name: Run Pre-Deploy Validation
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          # Fallback env vars if Doppler is not configured
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -n "$DOPPLER_TOKEN" ]; then
+            echo "Running validation with Doppler..."
+            doppler run -- node ./scripts/validate-deploy.js --predeploy --verbose
+          else
+            echo "Running validation with environment variables..."
+            node ./scripts/validate-deploy.js --predeploy --verbose
+          fi
+      
+      - name: Upload validation results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-validation-results
+          path: tmp/deploy-validate-*.json
+          retention-days: 30
+      
+      - name: Comment validation results on PR
+        if: github.event_name == 'pull_request' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Find the latest validation result
+            const tmpDir = path.join(process.cwd(), 'tmp');
+            if (fs.existsSync(tmpDir)) {
+              const files = fs.readdirSync(tmpDir).filter(f => f.startsWith('deploy-validate-'));
+              if (files.length > 0) {
+                const latestFile = files.sort().reverse()[0];
+                const result = JSON.parse(fs.readFileSync(path.join(tmpDir, latestFile), 'utf8'));
+                
+                const failedChecks = result.checks.filter(c => !c.ok);
+                const body = `## ⚠️ Deployment Validation Failed\n\n` +
+                  `**Failed Checks:** ${failedChecks.length}/${result.checks.length}\n\n` +
+                  failedChecks.map(c => `- ❌ **${c.name}**: ${c.details}\n  - Remediation: ${c.remediation || 'See logs'}`).join('\n') +
+                  `\n\n[View full validation report](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`;
+                
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: body
+                });
+              }
+            }
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: validate-deployment
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.0
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run linter
+        run: pnpm run lint
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: validate-deployment
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.0
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build application
+        env:
+          # Build-time env vars (public only)
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+        run: pnpm run build

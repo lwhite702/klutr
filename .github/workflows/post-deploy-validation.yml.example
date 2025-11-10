@@ -1,0 +1,145 @@
+name: Post-Deploy Validation
+
+# This workflow runs validation checks after a successful Vercel deployment
+# Rename this file to post-deploy-validation.yml to enable it
+# Requires Vercel GitHub integration to emit deployment_status events
+
+on:
+  deployment_status:
+
+jobs:
+  validate-post-deploy:
+    name: Validate Deployed Application
+    # Only run on successful deployments to production
+    if: |
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment_status.environment == 'production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Extract deployment URL
+        id: extract-url
+        run: |
+          DEPLOY_URL="${{ github.event.deployment_status.target_url }}"
+          # Remove any trailing path and query params to get base URL
+          BASE_URL=$(echo "$DEPLOY_URL" | sed -E 's|^(https?://[^/]+).*|\1|')
+          echo "deploy_url=$BASE_URL" >> $GITHUB_OUTPUT
+          echo "Deployment URL: $BASE_URL"
+      
+      - name: Install Doppler CLI
+        run: |
+          curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | sudo gpg --dearmor -o /usr/share/keyrings/doppler-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/doppler-archive-keyring.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | sudo tee /etc/apt/sources.list.d/doppler-cli.list
+          sudo apt-get update && sudo apt-get install -y doppler
+      
+      - name: Run Post-Deploy Validation
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+          # Fallback env vars if Doppler is not configured
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          DEPLOY_URL: ${{ steps.extract-url.outputs.deploy_url }}
+        run: |
+          if [ -n "$DOPPLER_TOKEN" ]; then
+            echo "Running post-deploy validation with Doppler..."
+            doppler run -- node ./scripts/validate-deploy.js --postdeploy --url "$DEPLOY_URL" --verbose
+          else
+            echo "Running post-deploy validation with environment variables..."
+            node ./scripts/validate-deploy.js --postdeploy --url "$DEPLOY_URL" --verbose
+          fi
+      
+      - name: Upload validation results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: post-deploy-validation-results-${{ github.event.deployment_status.id }}
+          path: tmp/deploy-validate-*.json
+          retention-days: 90
+      
+      - name: Notify on validation failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // Find the latest validation result
+            const tmpDir = path.join(process.cwd(), 'tmp');
+            let body = '## ⚠️ Post-Deploy Validation Failed\n\n';
+            
+            if (fs.existsSync(tmpDir)) {
+              const files = fs.readdirSync(tmpDir).filter(f => f.startsWith('deploy-validate-'));
+              if (files.length > 0) {
+                const latestFile = files.sort().reverse()[0];
+                const result = JSON.parse(fs.readFileSync(path.join(tmpDir, latestFile), 'utf8'));
+                
+                const failedChecks = result.checks.filter(c => !c.ok);
+                body += `**Deployment:** ${{ github.event.deployment_status.target_url }}\n`;
+                body += `**Failed Checks:** ${failedChecks.length}/${result.checks.length}\n\n`;
+                body += failedChecks.map(c => `- ❌ **${c.name}**: ${c.details}\n  - Remediation: ${c.remediation || 'See logs'}`).join('\n');
+              }
+            }
+            
+            body += `\n\n[View validation logs](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`;
+            body += `\n\n### Rollback Instructions\n`;
+            body += `To rollback this deployment:\n`;
+            body += `1. Go to [Vercel Dashboard](https://vercel.com/dashboard)\n`;
+            body += `2. Find the previous successful deployment\n`;
+            body += `3. Click "Promote to Production"\n\n`;
+            body += `Or use the Vercel CLI: \`vercel --prod --rollback\``;
+            
+            // Create an issue for failed post-deploy validation
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Post-Deploy Validation Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: body,
+              labels: ['deployment', 'validation-failed', 'urgent']
+            });
+      
+      - name: Report success
+        if: success()
+        run: |
+          echo "✅ Post-deploy validation passed successfully!"
+          echo "Deployment URL: ${{ steps.extract-url.outputs.deploy_url }}"
+          echo "All connectivity checks passed."
+
+# Optional: Send Slack notification on failure
+# Add this job if you have Slack webhook configured
+#   notify-slack:
+#     name: Notify Slack
+#     needs: validate-post-deploy
+#     if: failure()
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Send Slack notification
+#         uses: slackapi/slack-github-action@v1
+#         with:
+#           payload: |
+#             {
+#               "text": "🚨 Post-deploy validation failed for ${{ github.event.deployment_status.target_url }}",
+#               "blocks": [
+#                 {
+#                   "type": "section",
+#                   "text": {
+#                     "type": "mrkdwn",
+#                     "text": "*Post-Deploy Validation Failed*\n\nDeployment: ${{ github.event.deployment_status.target_url }}\n\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>"
+#                   }
+#                 }
+#               ]
+#             }
+#         env:
+#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
