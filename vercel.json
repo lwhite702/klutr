@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm --filter @klutr/app build",
+  "installCommand": "pnpm install",
+  "framework": "nextjs"
+}
