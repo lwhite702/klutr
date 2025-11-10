@@ -1,5 +1,5 @@
 {
   "buildCommand": "pnpm --filter @klutr/app build",
-  "installCommand": "pnpm install --no-frozen-lockfile",
+  "installCommand": "corepack enable && corepack prepare pnpm@latest --activate && pnpm install --frozen-lockfile",
   "framework": "nextjs"
 }
