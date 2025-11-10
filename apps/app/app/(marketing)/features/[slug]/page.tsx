@@ -1,5 +1,5 @@
 import { basehubClient } from "@/lib/basehub"
-import { draftMode } from "next/headers"
+import { getSafeDraftMode } from "@/lib/utils/draft-mode"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
@@ -44,7 +44,7 @@ export const revalidate = 60
 
 export default async function FeaturePage({ params }: FeaturePageProps) {
   const { slug } = await params
-  const { isEnabled } = await draftMode()
+  const isEnabled = await getSafeDraftMode()
   const client = basehubClient(isEnabled)
 
   try {
