@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [ui] Removed duplicate AppShell wrappers from all app pages - layout now provides single unified shell
 - [ui] Fixed ChatView to work correctly with layout-provided AppShell (removed duplicate wrapper)
 - [ui] Fixed Stream page layout to use negative margins for full-width layout
+- [ui] Added mobile-friendly thread access in ChatView with ThreadDrawer component for screens below lg breakpoint
 - [api] Added dynamic route configuration to OpenAI-dependent API routes (classify, embed, create)
 - [infra] All API routes now properly marked as dynamic to prevent static generation errors
 
