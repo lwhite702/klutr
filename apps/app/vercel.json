@@ -1,4 +1,4 @@
 {
-  "installCommand": "cd ../.. && pnpm install --filter @klutr/app"
+  "installCommand": "cd ../.. && pnpm install"
 }
 
