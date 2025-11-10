@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [build] Upgraded TypeScript from 5.0.2 to 5.9.3 to meet Next.js minimum recommended version (5.1.0+)
 - [build] Created `.env.local` with placeholder environment variables for successful local builds
 - [build] Added `BASEHUB_TOKEN` placeholder to prevent BaseHub-related build failures
+- [build] Fixed Vercel monorepo install command to run from workspace root where `pnpm-lock.yaml` exists
 - [ui] Removed duplicate `AppShell` wrappers from all page components, fixing double sidebar issue
 - [ui] Fixed 22+ pages including: flux, orbit, pulse, stacks, boards, vault, muse, spark, search, settings, stream, and chat
 - [config] Created ESLint 9 flat config format (`eslint.config.mjs`) to replace deprecated `.eslintrc` format
