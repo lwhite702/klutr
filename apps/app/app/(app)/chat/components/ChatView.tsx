@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { DropComposer } from "./DropComposer";
 import { MessageBubble } from "./MessageBubble";
 import { ThreadList } from "./ThreadList";
+import { ThreadDrawer } from "./ThreadDrawer";
 import { InsightStrip } from "./InsightStrip";
 import { apiPost, apiGet } from "@/lib/clientApi";
 import { toast } from "sonner";
@@ -20,6 +21,7 @@ export function ChatView() {
   const [messages, setMessages] = useState<MessageDTO[]>([]);
   const [threads, setThreads] = useState<ConversationThreadDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [threadDrawerOpen, setThreadDrawerOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,19 +94,32 @@ export function ChatView() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-64px)] -m-6 md:-m-8">
-      {/* Left Sidebar - Thread List */}
-      <aside className="hidden lg:block w-64 border-r bg-muted/30">
-        <ThreadList
+    <>
+      {/* Mobile Thread Drawer */}
+      <div className="lg:hidden fixed top-20 left-4 z-20">
+        <ThreadDrawer
           threads={threads}
           selectedThreadId={selectedThreadId}
           onSelectThread={setSelectedThreadId}
           isLoading={isLoading}
+          open={threadDrawerOpen}
+          onOpenChange={setThreadDrawerOpen}
         />
-      </aside>
+      </div>
 
-      {/* Center - Chat Messages */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex h-[calc(100vh-64px)] -m-6 md:-m-8">
+        {/* Left Sidebar - Thread List (Desktop only) */}
+        <aside className="hidden lg:block w-64 border-r bg-muted/30">
+          <ThreadList
+            threads={threads}
+            selectedThreadId={selectedThreadId}
+            onSelectThread={setSelectedThreadId}
+            isLoading={isLoading}
+          />
+        </aside>
+
+        {/* Center - Chat Messages */}
+        <div className="flex-1 flex flex-col">
         <ScrollArea className="flex-1 px-4" ref={scrollRef}>
           <div className="max-w-4xl mx-auto py-8">
             {messages.length === 0 ? (
@@ -134,11 +149,12 @@ export function ChatView() {
         </div>
       </div>
 
-      {/* Right Sidebar - AI Insights */}
-      <aside className="hidden xl:block w-64 border-l bg-muted/30">
-        <InsightStrip threadId={selectedThreadId} />
-      </aside>
-    </div>
+        {/* Right Sidebar - AI Insights */}
+        <aside className="hidden xl:block w-64 border-l bg-muted/30">
+          <InsightStrip threadId={selectedThreadId} />
+        </aside>
+      </div>
+    </>
   );
 }
 
