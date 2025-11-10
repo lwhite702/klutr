@@ -1,5 +1,9 @@
 {
   "buildCommand": "cd apps/app && pnpm build",
   "installCommand": "npm install -g pnpm@9.15.0 && pnpm install --frozen-lockfile",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "github": {
+    "enabled": true,
+    "autoAlias": true
+  }
 }

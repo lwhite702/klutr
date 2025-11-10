@@ -68,3 +68,7 @@ PROJECT_STRUCTURE.md
 # Prisma
 prisma/migrations/*.sql
 !prisma/migrations/.gitkeep
+
+# Validation artifacts
+tmp/deploy-validate-*.json
+!tmp/.gitkeep

@@ -1,0 +1,97 @@
+name: Post-Deploy Validation
+
+on:
+  repository_dispatch:
+    types: [vercel_deployment]
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: 'Deployed application URL'
+        required: true
+        type: string
+
+jobs:
+  validate-postdeploy:
+    name: Post-Deploy Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+        with:  
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+      
+      - name: Determine deployment URL
+        id: url
+        run: |
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            echo "url=${{ github.event.client_payload.url }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ github.event.inputs.deployment_url }}" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Run post-deploy validation
+        run: |
+          cd apps/app
+          doppler run -- node ../../scripts/validate-deploy.js --postdeploy --url "${{ steps.url.outputs.url }}" --verbose
+        env:
+          DOPPLER_PROJECT: klutr
+          DOPPLER_CONFIG: production
+        continue-on-error: false
+      
+      - name: Upload validation summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: post-deploy-validation-summary
+          path: tmp/deploy-validate-*.json
+          retention-days: 30
+      
+      - name: Comment on PR (if applicable)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const summaryFiles = fs.readdirSync('tmp').filter(f => f.startsWith('deploy-validate-'));
+            
+            let comment = '## ❌ Post-Deploy Validation Failed\n\n';
+            
+            if (summaryFiles.length > 0) {
+              const summary = JSON.parse(fs.readFileSync(path.join('tmp', summaryFiles[0]), 'utf-8'));
+              comment += `**Failed checks:** ${summary.summary.failed}\n`;
+              comment += `**Passed checks:** ${summary.summary.passed}\n\n`;
+              
+              summary.checks.filter(c => !c.ok).forEach(check => {
+                comment += `- ❌ ${check.name}: ${check.error || 'Unknown error'}\n`;
+              });
+            } else {
+              comment += 'Validation summary not available.\n';
+            }
+            
+            comment += '\n**Remediation:** Check deployment logs and verify environment variables are correctly configured.';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
