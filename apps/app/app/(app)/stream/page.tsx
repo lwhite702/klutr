@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { StreamInput } from "@/components/stream/StreamInput";
 import { StreamMessage } from "@/components/stream/StreamMessage";
 import { DropZone } from "@/components/stream/DropZone";
@@ -232,9 +231,8 @@ export default function StreamPage() {
   };
 
   return (
-    <AppShell activeRoute="/app/stream">
-      <StreamErrorBoundary>
-        <DropZone onDrop={handleFileUpload}>
+    <StreamErrorBoundary>
+      <DropZone onDrop={handleFileUpload}>
         <div className="flex h-[calc(100vh-64px)]">
           {/* Center - Stream */}
           <div className="flex-1 flex flex-col">
@@ -309,7 +307,6 @@ export default function StreamPage() {
           </aside>
         </div>
       </DropZone>
-      </StreamErrorBoundary>
-    </AppShell>
+    </StreamErrorBoundary>
   );
 }

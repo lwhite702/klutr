@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Input } from "@/components/ui/input";
 import { StreamMessage } from "@/components/stream/StreamMessage";
@@ -67,8 +66,7 @@ export default function SearchPage() {
   }, [debouncedQuery]);
 
   return (
-    <AppShell activeRoute="/app/search">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title="Search"
           description="Find notes, files, and ideas across your stream"
@@ -124,7 +122,6 @@ export default function SearchPage() {
             )}
           </div>
         </ScrollArea>
-      </div>
-    </AppShell>
+    </div>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { VaultLockScreen } from "@/components/vault/VaultLockScreen";
 import { CardGrid } from "@/components/ui/CardGrid";
@@ -48,8 +47,7 @@ export default function VaultPage() {
 
   if (!isUnlocked) {
     return (
-      <AppShell activeRoute="/app/vault">
-        <div className="max-w-5xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6">
           <PageHeader
             title="Vault"
             description="Encrypted notes that only you can read"
@@ -69,14 +67,12 @@ export default function VaultPage() {
             />
             <VaultLockScreen onUnlock={handleUnlock} />
           </div>
-        </div>
-      </AppShell>
+      </div>
     );
   }
 
   return (
-    <AppShell activeRoute="/app/vault">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title="Vault"
           description="Your encrypted notes"
@@ -102,7 +98,6 @@ export default function VaultPage() {
             </p>
           </div>
         )}
-      </div>
-    </AppShell>
+    </div>
   );
 }

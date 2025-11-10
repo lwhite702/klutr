@@ -17,6 +17,6 @@
     "db:studio": "pnpm --filter @klutr/app db:studio"
   },
   "devDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.7.2"
   }
 }

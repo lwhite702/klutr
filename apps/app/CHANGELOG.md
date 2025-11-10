@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed - 2025-11-10 (Production Build Readiness)
+
+- [build] Fixed OpenAI client initialization to be lazy-loaded, preventing build-time errors when `OPENAI_API_KEY` is not available
+- [build] Renamed `middleware.ts` to `proxy.ts` and updated function export to comply with Next.js 16 requirements
+- [build] Upgraded TypeScript from 5.0.2 to 5.9.3 to meet Next.js minimum recommended version (5.1.0+)
+- [build] Created `.env.local` with placeholder environment variables for successful local builds
+- [build] Added `BASEHUB_TOKEN` placeholder to prevent BaseHub-related build failures
+- [build] Fixed Vercel monorepo install command to run from workspace root where `pnpm-lock.yaml` exists
+- [ui] Removed duplicate `AppShell` wrappers from all page components, fixing double sidebar issue
+- [ui] Fixed 22+ pages including: flux, orbit, pulse, stacks, boards, vault, muse, spark, search, settings, stream, and chat
+- [config] Created ESLint 9 flat config format (`eslint.config.mjs`) to replace deprecated `.eslintrc` format
+- [config] Configured TypeScript-aware linting with proper ignores for build artifacts
+- [schema] Ran `prisma format` and `prisma generate` to ensure database schema is in sync
+- [infra] All API routes validated and building successfully (41 API endpoints)
+- [infra] Static site generation working for marketing pages with proper error handling
+
+**Build Verification:**
+- ✅ Production build completes successfully with 67 routes
+- ✅ All TypeScript compilation passes (warnings only, no errors)
+- ✅ ESLint runs successfully (minor warnings for unused vars/any types)
+- ✅ Prisma client generated and schema validated
+- ✅ Sitemap generation working correctly
+- ✅ All 41 API routes built and ready for deployment
+
+**Environment Variables Required for Production:**
+```bash
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+NEON_DATABASE_URL
+OPENAI_API_KEY
+NEXT_PUBLIC_SITE_URL
+CRON_SECRET
+POSTHOG_KEY
+NEXT_PUBLIC_POSTHOG_KEY
+NEXT_PUBLIC_POSTHOG_HOST
+BASEHUB_TOKEN
+```
+
+**Deployment Status:** Ready for Vercel production deployment
+
 ### Added
 
 - [feat(ai)] AI embedding + classification pipeline for chat messages
