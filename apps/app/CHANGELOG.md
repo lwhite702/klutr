@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [build] Fixed OpenAI client initialization to handle missing API keys during build time
 - [build] Fixed BaseHub client to return empty results instead of throwing errors when token is missing
 - [build] Fixed draftMode() calls in BaseHub query functions to handle static generation context gracefully
+- [refactor] Extracted duplicated draftMode() handling into centralized utility function `getSafeDraftMode()`
 - [ui] Removed duplicate AppShell wrappers from all app pages - layout now provides single unified shell
 - [ui] Fixed ChatView to work correctly with layout-provided AppShell (removed duplicate wrapper)
 - [ui] Fixed Stream page layout to use negative margins for full-width layout

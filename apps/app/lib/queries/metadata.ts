@@ -1,5 +1,5 @@
 import { basehubClient } from '../basehub'
-import { draftMode } from 'next/headers'
+import { getSafeDraftMode } from '../utils/draft-mode'
 
 export interface PageMetadata {
   seoTitle: string | null
@@ -14,14 +14,7 @@ export async function getPageMetadata(
   slug: string
 ): Promise<PageMetadata | null> {
   try {
-    let isEnabled = false
-    try {
-      const draft = await draftMode()
-      isEnabled = draft.isEnabled
-    } catch {
-      // draftMode() can only be called during request handling
-      isEnabled = false
-    }
+    const isEnabled = await getSafeDraftMode()
     const client = basehubClient(isEnabled)
 
     const result = await client.query({

@@ -1,5 +1,5 @@
 import { basehubClient } from '../basehub'
-import { draftMode } from 'next/headers'
+import { getSafeDraftMode } from '../utils/draft-mode'
 
 export interface BlogPost {
   _id: string
@@ -21,15 +21,7 @@ export interface BlogPost {
  */
 export async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    let isEnabled = false
-    try {
-      const draft = await draftMode()
-      isEnabled = draft.isEnabled
-    } catch {
-      // draftMode() can only be called during request handling
-      // During static generation, it will throw - use false as default
-      isEnabled = false
-    }
+    const isEnabled = await getSafeDraftMode()
     const client = basehubClient(isEnabled)
 
     const result = await client.query({
@@ -98,15 +90,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
  */
 export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    let isEnabled = false
-    try {
-      const draft = await draftMode()
-      isEnabled = draft.isEnabled
-    } catch {
-      // draftMode() can only be called during request handling
-      // During static generation, it will throw - use false as default
-      isEnabled = false
-    }
+    const isEnabled = await getSafeDraftMode()
     const client = basehubClient(isEnabled)
 
     const result = await client.query({

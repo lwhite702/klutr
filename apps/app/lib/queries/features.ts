@@ -1,5 +1,5 @@
 import { basehubClient } from '../basehub'
-import { draftMode } from 'next/headers'
+import { getSafeDraftMode } from '../utils/draft-mode'
 
 export interface FeatureData {
   _id: string
@@ -22,14 +22,7 @@ export interface FeatureData {
  */
 export async function getFeatures(): Promise<FeatureData[]> {
   try {
-    let isEnabled = false
-    try {
-      const draft = await draftMode()
-      isEnabled = draft.isEnabled
-    } catch {
-      // draftMode() can only be called during request handling
-      isEnabled = false
-    }
+    const isEnabled = await getSafeDraftMode()
     const client = basehubClient(isEnabled)
 
     // Try querying first, if empty and not in draft mode, try draft mode as fallback
