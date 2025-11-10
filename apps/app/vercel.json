@@ -1,2 +1,5 @@
-{}
+{
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && pnpm --filter @klutr/app build"
+}
 
