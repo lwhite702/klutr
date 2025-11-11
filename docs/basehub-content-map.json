@@ -1,0 +1,487 @@
+{
+  "metadata": {
+    "generatedAt": "2025-01-11T00:00:00Z",
+    "source": "app/basehub/basehub-seed.json",
+    "schema": "app/basehub/schema.json",
+    "status": "draft",
+    "note": "This content map represents the intended structure. Actual BaseHub population should be done manually via the BaseHub UI using this as a reference."
+  },
+  "pages": {
+    "home": {
+      "documentId": "cvR2moB0heiv46suvyX6m",
+      "slug": "home",
+      "title": "Home Page",
+      "blocks": {
+        "heroBlock": {
+          "componentId": "DczJhziYwBEYyDCe7OwVx",
+          "fields": {
+            "title": "Organize Your Chaos.",
+            "subtitle": "Klutr turns your thoughts, drops, and messages into structured knowledge — automatically.",
+            "ctaText": "Try Klutr Free",
+            "ctaLink": "/signup",
+            "image": {
+              "url": "/images/hero-preview.png",
+              "fileName": "hero-preview.png",
+              "altText": "Klutr app interface showing organized notes and threads"
+            }
+          }
+        },
+        "featureGridBlock": {
+          "componentId": "HLWTdmM1rUwL5qMLsFORQ",
+          "fields": {
+            "heading": "Why People Switch to Klutr"
+          },
+          "nestedInstances": {
+            "features": [
+              {
+                "componentId": "Bm3BzaAXK8uGTBFWekZOw",
+                "title": "Chat-First Notes",
+                "description": "Type, talk, or drop files. Klutr organizes everything behind the scenes.",
+                "icon": {
+                  "url": "/images/icons/chat.svg",
+                  "fileName": "chat.svg",
+                  "altText": "Chat icon"
+                }
+              },
+              {
+                "componentId": "Bm3BzaAXK8uGTBFWekZOw",
+                "title": "Smart Clustering",
+                "description": "Notes, links, and media are intelligently grouped into topics and insights.",
+                "icon": {
+                  "url": "/images/icons/cluster.svg",
+                  "fileName": "cluster.svg",
+                  "altText": "Cluster icon"
+                }
+              },
+              {
+                "componentId": "Bm3BzaAXK8uGTBFWekZOw",
+                "title": "Search That Thinks",
+                "description": "Find anything instantly — even if you don't remember the exact words.",
+                "icon": {
+                  "url": "/images/icons/search.svg",
+                  "fileName": "search.svg",
+                  "altText": "Search icon"
+                }
+              },
+              {
+                "componentId": "Bm3BzaAXK8uGTBFWekZOw",
+                "title": "Drop Anything",
+                "description": "Audio, screenshots, files, voice memos — all organized automatically.",
+                "icon": {
+                  "url": "/images/icons/drop.svg",
+                  "fileName": "drop.svg",
+                  "altText": "Drop icon"
+                }
+              }
+            ]
+          }
+        },
+        "testimonialBlock": {
+          "componentId": "O0GK3roj1BWmgYJTJsW3v",
+          "fields": {
+            "quote": "It's like having an assistant who knows exactly what I meant — not just what I said.",
+            "author": "Jordan Lee",
+            "role": "UX Researcher",
+            "avatar": {
+              "url": "/images/testimonial-jordan.jpg",
+              "fileName": "testimonial-jordan.jpg",
+              "altText": "Jordan Lee, UX Researcher"
+            }
+          }
+        },
+        "howItWorksBlock": {
+          "componentId": "rMfS1sarTcsyhL7SQP85R",
+          "fields": {
+            "heading": "How Klutr Works"
+          },
+          "nestedInstances": {
+            "steps": [
+              {
+                "componentId": "cJQauttMliI5hTP1AnkaU",
+                "title": "Drop Anything",
+                "description": "Start by sending your ideas, files, or messages into Klutr's chat.",
+                "icon": {
+                  "url": "/images/icons/drop.svg",
+                  "fileName": "drop.svg",
+                  "altText": "Drop step icon"
+                }
+              },
+              {
+                "componentId": "cJQauttMliI5hTP1AnkaU",
+                "title": "Watch It Organize",
+                "description": "Klutr automatically classifies and tags your content using smart AI.",
+                "icon": {
+                  "url": "/images/icons/organize.svg",
+                  "fileName": "organize.svg",
+                  "altText": "Organize step icon"
+                }
+              },
+              {
+                "componentId": "cJQauttMliI5hTP1AnkaU",
+                "title": "Search & Share",
+                "description": "Instantly find what matters or share threads with collaborators.",
+                "icon": {
+                  "url": "/images/icons/share.svg",
+                  "fileName": "share.svg",
+                  "altText": "Share step icon"
+                }
+              }
+            ]
+          }
+        },
+        "ctaBlock": {
+          "componentId": "P7TGPD0DWFqjH4r6nKWsb",
+          "fields": {
+            "headline": "Start Organizing Smarter",
+            "ctaText": "Get Early Access",
+            "ctaLink": "/signup"
+          }
+        }
+      }
+    },
+    "about": {
+      "documentId": "unknown",
+      "slug": "about",
+      "title": "About Klutr",
+      "blocks": {
+        "aboutBlock": {
+          "componentId": "ejq7XlAcUFfYNQNFDWLj4",
+          "fields": {
+            "headline": "Our Story",
+            "story": "Klutr began as a messy collection of notes and screenshots — the same chaos we all live in. We built Klutr to think like you do: context-first, not keyword-first. Today, Klutr helps thousands turn streams of ideas into structured knowledge.",
+            "image": {
+              "url": "/images/team.jpg",
+              "fileName": "team.jpg",
+              "altText": "Klutr team working together"
+            }
+          }
+        },
+        "testimonialBlock": {
+          "componentId": "O0GK3roj1BWmgYJTJsW3v",
+          "fields": {
+            "quote": "Klutr doesn't just store information — it understands it.",
+            "author": "Morgan Fields",
+            "role": "Product Designer",
+            "avatar": {
+              "url": "/images/testimonial-morgan.jpg",
+              "fileName": "testimonial-morgan.jpg",
+              "altText": "Morgan Fields, Product Designer"
+            }
+          }
+        },
+        "ctaBlock": {
+          "componentId": "P7TGPD0DWFqjH4r6nKWsb",
+          "fields": {
+            "headline": "Join the Beta, It's Free for Now",
+            "ctaText": "Sign Up",
+            "ctaLink": "/signup"
+          }
+        }
+      }
+    },
+    "pricing": {
+      "documentId": "jCYY3PW3cTrw4xffplQd5",
+      "slug": "pricing",
+      "title": "Pricing",
+      "blocks": {
+        "pricingBlocks": [
+          {
+            "componentId": "qSPi9g1rGGSDIceKlKit8",
+            "fields": {
+              "tierName": "Free Beta",
+              "price": "$0",
+              "features": "Unlimited notes\nAI organization\nAttachment uploads\nBasic clustering",
+              "ctaLink": "/signup"
+            }
+          },
+          {
+            "componentId": "qSPi9g1rGGSDIceKlKit8",
+            "fields": {
+              "tierName": "Pro",
+              "price": "$8/mo",
+              "features": "Everything in Free\nAdvanced AI insights\nPriority processing\nUnlimited storage",
+              "ctaLink": "/signup"
+            }
+          },
+          {
+            "componentId": "qSPi9g1rGGSDIceKlKit8",
+            "fields": {
+              "tierName": "Team",
+              "price": "$20/mo/user",
+              "features": "Collaboration features\nShared topics and threads\nRole-based permissions\nAdmin dashboard",
+              "ctaLink": "/signup"
+            }
+          }
+        ],
+        "ctaBlock": {
+          "componentId": "P7TGPD0DWFqjH4r6nKWsb",
+          "fields": {
+            "headline": "Get Started for Free",
+            "ctaText": "Sign Up",
+            "ctaLink": "/signup"
+          }
+        }
+      }
+    },
+    "faq": {
+      "documentId": "hL1bIWwVLVN5sE4gZhcC0",
+      "slug": "faq",
+      "title": "FAQ",
+      "blocks": {
+        "faqBlock": {
+          "componentId": "IqplgWCuDXhXqdp310uUq",
+          "nestedInstances": {
+            "questions": [
+              {
+                "componentId": "ymygJHGTtNtJEs9lR7HCB",
+                "question": "What makes Klutr different?",
+                "answer": "Klutr organizes your data in real time — no folders, no effort, just structure that emerges naturally."
+              },
+              {
+                "componentId": "ymygJHGTtNtJEs9lR7HCB",
+                "question": "Can I import notes from other apps?",
+                "answer": "Yes! You can drop PDFs, screenshots, text files, and even voice recordings directly into the chat."
+              },
+              {
+                "componentId": "ymygJHGTtNtJEs9lR7HCB",
+                "question": "Is my data secure?",
+                "answer": "Absolutely. Klutr uses end-to-end encryption and Supabase RLS to keep your data safe and private."
+              },
+              {
+                "componentId": "ymygJHGTtNtJEs9lR7HCB",
+                "question": "How does AI clustering work?",
+                "answer": "Klutr uses embeddings to understand the meaning of your content, then groups similar ideas together automatically. You can always reorganize manually if needed."
+              },
+              {
+                "componentId": "ymygJHGTtNtJEs9lR7HCB",
+                "question": "Can I use Klutr offline?",
+                "answer": "Klutr syncs when you're online, but you can view and add notes offline. Changes sync automatically when you reconnect."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "features": {
+      "documentId": "kMDCylzBg85pRjQ56lREy",
+      "slug": "features",
+      "title": "Features",
+      "blocks": {
+        "featureGridBlock": {
+          "componentId": "HLWTdmM1rUwL5qMLsFORQ",
+          "fields": {
+            "heading": "Everything Klutr Can Do"
+          },
+          "nestedInstances": {
+            "features": [
+              {
+                "componentId": "Bm3BzaAXK8uGTBFWekZOw",
+                "title": "Conversational Capture",
+                "description": "Turn chats, thoughts, and brainstorms into searchable knowledge.",
+                "icon": {
+                  "url": "/images/icons/chat.svg",
+                  "fileName": "chat.svg",
+                  "altText": "Conversational capture icon"
+                }
+              },
+              {
+                "componentId": "Bm3BzaAXK8uGTBFWekZOw",
+                "title": "Auto-Tagging & Clustering",
+                "description": "AI organizes your data while you work — no manual tagging required.",
+                "icon": {
+                  "url": "/images/icons/cluster.svg",
+                  "fileName": "cluster.svg",
+                  "altText": "Auto-tagging icon"
+                }
+              },
+              {
+                "componentId": "Bm3BzaAXK8uGTBFWekZOw",
+                "title": "Rich Media Support",
+                "description": "Attach images, files, and audio — all processed and indexed instantly.",
+                "icon": {
+                  "url": "/images/icons/media.svg",
+                  "fileName": "media.svg",
+                  "altText": "Rich media icon"
+                }
+              },
+              {
+                "componentId": "Bm3BzaAXK8uGTBFWekZOw",
+                "title": "Instant Retrieval",
+                "description": "Find anything you've ever dropped into Klutr — instantly.",
+                "icon": {
+                  "url": "/images/icons/search.svg",
+                  "fileName": "search.svg",
+                  "altText": "Search icon"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "help": {
+      "documentId": "unknown",
+      "slug": "help",
+      "title": "Help Center",
+      "blocks": {
+        "helpTopicBlocks": [
+          {
+            "componentId": "5oqczJ68itniSxj2JlHWQ",
+            "fields": {
+              "title": "Getting Started",
+              "content": "Learn how to start organizing your chaos in minutes — from creating your first drop to navigating threads. Klutr works best when you just start using it naturally, like chatting with a friend who remembers everything.",
+              "tags": "onboarding, basics, getting-started",
+              "relatedLinks": "Onboarding Guide (/onboarding); FAQ (/faq)"
+            }
+          },
+          {
+            "componentId": "5oqczJ68itniSxj2JlHWQ",
+            "fields": {
+              "title": "Using AI Clustering",
+              "content": "Understand how Klutr uses embeddings to group and surface related ideas automatically. Clusters improve over time as you add more content. You can manually trigger re-clustering from the MindStorm page.",
+              "tags": "ai, organization, clustering",
+              "relatedLinks": "Features (/features); FAQ (/faq)"
+            }
+          },
+          {
+            "componentId": "5oqczJ68itniSxj2JlHWQ",
+            "fields": {
+              "title": "Security & Privacy",
+              "content": "Your data is private. We use Supabase RLS and encrypted storage for all uploads. Vault notes are encrypted on your device before being sent to our servers. We never see your plaintext content.",
+              "tags": "security, data, privacy",
+              "relatedLinks": "About Us (/about)"
+            }
+          },
+          {
+            "componentId": "5oqczJ68itniSxj2JlHWQ",
+            "fields": {
+              "title": "Capturing Notes",
+              "content": "Use the quick capture bar at the top of the Notes page to add notes, files, or voice recordings. Everything you add is automatically tagged and organized. Press Cmd+Enter (Mac) or Ctrl+Enter (Windows) to save quickly.",
+              "tags": "capture, notes, quick",
+              "relatedLinks": "Getting Started (/help)"
+            }
+          },
+          {
+            "componentId": "5oqczJ68itniSxj2JlHWQ",
+            "fields": {
+              "title": "Understanding Tags",
+              "content": "Tags are automatically added to your notes based on their content. You can also add your own tags manually. Tags help organize notes and create connections between related ideas.",
+              "tags": "tags, organization, notes",
+              "relatedLinks": "Using AI Clustering (/help)"
+            }
+          },
+          {
+            "componentId": "5oqczJ68itniSxj2JlHWQ",
+            "fields": {
+              "title": "Using the Vault",
+              "content": "The Vault encrypts notes on your device before uploading them to our servers. We use AES-GCM encryption and never see your plaintext content. Keys are derived from your password using PBKDF2.",
+              "tags": "vault, encryption, privacy",
+              "relatedLinks": "Security & Privacy (/help)"
+            }
+          }
+        ]
+      }
+    },
+    "onboarding": {
+      "documentId": "4uxXdGxWfNc8h0NCsGyK1",
+      "slug": "onboarding",
+      "title": "Onboarding",
+      "blocks": {
+        "onboardingIntroBlock": {
+          "componentId": "1frcyFtSaRU2dKSei3J0B",
+          "fields": {
+            "headline": "Welcome to Klutr",
+            "description": "Klutr helps you capture, organize, and rediscover your ideas effortlessly. Let's walk through the basics so you can start organizing your chaos right away.",
+            "ctaText": "Let's Go"
+          }
+        },
+        "onboardingStepBlocks": [
+          {
+            "componentId": "eTLXCi8X1TFiTAmbZ6JFY",
+            "fields": {
+              "title": "Start a Conversation",
+              "description": "Type or drop anything — ideas, screenshots, or files — right into the chat. Klutr works like messaging, but everything you send gets organized automatically.",
+              "image": {
+                "url": "/images/onboarding-chat.png",
+                "fileName": "onboarding-chat.png",
+                "altText": "Klutr chat interface showing how to add notes"
+              }
+            }
+          },
+          {
+            "componentId": "eTLXCi8X1TFiTAmbZ6JFY",
+            "fields": {
+              "title": "Let Klutr Work",
+              "description": "Behind the scenes, Klutr organizes your content into smart threads and topics. You'll see clusters form automatically as you add more notes.",
+              "image": {
+                "url": "/images/onboarding-ai.png",
+                "fileName": "onboarding-ai.png",
+                "altText": "Klutr AI organizing content into clusters"
+              }
+            }
+          },
+          {
+            "componentId": "eTLXCi8X1TFiTAmbZ6JFY",
+            "fields": {
+              "title": "Find It Instantly",
+              "description": "Search naturally — Klutr understands meaning, not just keywords. Find connections between ideas you forgot you had.",
+              "image": {
+                "url": "/images/onboarding-search.png",
+                "fileName": "onboarding-search.png",
+                "altText": "Klutr search interface showing intelligent results"
+              }
+            }
+          }
+        ],
+        "onboardingCompletionBlock": {
+          "componentId": "N6f8x0MOSN4w0BAuuTwQT",
+          "fields": {
+            "message": "You're ready to organize your chaos.",
+            "ctaText": "Go to Dashboard",
+            "ctaLink": "/app"
+          }
+        }
+      }
+    }
+  },
+  "componentIds": {
+    "HeroBlockComponent": "DczJhziYwBEYyDCe7OwVx",
+    "FeatureGridBlockComponent": "HLWTdmM1rUwL5qMLsFORQ",
+    "FeatureBlockComponent": "Bm3BzaAXK8uGTBFWekZOw",
+    "TestimonialBlockComponent": "O0GK3roj1BWmgYJTJsW3v",
+    "HowItWorksBlockComponent": "rMfS1sarTcsyhL7SQP85R",
+    "StepBlockComponent": "cJQauttMliI5hTP1AnkaU",
+    "CtaBlockComponent": "P7TGPD0DWFqjH4r6nKWsb",
+    "AboutBlockComponent": "ejq7XlAcUFfYNQNFDWLj4",
+    "PricingBlockComponent": "qSPi9g1rGGSDIceKlKit8",
+    "FaqBlockComponent": "IqplgWCuDXhXqdp310uUq",
+    "QuestionBlockComponent": "ymygJHGTtNtJEs9lR7HCB",
+    "HelpTopicBlockComponent": "5oqczJ68itniSxj2JlHWQ",
+    "OnboardingIntroBlockComponent": "1frcyFtSaRU2dKSei3J0B",
+    "OnboardingStepBlockComponent": "eTLXCi8X1TFiTAmbZ6JFY",
+    "OnboardingCompletionBlockComponent": "N6f8x0MOSN4w0BAuuTwQT",
+    "PageComponent": "CwWRHHrNfmc1bO9Qdo8sy"
+  },
+  "statistics": {
+    "totalPages": 7,
+    "totalBlockTypes": 15,
+    "totalInstances": {
+      "heroBlock": 1,
+      "featureGridBlock": 2,
+      "featureBlock": 8,
+      "testimonialBlock": 2,
+      "howItWorksBlock": 1,
+      "stepBlock": 3,
+      "ctaBlock": 4,
+      "aboutBlock": 1,
+      "pricingBlock": 3,
+      "faqBlock": 1,
+      "questionBlock": 5,
+      "helpTopicBlock": 6,
+      "onboardingIntroBlock": 1,
+      "onboardingStepBlock": 3,
+      "onboardingCompletionBlock": 1
+    }
+  }
+}
+

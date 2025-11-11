@@ -37,12 +37,14 @@ Klutr is the supportive mentor who codes. We don't hype, we don't anthropomorphi
 ### Font Stack
 
 **Headings (Display):**
+
 - Primary: Inter
 - Fallback: Geist, sans-serif
 - Usage: `font-display` class or `var(--font-display)`
 - Weight: 600 (semibold) for headings
 
 **Body Text:**
+
 - Primary: Satoshi (if available)
 - Fallback: Geist, Inter, sans-serif
 - Usage: `font-body` class or `var(--font-body)`
@@ -152,10 +154,10 @@ Klutr is the supportive mentor who codes. We don't hype, we don't anthropomorphi
 All brand colors are available as CSS variables in `app/globals.css`:
 
 ```css
---klutr-coral: #FF7F73;
---klutr-mint: #A7F1D1;
---klutr-accent: #FFE8E0;
---klutr-background: #FAFAFA;
+--klutr-coral: #ff7f73;
+--klutr-mint: #a7f1d1;
+--klutr-accent: #ffe8e0;
+--klutr-background: #fafafa;
 ```
 
 ### Theme Configuration
@@ -175,4 +177,3 @@ Theme tokens are defined in `lib/ui/theme.ts` for programmatic access.
 - **Brand Voice Guide:** `/BRAND_VOICE.md`
 - **UI Components:** `/docs/ui-components.md`
 - **Theme Configuration:** `/lib/ui/theme.ts`
-
