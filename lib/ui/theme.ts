@@ -7,12 +7,13 @@
 
 export const theme = {
   colors: {
-    primary: '#FF7F73', // Coral
-    secondary: '#A7F1D1', // Mint
+    primary: '#2B2E3F', // Charcoal - Primary Dark
+    secondary: '#00C896', // Mint Green - Accent
     accent: '#FFE8E0', // Light coral tint
     neutral: '#FAFAFA', // Neutral background
-    coral: '#FF7F73',
-    mint: '#A7F1D1',
+    coral: '#FF6B6B', // Coral Red - Accent 2
+    mint: '#00C896', // Mint Green - Accent
+    charcoal: '#2B2E3F', // Charcoal - Primary Dark
     background: '#FAFAFA',
   },
   typography: {

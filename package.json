@@ -13,7 +13,10 @@
     "db:push": "doppler run -- npx prisma db push",
     "db:generate": "npx prisma generate",
     "db:studio": "doppler run -- npx prisma studio",
-    "posthog:setup-flags": "echo 'Use POST /api/posthog/setup-flags endpoint or curl -X POST http://localhost:3000/api/posthog/setup-flags'"
+    "posthog:setup-flags": "echo 'Use POST /api/posthog/setup-flags endpoint or curl -X POST http://localhost:3000/api/posthog/setup-flags'",
+    "a11y:audit": "tsx scripts/accessibility-audit.ts",
+    "a11y:lighthouse": "tsx scripts/lighthouse-audit.ts",
+    "test:accessibility": "tsx scripts/accessibility-test.ts"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -82,6 +85,7 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@axe-core/cli": "^4.10.0",
     "@playwright/test": "^1.48.0",
     "@tailwindcss/postcss": "^4.1.9",
     "@testing-library/react": "^16.1.0",
@@ -91,12 +95,18 @@
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
+    "axe-core": "^4.10.0",
+    "axios": "^1.7.0",
+    "chrome-launcher": "^1.1.0",
     "doppler": "^1.0.0",
     "eslint": "^9.39.0",
+    "jsdom": "^24.0.0",
+    "lighthouse": "^12.0.0",
     "next-sitemap": "^4.2.3",
     "postcss": "^8.5",
     "prisma": "6.18.0",
     "tailwindcss": "^4.1.9",
+    "tsx": "^4.19.0",
     "tw-animate-css": "1.3.3",
     "typescript": "^5.7.2"
   }

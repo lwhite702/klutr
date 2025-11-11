@@ -40,7 +40,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         return (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Mic className="h-4 w-4 text-[#FF7F73]" />
+              <Mic className="h-4 w-4 text-[#FF6B6B]" />
               <span className="text-sm">Audio message</span>
             </div>
             {message.transcription && (
@@ -62,7 +62,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               href={message.fileUrl || "#"}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-[#FF7F73] hover:underline"
+              className="text-sm text-[#FF6B6B] hover:underline"
             >
               {message.content || "Download file"}
             </a>
@@ -73,12 +73,12 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         return (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <LinkIcon className="h-4 w-4 text-[#A7F1D1]" />
+              <LinkIcon className="h-4 w-4 text-[#00C896]" />
               <a
                 href={message.fileUrl || message.content || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-[#FF7F73] hover:underline"
+                className="text-sm text-[#FF6B6B] hover:underline"
               >
                 {message.content || message.fileUrl}
               </a>

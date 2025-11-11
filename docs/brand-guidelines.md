@@ -63,24 +63,28 @@ Klutr is the supportive mentor who codes. We don't hype, we don't anthropomorphi
 
 ## Color Palette
 
-### Primary Colors
+### Primary Colors (Official Brand Palette)
 
-- **Coral:** `#FF7F73` - Primary brand color, used for CTAs, accents, and user messages
-- **Mint:** `#A7F1D1` - Secondary brand color, used for gradients, system messages, and highlights
+- **Charcoal:** `#2B2E3F` - Primary Dark, used for text, outlines, and dark backgrounds
+- **Mint Green:** `#00C896` - Primary Accent, used for CTAs, AI/system messages, and highlights
+- **Coral Red:** `#FF6B6B` - Accent 2, used for user messages, secondary actions, and highlights
 - **Accent:** `#FFE8E0` - Light coral tint for subtle backgrounds
 
 ### Neutral Colors
 
-- **Background:** `#FAFAFA` - Main background color
-- **Charcoal:** `#2C2C2C` - Primary text color (light mode)
+- **Background:** `#FAFAFA` - Main background color (light mode)
+- **Charcoal:** `#2B2E3F` - Primary text color (light mode)
 - **Slate:** `#6B7280` - Secondary text, muted content
 
 ### Dark Mode
 
-- **Surface Dark:** `#111111` - Dark mode background
-- **Text Primary Dark:** `#FFFFFF` - Primary text (dark mode)
-- **Coral Dark:** `#FF9F93` - Adjusted coral for dark mode
-- **Mint Dark:** `#B7F5E1` - Adjusted mint for dark mode
+- **Surface Dark (Base):** `#181A25` - Deepest layer, main dark mode background
+- **Surface Dark (Middle):** `#202331` - Middle layer for cards and elevated surfaces
+- **Surface Dark (Top):** `#2B2E3F` - Surface layer, borders, highest elevation
+- **Text Primary Dark:** `#F4F7F9` - Primary text (dark mode)
+- **Text Secondary Dark:** `#C8CCD2` - Secondary text (dark mode)
+- **Coral:** `#FF6B6B` - Same value in dark mode (no adjustment needed)
+- **Mint:** `#00C896` - Same value in dark mode (no adjustment needed)
 
 ### Usage Guidelines
 

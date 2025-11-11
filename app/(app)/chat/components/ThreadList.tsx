@@ -46,7 +46,7 @@ export function ThreadList({
             key={thread.id}
             className={cn(
               "p-3 cursor-pointer hover:bg-muted/50 transition-colors",
-              selectedThreadId === thread.id && "bg-muted border-[#FF7F73]"
+              selectedThreadId === thread.id && "bg-muted border-[#FF6B6B]"
             )}
             onClick={() => onSelectThread(thread.id)}
           >
@@ -60,7 +60,7 @@ export function ThreadList({
                     <Badge
                       key={tag}
                       variant="secondary"
-                      className="text-xs bg-[#A7F1D1]/20 text-[#A7F1D1]"
+                      className="text-xs bg-[#00C896]/20 text-[#00C896]"
                     >
                       {tag}
                     </Badge>

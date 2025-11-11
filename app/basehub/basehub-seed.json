@@ -1,0 +1,360 @@
+{
+  "home": {
+    "heroBlock": {
+      "title": "Organize Your Chaos.",
+      "subtitle": "Klutr turns your thoughts, drops, and messages into structured knowledge — automatically.",
+      "ctaText": "Try Klutr Free",
+      "ctaLink": "/signup",
+      "image": {
+        "url": "/images/hero-preview.png",
+        "fileName": "hero-preview.png",
+        "altText": "Klutr app interface showing organized notes and threads"
+      }
+    },
+    "featureGridBlock": {
+      "heading": "Why People Switch to Klutr",
+      "features": [
+        {
+          "title": "Chat-First Notes",
+          "description": "Type, talk, or drop files. Klutr organizes everything behind the scenes.",
+          "icon": {
+            "url": "/images/icons/chat.svg",
+            "fileName": "chat.svg",
+            "altText": "Chat icon"
+          }
+        },
+        {
+          "title": "Smart Clustering",
+          "description": "Notes, links, and media are intelligently grouped into topics and insights.",
+          "icon": {
+            "url": "/images/icons/cluster.svg",
+            "fileName": "cluster.svg",
+            "altText": "Cluster icon"
+          }
+        },
+        {
+          "title": "Search That Thinks",
+          "description": "Find anything instantly — even if you don't remember the exact words.",
+          "icon": {
+            "url": "/images/icons/search.svg",
+            "fileName": "search.svg",
+            "altText": "Search icon"
+          }
+        },
+        {
+          "title": "Drop Anything",
+          "description": "Audio, screenshots, files, voice memos — all organized automatically.",
+          "icon": {
+            "url": "/images/icons/drop.svg",
+            "fileName": "drop.svg",
+            "altText": "Drop icon"
+          }
+        }
+      ]
+    },
+    "testimonialBlock": {
+      "quote": "It's like having an assistant who knows exactly what I meant — not just what I said.",
+      "author": "Jordan Lee",
+      "role": "UX Researcher",
+      "avatar": {
+        "url": "/images/testimonial-jordan.jpg",
+        "fileName": "testimonial-jordan.jpg",
+        "altText": "Jordan Lee, UX Researcher"
+      }
+    },
+    "howItWorksBlock": {
+      "heading": "How Klutr Works",
+      "steps": [
+        {
+          "title": "Drop Anything",
+          "description": "Start by sending your ideas, files, or messages into Klutr's chat.",
+          "icon": {
+            "url": "/images/icons/drop.svg",
+            "fileName": "drop.svg",
+            "altText": "Drop step icon"
+          }
+        },
+        {
+          "title": "Watch It Organize",
+          "description": "Klutr automatically classifies and tags your content using smart AI.",
+          "icon": {
+            "url": "/images/icons/organize.svg",
+            "fileName": "organize.svg",
+            "altText": "Organize step icon"
+          }
+        },
+        {
+          "title": "Search & Share",
+          "description": "Instantly find what matters or share threads with collaborators.",
+          "icon": {
+            "url": "/images/icons/share.svg",
+            "fileName": "share.svg",
+            "altText": "Share step icon"
+          }
+        }
+      ]
+    },
+    "ctaBlock": {
+      "headline": "Start Organizing Smarter",
+      "ctaText": "Get Early Access",
+      "ctaLink": "/signup"
+    }
+  },
+  "about": {
+    "aboutBlock": {
+      "headline": "Our Story",
+      "story": "Klutr began as a messy collection of notes and screenshots — the same chaos we all live in. We built Klutr to think like you do: context-first, not keyword-first. Today, Klutr helps thousands turn streams of ideas into structured knowledge.",
+      "image": {
+        "url": "/images/team.jpg",
+        "fileName": "team.jpg",
+        "altText": "Klutr team working together"
+      }
+    },
+    "testimonialBlock": {
+      "quote": "Klutr doesn't just store information — it understands it.",
+      "author": "Morgan Fields",
+      "role": "Product Designer",
+      "avatar": {
+        "url": "/images/testimonial-morgan.jpg",
+        "fileName": "testimonial-morgan.jpg",
+        "altText": "Morgan Fields, Product Designer"
+      }
+    },
+    "ctaBlock": {
+      "headline": "Join the Beta, It's Free for Now",
+      "ctaText": "Sign Up",
+      "ctaLink": "/signup"
+    }
+  },
+  "pricing": {
+    "pricingBlock": [
+      {
+        "tierName": "Free Beta",
+        "price": "$0",
+        "features": [
+          "Unlimited notes",
+          "AI organization",
+          "Attachment uploads",
+          "Basic clustering"
+        ],
+        "ctaLink": "/signup"
+      },
+      {
+        "tierName": "Pro",
+        "price": "$8/mo",
+        "features": [
+          "Everything in Free",
+          "Advanced AI insights",
+          "Priority processing",
+          "Unlimited storage"
+        ],
+        "ctaLink": "/signup"
+      },
+      {
+        "tierName": "Team",
+        "price": "$20/mo/user",
+        "features": [
+          "Collaboration features",
+          "Shared topics and threads",
+          "Role-based permissions",
+          "Admin dashboard"
+        ],
+        "ctaLink": "/signup"
+      }
+    ],
+    "ctaBlock": {
+      "headline": "Get Started for Free",
+      "ctaText": "Sign Up",
+      "ctaLink": "/signup"
+    }
+  },
+  "faq": {
+    "faqBlock": {
+      "questions": [
+        {
+          "question": "What makes Klutr different?",
+          "answer": "Klutr organizes your data in real time — no folders, no effort, just structure that emerges naturally."
+        },
+        {
+          "question": "Can I import notes from other apps?",
+          "answer": "Yes! You can drop PDFs, screenshots, text files, and even voice recordings directly into the chat."
+        },
+        {
+          "question": "Is my data secure?",
+          "answer": "Absolutely. Klutr uses end-to-end encryption and Supabase RLS to keep your data safe and private."
+        },
+        {
+          "question": "How does AI clustering work?",
+          "answer": "Klutr uses embeddings to understand the meaning of your content, then groups similar ideas together automatically. You can always reorganize manually if needed."
+        },
+        {
+          "question": "Can I use Klutr offline?",
+          "answer": "Klutr syncs when you're online, but you can view and add notes offline. Changes sync automatically when you reconnect."
+        }
+      ]
+    }
+  },
+  "features": {
+    "featureGridBlock": {
+      "heading": "Everything Klutr Can Do",
+      "features": [
+        {
+          "title": "Conversational Capture",
+          "description": "Turn chats, thoughts, and brainstorms into searchable knowledge.",
+          "icon": {
+            "url": "/images/icons/chat.svg",
+            "fileName": "chat.svg",
+            "altText": "Conversational capture icon"
+          }
+        },
+        {
+          "title": "Auto-Tagging & Clustering",
+          "description": "AI organizes your data while you work — no manual tagging required.",
+          "icon": {
+            "url": "/images/icons/cluster.svg",
+            "fileName": "cluster.svg",
+            "altText": "Auto-tagging icon"
+          }
+        },
+        {
+          "title": "Rich Media Support",
+          "description": "Attach images, files, and audio — all processed and indexed instantly.",
+          "icon": {
+            "url": "/images/icons/media.svg",
+            "fileName": "media.svg",
+            "altText": "Rich media icon"
+          }
+        },
+        {
+          "title": "Instant Retrieval",
+          "description": "Find anything you've ever dropped into Klutr — instantly.",
+          "icon": {
+            "url": "/images/icons/search.svg",
+            "fileName": "search.svg",
+            "altText": "Search icon"
+          }
+        }
+      ]
+    }
+  },
+  "help": {
+    "helpTopicBlock": [
+      {
+        "title": "Getting Started",
+        "content": "Learn how to start organizing your chaos in minutes — from creating your first drop to navigating threads. Klutr works best when you just start using it naturally, like chatting with a friend who remembers everything.",
+        "tags": ["onboarding", "basics", "getting-started"],
+        "relatedLinks": [
+          {
+            "text": "Onboarding Guide",
+            "url": "/onboarding"
+          },
+          {
+            "text": "FAQ",
+            "url": "/faq"
+          }
+        ]
+      },
+      {
+        "title": "Using AI Clustering",
+        "content": "Understand how Klutr uses embeddings to group and surface related ideas automatically. Clusters improve over time as you add more content. You can manually trigger re-clustering from the MindStorm page.",
+        "tags": ["ai", "organization", "clustering"],
+        "relatedLinks": [
+          {
+            "text": "Features",
+            "url": "/features"
+          },
+          {
+            "text": "FAQ",
+            "url": "/faq"
+          }
+        ]
+      },
+      {
+        "title": "Security & Privacy",
+        "content": "Your data is private. We use Supabase RLS and encrypted storage for all uploads. Vault notes are encrypted on your device before being sent to our servers. We never see your plaintext content.",
+        "tags": ["security", "data", "privacy"],
+        "relatedLinks": [
+          {
+            "text": "About Us",
+            "url": "/about"
+          }
+        ]
+      },
+      {
+        "title": "Capturing Notes",
+        "content": "Use the quick capture bar at the top of the Notes page to add notes, files, or voice recordings. Everything you add is automatically tagged and organized. Press Cmd+Enter (Mac) or Ctrl+Enter (Windows) to save quickly.",
+        "tags": ["capture", "notes", "quick"],
+        "relatedLinks": [
+          {
+            "text": "Getting Started",
+            "url": "/help"
+          }
+        ]
+      },
+      {
+        "title": "Understanding Tags",
+        "content": "Tags are automatically added to your notes based on their content. You can also add your own tags manually. Tags help organize notes and create connections between related ideas.",
+        "tags": ["tags", "organization", "notes"],
+        "relatedLinks": [
+          {
+            "text": "Using AI Clustering",
+            "url": "/help"
+          }
+        ]
+      },
+      {
+        "title": "Using the Vault",
+        "content": "The Vault encrypts notes on your device before uploading them to our servers. We use AES-GCM encryption and never see your plaintext content. Keys are derived from your password using PBKDF2.",
+        "tags": ["vault", "encryption", "privacy"],
+        "relatedLinks": [
+          {
+            "text": "Security & Privacy",
+            "url": "/help"
+          }
+        ]
+      }
+    ]
+  },
+  "onboarding": {
+    "onboardingIntroBlock": {
+      "headline": "Welcome to Klutr",
+      "description": "Klutr helps you capture, organize, and rediscover your ideas effortlessly. Let's walk through the basics so you can start organizing your chaos right away.",
+      "ctaText": "Let's Go"
+    },
+    "onboardingStepBlock": [
+      {
+        "title": "Start a Conversation",
+        "description": "Type or drop anything — ideas, screenshots, or files — right into the chat. Klutr works like messaging, but everything you send gets organized automatically.",
+        "image": {
+          "url": "/images/onboarding-chat.png",
+          "fileName": "onboarding-chat.png",
+          "altText": "Klutr chat interface showing how to add notes"
+        }
+      },
+      {
+        "title": "Let Klutr Work",
+        "description": "Behind the scenes, Klutr organizes your content into smart threads and topics. You'll see clusters form automatically as you add more notes.",
+        "image": {
+          "url": "/images/onboarding-ai.png",
+          "fileName": "onboarding-ai.png",
+          "altText": "Klutr AI organizing content into clusters"
+        }
+      },
+      {
+        "title": "Find It Instantly",
+        "description": "Search naturally — Klutr understands meaning, not just keywords. Find connections between ideas you forgot you had.",
+        "image": {
+          "url": "/images/onboarding-search.png",
+          "fileName": "onboarding-search.png",
+          "altText": "Klutr search interface showing intelligent results"
+        }
+      }
+    ],
+    "onboardingCompletionBlock": {
+      "message": "You're ready to organize your chaos.",
+      "ctaText": "Go to Dashboard",
+      "ctaLink": "/app"
+    }
+  }
+}
+

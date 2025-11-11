@@ -52,53 +52,68 @@
   --brand-lime-foreground: oklch(0.145 0 0);
   --brand-coral-foreground: oklch(0.985 0 0);
 
-  /* Klutr brand tokens - Horizon UI integration */
-  --klutr-wordmark: #2c2c2c;
+  /* Official Klutr Brand Colors */
+  --color-primary: #2B2E3F; /* Charcoal - Primary Dark */
+  --color-accent-mint: #00C896; /* Mint Green - Accent */
+  --color-accent-coral: #FF6B6B; /* Coral Red - Accent 2 */
+  
+  /* Klutr brand tokens - Legacy support (mapped to official colors) */
+  --klutr-wordmark: #2B2E3F;
   --klutr-background: #FAFAFA;
-  --klutr-coral: #FF7F73;
-  --klutr-mint: #A7F1D1;
+  --klutr-coral: #FF6B6B;
+  --klutr-mint: #00C896;
   --klutr-accent: #FFE8E0;
-  --klutr-outline: #2c2c2c;
-  --klutr-surface-dark: #111111;
-  --klutr-text-primary-light: #2c2c2c;
+  --klutr-outline: #2B2E3F;
+  --klutr-surface-dark: #1B1D29;
+  --klutr-text-primary-light: #2B2E3F;
   --klutr-text-primary-dark: #ffffff;
-  --klutr-text-accent-light: #FF7F73;
-  --klutr-text-accent-dark: #A7F1D1;
+  --klutr-text-accent-light: #FF6B6B;
+  --klutr-text-accent-dark: #00C896;
+
+  /* Layered background tokens for depth (light mode) */
+  --color-bg-0: #fdfdfd;
+  --color-bg-1: #f8f8f8;
+  --color-bg-2: #f0f2f5;
+  
+  /* Text colors for readability (light mode) */
+  --color-text-primary: #2B2E3F;
+  --color-text-secondary: #3A3D42;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.85 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  /* Dark mode backgrounds using layered charcoal tones - adjusted for better depth */
+  --background: #1B1D29; /* Deepest layer (adjusted from #181A25) */
+  --foreground: #F5F7FA; /* Light text for contrast (adjusted from #F4F7F9) */
+  --card: #232634; /* Middle layer for cards (adjusted from #202331) */
+  --card-foreground: #F5F7FA;
+  --popover: #232634;
+  --popover-foreground: #F5F7FA;
+  --primary: #2B2E3F; /* Charcoal - surface layer */
+  --primary-foreground: #F5F7FA;
+  --secondary: #232634;
+  --secondary-foreground: #F5F7FA;
+  --muted: #232634;
+  --muted-foreground: #C7CAD4;
+  --accent: #232634;
+  --accent-foreground: #00C896; /* Mint for accents */
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.32 0 0);
-  --ring: oklch(0.439 0 0);
+  --border: #2B2E3F;
+  --input: #232634;
+  --ring: #00C896; /* Mint for focus rings */
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --sidebar: #232634;
+  --sidebar-foreground: #F5F7FA;
+  --sidebar-primary: #2B2E3F;
+  --sidebar-primary-foreground: #00C896;
+  --sidebar-accent: #1B1D29;
+  --sidebar-accent-foreground: #00C896;
+  --sidebar-border: #2B2E3F;
+  --sidebar-ring: #00C896;
   /* Brand accent colors (dark mode) */
   --brand-indigo: oklch(0.55 0.18 260);
   --brand-lime: oklch(0.8 0.2 140);
@@ -107,13 +122,31 @@
   --brand-lime-foreground: oklch(0.145 0 0);
   --brand-coral-foreground: oklch(0.985 0 0);
 
+  /* Official Klutr Brand Colors (dark mode - same values) */
+  --color-primary: #2B2E3F; /* Charcoal - Primary Dark */
+  --color-accent-mint: #00C896; /* Mint Green - Accent */
+  --color-accent-coral: #FF6B6B; /* Coral Red - Accent 2 */
+  
   /* Klutr brand tokens (dark mode) */
   --klutr-wordmark: #ffffff;
-  --klutr-coral: #FF9F93;
-  --klutr-mint: #B7F5E1;
+  --klutr-coral: #FF6B6B;
+  --klutr-mint: #00C896;
   --klutr-accent: #FFE8E0;
-  --klutr-outline: #2c2c2c;
-  /* klutr-surface-dark, text colors remain same */
+  --klutr-outline: #2B2E3F;
+  --klutr-surface-dark: #1B1D29;
+
+  /* Layered background tokens for dark mode depth */
+  /* Using official charcoal as base with lighter layers - adjusted for better depth */
+  --color-bg-0: #1B1D29; /* Deepest layer (adjusted from #181A25) */
+  --color-bg-1: #232634; /* Middle layer (adjusted from #202331) */
+  --color-bg-2: #2B2E3F; /* Surface layer (charcoal) */
+  
+  /* Surface shadow for depth effects */
+  --surface-shadow: rgba(0, 0, 0, 0.25);
+  
+  /* Text colors for dark mode readability - adjusted for better contrast */
+  --color-text-primary: #F5F7FA;
+  --color-text-secondary: #C7CAD4;
 }
 
 @theme {
@@ -179,17 +212,31 @@
   --color-klutr-text-accent-light: var(--klutr-text-accent-light);
   --color-klutr-text-accent-dark: var(--klutr-text-accent-dark);
 
-  /* Brand color tokens for Tailwind - Horizon UI integration */
-  --color-coral: #FF7F73;
-  --color-mint: #A7F1D1;
+  /* Official Brand Colors */
+  --color-primary: var(--color-primary);
+  --color-accent-mint: var(--color-accent-mint);
+  --color-accent-coral: var(--color-accent-coral);
+  
+  /* Layered background colors */
+  --color-bg-0: var(--color-bg-0);
+  --color-bg-1: var(--color-bg-1);
+  --color-bg-2: var(--color-bg-2);
+  
+  /* Text colors */
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+
+  /* Official Brand Color Tokens for Tailwind */
+  --color-coral: #FF6B6B;
+  --color-mint: #00C896;
   --color-accent: #FFE8E0;
-  --color-charcoal: #2c2c2c;
+  --color-charcoal: #2B2E3F;
   --color-cloud: #FAFAFA;
   --color-slate: #6b7280;
 
-  /* Gradient stops - Horizon UI integration */
-  --color-chaos: #FF7F73;
-  --color-clarity: #A7F1D1;
+  /* Gradient stops - Official brand colors */
+  --color-chaos: #FF6B6B;
+  --color-clarity: #00C896;
   
   /* Shadow tokens - Horizon UI */
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
@@ -215,11 +262,21 @@
   /* Shadow utilities */
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+  
+  /* Enhanced shadow utilities for dark mode depth */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
+  /* Dark mode shadows with more depth */
+  --shadow-sm-dark: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md-dark: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg-dark: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
 }
 
-/* Gradient utility class - Horizon UI */
+/* Gradient utility class - Official brand colors */
 .bg-chaos-clarity {
-  background: linear-gradient(135deg, #FF7F73 0%, #A7F1D1 100%);
+  background: linear-gradient(135deg, #FF6B6B 0%, #00C896 100%);
 }
 
 @layer base {
@@ -230,6 +287,63 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-size: 16px; /* Minimum 16px body text */
+    line-height: 1.6; /* Line height 1.6 for paragraphs */
+    letter-spacing: 0.02em; /* Letter spacing +0.02em for body text */
+  }
+  
+  /* Typography enforcement */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display); /* Inter for headings */
+    font-weight: 600;
+  }
+  
+  p, body, div, span, a, button, input, textarea, select {
+    font-family: var(--font-body); /* Satoshi for body */
+  }
+  
+  /* Focus states with 3px ring and 3:1 contrast using official mint */
+  *:focus-visible {
+    outline: 3px solid var(--color-accent-mint);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  
+  /* Enhanced focus for interactive elements */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 3px solid var(--color-accent-mint);
+    outline-offset: 2px;
+  }
+  
+  /* Primary button styles - mint background, charcoal text */
+  .btn-primary,
+  button[class*="bg-[var(--color-accent-mint)]"],
+  button[class*="bg-[var(--klutr-mint)]"] {
+    background-color: var(--color-accent-mint);
+    color: var(--color-primary);
+  }
+  
+  .btn-primary:hover,
+  button[class*="bg-[var(--color-accent-mint)]"]:hover,
+  button[class*="bg-[var(--klutr-mint)]"]:hover {
+    background-color: color-mix(in srgb, var(--color-accent-mint) 90%, black);
+  }
+  
+  /* Secondary button styles - coral outline, coral hover fill */
+  .btn-secondary,
+  button[class*="border-[var(--color-accent-coral)]"] {
+    border-color: var(--color-accent-coral);
+    color: var(--color-accent-coral);
+  }
+  
+  .btn-secondary:hover,
+  button[class*="border-[var(--color-accent-coral)]"]:hover {
+    background-color: var(--color-accent-coral);
+    color: white;
   }
 }
 
@@ -246,21 +360,107 @@
   border-width: 0;
 }
 
-/* Lightbulb iconography - Horizon UI */
+/* Lightbulb iconography - Official brand colors */
 .lightbulb-glow {
-  filter: drop-shadow(0 0 8px rgba(255, 127, 115, 0.4));
+  filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.4));
   transition: filter 0.3s ease-in-out;
 }
 
 .lightbulb-glow:hover {
-  filter: drop-shadow(0 0 16px rgba(255, 127, 115, 0.6));
+  filter: drop-shadow(0 0 16px rgba(255, 107, 107, 0.6));
 }
 
 .lightbulb-glow-mint {
-  filter: drop-shadow(0 0 8px rgba(167, 241, 209, 0.4));
+  filter: drop-shadow(0 0 8px rgba(0, 200, 150, 0.4));
   transition: filter 0.3s ease-in-out;
 }
 
 .lightbulb-glow-mint:hover {
-  filter: drop-shadow(0 0 16px rgba(167, 241, 209, 0.6));
+  filter: drop-shadow(0 0 16px rgba(0, 200, 150, 0.6));
+}
+
+/* Dark mode depth utilities */
+.dark .shadow-sm {
+  box-shadow: var(--shadow-sm-dark);
+}
+
+.dark .shadow-md {
+  box-shadow: var(--shadow-md-dark);
+}
+
+.dark .shadow-lg {
+  box-shadow: var(--shadow-lg-dark);
+}
+
+/* Enhanced shadow utilities for cards and elevated elements */
+.shadow-depth {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.dark .shadow-depth {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Gradient backgrounds for depth in dark mode */
+.bg-gradient-dark {
+  background: linear-gradient(to bottom, #181A25 0%, #202331 100%);
+}
+
+.dark .bg-gradient-dark {
+  background: linear-gradient(to bottom, #1B1D29 0%, #232634 100%);
+}
+
+/* Backdrop filter for headers and sidebars */
+.backdrop-blur-header {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Enhanced card depth with gradient overlay */
+.dark .card-depth {
+  background: linear-gradient(to bottom, #232634 0%, #1B1D29 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Layered background utilities */
+.bg-bg-0 {
+  background-color: var(--color-bg-0);
+}
+
+.bg-bg-1 {
+  background-color: var(--color-bg-1);
+}
+
+.bg-bg-2 {
+  background-color: var(--color-bg-2);
+}
+
+/* Mint section text - always use charcoal/black text for contrast */
+/* Use #2B2E3F (charcoal) or #0E1116 (black) for text on mint backgrounds */
+.bg-mint-section,
+[class*="bg-[var(--klutr-mint)]"],
+[class*="bg-[var(--color-accent-mint)]"] {
+  color: #2B2E3F !important;
+}
+
+.dark .bg-mint-section,
+.dark [class*="bg-[var(--klutr-mint)]"],
+.dark [class*="bg-[var(--color-accent-mint)]"] {
+  color: #2B2E3F !important;
+}
+
+/* Alternative data-theme selector for dark mode */
+[data-theme="dark"] {
+  --color-bg-0: #1B1D29;
+  --color-bg-1: #232634;
+  --color-bg-2: #2B2E3F;
+  --text-primary: #F5F7FA;
+  --text-secondary: #C7CAD4;
+  --surface-shadow: rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .bg-mint-section,
+[data-theme="dark"] [class*="bg-[var(--klutr-mint)]"],
+[data-theme="dark"] [class*="bg-[var(--color-accent-mint)]"] {
+  color: #2B2E3F !important;
 }

@@ -105,7 +105,7 @@ export function DropComposer({ onSend }: DropComposerProps) {
             disabled={isRecording}
             title="Record voice"
           >
-            <Mic className={`h-4 w-4 ${isRecording ? "text-[#FF7F73]" : ""}`} />
+            <Mic className={`h-4 w-4 ${isRecording ? "text-[#FF6B6B]" : ""}`} />
           </Button>
           <Button
             type="button"
@@ -114,7 +114,7 @@ export function DropComposer({ onSend }: DropComposerProps) {
             className="h-8 w-8"
             title="AI insights"
           >
-            <Lightbulb className="h-4 w-4 text-[#A7F1D1]" />
+            <Lightbulb className="h-4 w-4 text-[#00C896]" />
           </Button>
         </div>
       </div>

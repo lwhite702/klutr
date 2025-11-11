@@ -5,17 +5,18 @@
  * These values are referenced in globals.css and can be imported in TypeScript/JavaScript.
  */
 
+// Official Klutr Brand Colors
 export const brandColors = {
-  coral: "#ff6b6b",
-  mint: "#3ee0c5",
-  charcoal: "#111827",
+  charcoal: "#2B2E3F", // Primary Dark - Charcoal
+  mint: "#00C896", // Accent - Mint Green
+  coral: "#FF6B6B", // Accent 2 - Coral Red
   cloud: "#f8f9fa",
   slate: "#6b7280",
 } as const;
 
 export const gradientColors = {
-  chaos: "#ff6b6b",
-  clarity: "#3ee0c5",
+  chaos: "#FF6B6B", // Coral
+  clarity: "#00C896", // Mint
 } as const;
 
 /**

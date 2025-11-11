@@ -3,6 +3,7 @@ import {
   getLatestChangelogEntries,
   getUpcomingRoadmapItems,
 } from "@/lib/queries";
+import { getAboutContent } from "@/lib/basehub/queries/pages";
 import type { Metadata } from "next";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
@@ -44,10 +45,19 @@ export async function generateMetadata(): Promise<Metadata> {
 export const revalidate = 60;
 
 export default async function AboutPage() {
+  const aboutContent = await getAboutContent();
   const [latestReleases, upcomingItems] = await Promise.all([
     getLatestChangelogEntries(),
     getUpcomingRoadmapItems(),
   ]);
+
+  // Use BaseHub aboutBlock if available, otherwise use fallback content
+  const aboutData = aboutContent.aboutBlock || {
+    headline: "About Klutr",
+    story: "Klutr exists to help you turn chaos into clarity. We believe that everyone has brilliant ideas, but they get lost in the noise. Our mission is to give you a frictionless way to capture everything—text, voice, images, files—and let AI handle the organization so you can stay creative.",
+    image: null,
+  };
+
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
       <MarketingHeader />
@@ -58,25 +68,25 @@ export default async function AboutPage() {
             <div className="flex items-center justify-center gap-3 mb-4">
               <Lightbulb className="w-8 h-8 text-[var(--klutr-coral)] lightbulb-glow" />
               <h1 className="text-4xl md:text-5xl font-display font-bold">
-                About Klutr
+                {aboutData.headline || "About Klutr"}
               </h1>
             </div>
-            <p className="text-xl font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-              Practical, clever, and built to organize your chaos
-            </p>
+            {aboutData.story && (
+              <p className="text-xl font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                {aboutData.story.split('\n')[0]}
+              </p>
+            )}
           </AnimatedFadeIn>
 
           <div className="max-w-4xl mx-auto space-y-12">
-            <AnimatedItem className="space-y-6">
-              <h2 className="text-3xl font-display font-bold">Our Mission</h2>
-              <p className="text-lg font-body leading-relaxed text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80">
-                Klutr exists to help you turn chaos into clarity. We believe
-                that everyone has brilliant ideas, but they get lost in the
-                noise. Our mission is to give you a frictionless way to capture
-                everything—text, voice, images, files—and let AI handle the
-                organization so you can stay creative.
-              </p>
-            </AnimatedItem>
+            {aboutData.story && (
+              <AnimatedItem className="space-y-6">
+                <h2 className="text-3xl font-display font-bold">Our Mission</h2>
+                <p className="text-lg font-body leading-relaxed text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80">
+                  {aboutData.story}
+                </p>
+              </AnimatedItem>
+            )}
 
             <div className="grid md:grid-cols-3 gap-6">
               <AnimatedItem>
@@ -149,24 +159,44 @@ export default async function AboutPage() {
               </p>
             </AnimatedItem>
 
-            <AnimatedFadeIn className="text-center space-y-6 pt-8">
-              <h2 className="text-2xl md:text-3xl font-display font-bold">
-                Ready to clear the clutr?
-              </h2>
-              <p className="text-lg font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                Join early users who are already freeing their minds from
-                digital clutter.
-              </p>
-              <Button
-                size="lg"
-                className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white text-lg px-8 py-6 rounded-2xl shadow-xl"
-                asChild
-              >
-                <Link href="/login" aria-label="Get started with Klutr">
-                  Get Started Free
-                </Link>
-              </Button>
-            </AnimatedFadeIn>
+            {/* Use BaseHub ctaBlock if available, otherwise use fallback */}
+            {aboutContent.ctaBlock ? (
+              <AnimatedFadeIn className="text-center space-y-6 pt-8">
+                <h2 className="text-2xl md:text-3xl font-display font-bold">
+                  {aboutContent.ctaBlock.headline || "Ready to clear the clutr?"}
+                </h2>
+                {aboutContent.ctaBlock.ctaText && (
+                  <Button
+                    size="lg"
+                    className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white text-lg px-8 py-6 rounded-2xl shadow-xl"
+                    asChild
+                  >
+                    <Link href={aboutContent.ctaBlock.ctaLink || "/login"} aria-label={aboutContent.ctaBlock.ctaText}>
+                      {aboutContent.ctaBlock.ctaText}
+                    </Link>
+                  </Button>
+                )}
+              </AnimatedFadeIn>
+            ) : (
+              <AnimatedFadeIn className="text-center space-y-6 pt-8">
+                <h2 className="text-2xl md:text-3xl font-display font-bold">
+                  Ready to clear the clutr?
+                </h2>
+                <p className="text-lg font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                  Join early users who are already freeing their minds from
+                  digital clutter.
+                </p>
+                <Button
+                  size="lg"
+                  className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white text-lg px-8 py-6 rounded-2xl shadow-xl"
+                  asChild
+                >
+                  <Link href="/login" aria-label="Get started with Klutr">
+                    Get Started Free
+                  </Link>
+                </Button>
+              </AnimatedFadeIn>
+            )}
           </div>
         </AnimatedSection>
       </main>

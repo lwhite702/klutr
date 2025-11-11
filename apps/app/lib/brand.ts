@@ -5,12 +5,12 @@
  * This is the single source of truth for brand styling across the application.
  */
 
-// Brand Colors
+// Official Klutr Brand Colors
 export const brandColors = {
-  coral: "#FF6F61", // Primary brand color
-  mint: "#4CD7C2", // Accent brand color
+  charcoal: "#2B2E3F", // Primary Dark - Charcoal
+  mint: "#00C896", // Accent - Mint Green
+  coral: "#FF6B6B", // Accent 2 - Coral Red
   offWhite: "#FAFAFA", // Background color
-  charcoal: "#2C2C2C", // Text color
 } as const;
 
 // Typography

@@ -1,5 +1,6 @@
 import { getHomePage, getFeatures, getLatestChangelogEntries, getUpcomingRoadmapItems } from "@/lib/queries"
 import { getPageMetadata } from "@/lib/queries/metadata"
+import { getHomeContent } from "@/lib/basehub/queries/pages"
 import type { Metadata } from "next"
 import MarketingHeader from "@/components/marketing/MarketingHeader"
 import MarketingFooter from "@/components/marketing/MarketingFooter"
@@ -48,7 +49,11 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
+export const revalidate = 60
+
 export default async function MarketingHomePage() {
+  // Fetch BaseHub content
+  const homeContent = await getHomeContent()
   const home = await getHomePage()
   const features = await getFeatures()
   
@@ -58,38 +63,57 @@ export default async function MarketingHomePage() {
     getUpcomingRoadmapItems(2),
   ])
 
+  // Use BaseHub heroBlock if available, otherwise fallback to existing getHomePage()
+  const heroData = homeContent.heroBlock || {
+    title: home?.heroHeadline || "Organize Your Chaos",
+    subtitle: home?.heroSubtext?.plainText || "Klutr is a conversational workspace where all your input—text, voice, images, files—flows naturally through a Stream interface and gets automatically organized on the backend. Drop your thoughts like messages in a chat, and we'll handle the rest.",
+    ctaText: home?.primaryCTA || "Try for Free",
+    ctaLink: "/login",
+    image: null,
+  }
+
   // Fallback data if BaseHub is unavailable
-  const homeData = home || {
-    heroHeadline: "Organize Your Chaos",
-    heroSubtext:
-      "Klutr is a conversational workspace where all your input—text, voice, images, files—flows naturally through a Stream interface and gets automatically organized on the backend. Drop your thoughts like messages in a chat, and we'll handle the rest.",
-    primaryCTA: "Try for Free",
+  const homeData = {
+    heroHeadline: heroData.title,
+    heroSubtext: heroData.subtitle,
+    primaryCTA: heroData.ctaText,
     secondaryCTA: null,
   }
 
-  const testimonials = [
-    {
-      name: "Jason",
-      username: "@jasonbaldmen",
-      text: "The goal is to make the website easy to use for the user and drive the necessary growth.",
-      rating: 4,
-      date: "12 January 2015",
-    },
-    {
-      name: "Morgan",
-      username: "@morganNotFreeMan",
-      text: "Klutr is a simple, intuitive note-taking app that keeps everything organized and easy to access. Perfect for boosting productivity!",
-      rating: 3,
-      date: "12 January 2015",
-    },
-    {
-      name: "Daniel",
-      username: "@Daniel3Oscar",
-      text: "Klutr is a sleek, user-friendly app that makes organizing notes effortless. It's perfect for staying on top of tasks and ideas!",
-      rating: 5,
-      date: "12 January 2015",
-    },
-  ]
+  // Use BaseHub testimonialBlock if available, otherwise fallback to hardcoded testimonials
+  const testimonials = homeContent.testimonialBlock
+    ? [
+        {
+          name: homeContent.testimonialBlock.author || "User",
+          username: homeContent.testimonialBlock.role || "",
+          text: homeContent.testimonialBlock.quote || "",
+          rating: 5,
+          date: new Date().toLocaleDateString(),
+        },
+      ]
+    : [
+        {
+          name: "Jason",
+          username: "@jasonbaldmen",
+          text: "The goal is to make the website easy to use for the user and drive the necessary growth.",
+          rating: 4,
+          date: "12 January 2015",
+        },
+        {
+          name: "Morgan",
+          username: "@morganNotFreeMan",
+          text: "Klutr is a simple, intuitive note-taking app that keeps everything organized and easy to access. Perfect for boosting productivity!",
+          rating: 3,
+          date: "12 January 2015",
+        },
+        {
+          name: "Daniel",
+          username: "@Daniel3Oscar",
+          text: "Klutr is a sleek, user-friendly app that makes organizing notes effortless. It's perfect for staying on top of tasks and ideas!",
+          rating: 5,
+          date: "12 January 2015",
+        },
+      ]
 
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
@@ -105,80 +129,120 @@ export default async function MarketingHomePage() {
 
         <FeatureGrid features={features} />
 
-        {/* How It Works Section */}
-        <section className="container mx-auto px-6 py-20">
-          <AnimatedSection className="space-y-12">
-            <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Sparkles className="w-8 h-8 text-[var(--klutr-coral)]" />
-                <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                  How It Works
-                </h2>
+        {/* How It Works Section - Use BaseHub howItWorksBlock if available */}
+        {homeContent.howItWorksBlock ? (
+          <section className="container mx-auto px-6 py-20">
+            <AnimatedSection className="space-y-12">
+              <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Sparkles className="w-8 h-8 text-[var(--klutr-coral)]" />
+                  <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+                    {homeContent.howItWorksBlock.heading || "How It Works"}
+                  </h2>
+                </div>
+              </AnimatedItem>
+              <div className="grid md:grid-cols-2 gap-6">
+                {homeContent.howItWorksBlock.steps.map((step, index) => (
+                  <AnimatedItem key={index}>
+                    <Card className="h-full border-[var(--klutr-outline)]/20">
+                      <CardHeader>
+                        {step.icon && (
+                          <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                            <img
+                              src={step.icon.url}
+                              alt={step.icon.altText || step.title || ""}
+                              className="w-6 h-6"
+                            />
+                          </div>
+                        )}
+                        <CardTitle className="text-2xl">{step.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                          {step.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </AnimatedItem>
+                ))}
               </div>
-              <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                Drop, tag, board, discover—effortlessly
-              </p>
-            </AnimatedItem>
-            <div className="grid md:grid-cols-2 gap-6">
-              <AnimatedItem>
-                <Card className="h-full border-[var(--klutr-outline)]/20">
-                  <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
-                      <Zap className="w-6 h-6 text-[var(--klutr-coral)]" />
-                    </div>
-                    <CardTitle className="text-2xl">Drop</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Add notes, files, or voice recordings to your Stream. Chat-style interface, zero friction.
-                    </p>
-                  </CardContent>
-                </Card>
+            </AnimatedSection>
+          </section>
+        ) : (
+          <section className="container mx-auto px-6 py-20">
+            <AnimatedSection className="space-y-12">
+              <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Sparkles className="w-8 h-8 text-[var(--klutr-coral)]" />
+                  <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+                    How It Works
+                  </h2>
+                </div>
+                <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                  Drop, tag, board, discover—effortlessly
+                </p>
               </AnimatedItem>
-              <AnimatedItem>
-                <Card className="h-full border-[var(--klutr-outline)]/20">
-                  <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
-                      <Layers className="w-6 h-6 text-[var(--klutr-mint)]" />
-                    </div>
-                    <CardTitle className="text-2xl">Organize</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      AI automatically tags your drops and groups them into Boards. No manual filing required.
-                    </p>
-                  </CardContent>
-                </Card>
+              <div className="grid md:grid-cols-2 gap-6">
+                <AnimatedItem>
+                  <Card className="h-full border-[var(--klutr-outline)]/20">
+                    <CardHeader>
+                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                        <Zap className="w-6 h-6 text-[var(--klutr-coral)]" />
+                      </div>
+                      <CardTitle className="text-2xl">Drop</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                        Add notes, files, or voice recordings to your Stream. Chat-style interface, zero friction.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedItem>
+                <AnimatedItem>
+                  <Card className="h-full border-[var(--klutr-outline)]/20">
+                    <CardHeader>
+                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
+                        <Layers className="w-6 h-6 text-[var(--klutr-mint)]" />
+                      </div>
+                      <CardTitle className="text-2xl">Organize</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                        AI automatically tags your drops and groups them into Boards. No manual filing required.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedItem>
+                <AnimatedItem>
+                  <Card className="h-full border-[var(--klutr-outline)]/20">
+                    <CardHeader>
+                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                        <Search className="w-6 h-6 text-[var(--klutr-coral)]" />
+                      </div>
+                      <CardTitle className="text-2xl">Discover</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                        Muse provides weekly insights. Search finds connections. Turn chaos into clarity.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedItem>
+              </div>
+              <AnimatedItem className="text-center pt-4">
+                <Button
+                  size="lg"
+                  className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
+                  asChild
+                >
+                  <Link href="/login" aria-label="Get started with Klutr">
+                    Get Started
+                  </Link>
+                </Button>
               </AnimatedItem>
-              <AnimatedItem>
-                <Card className="h-full border-[var(--klutr-outline)]/20">
-                  <CardHeader>
-                    <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
-                      <Search className="w-6 h-6 text-[var(--klutr-coral)]" />
-                    </div>
-                    <CardTitle className="text-2xl">Discover</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                      Muse provides weekly insights. Search finds connections. Turn chaos into clarity.
-                    </p>
-                  </CardContent>
-                </Card>
-              </AnimatedItem>
-            </div>
-            <AnimatedItem className="text-center pt-4">
-              <Button
-                size="lg"
-                className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
-                asChild
-              >
-                <Link href="/login" aria-label="Get started with Klutr">
-                  Get Started
-                </Link>
-              </Button>
-            </AnimatedItem>
-          </AnimatedSection>
-        </section>
+            </AnimatedSection>
+          </section>
+        )}
 
         {/* Trusted by Companies Section */}
         <section className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-20">
@@ -326,13 +390,13 @@ export default async function MarketingHomePage() {
         </section>
 
         {/* Beta CTA Banner */}
-        <section className="bg-[var(--klutr-mint)] dark:bg-[var(--klutr-mint)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] py-24">
+        <section className="bg-[var(--klutr-mint)] dark:bg-[var(--klutr-mint)] py-24">
           <div className="container mx-auto px-6">
             <AnimatedFadeIn className="max-w-3xl mx-auto text-center space-y-8">
-              <h2 className="text-4xl md:text-5xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] leading-tight">
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: '#2B2E3F' }}>
                 Free Beta now open
               </h2>
-              <p className="text-xl md:text-2xl opacity-90 leading-relaxed">
+              <p className="text-xl md:text-2xl opacity-90 leading-relaxed" style={{ color: '#2B2E3F' }}>
                 Join early users and help shape the future of note-taking. No credit card required. Just drop your thoughts into the Stream and watch the magic.
               </p>
               <Button

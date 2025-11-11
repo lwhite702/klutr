@@ -1,0 +1,67 @@
+{
+  "home": {
+    "blocks": [
+      "heroBlock",
+      "featureGridBlock",
+      "testimonialBlock",
+      "howItWorksBlock",
+      "ctaBlock"
+    ],
+    "fields": {
+      "heroBlock": ["title", "subtitle", "ctaText", "ctaLink", "image"],
+      "featureGridBlock": ["heading", "features"],
+      "featureBlock": ["title", "description", "icon"],
+      "testimonialBlock": ["quote", "author", "role", "avatar"],
+      "howItWorksBlock": ["heading", "steps"],
+      "stepBlock": ["title", "description", "icon"],
+      "ctaBlock": ["headline", "ctaText", "ctaLink"]
+    }
+  },
+  "about": {
+    "blocks": ["aboutBlock", "testimonialBlock", "ctaBlock"],
+    "fields": {
+      "aboutBlock": ["headline", "story", "image"],
+      "testimonialBlock": ["quote", "author", "role", "avatar"],
+      "ctaBlock": ["headline", "ctaText", "ctaLink"]
+    }
+  },
+  "pricing": {
+    "blocks": ["pricingBlock", "ctaBlock"],
+    "fields": {
+      "pricingBlock": ["tierName", "price", "features", "ctaLink"],
+      "ctaBlock": ["headline", "ctaText", "ctaLink"]
+    }
+  },
+  "faq": {
+    "blocks": ["faqBlock"],
+    "fields": {
+      "faqBlock": ["questions"],
+      "questionBlock": ["question", "answer"]
+    }
+  },
+  "features": {
+    "blocks": ["featureGridBlock"],
+    "fields": {
+      "featureGridBlock": ["heading", "features"],
+      "featureBlock": ["title", "description", "icon"]
+    }
+  },
+  "help": {
+    "blocks": ["helpTopicBlock"],
+    "fields": {
+      "helpTopicBlock": ["title", "content", "tags", "relatedLinks"]
+    }
+  },
+  "onboarding": {
+    "blocks": [
+      "onboardingIntroBlock",
+      "onboardingStepBlock",
+      "onboardingCompletionBlock"
+    ],
+    "fields": {
+      "onboardingIntroBlock": ["headline", "description", "ctaText"],
+      "onboardingStepBlock": ["title", "description", "image"],
+      "onboardingCompletionBlock": ["message", "ctaText", "ctaLink"]
+    }
+  }
+}

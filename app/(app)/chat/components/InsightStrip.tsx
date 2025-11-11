@@ -13,7 +13,7 @@ export function InsightStrip({ threadId }: InsightStripProps) {
     return (
       <div className="p-4">
         <div className="flex items-center gap-2 mb-4">
-          <Lightbulb className="h-5 w-5 text-[#A7F1D1]" />
+          <Lightbulb className="h-5 w-5 text-[#00C896]" />
           <h3 className="font-semibold text-sm">AI Insights</h3>
         </div>
         <p className="text-sm text-muted-foreground">
@@ -50,13 +50,13 @@ export function InsightStrip({ threadId }: InsightStripProps) {
           Quick Actions
         </h4>
         <div className="space-y-2">
-          <button className="w-full text-left text-xs text-[#FF7F73] hover:underline">
+          <button className="w-full text-left text-xs text-[#FF6B6B] hover:underline">
             Generate summary
           </button>
-          <button className="w-full text-left text-xs text-[#FF7F73] hover:underline">
+          <button className="w-full text-left text-xs text-[#FF6B6B] hover:underline">
             Find related threads
           </button>
-          <button className="w-full text-left text-xs text-[#FF7F73] hover:underline">
+          <button className="w-full text-left text-xs text-[#FF6B6B] hover:underline">
             Export thread
           </button>
         </div>
