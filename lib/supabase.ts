@@ -57,9 +57,11 @@ export const supabaseAdmin = (serverSupabaseUrl && serverSupabaseServiceRoleKey)
 // Export validation function for runtime checks
 export { validateEnv }
 
-// Helper to get current user ID (stub for now, will be replaced with auth later)
+/**
+ * DEPRECATED: Use getCurrentUser() from lib/auth.ts instead
+ * This function is kept for backward compatibility but should not be used
+ * @deprecated
+ */
 export async function getCurrentUserId(): Promise<string> {
-  // For now, return a demo user ID
-  // TODO: Replace with actual auth when Supabase Auth is enabled
-  return 'user_dev_123'
+  throw new Error('getCurrentUserId is deprecated. Use getCurrentUser() from lib/auth.ts instead.')
 }

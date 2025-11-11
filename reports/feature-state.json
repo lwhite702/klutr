@@ -1,0 +1,282 @@
+{
+  "timestamp": "2025-11-11T00:00:00Z",
+  "branch": "cursor/productionize-klutr-core-features-and-confirm-state-3ae0",
+  "features": {
+    "authentication": {
+      "name": "Authentication",
+      "implemented": "partial",
+      "status": "not_production_ready",
+      "routes": [
+        "lib/auth.ts",
+        "lib/supabase.ts"
+      ],
+      "data_sources": ["Supabase Auth with dev fallback stub"],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": [
+        "Fallback to stub user 'user_dev_123' when auth fails",
+        "No RLS policies implemented",
+        "No login/signup UI flows",
+        "Missing middleware for route protection"
+      ]
+    },
+    "notes_chat_interface": {
+      "name": "Notes / Chat Interface",
+      "implemented": "yes",
+      "status": "needs_production_hardening",
+      "routes": [
+        "app/api/messages/create/route.ts",
+        "app/api/messages/embed/route.ts",
+        "app/api/messages/classify/route.ts",
+        "app/(app)/chat/page.tsx",
+        "app/(app)/flux/page.tsx",
+        "app/(app)/stream/page.tsx"
+      ],
+      "data_sources": ["Neon PostgreSQL via Prisma"],
+      "test_coverage": "minimal",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": [
+        "File uploads not fully implemented (no Supabase Storage integration)",
+        "Audio transcription marked as TODO",
+        "Thread matching using vector similarity marked as TODO",
+        "Uses direct OpenAI SDK instead of Vercel AI SDK"
+      ]
+    },
+    "mindstorm_embeddings": {
+      "name": "MindStorm Embeddings and Clustering",
+      "implemented": "yes",
+      "status": "functional_but_needs_optimization",
+      "routes": [
+        "lib/ai/embedNote.ts",
+        "lib/ai/clusterNotes.ts",
+        "app/api/mindstorm/route.ts",
+        "app/api/cron/nightly-cluster/route.ts",
+        "app/(app)/orbit/page.tsx"
+      ],
+      "data_sources": ["Neon PostgreSQL with pgvector extension", "OpenAI embeddings API"],
+      "test_coverage": "minimal",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": [
+        "Embedding function calls Supabase Edge Function instead of direct API",
+        "No retry logic or timeout handling",
+        "No cost estimation or rate limiting",
+        "Clustering algorithm uses simple centroid-based approach"
+      ]
+    },
+    "smart_stacks": {
+      "name": "Smart Stacks",
+      "implemented": "partial",
+      "status": "database_ready_ui_incomplete",
+      "routes": [
+        "lib/ai/buildSmartStacks.ts",
+        "app/api/stacks/route.ts",
+        "app/(app)/stacks/page.tsx",
+        "app/api/cron/nightly-stacks/route.ts"
+      ],
+      "data_sources": ["Neon PostgreSQL"],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": [
+        "Smart stacks generation logic exists but needs refinement",
+        "UI has stub components (SortAndFilterStub.tsx)",
+        "No user acceptance/rejection flow implemented"
+      ]
+    },
+    "vault_encryption": {
+      "name": "Vault Encryption",
+      "implemented": "partial",
+      "status": "database_schema_only",
+      "routes": [
+        "app/api/vault/route.ts",
+        "app/(app)/vault/page.tsx",
+        "lib/encryption.ts",
+        "lib/encryption/secure.ts"
+      ],
+      "data_sources": ["Neon PostgreSQL (VaultNote table)"],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": [
+        "No client-side encryption implementation",
+        "No key derivation flow",
+        "No password management UI",
+        "Encryption libraries exist but not integrated",
+        "API endpoints not implemented"
+      ]
+    },
+    "insights_generation": {
+      "name": "Insights Generation",
+      "implemented": "partial",
+      "status": "backend_exists_needs_ui",
+      "routes": [
+        "lib/ai/generateWeeklyInsights.ts",
+        "app/api/insights/generate/route.ts",
+        "app/api/cron/weekly-insights/route.ts",
+        "app/(app)/pulse/page.tsx",
+        "app/(app)/muse/page.tsx"
+      ],
+      "data_sources": ["Neon PostgreSQL", "OpenAI API"],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": [
+        "Weekly insights generation implemented",
+        "UI shows mock/placeholder data",
+        "No real-time insight generation flow"
+      ]
+    },
+    "tagging_and_search": {
+      "name": "Tagging and Search",
+      "implemented": "partial",
+      "status": "basic_implementation",
+      "routes": [
+        "app/api/notes/route.ts",
+        "app/(app)/search/page.tsx",
+        "lib/ai/tagNotes.ts"
+      ],
+      "data_sources": ["Neon PostgreSQL"],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": [
+        "No semantic search using vector similarity",
+        "Basic text search only",
+        "Tagging logic exists but not exposed in UI",
+        "No search result ranking algorithm"
+      ]
+    },
+    "file_attachments": {
+      "name": "File Attachment Uploads",
+      "implemented": "no",
+      "status": "not_started",
+      "routes": [],
+      "data_sources": [],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "not_applicable",
+      "blockers": [
+        "No Supabase Storage integration",
+        "No upload API endpoints",
+        "No client-side upload UI",
+        "Schema supports fileUrl but not used"
+      ]
+    },
+    "background_jobs_cron": {
+      "name": "Background Jobs / Cron",
+      "implemented": "yes",
+      "status": "needs_security_hardening",
+      "routes": [
+        "app/api/cron/nightly-cluster/route.ts",
+        "app/api/cron/nightly-stacks/route.ts",
+        "app/api/cron/weekly-insights/route.ts",
+        "cron/nightly-cluster.ts",
+        "cron/nightly-stacks.ts",
+        "cron/weekly-insights.ts"
+      ],
+      "data_sources": ["Neon PostgreSQL"],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": [
+        "CRON_SECRET validation exists but not consistently applied",
+        "No retry logic for failed jobs",
+        "No job monitoring or alerting",
+        "No idempotency checks"
+      ]
+    },
+    "feature_flags": {
+      "name": "Feature Flags (PostHog)",
+      "implemented": "yes",
+      "status": "production_ready",
+      "routes": [
+        "lib/featureFlags.ts",
+        "lib/featureFlags.client.ts",
+        "lib/featureFlags.constants.ts",
+        "lib/posthog/client.ts",
+        "lib/posthog/server.ts",
+        "app/api/posthog/route.ts"
+      ],
+      "data_sources": ["PostHog API"],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": []
+    },
+    "landing_pages_basehub": {
+      "name": "Landing Pages + BaseHub Content",
+      "implemented": "yes",
+      "status": "production_ready",
+      "routes": [
+        "app/(marketing)/page.tsx",
+        "app/(marketing)/features/page.tsx",
+        "app/(marketing)/blog/page.tsx",
+        "app/(marketing)/changelog/page.tsx",
+        "lib/basehub.ts",
+        "lib/queries/*.ts"
+      ],
+      "data_sources": ["BaseHub CMS"],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": []
+    },
+    "onboarding": {
+      "name": "Onboarding / Demo Mode / Guided Tour",
+      "implemented": "partial",
+      "status": "ui_exists_needs_backend",
+      "routes": [
+        "app/onboarding/page.tsx",
+        "lib/onboarding.ts",
+        "lib/onboardingSteps.ts",
+        "lib/useGuidedTour.ts"
+      ],
+      "data_sources": ["Local state"],
+      "test_coverage": "none",
+      "ci_status": "no_ci",
+      "runtime_errors": "none_detected",
+      "blockers": [
+        "Onboarding UI exists",
+        "No user progress tracking in database",
+        "Demo mode not implemented",
+        "Guided tour hooks exist but not integrated"
+      ]
+    },
+    "ci_cd_vercel": {
+      "name": "CI/CD and Vercel Deployment",
+      "implemented": "no",
+      "status": "not_configured",
+      "routes": [],
+      "data_sources": [],
+      "test_coverage": "not_applicable",
+      "ci_status": "no_ci",
+      "runtime_errors": "not_applicable",
+      "blockers": [
+        "No .github/workflows directory",
+        "No CI pipeline configured",
+        "No automated testing",
+        "No Playwright E2E tests configured",
+        "Vercel deployment likely manual"
+      ]
+    }
+  },
+  "summary": {
+    "total_features": 13,
+    "production_ready": 2,
+    "partially_implemented": 8,
+    "not_started": 2,
+    "needs_immediate_attention": 1,
+    "critical_blockers": [
+      "Authentication falls back to stub user in production",
+      "No RLS policies protecting user data",
+      "No CI/CD pipeline",
+      "File uploads not implemented",
+      "Vault encryption not implemented",
+      "Direct OpenAI SDK usage instead of cost-aware abstraction",
+      "No comprehensive test coverage"
+    ]
+  }
+}
