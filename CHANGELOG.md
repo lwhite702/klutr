@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2025-11-11 18:36 ET
+
+- [infra] Fixed Vercel deployment error by configuring vercel.json for monorepo structure
+- [infra] Added rootDirectory, outputDirectory, and framework properties to vercel.json
+- [infra] Removed duplicate "vercel 2.json" configuration file
+- [fix] Resolved "No Next.js version detected" build error on Vercel
+
 ## 2025-11-08 22:15 ET
 
 - [fix] Created /features index page to fix 404 error on /features route

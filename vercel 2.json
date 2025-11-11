@@ -1,5 +1,0 @@
-{
-  "buildCommand": "pnpm --filter @klutr/app build",
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "framework": "nextjs"
-}
