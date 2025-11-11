@@ -1,7 +1,6 @@
 {
-  "buildCommand": "cd ../.. && pnpm --filter @klutr/app build",
-  "installCommand": "npm install -g pnpm@9.15.0 && cd ../.. && pnpm install --frozen-lockfile",
-  "outputDirectory": "apps/app/.next",
-  "framework": "nextjs",
-  "rootDirectory": "apps/app"
+  "buildCommand": "pnpm build",
+  "installCommand": "npm install -g pnpm@9.15.0 && pnpm install --frozen-lockfile",
+  "outputDirectory": ".next",
+  "framework": "nextjs"
 }

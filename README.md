@@ -1,132 +1,45 @@
-# Klutr Monorepo
+# Klutr - AI-Powered Note Organization
 
-This is a pnpm monorepo containing the Klutr application, documentation site, and shared packages.
+_Automatically synced with your [v0.app](https://v0.app) deployments_
 
-## Structure
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/wrelik/v0-next-js-app-with-shadcn-ui)
+[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/N7neKvBLs6q)
 
-```
-/
-├── apps/
-│   ├── app/          # Next.js application (main app + marketing)
-│   └── docs/         # Mintlify documentation site
-├── packages/
-│   ├── brand/        # @klutr/brand - Brand configuration
-│   └── utils/        # @klutr/utils - Common utilities
-├── pnpm-workspace.yaml
-└── package.json      # Root workspace configuration
-```
+## Overview
 
-## Getting Started
+Klutr is a Next.js 16 app with AI-powered note organization features including clustering, smart stacks, weekly insights, and a secure vault. It uses PostgreSQL (Neon) with pgvector extension for embeddings.
 
-### Prerequisites
+## Environment Setup
 
-- Node.js LTS
-- pnpm (via corepack: `corepack enable && corepack prepare pnpm@latest --activate`)
-- Doppler CLI (for environment variables)
+This project uses [Doppler](https://doppler.com) for environment variable management. See [DOPPLER.md](./DOPPLER.md) for setup instructions.
 
-### Installation
+Required environment variables:
 
-```bash
-# Install all workspace dependencies
-pnpm install
-```
+- `NEON_NEON_DATABASE_URL` - PostgreSQL connection string from Neon
+- `OPENAI_API_KEY` - OpenAI API key for AI features
+- `CRON_SECRET` - Secret key for authenticating cron job endpoints
 
-### Development
+## Development
 
-```bash
-# Run the app
-pnpm dev
-
-# Or run specific workspaces
-pnpm dev:app    # Run app only
-pnpm dev:docs   # Run docs only
-```
-
-### Building
-
-```bash
-# Build all workspaces
-pnpm build
-
-# Or build specific workspaces
-pnpm build:app
-pnpm build:docs
-```
-
-## Workspaces
-
-### `@klutr/app`
-
-The main Next.js application including:
-- Stream interface
-- Boards
-- Muse insights
-- Vault (encrypted notes)
-- Marketing pages
-
-**Location:** `apps/app/`
-
-**Commands:**
-- `pnpm --filter @klutr/app dev` - Start dev server
-- `pnpm --filter @klutr/app build` - Build for production
-- `pnpm --filter @klutr/app db:push` - Push database schema
-
-### `@klutr/docs`
-
-Mintlify documentation site.
-
-**Location:** `apps/docs/`
-
-**Commands:**
-- `pnpm --filter @klutr/docs dev` - Start Mintlify dev server
-- `pnpm --filter @klutr/docs build` - Build docs
-
-### `@klutr/brand`
-
-Shared brand configuration (colors, typography, logos, animations).
-
-**Location:** `packages/brand/`
-
-**Usage:**
-```typescript
-import { brandColors, typography, logoPaths } from "@klutr/brand"
-```
-
-### `@klutr/utils`
-
-Shared utility functions (cn, withTimeout, retry).
-
-**Location:** `packages/utils/`
-
-**Usage:**
-```typescript
-import { cn, withTimeout, retry } from "@klutr/utils"
-```
-
-## Environment Variables
-
-This project uses [Doppler](https://doppler.com) for environment variable management. See `apps/app/DOPPLER.md` for setup instructions.
-
-## Documentation
-
-- **Monorepo Guide:** See `apps/app/docs/internal/monorepo.md`
-- **Development Setup:** See `apps/app/docs/dev-setup.md`
-- **User Documentation:** See `apps/docs/` (Mintlify site)
+1. **Setup Doppler** (see [DOPPLER.md](./DOPPLER.md))
+2. **Install dependencies**: `pnpm install`
+3. **Start development server**: `pnpm dev`
 
 ## Deployment
 
-### App
+Your project is live at:
 
-The app is deployed to Vercel. Configure in Vercel dashboard:
-- **Root Directory:** `apps/app`
-- **Build Command:** `pnpm --filter @klutr/app build`
-- **Install Command:** `pnpm install`
+**[https://vercel.com/wrelik/v0-next-js-app-with-shadcn-ui](https://vercel.com/wrelik/v0-next-js-app-with-shadcn-ui)**
 
-### Docs
+## Build your app
 
-The docs site is deployed via Mintlify. Changes are automatically deployed when pushed to the default branch.
+Continue building your app on:
 
-## License
+**[https://v0.app/chat/projects/N7neKvBLs6q](https://v0.app/chat/projects/N7neKvBLs6q)**
 
-Private - All rights reserved
+## How It Works
 
+1. Create and modify your project using [v0.app](https://v0.app)
+2. Deploy your chats from the v0 interface
+3. Changes are automatically pushed to this repository
+4. Vercel deploys the latest version from this repository
