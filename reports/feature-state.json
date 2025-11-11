@@ -1,0 +1,386 @@
+{
+  "generatedAt": "2025-01-27T00:00:00Z",
+  "version": "1.0",
+  "features": [
+    {
+      "name": "Authentication",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "lib/auth.ts",
+        "lib/supabase.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["Supabase Auth"],
+      "runtimeErrors": [],
+      "blockers": [
+        "Auth has fallback to stub user (getCurrentUserId returns 'user_dev_123')",
+        "No RLS policies documented or verified",
+        "Middleware protection not verified"
+      ],
+      "notes": "Supabase Auth integration exists but has development fallback. Needs production hardening."
+    },
+    {
+      "name": "Notes / Chat Interface",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/api/messages/create/route.ts",
+        "app/api/notes/create/route.ts",
+        "app/api/stream/create/route.ts"
+      ],
+      "testCoverage": "minimal",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["Prisma (Neon)", "Supabase adapter"],
+      "runtimeErrors": [],
+      "blockers": [
+        "UI components use mockData.ts extensively",
+        "Hybrid database: messages/threads use Prisma (Neon), notes use Supabase adapter",
+        "No verified end-to-end flow"
+      ],
+      "notes": "API routes exist but UI still uses mock data. Database migration incomplete."
+    },
+    {
+      "name": "MindStorm Embeddings and Clustering",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/api/messages/embed/route.ts",
+        "app/api/mindstorm/clusters/route.ts",
+        "app/api/mindstorm/recluster/route.ts"
+      ],
+      "testCoverage": "minimal",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["OpenAI API", "Prisma (Neon)"],
+      "runtimeErrors": [],
+      "blockers": [
+        "Uses direct OpenAI SDK, not Vercel AI SDK",
+        "Embeddings stored via raw SQL (pgvector)",
+        "No timeout/retry wrapper",
+        "No cost controls"
+      ],
+      "notes": "Embedding generation works but lacks production safeguards."
+    },
+    {
+      "name": "Smart Stacks",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/api/stacks/list/route.ts",
+        "app/api/stacks/detail/route.ts",
+        "app/api/stacks/pin/route.ts",
+        "app/api/cron/nightly-stacks/route.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["Supabase adapter"],
+      "runtimeErrors": [],
+      "blockers": [
+        "UI uses mock data",
+        "Cron job exists but not verified"
+      ],
+      "notes": "Backend implemented, frontend needs real API integration."
+    },
+    {
+      "name": "Vault Encryption",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/api/vault/create/route.ts",
+        "app/api/vault/list/route.ts",
+        "lib/encryption/secure.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["Supabase adapter"],
+      "runtimeErrors": [],
+      "blockers": [
+        "UI uses mock encrypted entries",
+        "No key derivation UX documented",
+        "No recovery flow for forgotten password"
+      ],
+      "notes": "Encryption implementation is solid (AES-GCM), but UX incomplete."
+    },
+    {
+      "name": "Insights Generation",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/api/insights/generate/route.ts",
+        "app/api/insights/list/route.ts",
+        "app/api/cron/weekly-insights/route.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["OpenAI API", "Supabase adapter"],
+      "runtimeErrors": [],
+      "blockers": [
+        "Uses direct OpenAI SDK",
+        "UI uses mock data",
+        "No cost controls"
+      ],
+      "notes": "Backend exists but needs Vercel AI SDK migration and cost controls."
+    },
+    {
+      "name": "Tagging and Search",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/api/stream/search/route.ts",
+        "lib/ai/tagNotes.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["OpenAI API", "Supabase adapter"],
+      "runtimeErrors": [],
+      "blockers": [
+        "No semantic search implementation verified",
+        "Search may not use vector similarity",
+        "Uses direct OpenAI SDK"
+      ],
+      "notes": "Basic search exists but semantic search needs verification."
+    },
+    {
+      "name": "File Attachment Uploads",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/api/stream/upload/route.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["Supabase Storage"],
+      "runtimeErrors": [],
+      "blockers": [
+        "Upload flow not fully tested",
+        "No audio transcription verified",
+        "No streaming upload verified"
+      ],
+      "notes": "Supabase Storage integration exists but needs end-to-end testing."
+    },
+    {
+      "name": "Background Jobs / Cron",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/api/cron/nightly-cluster/route.ts",
+        "app/api/cron/nightly-stacks/route.ts",
+        "app/api/cron/weekly-insights/route.ts",
+        "cron/nightlyCluster.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["Vercel Cron", "Supabase Edge Functions (planned)"],
+      "runtimeErrors": [],
+      "blockers": [
+        "CRON_SECRET validation exists but not verified",
+        "No Supabase Edge Functions migration completed",
+        "Jobs not idempotent verified"
+      ],
+      "notes": "Cron endpoints exist with auth, but migration to Supabase Edge Functions incomplete."
+    },
+    {
+      "name": "Feature Flags (PostHog)",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "lib/featureFlags.ts",
+        "lib/posthog/server.ts",
+        "lib/posthog/client.ts",
+        "app/api/posthog/setup-flags/route.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["PostHog"],
+      "runtimeErrors": [],
+      "blockers": [
+        "Fail-safe defaults to false (good)",
+        "No FeatureGate component verified",
+        "Flags may not be configured in PostHog"
+      ],
+      "notes": "PostHog integration exists with proper fail-safe behavior."
+    },
+    {
+      "name": "Landing Pages + BaseHub Content",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/(marketing)/page.tsx",
+        "lib/basehub.ts",
+        "lib/queries/*.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["BaseHub"],
+      "runtimeErrors": [],
+      "blockers": [
+        "BaseHub integration not fully tested",
+        "Content may be stale"
+      ],
+      "notes": "BaseHub integration exists but needs verification."
+    },
+    {
+      "name": "Onboarding / Demo Mode / Guided Tour",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/onboarding/page.tsx",
+        "lib/onboarding.ts",
+        "lib/onboardingSteps.ts",
+        "lib/useGuidedTour.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["Mock data"],
+      "runtimeErrors": [],
+      "blockers": [
+        "Uses mock data",
+        "Not production-ready"
+      ],
+      "notes": "Onboarding flow exists but relies on mock data."
+    },
+    {
+      "name": "CI/CD and Vercel Deployment",
+      "implemented": false,
+      "status": "missing",
+      "routes": [],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": [],
+      "runtimeErrors": [],
+      "blockers": [
+        "No GitHub Actions workflows found",
+        "No Playwright config found",
+        "No accessibility test config verified",
+        "No CI pipeline defined"
+      ],
+      "notes": "CI/CD pipeline needs to be created."
+    },
+    {
+      "name": "Database Schema and Migrations",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "prisma/schema.prisma",
+        "lib/supabase-db.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["Neon (Prisma)", "Supabase (adapter)"],
+      "runtimeErrors": [],
+      "blockers": [
+        "Hybrid approach: Neon for messages/threads, Supabase for notes",
+        "pgvector extension not verified in Supabase",
+        "No migration scripts documented",
+        "Database URL still points to Neon"
+      ],
+      "notes": "Schema exists but migration to Supabase incomplete. Needs unified approach."
+    },
+    {
+      "name": "AI Abstraction Layer",
+      "implemented": false,
+      "status": "missing",
+      "routes": [
+        "lib/ai/openai.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": ["Direct OpenAI SDK"],
+      "runtimeErrors": [],
+      "blockers": [
+        "No Vercel AI SDK usage",
+        "No provider abstraction",
+        "No cost-aware model selection",
+        "No timeout/retry wrapper",
+        "No rate limiting"
+      ],
+      "notes": "Direct OpenAI calls throughout. Needs Vercel AI SDK abstraction."
+    },
+    {
+      "name": "Health Check Endpoint",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "app/api/health/route.ts"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": [],
+      "runtimeErrors": [],
+      "blockers": [
+        "Basic health check only",
+        "Does not verify DB, Supabase, AI provider, or storage connectivity"
+      ],
+      "notes": "Health endpoint exists but needs comprehensive checks."
+    },
+    {
+      "name": "Row Level Security (RLS)",
+      "implemented": false,
+      "status": "missing",
+      "routes": [],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": [],
+      "runtimeErrors": [],
+      "blockers": [
+        "No RLS policies documented",
+        "No RLS policies verified",
+        "Using service role key bypasses RLS"
+      ],
+      "notes": "RLS policies need to be created and documented."
+    },
+    {
+      "name": "Performance and Cost Controls",
+      "implemented": false,
+      "status": "missing",
+      "routes": [],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": [],
+      "runtimeErrors": [],
+      "blockers": [
+        "No rate limiting per user",
+        "No batching for AI calls",
+        "No quotas",
+        "No cost estimation"
+      ],
+      "notes": "Cost controls need to be implemented."
+    },
+    {
+      "name": "Documentation",
+      "implemented": true,
+      "status": "partial",
+      "routes": [
+        "docs/",
+        "mintlify/"
+      ],
+      "testCoverage": "none",
+      "ciBuildStatus": "unknown",
+      "dataSources": [],
+      "runtimeErrors": [],
+      "blockers": [
+        "Customer-facing docs incomplete",
+        "Internal architecture docs need updates",
+        "No API reference (OpenAPI)",
+        "No operations runbook"
+      ],
+      "notes": "Some documentation exists but needs completion."
+    }
+  ],
+  "summary": {
+    "totalFeatures": 19,
+    "fullyImplemented": 0,
+    "partiallyImplemented": 14,
+    "notImplemented": 5,
+    "criticalBlockers": [
+      "Database migration incomplete (Neon -> Supabase)",
+      "No Vercel AI SDK abstraction",
+      "Extensive mock data usage in UI",
+      "No CI/CD pipeline",
+      "No RLS policies",
+      "No cost controls",
+      "No comprehensive testing"
+    ]
+  }
+}
