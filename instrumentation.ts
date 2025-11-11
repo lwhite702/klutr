@@ -12,10 +12,15 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
     // Server-side instrumentation can be added here if needed
     // PostHog server-side client is initialized on-demand in lib/posthog/server.ts
+    // Rollbar server-side client is initialized on-demand in lib/rollbar/server.ts
+    // Initialize Rollbar server-side to capture uncaught exceptions
+    const { getRollbarServer } = await import("./lib/rollbar/server");
+    getRollbarServer();
   }
 
   if (process.env.NEXT_RUNTIME === "edge") {
     // Edge runtime instrumentation can be added here if needed
+    // Note: Rollbar may not be fully supported in Edge runtime
   }
 
   // Load client-side instrumentation
