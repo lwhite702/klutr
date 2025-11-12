@@ -69,7 +69,7 @@ function getOpenAIClient() {
       throw new Error('OPENAI_API_KEY is not configured')
     }
     openaiClient = createOpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: process.env.OPENAI_API_KEY || '',
     })
   }
   return openaiClient
