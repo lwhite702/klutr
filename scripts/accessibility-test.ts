@@ -39,13 +39,13 @@ interface TestResult {
 async function runLighthouseAudit(path: string): Promise<number | null> {
   try {
     const lighthouse = (await import('lighthouse')).default
-    const chromeLauncher = await import('chrome-launcher')
+    const chromeLauncher = await import('chrome-launcher') as any
     
     const chrome = await chromeLauncher.default.launch({ chromeFlags: ['--headless'] })
-    const options = {
-      logLevel: 'info' as const,
-      output: 'json' as const,
-      onlyCategories: ['accessibility'] as const,
+    const options: any = {
+      logLevel: 'info',
+      output: 'json',
+      onlyCategories: ['accessibility'],
       port: chrome.port,
     }
     

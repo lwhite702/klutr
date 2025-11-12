@@ -69,15 +69,7 @@ export default async function FeaturesPage() {
           </AnimatedFadeIn>
 
           {/* Use BaseHub featureGridBlock if available, otherwise fallback to existing getFeatures() */}
-          {featuresContent.featureGridBlock && featuresContent.featureGridBlock.features.length > 0 ? (
-            <FeatureGrid features={featuresContent.featureGridBlock.features.map(f => ({
-              title: f.title || "",
-              description: f.description || "",
-              icon: f.icon?.url || "",
-            }))} />
-          ) : (
-            <FeatureGrid features={features} />
-          )}
+          <FeatureGrid features={features} />
         </AnimatedSection>
       </main>
 

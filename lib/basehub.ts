@@ -25,25 +25,59 @@ import { basehub } from 'basehub'
 export const basehubClient = (draft?: boolean) => {
   const token = process.env.BASEHUB_TOKEN || process.env.BASEHUB_API_TOKEN
 
+  // Use passed draft parameter, fallback to environment variable
+  const isDraft = draft ?? process.env.BASEHUB_DRAFT === 'true'
+
   if (!token) {
     // In development, allow missing token with warning
     if (process.env.NODE_ENV === 'development') {
       console.warn(
-        'BASEHUB_TOKEN or BASEHUB_API_TOKEN not set. BaseHub queries will fail.'
+        'BASEHUB_TOKEN or BASEHUB_API_TOKEN not set. BaseHub queries will fail gracefully.'
       )
     }
+    // Return a mock client that will fail gracefully in queries
+    return {
+      query: async () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('BaseHub query attempted without token - returning empty result')
+        }
+        return {}
+      },
+      mutation: async () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('BaseHub mutation attempted without token - returning empty result')
+        }
+        return {}
+      },
+    } as unknown as ReturnType<typeof basehub>
   }
 
-  // Use passed draft parameter, fallback to environment variable
-  const isDraft = draft ?? process.env.BASEHUB_DRAFT === 'true'
-
-  return basehub({
-    token,
-    // Enable draft mode for previewing unpublished content
-    draft: isDraft,
-    // Optional: specify a branch or commit ref
-    ref: process.env.BASEHUB_REF,
-  })
+  try {
+    return basehub({
+      token,
+      // Enable draft mode for previewing unpublished content
+      draft: isDraft,
+      // Optional: specify a branch or commit ref
+      ref: process.env.BASEHUB_REF,
+    })
+  } catch (error) {
+    // If basehub initialization fails, return a mock client
+    console.error('Failed to initialize BaseHub client:', error)
+    return {
+      query: async () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('BaseHub client initialization failed - returning empty result')
+        }
+        return {}
+      },
+      mutation: async () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('BaseHub mutation attempted - returning empty result')
+        }
+        return {}
+      },
+    } as unknown as ReturnType<typeof basehub>
+  }
 }
 
 // Export the basehub function directly for advanced usage

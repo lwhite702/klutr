@@ -24,7 +24,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
     const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const result = await client.query({
+    const result = await (client as any).query({
       marketingSite: {
         blog: {
           items: {
@@ -93,12 +93,12 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
     const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const result = await client.query({
+    const result = await (client as any).query({
       marketingSite: {
         blog: {
           __args: {
             filter: {
-              slug: { _eq: slug },
+              slug: { eq: slug },
             },
           },
           items: {

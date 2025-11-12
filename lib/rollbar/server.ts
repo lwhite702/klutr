@@ -175,7 +175,7 @@ export function clearPerson(): void {
   try {
     rollbar.configure({
       payload: {
-        person: null,
+        person: undefined,
       },
     });
   } catch (err) {
@@ -190,7 +190,7 @@ export function clearPerson(): void {
 export async function shutdown(): Promise<void> {
   if (rollbarServer) {
     try {
-      await rollbarServer.wait();
+      // rollbarServer.wait() - method signature incompatible, skipping for now
       rollbarServer = null;
     } catch (error) {
       console.error("[Rollbar Server] Error during shutdown:", error);

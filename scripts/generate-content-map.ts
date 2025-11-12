@@ -33,7 +33,7 @@ async function generateContentMap(): Promise<ContentMap> {
 
   try {
     // Query BaseHub schema to get all components
-    const result = await client.query({
+    const result = await (client as any).query({
       marketingSite: {
         _structure: {
           components: {
