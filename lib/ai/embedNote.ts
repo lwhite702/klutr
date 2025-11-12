@@ -1,21 +1,25 @@
-import { supabase } from '../supabase'
+import { generateAIEmbedding } from './provider'
 
+/**
+ * Generate embeddings for note content using Vercel AI SDK
+ * Uses cost-efficient embedding model (text-embedding-3-small)
+ */
 export async function embedNoteContent(content: string): Promise<number[]> {
   try {
-    // Call Supabase Edge Function for embedding
-    const { data, error } = await supabase.functions.invoke('embed-note', {
-      body: { content },
-    })
-
-    if (error) throw error
-
-    if (!data?.embedding || !Array.isArray(data.embedding)) {
-      throw new Error('Invalid embedding response from Supabase function')
+    if (!content || content.trim().length === 0) {
+      throw new Error('Content is required for embedding generation')
     }
 
-    return data.embedding
+    // Use Vercel AI SDK provider for embeddings
+    const embedding = await generateAIEmbedding(content)
+
+    if (!embedding || !Array.isArray(embedding) || embedding.length !== 1536) {
+      throw new Error('Invalid embedding response - expected 1536-dimensional vector')
+    }
+
+    return embedding
   } catch (error) {
-    console.error('[v0] Embedding error:', error)
+    console.error('[Embedding] Error generating embedding:', error)
     throw new Error(
       `Failed to generate embedding: ${error instanceof Error ? error.message : 'Unknown error'}`
     )

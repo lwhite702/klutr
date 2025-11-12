@@ -1,5 +1,5 @@
-import { supabase } from "../supabase";
-import { retry, withTimeout } from "@/lib/utils";
+import { generateAIObject } from "./provider";
+import { z } from "zod";
 
 export type NoteType =
   | "idea"
@@ -17,55 +17,70 @@ export type ClassificationResult = {
   tags: string[];
 };
 
+// Zod schema for classification
+const ClassificationSchema = z.object({
+  type: z.enum([
+    "idea",
+    "task",
+    "contact",
+    "link",
+    "image",
+    "voice",
+    "misc",
+    "nope",
+    "unclassified",
+  ]),
+  tags: z.array(z.string()).max(5),
+});
+
+/**
+ * Classify note content using Vercel AI SDK
+ * Uses cost-efficient model (gpt-4o-mini) for classification
+ */
 export async function classifyNoteContent(
   content: string
 ): Promise<ClassificationResult> {
   try {
-    const result = await retry(
-      async () => {
-        return await withTimeout(
-          supabase.functions.invoke("classify-note", {
-            body: { content },
-          }),
-          15000, // 15 second timeout
-          "Classification request timed out"
-        );
-      },
-      { maxAttempts: 2, delayMs: 1000 }
-    );
-
-    const data = result.data || result;
-
-    // Validate the response
-    const validTypes: NoteType[] = [
-      "idea",
-      "task",
-      "contact",
-      "link",
-      "image",
-      "voice",
-      "misc",
-      "nope",
-      "unclassified",
-    ];
-    if (!validTypes.includes(data.type)) {
-      data.type = "unclassified";
+    if (!content || content.trim().length === 0) {
+      return { type: "unclassified", tags: [] };
     }
 
-    // Ensure tags is an array
-    if (!Array.isArray(data.tags)) {
-      data.tags = [];
-    }
+    const prompt = `Analyze this note and classify it. Return the most appropriate type and extract 1-5 relevant tags.
 
-    // Limit to 5 tags and sanitize
-    data.tags = data.tags
+Note types:
+- idea: creative thoughts, brainstorming, concepts
+- task: action items, todos, reminders
+- contact: people, names, contact info
+- link: URLs, references to external content
+- image: visual content, photos, screenshots
+- voice: audio recordings, transcriptions
+- misc: general notes that don't fit other categories
+- nope: spam, irrelevant, or content to ignore
+- unclassified: unable to determine type
+
+Note content:
+${content}`;
+
+    const result = await generateAIObject({
+      prompt,
+      systemPrompt: "You are a note classification assistant. Analyze notes and categorize them accurately.",
+      schema: ClassificationSchema,
+      tier: "cheap", // Use cost-efficient model
+      provider: "openai",
+    });
+
+    // Sanitize tags
+    const sanitizedTags = result.object.tags
       .slice(0, 5)
-      .map((tag: string) => String(tag).toLowerCase().trim())
-      .filter((tag: string) => tag.length > 0 && tag.length < 50);
+      .map((tag) => tag.toLowerCase().trim())
+      .filter((tag) => tag.length > 0 && tag.length < 50);
 
-    return data as ClassificationResult;
+    return {
+      type: result.object.type,
+      tags: sanitizedTags,
+    };
   } catch (error) {
-    console.error("[v0] Classification error:", error);
+    console.error("[Classification] Error classifying note:", error);
     // Return safe defaults on error
     return {
       type: "unclassified",
