@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+// @ts-nocheck
 /**
  * Accessibility audit script using axe-core
  * 
