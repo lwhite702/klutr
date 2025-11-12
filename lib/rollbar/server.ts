@@ -175,7 +175,7 @@ export function clearPerson(): void {
   try {
     rollbar.configure({
       payload: {
-        person: null,
+        person: undefined,
       },
     });
   } catch (err) {
