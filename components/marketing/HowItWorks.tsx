@@ -1,12 +1,14 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { Sparkles, Zap, Layers, Search, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import type { HowItWorksBlock } from "@/lib/basehub/queries/blocks"
+import { getBestIllustrationPath, getIllustrationAltText, getArrowFlowIllustration } from "@/lib/illustrations/mapping"
 
 interface HowItWorksProps {
   howItWorksBlock?: HowItWorksBlock | null
@@ -18,45 +20,65 @@ const defaultSteps: Array<{
   description: string
   icon: React.ComponentType<{ className?: string }>
   color: "coral" | "mint"
-  iconUrl?: string | null
+  illustrationUseCase?: 'drop-step' | 'organize-step' | 'discover-step'
 }> = [
   {
     title: "Drop",
     description: "Add notes, files, or voice recordings to your Stream. Chat-style interface, zero friction.",
     icon: Zap,
     color: "coral",
-    iconUrl: null,
+    illustrationUseCase: 'drop-step',
   },
   {
     title: "Organize",
     description: "AI automatically tags your drops and groups them into Boards. No manual filing required.",
     icon: Layers,
     color: "mint",
-    iconUrl: null,
+    illustrationUseCase: 'organize-step',
   },
   {
     title: "Discover",
     description: "Muse provides weekly insights. Search finds connections. Turn chaos into clarity.",
     icon: Search,
     color: "coral",
-    iconUrl: null,
+    illustrationUseCase: 'discover-step',
   },
 ]
 
 export default function HowItWorks({ howItWorksBlock }: HowItWorksProps) {
   // Map BaseHub steps to our format, or use defaults
   const steps = howItWorksBlock?.steps?.map((step, index) => {
-    // Use default icon component if BaseHub doesn't provide icon URL
-    // BaseHub provides icon as image URL, but we use icon components for consistency
+    // Use default step configuration
     const defaultStep = defaultSteps[index] || defaultSteps[0]
+    // Try to get illustration path for this step
+    const illustrationPath = defaultStep.illustrationUseCase
+      ? getBestIllustrationPath(defaultStep.illustrationUseCase)
+      : null
+    const illustrationAlt = defaultStep.illustrationUseCase
+      ? getIllustrationAltText(defaultStep.illustrationUseCase)
+      : `${step.title || `Step ${index + 1}`} illustration`
+    
     return {
       title: step.title || `Step ${index + 1}`,
       description: step.description || "",
-      icon: defaultStep.icon, // Use icon component (BaseHub icon.url could be used for images if needed)
-      iconUrl: step.icon?.url || null, // Store BaseHub icon URL for potential future use
+      icon: defaultStep.icon, // Fallback icon component
+      illustrationPath: step.icon?.url || illustrationPath, // Use BaseHub icon URL if available, otherwise use mapped illustration
+      illustrationAlt: step.icon?.altText || illustrationAlt,
       color: (index % 2 === 0 ? "coral" : "mint") as "coral" | "mint",
     }
-  }) || defaultSteps.map(step => ({ ...step, iconUrl: null }))
+  }) || defaultSteps.map(step => {
+    const illustrationPath = step.illustrationUseCase
+      ? getBestIllustrationPath(step.illustrationUseCase)
+      : null
+    const illustrationAlt = step.illustrationUseCase
+      ? getIllustrationAltText(step.illustrationUseCase)
+      : `${step.title} illustration`
+    return {
+      ...step,
+      illustrationPath,
+      illustrationAlt,
+    }
+  })
 
   const heading = howItWorksBlock?.heading || "How It Works"
   const subtitle = "Drop, tag, board, discover—effortlessly"
@@ -157,10 +179,22 @@ export default function HowItWorks({ howItWorksBlock }: HowItWorksProps) {
                               ? "from-[var(--klutr-mint)]/20 to-[var(--klutr-mint)]/10"
                               : "from-[var(--klutr-coral)]/20 to-[var(--klutr-coral)]/10"
                           )}>
-                            <Icon className={cn(
-                              "w-10 h-10",
-                              isMint ? "text-[var(--klutr-mint)]" : "text-[var(--klutr-coral)]"
-                            )} />
+                            {step.illustrationPath ? (
+                              <div className="relative w-full h-full">
+                                <Image
+                                  src={step.illustrationPath}
+                                  alt={step.illustrationAlt || `${step.title} illustration`}
+                                  fill
+                                  className="object-contain p-3"
+                                  sizes="80px"
+                                />
+                              </div>
+                            ) : (
+                              <Icon className={cn(
+                                "w-10 h-10",
+                                isMint ? "text-[var(--klutr-mint)]" : "text-[var(--klutr-coral)]"
+                              )} />
+                            )}
                           </div>
                           <CardTitle className="text-2xl font-display">
                             {step.title}
@@ -230,10 +264,22 @@ export default function HowItWorks({ howItWorksBlock }: HowItWorksProps) {
                           ? "from-[var(--klutr-mint)]/20 to-[var(--klutr-mint)]/10"
                           : "from-[var(--klutr-coral)]/20 to-[var(--klutr-coral)]/10"
                       )}>
-                        <Icon className={cn(
-                          "w-8 h-8",
-                          isMint ? "text-[var(--klutr-mint)]" : "text-[var(--klutr-coral)]"
-                        )} />
+                        {step.illustrationPath ? (
+                          <div className="relative w-full h-full">
+                            <Image
+                              src={step.illustrationPath}
+                              alt={step.illustrationAlt || `${step.title} illustration`}
+                              fill
+                              className="object-contain p-2"
+                              sizes="64px"
+                            />
+                          </div>
+                        ) : (
+                          <Icon className={cn(
+                            "w-8 h-8",
+                            isMint ? "text-[var(--klutr-mint)]" : "text-[var(--klutr-coral)]"
+                          )} />
+                        )}
                       </div>
                       <CardTitle className="text-xl font-display">
                         {step.title}

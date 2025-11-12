@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
+import Image from "next/image"
 import {
   Brain,
   Zap,
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/card"
 import type { FeatureData } from "@/lib/queries/features"
 import { cn } from "@/lib/utils"
+import { getFeatureIllustration, getBestIllustrationPath, getIllustrationAltText } from "@/lib/illustrations/mapping"
 
 interface FeatureGridProps {
   features: FeatureData[]
@@ -116,6 +118,13 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
           <div className="space-y-0">
             {featuredFeatures.map((feature, index) => {
               const Icon = featureIcons[feature.name] || Brain
+              const illustrationMapping = getFeatureIllustration(feature.name)
+              const illustrationPath = illustrationMapping.primary 
+                ? getBestIllustrationPath(illustrationMapping.primary)
+                : null
+              const illustrationAlt = illustrationMapping.primary
+                ? getIllustrationAltText(illustrationMapping.primary)
+                : `${feature.name} illustration`
               const isEven = index % 2 === 0
               const bgGradient = isEven
                 ? "bg-gradient-to-r from-[var(--klutr-mint)]/10 via-[var(--klutr-mint)]/5 to-transparent"
@@ -188,7 +197,7 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
                       </Button>
                     </div>
 
-                    {/* Visual element / Icon area */}
+                    {/* Visual element / Illustration or Icon area */}
                     <div className={cn(
                       "flex-1 flex items-center justify-center",
                       isEven ? "md:justify-end" : "md:justify-start"
@@ -200,10 +209,22 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
                           ? "from-[var(--klutr-mint)]/30 to-[var(--klutr-mint)]/10"
                           : "from-[var(--klutr-coral)]/30 to-[var(--klutr-coral)]/10"
                       )}>
-                        <Icon className={cn(
-                          "w-16 h-16 md:w-24 md:h-24",
-                          isEven ? "text-[var(--klutr-mint)]" : "text-[var(--klutr-coral)]"
-                        )} />
+                        {illustrationPath ? (
+                          <div className="relative w-full h-full">
+                            <Image
+                              src={illustrationPath}
+                              alt={illustrationAlt}
+                              fill
+                              className="object-contain p-4"
+                              sizes="(max-width: 768px) 128px, 192px"
+                            />
+                          </div>
+                        ) : (
+                          <Icon className={cn(
+                            "w-16 h-16 md:w-24 md:h-24",
+                            isEven ? "text-[var(--klutr-mint)]" : "text-[var(--klutr-coral)]"
+                          )} />
+                        )}
                       </div>
                     </div>
                   </div>
@@ -217,6 +238,13 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8">
               {gridFeatures.map((feature, index) => {
                 const Icon = featureIcons[feature.name] || Brain
+                const illustrationMapping = getFeatureIllustration(feature.name)
+                const illustrationPath = illustrationMapping.primary 
+                  ? getBestIllustrationPath(illustrationMapping.primary)
+                  : null
+                const illustrationAlt = illustrationMapping.primary
+                  ? getIllustrationAltText(illustrationMapping.primary)
+                  : `${feature.name} illustration`
                 const colorVariants = [
                   { bg: "from-[var(--klutr-mint)]/10", icon: "text-[var(--klutr-mint)]", border: "border-[var(--klutr-mint)]/20" },
                   { bg: "from-[var(--klutr-coral)]/10", icon: "text-[var(--klutr-coral)]", border: "border-[var(--klutr-coral)]/20" },
@@ -238,7 +266,19 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
                           "group-hover:scale-110 transition-transform duration-300 shadow-md",
                           variant.bg
                         )}>
-                          <Icon className={cn("w-7 h-7", variant.icon)} />
+                          {illustrationPath ? (
+                            <div className="relative w-full h-full">
+                              <Image
+                                src={illustrationPath}
+                                alt={illustrationAlt}
+                                fill
+                                className="object-contain p-2"
+                                sizes="56px"
+                              />
+                            </div>
+                          ) : (
+                            <Icon className={cn("w-7 h-7", variant.icon)} />
+                          )}
                         </div>
                         <CardTitle data-bh-field="name" className="text-xl font-display">
                           {feature.name}
