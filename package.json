@@ -97,6 +97,7 @@
     "@tailwindcss/postcss": "^4.1.9",
     "@testing-library/react": "^16.1.0",
     "@types/canvas-confetti": "^1.6.4",
+    "@types/jsdom": "^27.0.0",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
