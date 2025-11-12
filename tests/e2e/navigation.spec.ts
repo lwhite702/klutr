@@ -36,7 +36,7 @@ test.describe('Public Pages Navigation', () => {
     // Check for skip link (accessibility)
     const skipLink = page.getByText(/skip to/i).first()
     if (await skipLink.isVisible()) {
-      await expect(skipLink).toHaveAttribute('href')
+      await expect(skipLink).toHaveAttribute('href', /.+/)
     }
   })
 
