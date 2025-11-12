@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type React from "react";
 import posthog from 'posthog-js';
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -12,10 +12,21 @@ import { useSectionTour } from "@/lib/hooks/useSectionExperience";
 import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
 import { TimelineGrid } from "@/components/memory/TimelineGrid";
-import { mockMemory } from "@/lib/mockData";
+import { toast } from "sonner";
+
+interface WeeklySummary {
+  id: string;
+  summary: string;
+  startDate: string;
+  endDate: string;
+  noteCount: number;
+  topTags: string[];
+}
 
 export default function MemoryLanePage() {
-  const [memoryItems, setMemoryItems] = useState(mockMemory);
+  const [memoryItems, setMemoryItems] = useState<WeeklySummary[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
   const timelineRef = useRef<HTMLDivElement>(null);
   const memoryItemsRef = useRef<HTMLDivElement>(null);
 
@@ -43,17 +54,69 @@ export default function MemoryLanePage() {
     autoTrigger: false,
   });
 
+  // Load weekly summaries
+  useEffect(() => {
+    loadWeeklySummaries();
+  }, []);
+
+  async function loadWeeklySummaries() {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/weekly-summaries/list?limit=20');
+      
+      if (!response.ok) {
+        throw new Error('Failed to load summaries');
+      }
+      
+      const data = await response.json();
+      setMemoryItems(data.summaries || []);
+    } catch (error) {
+      console.error('[Memory] Error loading:', error);
+      toast.error('Failed to load weekly summaries');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleGenerateWeeklySummary() {
+    try {
+      setIsGenerating(true);
+      const response = await fetch('/api/weekly-summaries/generate', {
+        method: 'POST',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate summary');
+      }
+      
+      toast.success('Weekly summary generated!');
+      await loadWeeklySummaries();
+    } catch (error) {
+      console.error('[Memory] Generate error:', error);
+      toast.error('Failed to generate weekly summary');
+    } finally {
+      setIsGenerating(false);
+    }
+  }
+
   const handleRevisitWeek = (week: string) => {
     posthog.capture('memory_week_revisited', { week: week });
-    console.log("TODO: Open week detail", week);
+    // Find and show the summary for this week
+    const summary = memoryItems.find(s => s.id === week);
+    if (summary) {
+      toast.info(summary.summary, { duration: 10000 });
+    }
   };
 
   const handleMemoryClick = (memoryId: string) => {
-    console.log("TODO: Open memory item", memoryId);
+    const summary = memoryItems.find(s => s.id === memoryId);
+    if (summary) {
+      toast.info(summary.summary, { duration: 10000 });
+    }
   };
 
   const handleMemoryFavorite = (memoryId: string) => {
-    console.log("TODO: Toggle favorite for memory", memoryId);
+    toast.info('Favorites coming soon');
   };
 
   return (
@@ -62,18 +125,28 @@ export default function MemoryLanePage() {
           title="Memory Lane"
           description="What you were thinking across time."
           actions={
-            !onboarding.active && !dialogTour.open && (
+            <>
+              {!onboarding.active && !dialogTour.open && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    posthog.capture('memory_tour_started', { trigger: 'manual_click' });
+                    dialogTour.startTour();
+                  }}
+                >
+                  Take tour
+                </Button>
+              )}
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  posthog.capture('memory_tour_started', { trigger: 'manual_click' });
-                  dialogTour.startTour();
-                }}
+                onClick={handleGenerateWeeklySummary}
+                disabled={isGenerating}
               >
-                Take tour
+                {isGenerating ? 'Generating...' : 'Generate This Week'}
               </Button>
-            )
+            </>
           }
         />
 
@@ -122,21 +195,40 @@ export default function MemoryLanePage() {
                 showNext={!onboarding.isLastStep}
               />
             )}
-          <TimelineGrid
-            items={memoryItems.map((item) => ({
-              week: item.period,
-              count: 1,
-              topics: item.tags.map((tag) => tag.label),
-            }))}
-            onRevisit={handleRevisitWeek}
-          />
+          {isLoading ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <p>Loading summaries...</p>
+            </div>
+          ) : memoryItems.length > 0 ? (
+            <TimelineGrid
+              items={memoryItems.map((item) => {
+                const startDate = new Date(item.startDate);
+                const endDate = new Date(item.endDate);
+                return {
+                  week: `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`,
+                  count: item.noteCount,
+                  topics: item.topTags,
+                };
+              })}
+              onRevisit={(week) => {
+                // Find the summary by its formatted week string
+                const idx = memoryItems.findIndex(item => {
+                  const startDate = new Date(item.startDate);
+                  const endDate = new Date(item.endDate);
+                  const formatted = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+                  return formatted === week;
+                });
+                if (idx >= 0) {
+                  handleRevisitWeek(memoryItems[idx].id);
+                }
+              }}
+            />
+          ) : (
+            <div className="text-center py-12 text-muted-foreground">
+              <p>No weekly summaries yet. Add some notes and generate your first summary.</p>
+            </div>
+          )}
         </div>
-
-        {memoryItems.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground">
-            <p>No memories yet. Add some notes to see your timeline.</p>
-          </div>
-        )}
       </div>
   );
 }
