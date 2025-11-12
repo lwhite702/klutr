@@ -70,10 +70,10 @@ jobs:
         run: pnpm build
         env:
           # Placeholder values for build
-          NEON_DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
-          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-key
-          OPENAI_API_KEY: sk-placeholder
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           SKIP_ENV_VALIDATION: true
 
       - name: Upload build artifacts
