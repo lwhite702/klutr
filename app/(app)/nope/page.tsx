@@ -18,19 +18,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { mockNotes } from "@/lib/mockData";
 import { RotateCcw } from "lucide-react";
+import { toast } from "sonner";
+import { apiGet, apiPatch } from "@/lib/clientApi";
+import type { NoteDTO } from "@/lib/dto";
+import { useEffect } from "react";
+
+interface NopeNote {
+  id: string;
+  title: string;
+  description: string;
+  tags: Array<{ label: string; colorClassName?: string }>;
+}
 
 export default function NopeBinPage() {
-  const [nopeNotes, setNopeNotes] = useState(
-    mockNotes.map((note) => ({
-      ...note,
-      tags: [
-        ...note.tags,
-        { label: "discarded", colorClassName: "bg-gray-100 text-gray-800" },
-      ],
-    }))
-  );
+  const [nopeNotes, setNopeNotes] = useState<NopeNote[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const nopeItemsRef = useRef<HTMLDivElement>(null);
   const restoreButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -58,17 +61,57 @@ export default function NopeBinPage() {
     autoTrigger: false,
   });
 
-  const handleRestore = (noteId: string) => {
-    console.log("TODO: Restore note", noteId);
-    setNopeNotes(nopeNotes.filter((note) => note.id !== noteId));
+  // Load nope notes on mount
+  useEffect(() => {
+    loadNopeNotes();
+  }, []);
+
+  async function loadNopeNotes() {
+    try {
+      setIsLoading(true);
+      // Filter for notes with type='nope'
+      const response = await apiGet<NoteDTO[]>('/api/notes/list?type=nope');
+      
+      const notesData: NopeNote[] = response.map(note => ({
+        id: note.id,
+        title: note.content.slice(0, 50) + (note.content.length > 50 ? '...' : ''),
+        description: note.content,
+        tags: [
+          ...note.tags.map(t => ({ label: t })),
+          { label: "discarded", colorClassName: "bg-gray-100 text-gray-800" },
+        ],
+      }));
+      
+      setNopeNotes(notesData);
+    } catch (error) {
+      console.error('[Nope] Load notes error:', error);
+      toast.error('Failed to load discarded notes');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleRestore = async (noteId: string) => {
+    try {
+      // Change type from 'nope' back to 'misc'
+      await apiPatch<NoteDTO>(`/api/notes/${noteId}`, {
+        type: 'misc',
+      });
+      
+      setNopeNotes(nopeNotes.filter((note) => note.id !== noteId));
+      toast.success('Note restored');
+    } catch (error) {
+      console.error('[Nope] Restore error:', error);
+      toast.error('Failed to restore note');
+    }
   };
 
   const handleNoteClick = (noteId: string) => {
-    console.log("TODO: Open discarded note", noteId);
+    toast.info('Note details coming soon');
   };
 
   const handleNoteFavorite = (noteId: string) => {
-    console.log("TODO: Toggle favorite for discarded note", noteId);
+    toast.info('Favorites coming soon');
   };
 
   return (
