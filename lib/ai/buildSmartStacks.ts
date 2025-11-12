@@ -1,19 +1,17 @@
-import { prisma } from "../db";
-import { supabase } from "../supabase";
-import { retry, withTimeout } from "@/lib/utils";
+import { prisma } from "../db"
+import { openai } from "../openai"
+import { retry, withTimeout } from "../utils"
 
 export type SmartStackDTO = {
-  id: string;
-  name: string;
-  cluster: string;
-  noteCount: number;
-  summary: string;
-  pinned: boolean;
-};
+  id: string
+  name: string
+  cluster: string
+  noteCount: number
+  summary: string
+  pinned: boolean
+}
 
-export async function buildSmartStacks(
-  userId: string
-): Promise<SmartStackDTO[]> {
+export async function buildSmartStacks(userId: string): Promise<SmartStackDTO[]> {
   try {
     // Get cluster distribution
     const clusterGroups = await prisma.note.groupBy({
@@ -31,12 +29,12 @@ export async function buildSmartStacks(
           id: "desc",
         },
       },
-    });
+    })
 
-    const stacks: SmartStackDTO[] = [];
+    const stacks: SmartStackDTO[] = []
 
     for (const group of clusterGroups) {
-      if (!group.cluster || group._count.id < 2) continue;
+      if (!group.cluster || group._count.id < 2) continue
 
       // Get representative notes from this cluster
       const notes = await prisma.note.findMany({
@@ -53,24 +51,11 @@ export async function buildSmartStacks(
           createdAt: "desc",
         },
         take: 5,
-      });
+      })
 
-      // Generate summary using Supabase Edge Function
-      const noteContents = notes
-        .map((n: any) => n.content.slice(0, 200))
-        .join("\n\n");
-
-      // Use Edge Function for summary generation
-      const { data: summaryData } = await supabase.functions.invoke(
-        "build-stacks",
-        {
-          body: { userId, cluster: group.cluster, noteContents },
-        }
-      );
-
-      const summary =
-        summaryData?.summary ||
-        (await generateStackSummary(group.cluster, noteContents));
+      // Generate summary using OpenAI
+      const noteContents = notes.map((n: { content: string }) => n.content.slice(0, 200)).join("\n\n")
+      const summary = await generateStackSummary(group.cluster, noteContents)
 
       // Check if stack already exists
       const existingStack = await prisma.smartStack.findFirst({
@@ -78,7 +63,7 @@ export async function buildSmartStacks(
           userId,
           cluster: group.cluster,
         },
-      });
+      })
 
       const stack = await prisma.smartStack.upsert({
         where: {
@@ -96,7 +81,7 @@ export async function buildSmartStacks(
           noteCount: group._count.id,
           summary,
         },
-      });
+      })
 
       stacks.push({
         id: stack.id,
@@ -105,30 +90,47 @@ export async function buildSmartStacks(
         noteCount: stack.noteCount,
         summary: stack.summary,
         pinned: stack.pinned,
-      });
+      })
     }
 
-    console.log(`[v0] Built ${stacks.length} smart stacks`);
-    return stacks;
+    console.log(`[v0] Built ${stacks.length} smart stacks`)
+    return stacks
   } catch (error) {
-    console.error("[v0] Smart stacks error:", error);
-    throw new Error(
-      `Failed to build smart stacks: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
+    console.error("[v0] Smart stacks error:", error)
+    throw new Error(`Failed to build smart stacks: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }
 
-async function generateStackSummary(
-  clusterName: string,
-  noteContents: string
-): Promise<string> {
+async function generateStackSummary(clusterName: string, noteContents: string): Promise<string> {
   try {
-    // Use Supabase Edge Function or fallback to default
-    return `Collection of ${clusterName.toLowerCase()} notes.`;
+    const result = await retry(
+      async () => {
+        return await withTimeout(
+          openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+              {
+                role: "system",
+                content: "You create concise, insightful summaries of note collections. Keep it to 1-2 sentences.",
+              },
+              {
+                role: "user",
+                content: `Summarize the theme of these "${clusterName}" notes:\n\n${noteContents}`,
+              },
+            ],
+            temperature: 0.5,
+            max_tokens: 100,
+          }),
+          15000,
+          "Stack summary generation timed out",
+        )
+      },
+      { maxAttempts: 2, delayMs: 1000 },
+    )
+
+    return result.choices[0]?.message?.content || `Collection of ${clusterName.toLowerCase()} notes.`
   } catch (error) {
-    console.error("[v0] Stack summary error:", error);
-    return `Collection of ${clusterName.toLowerCase()} notes.`;
+    console.error("[v0] Stack summary error:", error)
+    return `Collection of ${clusterName.toLowerCase()} notes.`
   }
 }

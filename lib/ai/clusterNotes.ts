@@ -1,5 +1,4 @@
 import { prisma } from "../db"
-import { supabaseAdmin } from "../supabase"
 
 const CLUSTER_THRESHOLD = 0.35
 
@@ -11,19 +10,18 @@ type ClusterCentroid = {
 export async function clusterUserNotes(userId: string): Promise<void> {
   try {
     // Step 1: Get all notes with embeddings for this user
-    const { data: notesData, error } = await supabaseAdmin
-      .from('notes')
-      .select('id, type, embedding')
-      .eq('user_id', userId)
-      .not('embedding', 'is', null)
-
-    if (error) throw error
-
-    const notesWithEmbeddings = (notesData || []).map((note: any) => ({
-      id: note.id,
-      type: note.type,
-      embedding: Array.isArray(note.embedding) ? note.embedding : null,
-    })).filter((note: any) => note.embedding !== null)
+    const notesWithEmbeddings = await prisma.$queryRaw<
+      Array<{
+        id: string
+        type: string
+        embedding: string
+      }>
+    >`
+      SELECT id, type, embedding::text
+      FROM notes
+      WHERE "userId" = ${userId}
+        AND embedding IS NOT NULL
+    `
 
     if (notesWithEmbeddings.length === 0) {
       console.log("[v0] No notes with embeddings found for clustering")
@@ -36,8 +34,8 @@ export async function clusterUserNotes(userId: string): Promise<void> {
     for (const note of notesWithEmbeddings) {
       if (note.type === "unclassified" || note.type === "nope") continue
 
-      const embedding = note.embedding
-      if (!embedding || !Array.isArray(embedding)) continue
+      const embedding = parseEmbedding(note.embedding)
+      if (!embedding) continue
 
       if (!typeGroups.has(note.type)) {
         typeGroups.set(note.type, [])
@@ -67,8 +65,8 @@ export async function clusterUserNotes(userId: string): Promise<void> {
 
     // Step 3: Assign each note to nearest centroid
     for (const note of notesWithEmbeddings) {
-      const embedding = note.embedding
-      if (!embedding || !Array.isArray(embedding)) continue
+      const embedding = parseEmbedding(note.embedding)
+      if (!embedding) continue
 
       let bestCluster = "Misc"
       let bestDistance = 1.0
@@ -107,6 +105,16 @@ export async function clusterUserNotes(userId: string): Promise<void> {
   } catch (error) {
     console.error("[v0] Clustering error:", error)
     throw new Error(`Failed to cluster notes: ${error instanceof Error ? error.message : "Unknown error"}`)
+  }
+}
+
+function parseEmbedding(embeddingStr: string): number[] | null {
+  try {
+    // pgvector returns embeddings as "[0.1,0.2,...]"
+    const cleaned = embeddingStr.replace(/^\[|\]$/g, "")
+    return cleaned.split(",").map(Number)
+  } catch {
+    return null
   }
 }
 

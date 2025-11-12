@@ -13,6 +13,8 @@ import { cookies } from 'next/headers'
 /**
  * Get current user for API routes and server components
  * Uses Supabase Auth to get the authenticated user
+ * 
+ * @throws Error if user is not authenticated
  */
 export async function getCurrentUser(req?: Request): Promise<{ id: string; email: string }> {
   // For server-side usage, create a server client
@@ -43,12 +45,7 @@ export async function getCurrentUser(req?: Request): Promise<{ id: string; email
   } = await supabase.auth.getUser()
 
   if (error || !user) {
-    // Fallback to stub for development if auth is not configured
-    const userId = await getCurrentUserId()
-    return {
-      id: userId,
-      email: 'dev@example.com',
-    }
+    throw new Error('Unauthorized: No valid authentication session')
   }
 
   return {

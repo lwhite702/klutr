@@ -1,23 +1,30 @@
-import { supabase } from '../supabase'
+import { openai } from "../openai"
+import { retry, withTimeout } from "../utils"
 
 export async function embedNoteContent(content: string): Promise<number[]> {
   try {
-    // Call Supabase Edge Function for embedding
-    const { data, error } = await supabase.functions.invoke('embed-note', {
-      body: { content },
-    })
+    const result = await retry(
+      async () => {
+        return await withTimeout(
+          openai.embeddings.create({
+            model: "text-embedding-3-small",
+            input: content.slice(0, 8000), // Limit to 8k chars
+          }),
+          20000, // 20 second timeout
+          "Embedding request timed out",
+        )
+      },
+      { maxAttempts: 3, delayMs: 1000, backoff: true },
+    )
 
-    if (error) throw error
-
-    if (!data?.embedding || !Array.isArray(data.embedding)) {
-      throw new Error('Invalid embedding response from Supabase function')
+    const embedding = result.data[0]?.embedding
+    if (!embedding || !Array.isArray(embedding)) {
+      throw new Error("Invalid embedding response from OpenAI")
     }
 
-    return data.embedding
+    return embedding
   } catch (error) {
-    console.error('[v0] Embedding error:', error)
-    throw new Error(
-      `Failed to generate embedding: ${error instanceof Error ? error.message : 'Unknown error'}`
-    )
+    console.error("[v0] Embedding error:", error)
+    throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }
