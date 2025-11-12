@@ -144,6 +144,14 @@ function estimateCost(
 function logCost(estimate: CostEstimate) {
   if (!defaultConfig.enableCostLogging) return
 
+  // Update cost tracker
+  costTracker.totalRequests++
+  costTracker.totalCost += estimate.estimatedCost
+  costTracker.costByModel[estimate.model] = 
+    (costTracker.costByModel[estimate.model] || 0) + estimate.estimatedCost
+  costTracker.costByProvider[estimate.provider] = 
+    (costTracker.costByProvider[estimate.provider] || 0) + estimate.estimatedCost
+
   console.log('[AI Cost]', {
     model: estimate.model,
     provider: estimate.provider,
@@ -389,6 +397,7 @@ export async function generateAIEmbeddingsBatch(params: {
 
   // Process in batches to avoid rate limits
   for (let i = 0; i < texts.length; i += batchSize) {
+    const batchStartTime = Date.now()
     const batch = texts.slice(i, i + batchSize)
     
     const results = await Promise.all(
@@ -398,9 +407,13 @@ export async function generateAIEmbeddingsBatch(params: {
     embeddings.push(...results.map(r => r.embedding))
     totalCost += results.reduce((sum, r) => sum + r.usage.estimatedCost, 0)
 
-    // Rate limiting: wait 1s between batches
+    // Rate limiting: ensure at least 1s between batch starts
     if (i + batchSize < texts.length) {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const elapsed = Date.now() - batchStartTime
+      const delay = Math.max(0, 1000 - elapsed)
+      if (delay > 0) {
+        await new Promise(resolve => setTimeout(resolve, delay))
+      }
     }
   }
 
