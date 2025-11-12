@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import type React from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
@@ -16,12 +16,24 @@ import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
 import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
 import { useSectionTour } from "@/lib/hooks/useSectionExperience";
 import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
-import { mockNotes } from "@/lib/mockData";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { apiGet, apiPost } from "@/lib/clientApi";
+import type { NoteDTO } from "@/lib/dto";
+
+interface Note {
+  id: string;
+  content: string;
+  type: string;
+  tags: Array<{ label: string }>;
+  createdAt: Date;
+  archived: boolean;
+}
 
 export default function AllNotesPage() {
-  const [notes, setNotes] = useState(mockNotes);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [isCreating, setIsCreating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [view, setView] = useState<ViewType>("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilters, setActiveFilters] = useState<{ label: string; value: string }[]>([]);
@@ -54,33 +66,70 @@ export default function AllNotesPage() {
     autoTrigger: false,
   });
 
+  // Load notes on mount
+  useEffect(() => {
+    loadNotes();
+  }, []);
+
+  async function loadNotes() {
+    try {
+      setIsLoading(true);
+      const response = await apiGet<NoteDTO[]>('/api/notes/list?limit=100');
+      
+      const notesData: Note[] = response.map(note => ({
+        id: note.id,
+        content: note.content,
+        type: note.type,
+        tags: note.tags.map(t => ({ label: t })),
+        createdAt: new Date(note.createdAt),
+        archived: note.archived,
+      }));
+      
+      setNotes(notesData);
+    } catch (error) {
+      console.error('[Dashboard] Load notes error:', error);
+      toast.error('Failed to load notes');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const handleCreateNote = async (content: string) => {
     setIsCreating(true);
-    console.log("TODO: Create note with content:", content);
-
-    const newNote = {
-      id: Date.now().toString(),
-      title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
-      description: content,
-      tags: [{ label: "unclassified" }],
-      pinned: false,
-    };
-
-    setNotes([newNote, ...notes]);
-    setIsCreating(false);
+    
+    try {
+      const response = await apiPost<NoteDTO>('/api/notes/create', {
+        content,
+        type: 'misc',
+      });
+      
+      const newNote: Note = {
+        id: response.id,
+        content: response.content,
+        type: response.type,
+        tags: response.tags.map(t => ({ label: t })),
+        createdAt: new Date(response.createdAt),
+        archived: response.archived,
+      };
+      
+      setNotes([newNote, ...notes]);
+      toast.success('Note created');
+    } catch (error) {
+      console.error('[Dashboard] Create note error:', error);
+      toast.error('Failed to create note');
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const handleNoteClick = (noteId: string) => {
-    console.log("TODO: Open note", noteId);
+    // Navigate to note detail or expand inline
+    toast.info('Note details coming soon');
   };
 
   const handleNoteFavorite = (noteId: string) => {
-    console.log("TODO: Toggle favorite for note", noteId);
-    setNotes(
-      notes.map((note) =>
-        note.id === noteId ? { ...note, pinned: !note.pinned } : note
-      )
-    );
+    // TODO: Implement pinning API
+    toast.info('Pinning notes coming soon');
   };
 
   // Filter and sort logic
