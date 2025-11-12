@@ -232,12 +232,12 @@ export async function generateAIText(params: {
   })
 
   const costEstimate: CostEstimate = {
-    inputTokens: result.usage?.promptTokens || 0,
-    outputTokens: result.usage?.completionTokens || 0,
+    inputTokens: (result.usage as any)?.promptTokens || 0,
+    outputTokens: (result.usage as any)?.completionTokens || 0,
     estimatedCost: estimateCost(
       modelId,
-      result.usage?.promptTokens || 0,
-      result.usage?.completionTokens || 0
+      (result.usage as any)?.promptTokens || 0,
+      (result.usage as any)?.completionTokens || 0
     ),
     model: modelId,
     provider,
@@ -289,12 +289,12 @@ export async function generateAIObject<T>(params: {
   })
 
   const costEstimate: CostEstimate = {
-    inputTokens: result.usage?.promptTokens || 0,
-    outputTokens: result.usage?.completionTokens || 0,
+    inputTokens: (result.usage as any)?.promptTokens || 0,
+    outputTokens: (result.usage as any)?.completionTokens || 0,
     estimatedCost: estimateCost(
       modelId,
-      result.usage?.promptTokens || 0,
-      result.usage?.completionTokens || 0
+      (result.usage as any)?.promptTokens || 0,
+      (result.usage as any)?.completionTokens || 0
     ),
     model: modelId,
     provider,
