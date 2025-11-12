@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type React from "react";
 import posthog from 'posthog-js';
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -16,10 +16,25 @@ import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
 import { useSectionTour } from "@/lib/hooks/useSectionExperience";
 import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
-import { mockClusters } from "@/lib/mockData";
+import { toast } from "sonner";
+
+interface Cluster {
+  id: string;
+  name: string;
+  noteCount: number;
+  averageConfidence: number;
+  sampleNotes: Array<{
+    id: string;
+    content: string;
+    type: string;
+    confidence: number | null;
+  }>;
+}
 
 export default function MindStormPage() {
-  const [clusters, setClusters] = useState(mockClusters);
+  const [clusters, setClusters] = useState<Cluster[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const clustersRef = useRef<HTMLDivElement>(null);
@@ -49,24 +64,64 @@ export default function MindStormPage() {
     autoTrigger: false,
   });
 
-  const handleRecluster = () => {
+  // Load clusters from API
+  useEffect(() => {
+    loadClusters();
+  }, []);
+
+  async function loadClusters() {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/notes/clusters');
+      if (!response.ok) throw new Error('Failed to load clusters');
+      
+      const data = await response.json();
+      setClusters(data.clusters || []);
+    } catch (error) {
+      console.error('[MindStorm] Error loading clusters:', error);
+      toast.error('Failed to load clusters');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleRecluster = async () => {
     posthog.capture('mindstorm-recluster-clicked');
-    console.log("TODO: Recluster notes");
+    
+    try {
+      setIsRefreshing(true);
+      const response = await fetch('/api/notes/clusters/refresh', {
+        method: 'POST',
+      });
+      
+      if (!response.ok) throw new Error('Failed to trigger reclustering');
+      
+      toast.success('Clustering started. This may take a few minutes.');
+      
+      // Reload clusters after a delay
+      setTimeout(() => {
+        loadClusters();
+      }, 5000);
+    } catch (error) {
+      console.error('[MindStorm] Recluster error:', error);
+      toast.error('Failed to recluster notes');
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const handleClusterClick = (clusterId: string) => {
-    console.log("TODO: Open cluster", clusterId);
+    // Navigate to cluster view
+    const cluster = clusters.find(c => c.id === clusterId);
+    if (cluster) {
+      window.location.href = `/stacks/${encodeURIComponent(cluster.name)}`;
+    }
   };
 
   const handleClusterFavorite = (clusterId: string) => {
-    console.log("TODO: Toggle favorite for cluster", clusterId);
-    setClusters(
-      clusters.map((cluster) =>
-        cluster.id === clusterId
-          ? { ...cluster, pinned: !(cluster.pinned ?? false) }
-          : cluster
-      )
-    );
+    // For now, just toggle in local state
+    // TODO: Implement API endpoint for pinning clusters
+    toast.info('Cluster pinning coming soon');
   };
 
   const handleViewChange = (newView: ViewType) => {
@@ -86,13 +141,19 @@ export default function MindStormPage() {
 
   // Filter clusters by search
   const filteredClusters = searchQuery
-    ? clusters.filter(
-        (cluster) =>
-          cluster.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cluster.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cluster.tags?.some((tag) => tag.label.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? clusters.filter((cluster) =>
+        cluster.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : clusters;
+
+  // Convert clusters to display format
+  const displayClusters = filteredClusters.map((cluster) => ({
+    id: cluster.id,
+    title: cluster.name,
+    description: `${cluster.noteCount} notes (${Math.round(cluster.averageConfidence * 100)}% confidence)`,
+    tags: [{ label: `${cluster.noteCount} notes` }],
+    pinned: false,
+  }));
 
   const ReclusterButton = () => (
     <Button
@@ -100,11 +161,12 @@ export default function MindStormPage() {
       variant="outline"
       size="sm"
       onClick={handleRecluster}
+      disabled={isRefreshing}
       aria-label="Re-cluster notes now"
       data-onboarding="recluster-button"
       className="relative"
     >
-      Re-cluster now
+      {isRefreshing ? 'Clustering...' : 'Re-cluster now'}
       {onboarding.active && onboarding.currentStep && onboarding.step === 1 && (
         <TourCallout
           title={onboarding.currentStep.title}
@@ -182,16 +244,20 @@ export default function MindStormPage() {
           )}
       </div>
 
-      {view === "pinboard" ? (
+      {isLoading ? (
+        <div className="text-center py-12 text-muted-foreground">
+          <p>Loading clusters...</p>
+        </div>
+      ) : view === "pinboard" ? (
         <PinBoardView
-          items={filteredClusters}
+          items={displayClusters}
           relationships={relationships}
           onItemClick={handleClusterClick}
           onItemFavorite={handleClusterFavorite}
         />
       ) : (
         <CardGrid view={view}>
-          {filteredClusters.map((cluster) => (
+          {displayClusters.map((cluster) => (
             <ItemCard
               key={cluster.id}
               title={cluster.title}
@@ -206,7 +272,7 @@ export default function MindStormPage() {
         </CardGrid>
       )}
 
-      {filteredClusters.length === 0 && (
+      {!isLoading && displayClusters.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
           <p>
             {searchQuery
