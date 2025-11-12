@@ -18,7 +18,8 @@ Generated: 2025-11-12
 - Click widget to verify it opens
 - Check browser console for errors
 
-**PR URL:** (To be created)
+**Branch**: `marketing/tawk-widget`
+**PR URL:** (Create PR: `marketing/tawk-widget` → `main`)
 
 ---
 
@@ -37,7 +38,8 @@ Generated: 2025-11-12
 - Verify `/api/tawk/hash` returns `{ id, name, email, tawkHash }` for authenticated requests
 - Test with unauthenticated request - should return 401
 
-**PR URL:** (To be created)
+**Branch**: `marketing/tawk-widget`
+**PR URL:** (Create PR: `marketing/tawk-widget` → `main`)
 
 ---
 
@@ -52,7 +54,8 @@ Generated: 2025-11-12
 - Verify workflow does NOT fail on missing env vars
 - Check that warnings are logged instead
 
-**PR URL:** (To be created)
+**Branch**: `marketing/tawk-widget`
+**PR URL:** (Create PR: `marketing/tawk-widget` → `main`)
 
 ---
 
@@ -67,7 +70,8 @@ Generated: 2025-11-12
 - Verify support page includes Tawk toggle script
 - Check that no secrets are exposed in external docs
 
-**PR URL:** (To be created)
+**Branch**: `marketing/tawk-widget`
+**PR URL:** (Create PR: `marketing/tawk-widget` → `main`)
 
 ---
 

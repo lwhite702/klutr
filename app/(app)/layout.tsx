@@ -2,6 +2,9 @@
 
 import { usePathname } from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
+import dynamic from 'next/dynamic';
+
+const TawkAuth = dynamic(() => import('./components/TawkAuth.client'), { ssr: false });
 
 export default function AppLayout({
   children,
@@ -13,6 +16,7 @@ export default function AppLayout({
   return (
     <AppShell activeRoute={pathname}>
       {children}
+      <TawkAuth />
     </AppShell>
   );
 }
