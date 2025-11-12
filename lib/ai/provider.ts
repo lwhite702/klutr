@@ -225,8 +225,9 @@ export async function generateAIText(params: {
       model,
       prompt,
       system: systemPrompt,
-      maxTokens,
       temperature,
+      // Note: maxTokens not directly supported in Vercel AI SDK v5
+      // Use model-specific limits or implement via provider config
     })
   })
 
@@ -282,7 +283,8 @@ export async function generateAIObject<T>(params: {
       prompt,
       system: systemPrompt,
       schema,
-      maxTokens,
+      // Note: maxTokens not directly supported in Vercel AI SDK v5
+      // Use model-specific limits or implement via provider config
     })
   })
 
@@ -333,8 +335,9 @@ export async function streamAIText(params: {
     model,
     prompt,
     system: systemPrompt,
-    maxTokens,
     temperature,
+    // Note: maxTokens not directly supported in Vercel AI SDK v5
+    // Use model-specific limits or implement via provider config
   })
 }
 
