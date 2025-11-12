@@ -225,7 +225,7 @@ export async function generateAIText(params: {
       model,
       prompt,
       system: systemPrompt,
-      maxSteps: maxTokens,
+      maxTokens,
       temperature,
     })
   })
@@ -282,7 +282,7 @@ export async function generateAIObject<T>(params: {
       prompt,
       system: systemPrompt,
       schema,
-      maxSteps: maxTokens,
+      maxTokens,
     })
   })
 
@@ -333,7 +333,7 @@ export async function streamAIText(params: {
     model,
     prompt,
     system: systemPrompt,
-    maxSteps: maxTokens,
+    maxTokens,
     temperature,
   })
 }
