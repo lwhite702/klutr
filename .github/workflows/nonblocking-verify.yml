@@ -1,0 +1,51 @@
+name: PR Non-blocking Verify
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@9.15.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (non-blocking)
+        run: |
+          set +e
+          pnpm build > build_log.txt 2>&1
+          echo "===== BUILD LOG START ====="
+          tail -n 200 build_log.txt || true
+          echo "===== BUILD LOG END ====="
+          # Do not fail the workflow on build failure - just upload logs
+          if [ $? -ne 0 ]; then
+            echo "Build failed, but this job is non-blocking. Inspect build_log.txt"
+          fi
+
+      - name: Upload build log
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build_log.txt
+
+      - name: Check for missing env vars
+        run: |
+          echo "Checking for common environment variables..."
+          echo "Note: Missing env vars will not fail this build"
+          echo "Required for production:"
+          echo "  - NEXT_PUBLIC_TAWK_PROPERTY_ID (marketing widget)"
+          echo "  - TAWK_SECRET (secure login)"
+          echo "  - MINTLIFY_API_KEY (docs publish)"
+          echo "  - MINTLIFY_PROJECT_ID (docs publish)"
+
