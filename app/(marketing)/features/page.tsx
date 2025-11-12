@@ -70,10 +70,19 @@ export default async function FeaturesPage() {
 
           {/* Use BaseHub featureGridBlock if available, otherwise fallback to existing getFeatures() */}
           {featuresContent.featureGridBlock && featuresContent.featureGridBlock.features.length > 0 ? (
-            <FeatureGrid features={featuresContent.featureGridBlock.features.map(f => ({
-              title: f.title || "",
-              description: f.description || "",
-              icon: f.icon?.url || "",
+            <FeatureGrid features={featuresContent.featureGridBlock.features.map((f, idx) => ({
+              _id: `feature-${idx}`,
+              _title: f.title || "",
+              name: f.title || "",
+              slug: f.title?.toLowerCase().replace(/\s+/g, '-') || `feature-${idx}`,
+              tagline: f.description || "",
+              description: f.description || null,
+              illustrationUrl: f.icon ? {
+                url: f.icon.url,
+                fileName: f.icon.fileName,
+                altText: f.icon.altText,
+              } : null,
+              seoKeywords: null,
             }))} />
           ) : (
             <FeatureGrid features={features} />
