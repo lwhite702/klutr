@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type React from "react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionSummary } from "@/components/ui/SectionSummary";
@@ -11,10 +11,20 @@ import { useSectionTour } from "@/lib/hooks/useSectionExperience";
 import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
 import { Button } from "@/components/ui/button";
 import { InsightCard } from "@/components/insights/InsightCard";
-import { mockInsights } from "@/lib/mockData";
+import { toast } from "sonner";
+
+interface Insight {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  relevance?: string;
+}
 
 export default function InsightsPage() {
-  const [insights, setInsights] = useState(mockInsights);
+  const [insights, setInsights] = useState<Insight[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const insightsRef = useRef<HTMLDivElement>(null);
   const generateButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -42,12 +52,55 @@ export default function InsightsPage() {
     autoTrigger: false,
   });
 
-  const handleGenerateSummary = () => {
-    console.log("TODO: Generate weekly summary");
+  // Load insights on mount
+  useEffect(() => {
+    loadInsights();
+  }, []);
+
+  async function loadInsights() {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/insights/generate');
+      
+      if (!response.ok) {
+        throw new Error('Failed to load insights');
+      }
+      
+      const data = await response.json();
+      setInsights(data.insights || []);
+    } catch (error) {
+      console.error('[Insights] Error loading:', error);
+      // Don't show error on initial load - just show empty state
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleGenerateSummary = async () => {
+    try {
+      setIsGenerating(true);
+      const response = await fetch('/api/insights/generate', {
+        method: 'POST',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate insights');
+      }
+      
+      const data = await response.json();
+      setInsights(data.insights || []);
+      toast.success('Insights generated successfully!');
+    } catch (error) {
+      console.error('[Insights] Generate error:', error);
+      toast.error('Failed to generate insights. Try again.');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleInsightClick = (insightId: string) => {
-    console.log("TODO: Open insight", insightId);
+    // Navigate to related notes or cluster
+    toast.info('Insight details coming soon');
   };
 
   const GenerateButton = () => (
@@ -56,11 +109,12 @@ export default function InsightsPage() {
       variant="outline"
       size="sm"
       onClick={handleGenerateSummary}
+      disabled={isGenerating}
       aria-label="Generate weekly summary"
       data-onboarding="generate-button"
       className="relative"
     >
-      Generate Summary
+      {isGenerating ? 'Generating...' : 'Generate Summary'}
       {onboarding.active && onboarding.currentStep && onboarding.step === 1 && (
         <TourCallout
           title={onboarding.currentStep.title}
@@ -123,24 +177,32 @@ export default function InsightsPage() {
         </div>
 
         {/* Use existing InsightCard component if available, otherwise fall back to ItemCard */}
-        <div className="space-y-4">
-          {insights.map((insight) => (
-            <InsightCard
-              key={insight.id}
-              week={insight.title}
-              summary={insight.description}
-              sentiment={insight.tags[0]?.label || "mixed"}
-            />
-          ))}
-        </div>
-
-        {insights.length === 0 && (
+        {isLoading ? (
           <div className="text-center py-12 text-muted-foreground">
-            <p>
-              No insights yet. Generate your first weekly summary to get
-              started.
-            </p>
+            <p>Loading insights...</p>
           </div>
+        ) : (
+          <>
+            <div className="space-y-4">
+              {insights.map((insight) => (
+                <InsightCard
+                  key={insight.id}
+                  week={insight.title}
+                  summary={insight.description}
+                  sentiment={insight.type || "mixed"}
+                />
+              ))}
+            </div>
+
+            {insights.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground">
+                <p>
+                  No insights yet. Generate your first weekly summary to get
+                  started.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
   );

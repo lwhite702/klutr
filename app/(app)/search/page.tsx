@@ -38,7 +38,26 @@ export default function SearchPage() {
       try {
         setIsSearching(true);
         setError(null);
-        const response = await apiGet<NoteDTO[]>("/api/stream/search?q=" + encodeURIComponent(debouncedQuery));
+        // Try semantic search first, fall back to full-text
+        let response: NoteDTO[];
+        try {
+          const semanticResponse = await fetch('/api/notes/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: debouncedQuery, limit: 20 }),
+          });
+          
+          if (semanticResponse.ok) {
+            const data = await semanticResponse.json();
+            response = data.results;
+          } else {
+            // Fallback to full-text search
+            response = await apiGet<NoteDTO[]>("/api/notes/search?q=" + encodeURIComponent(debouncedQuery));
+          }
+        } catch (err) {
+          // Fallback to full-text search
+          response = await apiGet<NoteDTO[]>("/api/notes/search?q=" + encodeURIComponent(debouncedQuery));
+        }
         
         // Convert NoteDTO to StreamDrop format
         const streamDrops: StreamDrop[] = response.map((drop) => ({
