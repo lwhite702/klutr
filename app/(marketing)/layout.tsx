@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getPageMetadata } from '@/lib/queries/metadata'
 import BaseHubVisualProvider from '@/components/providers/BaseHubVisualProvider'
+import TawkWidgetWrapper from './components/TawkWidgetWrapper.client'
 
 export async function generateMetadata(): Promise<Metadata> {
   const meta = await getPageMetadata('home')
@@ -36,9 +37,12 @@ export default function MarketingLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const tawkPropertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID || '';
+
   return (
     <BaseHubVisualProvider>
       {children}
+      {tawkPropertyId && <TawkWidgetWrapper propertyId={tawkPropertyId} />}
     </BaseHubVisualProvider>
   )
 }
