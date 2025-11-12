@@ -66,7 +66,7 @@ export default async function MarketingHomePage() {
   // Use BaseHub heroBlock if available, otherwise fallback to existing getHomePage()
   const heroData = homeContent.heroBlock || {
     title: home?.heroHeadline || "Organize Your Chaos",
-    subtitle: home?.heroSubtext?.plainText || "Klutr is a conversational workspace where all your input—text, voice, images, files—flows naturally through a Stream interface and gets automatically organized on the backend. Drop your thoughts like messages in a chat, and we'll handle the rest.",
+    subtitle: home?.heroSubtext || "Klutr is a conversational workspace where all your input—text, voice, images, files—flows naturally through a Stream interface and gets automatically organized on the backend. Drop your thoughts like messages in a chat, and we'll handle the rest.",
     ctaText: home?.primaryCTA || "Try for Free",
     ctaLink: "/login",
     image: null,
