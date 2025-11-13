@@ -6,6 +6,7 @@ import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
+import { useIsMobile } from '@/lib/hooks/useMediaQuery'
 
 export type PanelWidth = 'sm' | 'md' | 'lg' | 'xl'
 export type PanelPosition = 'right' | 'left'
@@ -57,6 +58,8 @@ export function PanelContainer({
   position = 'right',
   className,
 }: PanelContainerProps) {
+  const isMobile = useIsMobile();
+
   // Handle escape key
   useEffect(() => {
     if (!isOpen) return
@@ -70,9 +73,6 @@ export function PanelContainer({
     window.addEventListener('keydown', handleEscape)
     return () => window.removeEventListener('keydown', handleEscape)
   }, [isOpen, onClose])
-
-  // Mobile: Use Sheet component for full-screen drawer
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
 
   if (isMobile) {
     return (
