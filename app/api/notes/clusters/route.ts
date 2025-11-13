@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
 
     // Get sample notes for each cluster
     const clustersWithNotes = await Promise.all(
-      clusterGroups.map(async (group) => {
+      clusterGroups.map(async (group: typeof clusterGroups[number]) => {
         if (!group.cluster) return null;
 
         // Get sample notes from this cluster
@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
         });
 
         // Calculate average confidence
-        const avgConfidence = notes.reduce((sum, note) => 
+        const avgConfidence = notes.reduce((sum: number, note: typeof notes[number]) => 
           sum + (note.clusterConfidence || 0), 0) / notes.length;
 
         return {
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
           name: group.cluster,
           noteCount: group._count.id,
           averageConfidence: avgConfidence,
-          sampleNotes: notes.map(note => ({
+          sampleNotes: notes.map((note: typeof notes[number]) => ({
             id: note.id,
             content: note.content.slice(0, 150),
             type: note.type,

@@ -170,7 +170,6 @@ export default function NopeBinPage() {
               title={note.title}
               description={note.description}
               tags={note.tags}
-              pinned={note.pinned}
               onClick={() => handleNoteClick(note.id)}
               onFavorite={() => handleNoteFavorite(note.id)}
               actionsRight={
