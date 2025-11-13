@@ -50,23 +50,23 @@ export async function POST(req: NextRequest) {
     }
 
     // Aggregate weekly data
-    const allTags = weeklyNotes.flatMap(note => 
-      note.tags.map(nt => nt.tag.name)
+    const allTags = weeklyNotes.flatMap((note: typeof weeklyNotes[number]) => 
+      note.tags.map((nt: typeof note.tags[number]) => nt.tag.name)
     );
-    const tagCounts = allTags.reduce((acc, tag) => {
+    const tagCounts = allTags.reduce((acc: Record<string, number>, tag: string) => {
       acc[tag] = (acc[tag] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
     const topTags = Object.entries(tagCounts)
-      .sort(([, a], [, b]) => b - a)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
       .slice(0, 5)
       .map(([tag]) => tag);
 
     // Sample notes for AI
     const sampleContent = weeklyNotes
       .slice(0, 30)
-      .map(note => note.content.slice(0, 100))
+      .map((note: typeof weeklyNotes[number]) => note.content.slice(0, 100))
       .join('\n- ');
 
     // Generate weekly summary using AI
@@ -114,7 +114,7 @@ Create a concise, engaging summary (3-4 sentences) that:
         noteCount: weeklySummary.noteCount,
         topTags: weeklySummary.topTags,
       },
-      cost: result.cost,
+      usage: result.usage,
     });
   } catch (error) {
     console.error("[API] Generate weekly summary error:", error);

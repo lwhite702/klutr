@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     });
 
     return NextResponse.json({
-      summaries: summaries.map(s => ({
+      summaries: summaries.map((s: typeof summaries[number]) => ({
         id: s.id,
         summary: s.summary,
         startDate: s.startDate,

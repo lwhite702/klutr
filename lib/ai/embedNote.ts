@@ -11,7 +11,7 @@ export async function embedNoteContent(content: string): Promise<number[]> {
     }
 
     // Use Vercel AI SDK provider for embeddings
-    const embedding = await generateAIEmbedding(content)
+    const embedding = await generateAIEmbedding({ text: content })
 
     if (!embedding || !Array.isArray(embedding) || embedding.length !== 1536) {
       throw new Error('Invalid embedding response - expected 1536-dimensional vector')
