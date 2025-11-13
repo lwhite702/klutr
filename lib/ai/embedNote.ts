@@ -1,5 +1,4 @@
-import { openai } from "../openai"
-import { retry, withTimeout } from "../utils"
+import { generateAIEmbedding } from './provider'
 
 /**
  * Generate embeddings for note content using Vercel AI SDK
@@ -7,28 +6,22 @@ import { retry, withTimeout } from "../utils"
  */
 export async function embedNoteContent(content: string): Promise<number[]> {
   try {
-    const result = await retry(
-      async () => {
-        return await withTimeout(
-          openai.embeddings.create({
-            model: "text-embedding-3-small",
-            input: content.slice(0, 8000), // Limit to 8k chars
-          }),
-          20000, // 20 second timeout
-          "Embedding request timed out",
-        )
-      },
-      { maxAttempts: 3, delayMs: 1000, backoff: true },
-    )
+    if (!content || content.trim().length === 0) {
+      throw new Error('Content is required for embedding generation')
+    }
 
-    const embedding = result.data[0]?.embedding
-    if (!embedding || !Array.isArray(embedding)) {
-      throw new Error("Invalid embedding response from OpenAI")
+    // Use Vercel AI SDK provider for embeddings
+    const embedding = await generateAIEmbedding(content)
+
+    if (!embedding || !Array.isArray(embedding) || embedding.length !== 1536) {
+      throw new Error('Invalid embedding response - expected 1536-dimensional vector')
     }
 
     return embedding
   } catch (error) {
-    console.error("[v0] Embedding error:", error)
-    throw new Error(`Failed to generate embedding: ${error instanceof Error ? error.message : "Unknown error"}`)
+    console.error('[Embedding] Error generating embedding:', error)
+    throw new Error(
+      `Failed to generate embedding: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }

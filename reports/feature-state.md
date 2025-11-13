@@ -477,8 +477,7 @@ pnpm dev      # ✅ Requires Doppler for env vars
 
 Based on code analysis:
 
-### Critical (Must Have)
-
+### Critical (Must Have):
 - `NEON_DATABASE_URL` - Neon PostgreSQL connection
 - `OPENAI_API_KEY` - OpenAI API access
 - `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
@@ -486,15 +485,13 @@ Based on code analysis:
 - `SUPABASE_SERVICE_ROLE_KEY` - Supabase admin access
 - `CRON_SECRET` - Cron job authentication
 
-### Important (Should Have)
-
+### Important (Should Have):
 - `POSTHOG_API_KEY` - PostHog feature flags
 - `DOPPLER_TOKEN` - Doppler secrets management
 - `VERCEL_TOKEN` - Vercel API access
 - `ROLLBAR_ACCESS_TOKEN` - Error monitoring
 
-### Optional
-
+### Optional:
 - `BASEHUB_TOKEN` - BaseHub CMS (may have fallback)
 
 ---
@@ -503,15 +500,13 @@ Based on code analysis:
 
 Files with mock/stub/TODO references (30 files):
 
-### High Priority
-
+### High Priority:
 - `lib/auth.ts` - Stub user fallback
 - `lib/supabase.ts` - `getCurrentUserId()` returns stub
 - `app/api/messages/create/route.ts` - TODO comments for transcription
 - `components/stacks/SortAndFilterStub.tsx` - Stub component
 
-### Medium Priority
-
+### Medium Priority:
 - Multiple UI components with TODO comments
 - Test files with mock data (acceptable)
 
@@ -519,7 +514,7 @@ Files with mock/stub/TODO references (30 files):
 
 ## Recommendations
 
-### Immediate (Pre-Production)
+### Immediate (Pre-Production):
 
 1. **🔴 CRITICAL: Fix Authentication**
    - Remove stub user fallback
@@ -550,7 +545,7 @@ Files with mock/stub/TODO references (30 files):
    - Add client-side upload UI
    - Implement file type validation and size limits
 
-### Short-Term (1-2 Weeks)
+### Short-Term (1-2 Weeks):
 
 6. **🟡 Implement Vault Encryption**
    - Client-side AES-GCM encryption
@@ -574,7 +569,7 @@ Files with mock/stub/TODO references (30 files):
    - Add monitoring and alerting
    - Track job execution history
 
-### Medium-Term (2-4 Weeks)
+### Medium-Term (2-4 Weeks):
 
 10. **🟢 Increase Test Coverage**
     - Unit tests for all AI functions
@@ -617,6 +612,4 @@ Klutr has a **solid foundation** with many features partially implemented. The c
 
 ---
 
-## End of Report
-
-*Report generated on 2025-11-11*
+*End of Report*

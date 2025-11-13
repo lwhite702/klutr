@@ -54,27 +54,27 @@ export async function POST(req: NextRequest) {
     }
 
     // Aggregate note data for analysis
-    const noteTypes = recentNotes.reduce((acc: Record<string, number>, note: typeof recentNotes[number]) => {
+    const noteTypes = recentNotes.reduce((acc, note) => {
       acc[note.type] = (acc[note.type] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
-    const allTags = recentNotes.flatMap((note: typeof recentNotes[number]) => 
-      note.tags.map((nt: typeof note.tags[number]) => nt.tag.name)
+    const allTags = recentNotes.flatMap(note => 
+      note.tags.map(nt => nt.tag.name)
     );
-    const tagCounts = allTags.reduce((acc: Record<string, number>, tag: string) => {
+    const tagCounts = allTags.reduce((acc, tag) => {
       acc[tag] = (acc[tag] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
     const topTags = Object.entries(tagCounts)
-      .sort(([, a], [, b]) => (b as number) - (a as number))
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([tag]) => tag);
 
     const clusters = recentNotes
-      .filter((n: typeof recentNotes[number]) => n.cluster)
-      .reduce((acc: Record<string, number>, note: typeof recentNotes[number]) => {
+      .filter(n => n.cluster)
+      .reduce((acc, note) => {
         acc[note.cluster!] = (acc[note.cluster!] || 0) + 1;
         return acc;
       }, {} as Record<string, number>);
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     // Sample recent note content for AI analysis
     const sampleNotes = recentNotes
       .slice(0, 20)
-      .map((note: typeof recentNotes[number]) => `- ${note.content.slice(0, 100)}`)
+      .map(note => `- ${note.content.slice(0, 100)}`)
       .join('\n');
 
     // Generate insights using AI
@@ -170,7 +170,7 @@ Return as a JSON array of objects with "title" and "description" fields.`;
         typeDistribution: noteTypes,
         clusterCount: Object.keys(clusters).length,
       },
-      usage: result.usage,
+      cost: result.cost,
     });
   } catch (error) {
     console.error("[API] Generate insights error:", error);

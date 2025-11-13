@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
     const user = await getCurrentUser(req);
     const body = await req.json();
-    const { query, limit: rawLimit = 20 } = body;
+    const { query, limit = 20 } = body;
 
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
       return createErrorResponse("Search query is required", 400);
@@ -28,11 +28,8 @@ export async function POST(req: NextRequest) {
       return createErrorResponse("Query too long (max 500 characters)", 400);
     }
 
-    // Sanitize and validate limit parameter
-    const limit = Math.max(1, Math.min(100, parseInt(String(rawLimit)) || 20));
-
     // Generate embedding for search query
-    const queryEmbedding = await generateAIEmbedding({ text: query.trim() });
+    const queryEmbedding = await generateAIEmbedding(query.trim());
 
     // Perform vector similarity search using pgvector
     // Use cosine distance operator: <->

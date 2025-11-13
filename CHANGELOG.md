@@ -165,6 +165,3 @@ If you're upgrading from the previous version:
 ---
 
 *For full details, see the git commit history and documentation in `/docs`.*
-## 2025-11-12 14:37 ET
-- [merge] Merged PR #22: Productionize klutr core features and confirm state
-- [merge] All conflicts resolved and changes pushed to main

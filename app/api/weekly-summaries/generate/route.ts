@@ -22,33 +22,6 @@ export async function POST(req: NextRequest) {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-    // Check if a summary for this period already exists
-    const existingSummary = await prisma.weeklySummary.findFirst({
-      where: {
-        userId: user.id,
-        startDate: {
-          lte: new Date(),
-        },
-        endDate: {
-          gte: oneWeekAgo,
-        },
-      },
-    });
-
-    if (existingSummary) {
-      return NextResponse.json({
-        summary: {
-          id: existingSummary.id,
-          summary: existingSummary.summary,
-          startDate: existingSummary.startDate,
-          endDate: existingSummary.endDate,
-          noteCount: existingSummary.noteCount,
-          topTags: existingSummary.topTags,
-        },
-        message: "Summary already exists for this period",
-      });
-    }
-
     const weeklyNotes = await prisma.note.findMany({
       where: {
         userId: user.id,
@@ -60,7 +33,6 @@ export async function POST(req: NextRequest) {
       orderBy: {
         createdAt: 'asc',
       },
-      take: 500, // Limit to avoid memory issues
       include: {
         tags: {
           include: {
@@ -78,23 +50,23 @@ export async function POST(req: NextRequest) {
     }
 
     // Aggregate weekly data
-    const allTags = weeklyNotes.flatMap((note: typeof weeklyNotes[number]) => 
-      note.tags.map((nt: typeof note.tags[number]) => nt.tag.name)
+    const allTags = weeklyNotes.flatMap(note => 
+      note.tags.map(nt => nt.tag.name)
     );
-    const tagCounts = allTags.reduce((acc: Record<string, number>, tag: string) => {
+    const tagCounts = allTags.reduce((acc, tag) => {
       acc[tag] = (acc[tag] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
     const topTags = Object.entries(tagCounts)
-      .sort(([, a], [, b]) => (b as number) - (a as number))
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([tag]) => tag);
 
     // Sample notes for AI
     const sampleContent = weeklyNotes
       .slice(0, 30)
-      .map((note: typeof weeklyNotes[number]) => note.content.slice(0, 100))
+      .map(note => note.content.slice(0, 100))
       .join('\n- ');
 
     // Generate weekly summary using AI
@@ -142,7 +114,7 @@ Create a concise, engaging summary (3-4 sentences) that:
         noteCount: weeklySummary.noteCount,
         topTags: weeklySummary.topTags,
       },
-      usage: result.usage,
+      cost: result.cost,
     });
   } catch (error) {
     console.error("[API] Generate weekly summary error:", error);

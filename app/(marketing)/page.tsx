@@ -6,7 +6,6 @@ import MarketingHeader from "@/components/marketing/MarketingHeader"
 import MarketingFooter from "@/components/marketing/MarketingFooter"
 import Hero from "@/components/marketing/Hero"
 import FeatureGrid from "@/components/marketing/FeatureGrid"
-import HowItWorks from "@/components/marketing/HowItWorks"
 import {
   AnimatedSection,
   AnimatedItem,
@@ -31,13 +30,7 @@ import {
 } from "lucide-react"
 
 export async function generateMetadata(): Promise<Metadata> {
-  let meta: { seoTitle: string | null; metaDescription: string | null } | null = null
-  try {
-    meta = await getPageMetadata("home")
-  } catch (error) {
-    console.error('Error fetching page metadata in generateMetadata:', error)
-    // Continue with fallback values
-  }
+  const meta = await getPageMetadata("home")
 
   return {
     title: meta?.seoTitle ?? "Klutr — AI Note App That Brings Order to Your Chaos",
@@ -59,42 +52,16 @@ export async function generateMetadata(): Promise<Metadata> {
 export const revalidate = 60
 
 export default async function MarketingHomePage() {
-  // Fetch BaseHub content with error handling
-  let homeContent: Awaited<ReturnType<typeof getHomeContent>> = { heroBlock: null, featureGridBlock: null, testimonialBlock: null, howItWorksBlock: null, ctaBlock: null }
-  let home = null
-  let features: Array<{ _id: string; _title: string; name: string; slug: string; tagline: string; description: string | null; illustrationUrl: { url: string; fileName: string; altText: string | null } | null; seoKeywords: string | null }> = []
-  let latestReleases: any[] = []
-  let upcomingItems: any[] = []
-
-  try {
-    homeContent = await getHomeContent()
-  } catch (error) {
-    console.error('Error fetching home content:', error)
-  }
-
-  try {
-    home = await getHomePage()
-  } catch (error) {
-    console.error('Error fetching home page:', error)
-  }
-
-  try {
-    features = await getFeatures()
-  } catch (error) {
-    console.error('Error fetching features:', error)
-  }
+  // Fetch BaseHub content
+  const homeContent = await getHomeContent()
+  const home = await getHomePage()
+  const features = await getFeatures()
   
   // Fetch footer data
-  try {
-    const footerData = await Promise.all([
-      getLatestChangelogEntries(2),
-      getUpcomingRoadmapItems(2),
-    ])
-    latestReleases = footerData[0] || []
-    upcomingItems = footerData[1] || []
-  } catch (error) {
-    console.error('Error fetching footer data:', error)
-  }
+  const [latestReleases, upcomingItems] = await Promise.all([
+    getLatestChangelogEntries(2),
+    getUpcomingRoadmapItems(2),
+  ])
 
   // Use BaseHub heroBlock if available, otherwise fallback to existing getHomePage()
   const heroData = homeContent.heroBlock || {
@@ -162,8 +129,120 @@ export default async function MarketingHomePage() {
 
         <FeatureGrid features={features} />
 
-        {/* How It Works Section - Use new HowItWorks component */}
-        <HowItWorks howItWorksBlock={homeContent.howItWorksBlock || null} />
+        {/* How It Works Section - Use BaseHub howItWorksBlock if available */}
+        {homeContent.howItWorksBlock ? (
+          <section className="container mx-auto px-6 py-20">
+            <AnimatedSection className="space-y-12">
+              <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Sparkles className="w-8 h-8 text-[var(--klutr-coral)]" />
+                  <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+                    {homeContent.howItWorksBlock.heading || "How It Works"}
+                  </h2>
+                </div>
+              </AnimatedItem>
+              <div className="grid md:grid-cols-2 gap-6">
+                {homeContent.howItWorksBlock.steps.map((step, index) => (
+                  <AnimatedItem key={index}>
+                    <Card className="h-full border-[var(--klutr-outline)]/20">
+                      <CardHeader>
+                        {step.icon && (
+                          <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                            <img
+                              src={step.icon.url}
+                              alt={step.icon.altText || step.title || ""}
+                              className="w-6 h-6"
+                            />
+                          </div>
+                        )}
+                        <CardTitle className="text-2xl">{step.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                          {step.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </AnimatedItem>
+                ))}
+              </div>
+            </AnimatedSection>
+          </section>
+        ) : (
+          <section className="container mx-auto px-6 py-20">
+            <AnimatedSection className="space-y-12">
+              <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Sparkles className="w-8 h-8 text-[var(--klutr-coral)]" />
+                  <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+                    How It Works
+                  </h2>
+                </div>
+                <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                  Drop, tag, board, discover—effortlessly
+                </p>
+              </AnimatedItem>
+              <div className="grid md:grid-cols-2 gap-6">
+                <AnimatedItem>
+                  <Card className="h-full border-[var(--klutr-outline)]/20">
+                    <CardHeader>
+                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                        <Zap className="w-6 h-6 text-[var(--klutr-coral)]" />
+                      </div>
+                      <CardTitle className="text-2xl">Drop</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                        Add notes, files, or voice recordings to your Stream. Chat-style interface, zero friction.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedItem>
+                <AnimatedItem>
+                  <Card className="h-full border-[var(--klutr-outline)]/20">
+                    <CardHeader>
+                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
+                        <Layers className="w-6 h-6 text-[var(--klutr-mint)]" />
+                      </div>
+                      <CardTitle className="text-2xl">Organize</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                        AI automatically tags your drops and groups them into Boards. No manual filing required.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedItem>
+                <AnimatedItem>
+                  <Card className="h-full border-[var(--klutr-outline)]/20">
+                    <CardHeader>
+                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
+                        <Search className="w-6 h-6 text-[var(--klutr-coral)]" />
+                      </div>
+                      <CardTitle className="text-2xl">Discover</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                        Muse provides weekly insights. Search finds connections. Turn chaos into clarity.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedItem>
+              </div>
+              <AnimatedItem className="text-center pt-4">
+                <Button
+                  size="lg"
+                  className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
+                  asChild
+                >
+                  <Link href="/login" aria-label="Get started with Klutr">
+                    Get Started
+                  </Link>
+                </Button>
+              </AnimatedItem>
+            </AnimatedSection>
+          </section>
+        )}
 
         {/* Trusted by Companies Section */}
         <section className="bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] py-20">

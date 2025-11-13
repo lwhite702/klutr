@@ -20,13 +20,6 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    // Get accurate total count
-    const totalCount = await prisma.weeklySummary.count({
-      where: {
-        userId: user.id,
-      },
-    });
-
     const summaries = await prisma.weeklySummary.findMany({
       where: {
         userId: user.id,
@@ -38,7 +31,7 @@ export async function GET(req: NextRequest) {
     });
 
     return NextResponse.json({
-      summaries: summaries.map((s: typeof summaries[number]) => ({
+      summaries: summaries.map(s => ({
         id: s.id,
         summary: s.summary,
         startDate: s.startDate,
@@ -47,8 +40,7 @@ export async function GET(req: NextRequest) {
         topTags: s.topTags,
         createdAt: s.createdAt,
       })),
-      count: summaries.length, // Items in this response
-      total: totalCount, // Total items available
+      total: summaries.length,
     });
   } catch (error) {
     console.error("[API] List weekly summaries error:", error);
