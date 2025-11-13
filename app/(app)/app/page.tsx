@@ -1,36 +1,21 @@
 "use client";
 
-import { useState, useRef, useMemo, useEffect } from "react";
-import type React from "react";
-import { PageHeader } from "@/components/ui/PageHeader";
-import { CardGrid } from "@/components/ui/CardGrid";
-import { ItemCard } from "@/components/ui/ItemCard";
-import { ViewToggle, ViewType } from "@/components/ui/ViewToggle";
-import { SearchBar } from "@/components/ui/SearchBar";
-import { FilterChips } from "@/components/ui/FilterChips";
-import { SortDropdown, SortOption, SortDirection } from "@/components/ui/SortDropdown";
-import { QuickCaptureBar } from "@/components/notes/QuickCaptureBar";
-import { SectionSummary } from "@/components/ui/SectionSummary";
-import { TourCallout } from "@/components/tour/TourCallout";
-import { SectionTourDialog } from "@/components/onboarding/SectionTourDialog";
-import { useSectionOnboarding } from "@/lib/hooks/useSectionOnboarding";
-import { useSectionTour } from "@/lib/hooks/useSectionExperience";
-import { getOnboardingSteps, getDialogTourSteps } from "@/lib/onboardingSteps";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { apiGet, apiPost } from "@/lib/clientApi";
-import type { NoteDTO } from "@/lib/dto";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-interface Note {
-  id: string;
-  content: string;
-  type: string;
-  tags: Array<{ label: string }>;
-  createdAt: Date;
-  archived: boolean;
+/**
+ * Root /app route - redirects to /app/stream
+ * Stream is now the central hub with panel overlays
+ */
+export default function AppRedirect() {
+  const router = useRouter();
+  
+  useEffect(() => {
+    router.replace('/app/stream');
+  }, [router]);
+
+  return null;
 }
-
-export default function AllNotesPage() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
