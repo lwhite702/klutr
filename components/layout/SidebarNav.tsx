@@ -10,11 +10,54 @@ import {
   Lock,
   Search,
   Settings,
+  Brain,
+  Clock,
+  Trash,
 } from "lucide-react";
 import posthog from 'posthog-js';
 import { brandColors } from "@/lib/brand";
+import { usePanelState, type PanelType } from "@/lib/hooks/usePanelState";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-const navItems = [
+// Panel items (open as overlays in stream)
+const panelItems = [
+  {
+    id: 'mindstorm' as PanelType,
+    label: "MindStorm",
+    icon: Brain,
+    color: brandColors.coral,
+    shortcut: "M",
+  },
+  {
+    id: 'insights' as PanelType,
+    label: "Insights",
+    icon: Sparkles,
+    color: brandColors.mint,
+    shortcut: "I",
+  },
+  {
+    id: 'memory' as PanelType,
+    label: "Memory",
+    icon: Clock,
+    color: brandColors.coral,
+    shortcut: "H",
+  },
+  {
+    id: 'search' as PanelType,
+    label: "Search",
+    icon: Search,
+    color: "text-muted-foreground",
+    shortcut: "K",
+  },
+];
+
+// Page items (navigate to full pages)
+const pageItems = [
   {
     href: "/app/stream",
     label: "Stream",
@@ -28,21 +71,15 @@ const navItems = [
     color: brandColors.mint,
   },
   {
-    href: "/app/muse",
-    label: "Muse",
-    icon: Sparkles,
-    color: brandColors.mint,
-  },
-  {
     href: "/app/vault",
     label: "Vault",
     icon: Lock,
     color: brandColors.coral,
   },
   {
-    href: "/app/search",
-    label: "Search",
-    icon: Search,
+    href: "/app/nope",
+    label: "Nope Bin",
+    icon: Trash,
     color: "text-muted-foreground",
   },
   {
@@ -59,46 +96,95 @@ interface SidebarNavProps {
 
 export function SidebarNav({ activeRoute }: SidebarNavProps) {
   const pathname = usePathname();
+  const { activePanel, openPanel } = usePanelState();
 
   return (
-    <nav className="flex flex-col gap-1 p-4">
-      {navItems.map((item) => {
-        const Icon = item.icon;
-        const isActive = activeRoute
-          ? pathname === activeRoute
-          : pathname === item.href;
+    <TooltipProvider>
+      <nav className="flex flex-col gap-1 p-4">
+        {/* Page Links */}
+        {pageItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeRoute
+            ? pathname === activeRoute
+            : pathname === item.href;
 
-        return (
-          <Button
-            key={item.href}
-            variant="ghost"
-            className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
-            asChild
-          >
-            <Link href={item.href} onClick={() => {
-              posthog.capture('sidebar_navigation_link_clicked', {
-                target_href: item.href,
-                target_label: item.label,
-              });
-            }}>
-              <Icon
-                className={`h-4 w-4 ${
-                  typeof item.color === "string" && item.color.startsWith("text-")
-                    ? item.color
-                    : ""
-                }`}
-                style={{
-                  color:
-                    typeof item.color === "string" && !item.color.startsWith("text-")
+          return (
+            <Button
+              key={item.href}
+              variant="ghost"
+              className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
+              asChild
+            >
+              <Link href={item.href} onClick={() => {
+                posthog.capture('sidebar_navigation_link_clicked', {
+                  target_href: item.href,
+                  target_label: item.label,
+                });
+              }}>
+                <Icon
+                  className={`h-4 w-4 ${
+                    typeof item.color === "string" && item.color.startsWith("text-")
                       ? item.color
-                      : undefined,
-                }}
-              />
-              {item.label}
-            </Link>
-          </Button>
-        );
-      })}
-    </nav>
+                      : ""
+                  }`}
+                  style={{
+                    color:
+                      typeof item.color === "string" && !item.color.startsWith("text-")
+                        ? item.color
+                        : undefined,
+                  }}
+                />
+                {item.label}
+              </Link>
+            </Button>
+          );
+        })}
+
+        {/* Divider */}
+        <div className="my-2 border-t" />
+
+        {/* Panel Triggers */}
+        {panelItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activePanel === item.id;
+
+          return (
+            <Tooltip key={item.id}>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
+                  onClick={() => {
+                    openPanel(item.id);
+                    posthog.capture('sidebar_panel_opened', {
+                      panel: item.id,
+                      label: item.label,
+                    });
+                  }}
+                >
+                  <Icon
+                    className={`h-4 w-4 ${
+                      typeof item.color === "string" && item.color.startsWith("text-")
+                        ? item.color
+                        : ""
+                    }`}
+                    style={{
+                      color:
+                        typeof item.color === "string" && !item.color.startsWith("text-")
+                          ? item.color
+                          : undefined,
+                    }}
+                  />
+                  {item.label}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>{item.label} (⌘{item.shortcut})</p>
+              </TooltipContent>
+            </Tooltip>
+          );
+        })}
+      </nav>
+    </TooltipProvider>
   );
 }
