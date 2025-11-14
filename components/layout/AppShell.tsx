@@ -10,13 +10,11 @@ import { TopBar } from "./TopBar";
 
 interface AppShellProps {
   children: React.ReactNode;
-  activeRoute: string;
   showDemoBadge?: boolean;
 }
 
 export function AppShell({
   children,
-  activeRoute,
   showDemoBadge = false,
 }: AppShellProps) {
   const { resolvedTheme } = useTheme();
@@ -43,7 +41,7 @@ export function AppShell({
             </motion.div>
           </div>
         </div>
-        <SidebarNav activeRoute={activeRoute} />
+        <SidebarNav />
       </aside>
 
       {/* Main Content */}

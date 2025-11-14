@@ -1,6 +1,43 @@
 {
-  "buildCommand": "pnpm build",
-  "installCommand": "npm install -g pnpm@9.15.0 && pnpm install --frozen-lockfile",
-  "outputDirectory": ".next",
-  "framework": "nextjs"
+  "crons": [
+    {
+      "path": "/api/cron/nightly-cluster",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/nightly-stacks",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/weekly-insights",
+      "schedule": "0 9 * * 1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none';"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+        }
+      ]
+    }
+  ]
 }

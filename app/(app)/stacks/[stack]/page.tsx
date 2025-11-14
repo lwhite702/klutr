@@ -1,41 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { ItemCard } from "@/components/ui/ItemCard";
 import { SortAndFilterStub } from "@/components/stacks/SortAndFilterStub";
-import { mockStackItems } from "@/lib/mockData";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { apiGet } from "@/lib/clientApi";
+import type { NoteDTO } from "@/lib/dto";
+import { generateNoteTitle } from "@/lib/utils/noteUtils";
+
+interface StackItem {
+  id: string;
+  title: string;
+  description: string;
+  tags: Array<{ label: string }>;
+  pinned?: boolean;
+}
 
 export default function StackDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const stackSlug = params.stack as string;
+  const stackSlug = decodeURIComponent(params.stack as string);
 
-  // Map stack slug to mock data
-  const stackNameMap: Record<string, string> = {
-    "bbq-weekend": "BBQ Weekend",
-    wishlist: "Wishlist",
-    "listen-next": "Listen Next",
-    "client-work": "Client Work",
-  };
+  const [stackItems, setStackItems] = useState<StackItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const stackName = stackNameMap[stackSlug] || "BBQ Weekend";
+  // Load notes for this cluster
+  useEffect(() => {
+    loadStackNotes();
+  }, [stackSlug]);
 
-  // Get items for this stack
-  const stackItems =
-    mockStackItems[stackSlug as keyof typeof mockStackItems] ||
-    mockStackItems.bbq;
+  async function loadStackNotes() {
+    try {
+      setIsLoading(true);
+      // Query notes with this cluster name
+      const response = await apiGet<NoteDTO[]>(`/api/notes/list?cluster=${encodeURIComponent(stackSlug)}`);
+      
+      const items: StackItem[] = response.map(note => ({
+        id: note.id,
+        title: generateNoteTitle(note.content),
+        description: note.content,
+        tags: note.tags.map(t => ({ label: t })),
+        pinned: false,
+      }));
+      
+      setStackItems(items);
+    } catch (error) {
+      console.error('[Stack] Load notes error:', error);
+      toast.error('Failed to load stack notes');
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const handleItemClick = (itemId: string) => {
-    console.log("TODO: Open item", itemId);
+    toast.info('Note details coming soon');
   };
 
   const handleItemFavorite = (itemId: string) => {
-    console.log("TODO: Toggle favorite for item", itemId);
+    toast.info('Favorites coming soon');
   };
 
   return (
@@ -46,31 +73,40 @@ export default function StackDetailPage() {
           </Button>
           <div className="flex-1">
             <PageHeader
-              title={stackName}
-              description="Curated items from this stack."
+              title={stackSlug}
+              description="Notes clustered together by theme."
               actions={<SortAndFilterStub />}
             />
           </div>
         </div>
 
-        <CardGrid>
-          {stackItems.map((item) => (
-            <ItemCard
-              key={item.id}
-              title={item.title}
-              description={item.description}
-              tags={item.tags}
-              pinned={'pinned' in item ? item.pinned : false}
-              onClick={() => handleItemClick(item.id)}
-              onFavorite={() => handleItemFavorite(item.id)}
-            />
-          ))}
-        </CardGrid>
-
-        {stackItems.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground">
-            <p>No items in this stack yet.</p>
+        {isLoading ? (
+          <div className="text-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">Loading stack...</p>
           </div>
+        ) : (
+          <>
+            <CardGrid>
+              {stackItems.map((item) => (
+                <ItemCard
+                  key={item.id}
+                  title={item.title}
+                  description={item.description}
+                  tags={item.tags}
+                  pinned={item.pinned}
+                  onClick={() => handleItemClick(item.id)}
+                  onFavorite={() => handleItemFavorite(item.id)}
+                />
+              ))}
+            </CardGrid>
+
+            {stackItems.length === 0 && (
+              <div className="text-center py-12 text-muted-foreground">
+                <p>No notes in this cluster yet.</p>
+              </div>
+            )}
+          </>
         )}
       </div>
   );

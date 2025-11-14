@@ -1,6 +1,10 @@
 import { openai } from "../openai"
 import { retry, withTimeout } from "../utils"
 
+/**
+ * Generate embeddings for note content using Vercel AI SDK
+ * Uses cost-efficient embedding model (text-embedding-3-small)
+ */
 export async function embedNoteContent(content: string): Promise<number[]> {
   try {
     const result = await retry(

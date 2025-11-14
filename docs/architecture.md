@@ -1,563 +1,481 @@
+# Klutr Architecture
+
+**Last Updated:** 2025-11-11
+
 ---
-title: "Architecture Overview"
-author: cursor-agent
-updated: 2025-10-29
+
+## System Overview
+
+Klutr is a Next.js 16 application with a PostgreSQL database, Supabase for authentication and storage, and OpenAI for AI features.
+
+### Technology Stack
+
+- **Frontend:** Next.js 16 (App Router), React 19, TailwindCSS
+- **Backend:** Next.js API Routes, Server Components
+- **Database:** Neon PostgreSQL with pgvector extension
+- **Auth:** Supabase Auth
+- **Storage:** Supabase Storage
+- **AI:** OpenAI (via Vercel AI SDK)
+- **Analytics:** PostHog
+- **Monitoring:** Rollbar, Vercel Analytics
+- **Deployment:** Vercel
+- **Secrets:** Doppler
+
 ---
 
-# Architecture Overview
-
-## Purpose Statement
-
-This document serves as the canonical reference for technical decisions, system architecture, and implementation patterns in the Noteornope (MindStorm) application. All agents must reference this document when making architectural changes and update it when introducing new patterns or technologies.
-
-## Current Stack (Phase 1)
-
-### Frontend
-
-- **Next.js 16** - App Router, TypeScript, React Server Components
-- **shadcn/ui** - Component library with Tailwind CSS
-- **Tailwind CSS** - Utility-first styling
-- **TypeScript** - Type safety and developer experience
-
-### Backend & Database
-
-- **Neon Postgres** - Primary database with pgvector extension
-- **Prisma ORM** - Database access and schema management
-- **pgvector** - Vector similarity search for note clustering
-- **OpenAI API** - AI classification and clustering (gpt-4o-mini)
-
-### Infrastructure
-
-- **Doppler** - Environment variable management across all environments
-- **Manual Cron** - API routes under `/api/cron/` with CRON_SECRET validation
-- **Vercel** - Deployment platform
-
-### Current Data Flow
+## Architecture Diagram
 
 ```
-User Input → Next.js API Route → Prisma → Neon Postgres
-                ↓
-            OpenAI API (classification)
-                ↓
-            pgvector (embeddings)
-                ↓
-            Manual clustering via API
+┌─────────────────────────────────────────────────────────────┐
+│                         Client                               │
+│  (Next.js App Router, React 19, TailwindCSS)                │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ├──────────────────────────────┐
+                     │                              │
+          ┌──────────▼─────────┐       ┌───────────▼──────────┐
+          │  Next.js API       │       │  Server Components   │
+          │  Routes            │       │  (RSC)               │
+          └──────────┬─────────┘       └───────────┬──────────┘
+                     │                              │
+          ┌──────────▼──────────────────────────────▼─────────┐
+          │              Middleware Layer                      │
+          │  - Authentication (Supabase)                       │
+          │  - Rate Limiting                                   │
+          │  - Validation                                      │
+          └──────────┬────────────────────────────────────────┘
+                     │
+          ┌──────────┴──────────┐
+          │                     │
+┌─────────▼────────┐  ┌────────▼────────┐  ┌─────────────────┐
+│  Prisma ORM      │  │  Supabase       │  │  AI Provider     │
+│  (Database)      │  │  (Auth/Storage) │  │  (Vercel AI SDK) │
+└─────────┬────────┘  └────────┬────────┘  └────────┬─────────┘
+          │                    │                     │
+┌─────────▼────────┐  ┌────────▼────────┐  ┌────────▼─────────┐
+│  Neon Postgres   │  │  Supabase       │  │  OpenAI API      │
+│  + pgvector      │  │  Infrastructure │  │  - GPT-4o-mini   │
+└──────────────────┘  └─────────────────┘  │  - Embeddings    │
+                                           └──────────────────┘
+
+External Services:
+  - PostHog (Analytics & Feature Flags)
+  - Rollbar (Error Monitoring)
+  - Doppler (Secrets Management)
+  - Vercel (Hosting & Deployment)
 ```
 
-## Target Stack (Phase 5)
+---
 
-### Frontend
+## Core Components
 
-- **Next.js 16** - App Router, TypeScript, React Server Components
-- **shadcn/ui** - Component library with Tailwind CSS
-- **Tailwind CSS** - Utility-first styling
-- **TypeScript** - Type safety and developer experience
-
-### Backend & Database
-
-- **Supabase Postgres** - Primary database with pgvector extension
-- **Prisma ORM** - Database access and schema management
-- **pgvector** - Vector similarity search for note clustering
-- **OpenAI API** - AI classification and clustering (gpt-4o-mini)
-
-### Infrastructure
-
-- **Supabase Auth** - User authentication (email/password + OAuth)
-- **Supabase Storage** - File attachments bucket
-- **Supabase Edge Functions** - Serverless functions for cron jobs
-- **Row-Level Security (RLS)** - Database-level access control
-- **Doppler** - Environment variable management across all environments
-- **Vercel** - Deployment platform
-
-### Target Data Flow
-
-```
-User Input → Next.js API Route → Prisma → Supabase Postgres
-                ↓                    ↓
-            OpenAI API         Supabase Auth (RLS)
-                ↓                    ↓
-            pgvector           Supabase Storage
-                ↓                    ↓
-        Supabase Edge Functions (cron)
-```
-
-## ASCII Architecture Diagrams
-
-### Current Architecture (Phase 1)
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Next.js App   │    │   API Routes    │    │   Neon Postgres │
-│                 │    │                 │    │                 │
-│  ┌───────────┐  │    │  ┌───────────┐  │    │  ┌───────────┐  │
-│  │   Pages   │  │◄──►│  │   CRUD    │  │◄──►│  │   Notes   │  │
-│  └───────────┘  │    │  └───────────┘  │    │  └───────────┘  │
-│                 │    │                 │    │                 │
-│  ┌───────────┐  │    │  ┌───────────┐  │    │  ┌───────────┐  │
-│  │Components│  │◄──►│  │   Cron    │  │◄──►│  │ pgvector   │  │
-│  └───────────┘  │    │  └───────────┘  │    │  └───────────┘  │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   shadcn/ui     │    │   OpenAI API    │    │    Doppler      │
-│   Tailwind      │    │   (gpt-4o-mini) │    │  Environment    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
-### Target Architecture (Phase 5)
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Next.js App   │    │   Supabase      │    │   Supabase      │
-│                 │    │   Edge Functions│    │   Postgres      │
-│  ┌───────────┐  │    │                 │    │                 │
-│  │   Pages   │  │◄──►│  ┌───────────┐  │◄──►│  ┌───────────┐  │
-│  └───────────┘  │    │  │   Auth    │  │    │  │   Notes   │  │
-│                 │    │  └───────────┘  │    │  │  (RLS)    │  │
-│  ┌───────────┐  │    │                 │    │  └───────────┘  │
-│  │Components│  │◄──►│  ┌───────────┐  │◄──►│  ┌───────────┐  │
-│  └───────────┘  │    │  │  Storage  │  │    │  │ pgvector   │  │
-└─────────────────┘    │  └───────────┘  │    │  └───────────┘  │
-         │              └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   shadcn/ui     │    │   OpenAI API    │    │    Doppler      │
-│   Tailwind      │    │   (gpt-4o-mini) │    │  Environment    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
-## Migration Path
-
-The migration from Neon to Supabase follows these phases (detailed in `/docs/roadmap.md`):
-
-1. **Phase 1:** Continue with Neon for rapid development
-2. **Phase 2:** Set up Supabase environment and test connection
-3. **Phase 3:** Migrate Prisma schema and implement RLS
-4. **Phase 4:** Replace manual cron with Supabase Edge Functions
-5. **Phase 5:** Complete cutover and remove Neon dependencies
-
-## Component Organization
-
-### Shared UI Primitives
-
-The application uses standardized UI primitives aligned with the Figma design system:
-
-- **AppShell** (`/components/layout/AppShell.tsx`) - Main layout wrapper for all app pages with responsive sidebar and main content area
-- **PageHeader** (`/components/ui/PageHeader.tsx`) - Standardized page headers with title, optional description, and actions area
-- **CardGrid** (`/components/ui/CardGrid.tsx`) - Responsive grid wrapper (1/2/3/4 columns) for card layouts
-- **ItemCard** (`/components/ui/ItemCard.tsx`) - Domain-agnostic card component with thumbnail, tags, and actions
-- **TagChip** (`/components/notes/TagChip.tsx`) - Metadata pill/chip component with optional custom colors
-
-These components should be reused across pages instead of creating custom layouts. They use consistent design tokens defined in CSS custom properties.
-
-### UI Surface Vocabulary
-
-All pages (MindStorm, Stacks, Vault, Insights, Memory, Nope) share a consistent design language built on shared primitives:
-
-- **Shared Surface Pattern**: SidebarNav + PageHeader + CardGrid + ItemCard
-
-  - SidebarNav provides persistent left rail navigation for all /app routes
-  - PageHeader delivers consistent page-level heading bars
-  - CardGrid enables responsive tile layouts (1–4 columns)
-  - ItemCard supplies bookmark/tile style cards with tags and actions
-
-- **Visual System**: Derived from "Bookmark App — Community" Figma reference (BBQ/Podcast/Wishlist patterns)
-
-  - This design language is canonical for the first shipped aesthetic
-  - MindStorm, Stacks, Vault, Insights, Memory, and Nope all use this visual language so the product feels coherent
-
-- **Responsive Behavior**: Mobile-first with sidebar collapse and adaptive card grids
-- **Accessibility**: ARIA labels on all icon-only buttons, keyboard navigation support
-- **Animation**: framer-motion for consistent card mount animations
-
-This vocabulary establishes the canonical design language for early MindStorm UI development. The Vault screen is allowed to diverge in the future (darker theme) but will still respect the same layout primitives (SidebarNav + PageHeader + CardGrid + ItemCard). See `/docs/ui-map.md` for detailed component specifications and usage patterns.
-
-### Design Tokens
-
-CSS custom properties for consistent styling:
-
-- `--radius-card: 0.75rem` - Standard card border radius
-- `--radius-input: 0.5rem` - Form input border radius
-- `--radius-chip: 9999px` - Full-rounded chip/pill radius
-
-### `/components` Structure
-
-```
-components/
-├── layout/           # AppShell, SidebarNav, TopBar, MobileNavSheet
-├── notes/            # NoteCard, QuickCaptureBar, ClusterChip, TagChip
-├── stacks/           # StackCard
-├── vault/            # VaultList, VaultLockScreen
-├── insights/         # InsightCard
-├── memory/           # TimelineGrid
-├── tour/             # TourCallout
-└── ui/               # shadcn/ui components (button, card, dialog, etc.)
-```
-
-### `/lib` Structure
-
-```
-lib/
-├── ai/               # AI-related utilities
-│   ├── analyzeTimeline.ts
-│   ├── buildSmartStacks.ts
-│   ├── classifyNote.ts
-│   ├── clusterNotes.ts
-│   ├── embedNote.ts
-│   └── generateWeeklyInsights.ts
-├── auth.ts           # Authentication utilities
-├── clientApi.ts      # Client-side API calls
-├── db.ts             # Database connection and utilities
-├── dto.ts            # Data transfer objects
-├── encryption.ts     # Vault encryption utilities
-├── onboarding.ts    # User onboarding flow
-├── openai.ts         # OpenAI API integration
-├── useGuidedTour.ts  # Tour system
-└── utils.ts          # General utilities
-```
-
-## API Route Patterns
-
-### Standard Error Handling
+### 1. Authentication Flow
 
 ```typescript
-try {
-  // Route logic
-  return NextResponse.json({ success: true, data: result });
-} catch (error) {
-  console.error("API Error:", error);
-  return NextResponse.json(
-    { success: false, error: "Internal server error" },
-    { status: 500 }
-  );
-}
+// Middleware protects routes
+middleware.ts
+  → createServerClient(Supabase)
+  → getUser()
+  → if (!user) redirect to /login
+
+// Auth helpers
+lib/auth.ts
+  → getCurrentUser() - throws if not authenticated
+  → getServerSession() - returns null if not authenticated
 ```
 
-### Authentication Checks
+**RLS Security:**
+- All user data protected by Row Level Security
+- Policies enforce `auth.uid() = userId`
+- Service role bypasses RLS for admin operations
+
+### 2. Data Flow
+
+**User Creates Note:**
+```
+Client
+  → POST /api/messages/create
+    → Middleware validates auth + rate limit
+    → getCurrentUser()
+    → Prisma.message.create()
+    → Background jobs:
+      - Generate embedding (if feature flag enabled)
+      - Classify message (if feature flag enabled)
+      - Update thread metadata
+```
+
+**Embedding Generation:**
+```
+Background Job
+  → lib/ai/provider.ts
+    → generateAIEmbedding()
+      → Vercel AI SDK
+        → OpenAI text-embedding-3-small
+      → Cost logging
+      → Retry on failure
+    → Store in messages.embedding (pgvector)
+```
+
+**Clustering:**
+```
+Cron Job (nightly)
+  → api/cron/nightly-cluster
+    → CRON_SECRET validation
+    → For each user:
+      - Fetch notes with embeddings
+      - Calculate centroids by type
+      - Assign clusters via cosine similarity
+      - Update notes.cluster
+```
+
+### 3. AI Provider Abstraction
 
 ```typescript
-// Phase 1: No auth (development)
-// Phase 3+: Supabase auth check
-const {
-  data: { user },
-} = await supabase.auth.getUser();
-if (!user) {
-  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-}
+lib/ai/provider.ts exports:
+  - generateAIText()       // Simple text generation
+  - generateAIObject()     // Structured output with schema
+  - streamAIText()         // Streaming responses
+  - generateAIEmbedding()  // Vector embeddings
+  - generateAIEmbeddingsBatch() // Batch processing
+
+Features:
+  - Automatic retries (3x with exponential backoff)
+  - 12-second timeout
+  - Cost tracking and logging
+  - Provider switching (OpenAI/Anthropic)
+  - Model tiers (cheap/medium/expensive)
 ```
 
-### Response Shapes
+### 4. Feature Flags
 
 ```typescript
-// Success response
-{ success: true, data: T }
+lib/featureFlags.ts
+  → PostHog server/client integration
+  → Caching (5-minute TTL)
+  → Kill switch (KLUTR_GLOBAL_DISABLE)
+  → Fail-safe defaults (flags default to off)
 
-// Error response
-{ success: false, error: string }
-
-// Paginated response
-{ success: true, data: T[], pagination: { page: number, total: number } }
+Usage:
+  const enabled = await featureEnabled('embeddings', userId)
+  if (enabled) { /* generate embedding */ }
 ```
 
-## AI/ML Integration
+---
 
-### Embedding Pipeline
+## Database Schema
 
-1. **Note Creation:** User creates note via QuickCaptureBar
-2. **Classification:** OpenAI classifies note content and generates tags
-3. **Embedding:** Note content converted to vector using OpenAI embeddings
-4. **Storage:** Vector stored in pgvector column in database
-5. **Clustering:** Similar vectors grouped into clusters
+### Key Tables
 
-### Classification Flow
+**users**
+- `id` (cuid, PK)
+- `email` (unique)
+- `createdAt`, `updatedAt`
 
-```typescript
-// 1. Send note to OpenAI for classification
-const classification = await openai.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [
-    {
-      role: "system",
-      content: "Classify this note content and suggest relevant tags.",
-    },
-    {
-      role: "user",
-      content: noteContent,
-    },
-  ],
-});
+**messages** (main content table)
+- `id` (cuid, PK)
+- `type` (text/audio/image/file/link)
+- `content` (text, nullable)
+- `fileUrl` (text, nullable)
+- `transcription` (text, nullable)
+- `embedding` (vector(1536), nullable)
+- `threadId` (FK → conversation_threads)
+- `userId` (FK → users)
 
-// 2. Extract tags and categories
-const tags = extractTags(classification.choices[0].message.content);
+**notes** (legacy, being migrated to messages)
+- Similar structure to messages
+- Used for Stream and MindStorm
 
-// 3. Generate embedding for clustering
-const embedding = await openai.embeddings.create({
-  model: "text-embedding-3-small",
-  input: noteContent,
-});
+**conversation_threads**
+- Groups related messages
+- Auto-generated or user-specified
+- System tags for classification
+
+**smart_stacks**
+- AI-generated note groupings
+- `cluster`, `summary`, `noteCount`
+
+**vault_notes**
+- Client-side encrypted blobs
+- Only stores ciphertext
+
+### Indexes
+
+See `docs/database/indexes.md` for full details.
+
+**Key Indexes:**
+- `notes_embedding_idx` (IVFFlat for vector search)
+- `messages_embedding_idx` (IVFFlat for vector search)
+- `notes_content_search_idx` (GIN for full-text search)
+- User-specific indexes on all tables
+
+---
+
+## API Routes Structure
+
+```
+/api
+  /auth
+    /callback          # Supabase auth callback
+  /cron
+    /nightly-cluster   # Clustering job
+    /nightly-stacks    # Smart stacks generation
+    /weekly-insights   # Weekly insights
+  /messages
+    /create            # Create message
+    /embed             # Generate embedding
+    /classify          # Classify message
+  /notes               # Legacy notes API
+  /boards              # Boards management
+  /stacks              # Smart stacks API
+  /vault               # Vault operations
+  /insights            # Insights generation
+  /mindstorm           # Clustering operations
+  /health              # Health check endpoint
 ```
 
-### Clustering Algorithm
+### API Authentication
 
-1. **Similarity Search:** Use pgvector to find notes with similar embeddings
-2. **Threshold-based Grouping:** Group notes above similarity threshold
-3. **Manual Override:** Allow users to merge/split clusters
-4. **Re-clustering:** Trigger fresh clustering when patterns change
+All API routes (except public and cron) require:
+1. Supabase JWT token in cookies
+2. `getCurrentUser()` validation
+3. Rate limiting (via middleware)
 
-## Security Architecture
+Cron routes require:
+- `CRON_SECRET` header match
 
-### Authentication Model (Phase 3+)
-
-- **Supabase Auth:** Email/password + optional OAuth providers
-- **JWT Tokens:** Stateless authentication with automatic refresh
-- **Session Management:** Handled by Supabase client libraries
-
-### Data Ownership
-
-- **Row-Level Security (RLS):** Database-level access control
-- **User Isolation:** Users can only access their own notes
-- **Admin Access:** Service role key for system operations
-
-### Vault Encryption
-
-- **Client-Side Only:** Encryption happens in browser, never on server
-- **AES-GCM:** Industry-standard encryption algorithm
-- **Key Derivation:** PBKDF2 from user password
-- **Zero-Knowledge:** Server never sees plaintext vault contents
-
-### RLS Policies (Phase 3)
-
-```sql
--- Users can only see their own notes
-CREATE POLICY "Users can view own notes"
-ON notes FOR SELECT
-USING (auth.uid() = user_id);
-
--- Users can only modify their own notes
-CREATE POLICY "Users can modify own notes"
-ON notes FOR ALL
-USING (auth.uid() = user_id);
-```
-
-## Feature Flags Architecture
-
-### Overview
-
-PostHog feature flags enable controlled beta testing and phased rollouts without code deployments. Flags are managed in PostHog dashboard and take effect immediately.
-
-### Implementation
-
-- **Client-side**: `lib/posthog/client.ts` - Singleton PostHog JS client for browser
-- **Server-side**: `lib/posthog/server.ts` - PostHog Node client for API routes and server components
-- **Middleware**: `lib/featureFlags.ts` - Centralized flag management with in-memory caching (5min TTL)
-- **Component**: `components/ui/FeatureGate.tsx` - React component for conditional rendering
-
-### Flag Constants
-
-All feature flags are defined in `FEATURE_FLAGS` enum:
-- `spark-beta` - Spark feature beta
-- `muse-ai` - Muse AI feature
-- `orbit-experimental` - Orbit experimental view
-- `vault-enhanced` - Enhanced vault features
-- `klutr-global-disable` - Global kill switch (disables all experimental features)
-
-### Caching Strategy
-
-- In-memory cache with 5-minute TTL
-- Cache key format: `flag:${flag}:${userId || 'anonymous'}`
-- Automatically invalidates expired entries
-- Can be upgraded to Redis for multi-instance deployments
-
-### Fail-Safe Behavior
-
-- **Fail closed**: If PostHog is unavailable, flags default to `false` (disabled)
-- **Kill switch**: `klutr-global-disable` flag disables all experimental features when enabled
-- **Error handling**: All flag checks catch errors and return `false` to prevent app crashes
-
-### Usage Patterns
-
-**Client-side (React components):**
-```tsx
-import { FeatureGate } from "@/components/ui/FeatureGate";
-
-<FeatureGate flag="spark-beta">
-  <SparkInterface />
-</FeatureGate>
-```
-
-**Server-side (API routes):**
-```tsx
-import { getFeatureFlag } from "@/lib/posthog/server";
-
-const enabled = await getFeatureFlag("spark-beta", user.id);
-```
-
-**Programmatic (anywhere):**
-```tsx
-import { featureEnabled, FEATURE_FLAGS } from "@/lib/featureFlags";
-
-const enabled = await featureEnabled(FEATURE_FLAGS.SPARK_BETA, userId);
-```
-
-### Debug Route
-
-`/debug/flags` - Protected route showing all active flags for current user. Useful for development and testing.
-
-## Data Model
-
-### Core Prisma Models
-
-```prisma
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  notes     Note[]
-  clusters  Cluster[]
-  stacks    Stack[]
-  insights  Insight[]
-  vaultNotes VaultNote[]
-}
-
-model Note {
-  id          String   @id @default(cuid())
-  content     String
-  tags        String[]
-  embedding   Unsupported("vector(1536)")?
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  user        User     @relation(fields: [userId], references: [id])
-  cluster     Cluster? @relation(fields: [clusterId], references: [id])
-  clusterId   String?
-}
-
-model Cluster {
-  id        String   @id @default(cuid())
-  name      String
-  userId    String
-  createdAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [id])
-  notes     Note[]
-}
-
-model Stack {
-  id        String   @id @default(cuid())
-  name      String
-  pinned    Boolean  @default(false)
-  userId    String
-  createdAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [id])
-}
-
-model VaultNote {
-  id        String   @id @default(cuid())
-  ciphertext String
-  iv        String
-  userId    String
-  createdAt DateTime @default(now())
-
-  user      User     @relation(fields: [userId], references: [id])
-}
-```
+---
 
 ## Background Jobs
 
-### Current Implementation (Phase 1)
+### Nightly Clustering (2 AM)
+```
+GET /api/cron/nightly-cluster
+  → For each user with notes:
+    - Calculate centroids
+    - Assign clusters
+    - Update confidence scores
+```
 
-- **Manual API Routes:** `/api/cron/nightly-cluster`, `/api/cron/nightly-stacks`, `/api/cron/weekly-insights`
-- **CRON_SECRET Validation:** All routes require `Authorization: Bearer <CRON_SECRET>` header
-- **External Triggering:** Manual or external cron service calls these endpoints
+### Nightly Stacks (3 AM)
+```
+GET /api/cron/nightly-stacks
+  → For each user:
+    - Group notes by cluster
+    - Generate summaries
+    - Create/update SmartStack records
+```
 
-### Target Implementation (Phase 4)
+### Weekly Insights (9 AM Monday)
+```
+GET /api/cron/weekly-insights
+  → For each user:
+    - Aggregate past week's notes
+    - Generate AI insights
+    - Analyze sentiment
+    - Store WeeklyInsight record
+```
 
-- **Supabase Edge Functions:** Serverless functions triggered by pg_cron
-- **Automatic Scheduling:** Database-level cron scheduling
-- **Secret Management:** Environment variables in Supabase
-- **Error Handling:** Built-in retry logic and logging
+---
 
-### Job Descriptions
+## Feature Flag Strategy
 
-- **nightly-cluster:** Re-embed all notes, regenerate clusters based on new content
-- **nightly-stacks:** Analyze note patterns, rebuild smart stacks
-- **weekly-insights:** Generate AI summary of week's note-taking activity
+### Current Flags
 
-## Agent Update Requirements
+- `embeddings` - Enable embedding generation
+- `classification` - Enable message classification
+- `semantic-search` - Enable vector similarity search
+- `smart-stacks` - Enable smart stack generation
+- `insights` - Enable insights generation
+- `vault` - Enable vault encryption
+- `klutr-global-disable` - Kill switch for all features
 
-This document MUST be updated whenever:
-
-- New technologies are added to the stack
-- Database schema changes are made
-- API route patterns are modified
-- Security policies are updated
-- Migration phases are completed
-- New architectural decisions are made
-
-## Marketing vs App Route Groups
-
-The application uses Next.js route groups to separate public marketing pages from authenticated app pages:
-
-### Route Group Structure
-
-- **`(marketing)`** - Public routes that don't require authentication
-  - `/` - Landing page
-  - `/login` - Login page
-  - Layout: `app/(marketing)/layout.tsx` - Includes SEO metadata, no AppShell
-
-- **`(app)`** - Authenticated routes that require Supabase Auth
-  - `/app` - Main dashboard (all notes)
-  - `/app/mindstorm` - MindStorm clusters
-  - `/app/stacks` - Smart Stacks
-  - `/app/vault` - Encrypted vault
-  - `/app/insights` - Weekly insights
-  - `/app/memory` - Memory Lane timeline
-  - `/app/nope` - Nope Bin
-  - Layout: `app/(app)/layout.tsx` - Wraps all pages with AppShell (Sidebar + TopBar)
-
-### Authentication Middleware
-
-The `middleware.ts` file at the root handles authentication:
-
-- **Public Routes**: `/`, `/login`, `/api/*`, static assets - No authentication required
-- **Protected Routes**: All `/app/*` routes - Require valid Supabase Auth session
-- **Redirect Logic**: Unauthenticated users accessing `/app/*` are redirected to `/login?redirect=/app/...`
-
-### Middleware Implementation
+### Usage
 
 ```typescript
-// middleware.ts uses @supabase/ssr createServerClient
-// - Checks session via cookies
-// - Refreshes expired tokens automatically
-// - Redirects unauthenticated users to login
+// Server-side
+const enabled = await featureEnabled('embeddings', userId)
+
+// Client-side
+import { useFeatureFlag } from '@/lib/hooks/useFeatureFlag'
+const enabled = useFeatureFlag('embeddings')
 ```
 
-### Layout Hierarchy
+---
+
+## Security Architecture
+
+### Defense in Depth
+
+1. **Network Layer**
+   - Vercel edge network
+   - DDoS protection
+   - HTTPS only
+
+2. **Application Layer**
+   - Middleware authentication
+   - Rate limiting (per-user, per-endpoint)
+   - Input validation (Zod schemas)
+   - CSRF protection (Supabase)
+
+3. **Database Layer**
+   - Row Level Security (RLS)
+   - Prepared statements (Prisma)
+   - Connection pooling
+   - SSL connections
+
+4. **Data Layer**
+   - Client-side vault encryption
+   - Secure file uploads (Supabase signed URLs)
+   - No sensitive data in logs
+
+### RLS Policies
+
+Every user data table has policies:
+- Users can only read their own data
+- Users can only insert for themselves
+- Users can only update their own data
+- Users can only delete their own data
+
+See `docs/security/rls.md` for full policy definitions.
+
+---
+
+## Performance Optimization
+
+### Database
+
+- Indexed queries (see `docs/database/indexes.md`)
+- Connection pooling via Prisma
+- Prepared statements
+- Vector index for fast similarity search
+
+### API
+
+- Server-side caching (Next.js)
+- Static generation for marketing pages
+- Streaming responses for AI
+- Batch operations for embeddings
+
+### Frontend
+
+- React Server Components
+- Streaming SSR
+- Code splitting
+- Image optimization
+- Font optimization (Inter preloaded)
+
+---
+
+## Cost Management
+
+### AI Costs (see `reports/ai-cost-estimate.md`)
+
+- Per-user quotas
+- Rate limiting
+- Batch processing
+- Cheap models for simple tasks
+- Cost logging and monitoring
+
+### Infrastructure Costs
+
+- Vercel: $20/month (Pro)
+- Supabase: $25/month (Pro)
+- Neon: $19/month (Scale)
+- OpenAI: Variable ($50-200/month typical)
+- PostHog: $0-50/month
+- Total: ~$115-315/month for 500 users
+
+---
+
+## Monitoring and Observability
+
+### Error Tracking
+- Rollbar for server-side errors
+- Rollbar client for browser errors
+- Structured logging via `lib/logger.ts`
+
+### Analytics
+- Vercel Analytics (Web Vitals)
+- PostHog (user behavior, feature flags)
+
+### Health Checks
+```
+GET /api/health
+  → Checks database connection
+  → Checks Supabase availability
+  → Returns status JSON
+```
+
+---
+
+## Deployment Architecture
+
+### Vercel
+
+**Production:**
+- Branch: `main`
+- Domain: `klutr.app` (example)
+- Environment: `production`
+- Secrets: Via Doppler integration
+
+**Preview:**
+- All PRs get preview deployments
+- Environment: `preview`
+- Secrets: Via Doppler staging config
+
+**Development:**
+- Local development via `pnpm dev`
+- Environment: `development`
+- Secrets: Via `doppler run`
+
+### CI/CD Pipeline
 
 ```
-app/layout.tsx (root)
-├── ThemeProvider
-├── Analytics
-└── Route Groups:
-    ├── (marketing)/layout.tsx
-    │   └── SEO metadata only
-    └── (app)/layout.tsx
-        └── AppShell wrapper
-            ├── SidebarNav
-            └── TopBar
+GitHub Push/PR
+  → GitHub Actions
+    → Lint + Type Check
+    → Build
+    → Unit Tests
+    → E2E Tests (Playwright)
+    → Accessibility Tests
+    → Security Scan
+  → If main branch:
+    → Deploy to Vercel Production
+    → Run smoke tests
 ```
 
-## References
+---
 
-- **Roadmap:** `/docs/roadmap.md`
-- **Database Schema:** `/docs/database.md`
-- **Vault Security:** `/docs/vault.md`
-- **Cron Jobs:** `/docs/cron.md`
-- **Product Requirements:** `/PRD.md`
+## Future Architecture Considerations
+
+### Scalability
+
+**Current Limits:**
+- ~10K active users (single Neon database)
+- ~100 req/s (Vercel Serverless)
+
+**Scaling Path:**
+- Database read replicas
+- Redis caching layer
+- Background job queue (BullMQ)
+- CDN for static assets
+- Edge functions for global latency
+
+### Feature Additions
+
+**Planned:**
+- Real-time collaboration (WebSockets)
+- Mobile app (React Native)
+- Browser extension
+- API for third-party integrations
+- Webhooks
+
+**Technical Debt:**
+- Migrate from `notes` to `messages` table
+- Consolidate duplicate AI functions
+- Add more comprehensive tests
+- Implement proper job queue
+
+---
+
+*Last updated: 2025-11-11*

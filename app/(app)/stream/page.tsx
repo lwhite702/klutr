@@ -18,6 +18,12 @@ import { useCurrentUser } from "@/lib/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
 import type { StreamDrop } from "@/lib/mockData";
 import type { NoteDTO } from "@/lib/dto";
+import { usePanelState } from "@/lib/hooks/usePanelState";
+import { PanelContainer } from "@/components/panels/PanelContainer";
+import { MindStormPanel } from "@/components/panels/MindStormPanel";
+import { InsightsPanel } from "@/components/panels/InsightsPanel";
+import { MemoryPanel } from "@/components/panels/MemoryPanel";
+import { SearchPanel } from "@/components/panels/SearchPanel";
 
 interface StreamDropsResponse {
   drops: NoteDTO[];
@@ -37,6 +43,7 @@ export default function StreamPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { user, loading: userLoading } = useCurrentUser();
+  const { activePanel, openPanel, closePanel } = usePanelState();
 
   // Load drops on mount
   useEffect(() => {
@@ -50,15 +57,39 @@ export default function StreamPage() {
     }
   }, [drops]);
 
-  // Keyboard shortcuts
+  // Global keyboard shortcuts for panels
   useKeyboardShortcuts([
     {
       key: "k",
       meta: true,
       handler: () => {
-        router.push("/app/search");
+        openPanel('search');
       },
       description: "Open search",
+    },
+    {
+      key: "m",
+      meta: true,
+      handler: () => {
+        openPanel('mindstorm');
+      },
+      description: "Open MindStorm",
+    },
+    {
+      key: "i",
+      meta: true,
+      handler: () => {
+        openPanel('insights');
+      },
+      description: "Open Insights",
+    },
+    {
+      key: "h",
+      meta: true,
+      handler: () => {
+        openPanel('memory');
+      },
+      description: "Open Memory",
     },
     {
       key: "n",
@@ -233,7 +264,7 @@ export default function StreamPage() {
   return (
     <StreamErrorBoundary>
       <DropZone onDrop={handleFileUpload}>
-        <div className="flex h-[calc(100vh-64px)]">
+        <div className="flex h-[calc(100vh-64px)] relative">
           {/* Center - Stream */}
           <div className="flex-1 flex flex-col">
             <ScrollArea className="flex-1 px-4" ref={scrollRef}>
@@ -305,6 +336,37 @@ export default function StreamPage() {
               </div>
             </div>
           </aside>
+
+          {/* Panel Overlays */}
+          <PanelContainer 
+            isOpen={activePanel === 'mindstorm'} 
+            onClose={closePanel}
+            width="lg"
+          >
+            <MindStormPanel />
+          </PanelContainer>
+
+          <PanelContainer 
+            isOpen={activePanel === 'insights'} 
+            onClose={closePanel}
+            width="lg"
+          >
+            <InsightsPanel />
+          </PanelContainer>
+
+          <PanelContainer 
+            isOpen={activePanel === 'memory'} 
+            onClose={closePanel}
+            width="lg"
+          >
+            <MemoryPanel />
+          </PanelContainer>
+
+          {/* Search uses special modal design */}
+          <SearchPanel 
+            isOpen={activePanel === 'search'} 
+            onClose={closePanel}
+          />
         </div>
       </DropZone>
     </StreamErrorBoundary>

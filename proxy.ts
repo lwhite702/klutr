@@ -1,7 +1,54 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// Routes that don't require authentication
+const publicRoutes = [
+  "/",
+  "/about",
+  "/features",
+  "/pricing",
+  "/blog",
+  "/changelog",
+  "/faq",
+  "/privacy",
+  "/terms",
+  "/roadmap",
+  "/auth/callback",
+  "/api/health",
+  "/api/cron",
+  "/api/preview",
+  "/api/revalidate",
+];
+
+// API routes that require authentication
+const protectedApiRoutes = [
+  "/api/messages",
+  "/api/notes",
+  "/api/boards",
+  "/api/stacks",
+  "/api/vault",
+  "/api/insights",
+  "/api/mindstorm",
+  "/api/muse",
+  "/api/spark",
+  "/api/stream",
+  "/api/memory",
+];
+
 export default async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Allow public routes
+  if (publicRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`))) {
+    return NextResponse.next();
+  }
+
+  // Allow cron routes (protected by CRON_SECRET)
+  if (pathname.startsWith("/api/cron/")) {
+    return NextResponse.next();
+  }
+
+  // Check authentication for protected routes
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -14,10 +61,7 @@ export default async function proxy(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll().map((cookie) => ({
-            name: cookie.name,
-            value: cookie.value,
-          }));
+          return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
@@ -29,33 +73,37 @@ export default async function proxy(request: NextRequest) {
     }
   );
 
-  // Refresh session if expired
+  // Get user session
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Public routes that don't require authentication
-  const publicRoutes = ["/", "/login"];
-  const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname);
-  const isApiRoute = request.nextUrl.pathname.startsWith("/api");
-  const isStaticAsset =
-    request.nextUrl.pathname.startsWith("/_next") ||
-    request.nextUrl.pathname.startsWith("/brand") ||
-    request.nextUrl.pathname.match(/\.(ico|png|jpg|jpeg|svg|gif|webp)$/);
+  // Redirect to login if not authenticated
+  if (!user) {
+    // For API routes, return 401
+    if (protectedApiRoutes.some((route) => pathname.startsWith(route))) {
+      return NextResponse.json(
+        { error: "Unauthorized", message: "Authentication required" },
+        { status: 401 }
+      );
+    }
 
-  // Allow public routes, API routes, and static assets
-  if (isPublicRoute || isApiRoute || isStaticAsset) {
-    return response;
+    // For app routes, redirect to login (include root /app and /onboarding paths)
+    if (
+      pathname === "/app" ||
+      pathname.startsWith("/app/") ||
+      pathname === "/onboarding" ||
+      pathname.startsWith("/onboarding/")
+    ) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
-  // Protect /app routes - require authentication
-  if (request.nextUrl.pathname.startsWith("/app")) {
-    if (!user) {
-      // Redirect to login with the original URL as redirect parameter
-      const redirectUrl = new URL("/login", request.url);
-      redirectUrl.searchParams.set("redirect", request.nextUrl.pathname);
-      return NextResponse.redirect(redirectUrl);
-    }
+  // Redirect from login to app if already authenticated
+  if (user && (pathname === "/login" || pathname === "/signup")) {
+    return NextResponse.redirect(new URL("/app", request.url));
   }
 
   return response;
