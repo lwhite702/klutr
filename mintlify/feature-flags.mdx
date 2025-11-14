@@ -1,9 +1,12 @@
 ---
-title: Feature Flags
-description: Learn how to use feature flags for controlled beta testing and phased rollouts
+title: "Feature Flags - Controlled Rollouts | Klutr"
+description: "Learn how to use feature flags for controlled beta testing and phased rollouts. Safely test new features before full release."
+openGraph:
+  title: "Feature Flags - Controlled Rollouts | Klutr"
+  description: "Safely test and roll out new features with feature flags. Control who sees what, when."
 ---
 
-Feature flags allow you to control the rollout of new features without deploying new code. You can enable features for specific users, gradually roll out to more users, or quickly disable features if issues arise.
+Feature flags allow you to control the rollout of new features without deploying new code. You can enable features for specific users, gradually roll out to more users, or quickly disable features if issues arise. This gives you the flexibility to test features safely and respond quickly if something goes wrong.
 
 ## How Feature Flags Work
 
@@ -34,7 +37,7 @@ function MyPage() {
 }
 ```
 
-The `FeatureGate` component only renders its children when the feature flag is enabled. If the flag is disabled, nothing is rendered (or you can provide a `fallback` prop).
+The `FeatureGate` component only renders its children when the feature flag is enabled. If the flag is disabled, nothing is rendered by default, but you can provide a `fallback` prop to show alternative content.
 
 ### With Fallback Content
 
@@ -43,7 +46,7 @@ You can show alternative content when a feature is disabled:
 ```tsx
 <FeatureGate 
   flag="muse-ai" 
-  fallback={<div>This feature is coming soon!</div>}
+  fallback={<div>This feature is currently in beta. Check back soon!</div>}
 >
   <MuseInterface />
 </FeatureGate>
