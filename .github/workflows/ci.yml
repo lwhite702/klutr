@@ -183,7 +183,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run accessibility tests
-        run: pnpm test:accessibility || echo "Accessibility tests not fully configured"
+        run: pnpm run --if-present test:accessibility
 
       - name: Upload accessibility report
         if: always()

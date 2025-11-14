@@ -133,7 +133,7 @@ Visual feedback:
 
 Media query hooks for responsive behavior:
 
-```typescript
+```text
 const isMobile = useIsMobile(); // < 768px
 const isTablet = useIsTablet(); // 768px - 1023px
 const isDesktop = useIsDesktop(); // >= 1024px
@@ -159,10 +159,12 @@ const isDesktop = useIsDesktop(); // >= 1024px
 
 For backward compatibility, old routes redirect and auto-open panels:
 
-- `/app/mindstorm` → `/app/stream` + opens MindStorm panel
-- `/app/insights` → `/app/stream` + opens Insights panel
-- `/app/memory` → `/app/stream` + opens Memory panel
-- `/app/search` → `/app/stream` + opens Search modal
+```text
+/app/mindstorm → /app/stream + opens MindStorm panel
+/app/insights → /app/stream + opens Insights panel
+/app/memory → /app/stream + opens Memory panel
+/app/search → /app/stream + opens Search modal
+```
 
 ## User Experience
 
@@ -286,7 +288,8 @@ test('should close panel on escape key', async ({ page }) => {
 ### From Old Architecture
 
 **Before** (separate pages):
-```
+
+```text
 /app/mindstorm → Full page
 /app/insights → Full page
 /app/memory → Full page
@@ -294,7 +297,8 @@ test('should close panel on escape key', async ({ page }) => {
 ```
 
 **After** (stream + panels):
-```
+
+```text
 /app/stream → Hub + overlay panels
   ├─ MindStorm panel (⌘M)
   ├─ Insights panel (⌘I)

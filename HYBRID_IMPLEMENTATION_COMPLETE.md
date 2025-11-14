@@ -50,7 +50,7 @@ Successfully implemented the hybrid stream-first architecture for Klutr, transfo
 
 2. **InsightsPanel** (`components/panels/InsightsPanel.tsx`)
    - AI-generated insights
-   - Generate new insights on demand
+   - Generate new on-demand insights
    - Relevance sorting
 
 3. **MemoryPanel** (`components/panels/MemoryPanel.tsx`)
