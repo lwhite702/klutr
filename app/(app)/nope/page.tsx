@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { apiGet, apiPatch } from "@/lib/clientApi";
 import type { NoteDTO } from "@/lib/dto";
 import { useEffect } from "react";
+import { generateNoteTitle } from "@/lib/utils/noteUtils";
 
 interface NopeNote {
   id: string;
@@ -74,7 +75,7 @@ export default function NopeBinPage() {
       
       const notesData: NopeNote[] = response.map(note => ({
         id: note.id,
-        title: note.content.slice(0, 50) + (note.content.length > 50 ? '...' : ''),
+        title: generateNoteTitle(note.content),
         description: note.content,
         tags: [
           ...note.tags.map(t => ({ label: t })),

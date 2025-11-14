@@ -60,9 +60,11 @@ export async function GET(req: NextRequest) {
           },
         });
 
-        // Calculate average confidence
-        const avgConfidence = notes.reduce((sum: number, note: typeof notes[number]) => 
-          sum + (note.clusterConfidence || 0), 0) / notes.length;
+        // Calculate average confidence (guard against division by zero)
+        const avgConfidence = notes.length > 0 
+          ? notes.reduce((sum: number, note: typeof notes[number]) => 
+              sum + (note.clusterConfidence || 0), 0) / notes.length
+          : 0;
 
         return {
           id: `cluster-${group.cluster.toLowerCase().replace(/\s+/g, '-')}`,

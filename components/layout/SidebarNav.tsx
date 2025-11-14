@@ -90,11 +90,18 @@ const pageItems = [
   },
 ];
 
-interface SidebarNavProps {
-  activeRoute?: string;
+// Helper function to get icon styles based on color prop
+function getIconStyles(color: string) {
+  if (typeof color === 'string' && color.startsWith('text-')) {
+    return { className: color, style: undefined };
+  }
+  if (typeof color === 'string' && !color.startsWith('text-')) {
+    return { className: '', style: { color } };
+  }
+  return { className: '', style: undefined };
 }
 
-export function SidebarNav({ activeRoute }: SidebarNavProps) {
+export function SidebarNav() {
   const pathname = usePathname();
   const { activePanel, openPanel } = usePanelState();
 
@@ -104,9 +111,7 @@ export function SidebarNav({ activeRoute }: SidebarNavProps) {
         {/* Page Links */}
         {pageItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activeRoute
-            ? pathname === activeRoute
-            : pathname === item.href;
+          const isActive = pathname === item.href;
 
           return (
             <Button
@@ -122,17 +127,8 @@ export function SidebarNav({ activeRoute }: SidebarNavProps) {
                 });
               }}>
                 <Icon
-                  className={`h-4 w-4 ${
-                    typeof item.color === "string" && item.color.startsWith("text-")
-                      ? item.color
-                      : ""
-                  }`}
-                  style={{
-                    color:
-                      typeof item.color === "string" && !item.color.startsWith("text-")
-                        ? item.color
-                        : undefined,
-                  }}
+                  className={`h-4 w-4 ${getIconStyles(item.color).className}`}
+                  style={getIconStyles(item.color).style}
                 />
                 {item.label}
               </Link>
@@ -163,17 +159,8 @@ export function SidebarNav({ activeRoute }: SidebarNavProps) {
                   }}
                 >
                   <Icon
-                    className={`h-4 w-4 ${
-                      typeof item.color === "string" && item.color.startsWith("text-")
-                        ? item.color
-                        : ""
-                    }`}
-                    style={{
-                      color:
-                        typeof item.color === "string" && !item.color.startsWith("text-")
-                          ? item.color
-                          : undefined,
-                    }}
+                    className={`h-4 w-4 ${getIconStyles(item.color).className}`}
+                    style={getIconStyles(item.color).style}
                   />
                   {item.label}
                 </Button>

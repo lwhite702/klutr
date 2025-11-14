@@ -21,14 +21,23 @@ test.describe('Authentication', () => {
     await expect(page.getByRole('button', { name: /create account/i })).toBeVisible()
   })
 
-  test('should show validation error for empty form', async ({ page }) => {
+  test('should prevent form submission for empty fields', async ({ page }) => {
     await page.goto('/login')
+    
+    const emailInput = page.getByLabel(/email/i)
+    await expect(emailInput).toHaveAttribute('required')
     
     await page.getByRole('button', { name: /sign in/i }).click()
     
-    // Browser native validation should prevent submission
-    const emailInput = page.getByLabel(/email/i)
-    await expect(emailInput).toHaveAttribute('required')
+    // Verify form validation prevented submission
+    const formValidity = await page.evaluate(() => {
+      const form = document.querySelector('form')
+      return form ? form.checkValidity() : true
+    })
+    expect(formValidity).toBe(false)
+    
+    // Verify we stayed on the login page
+    await expect(page).toHaveURL('/login')
   })
 
   test('should navigate between login and signup', async ({ page }) => {
@@ -41,7 +50,7 @@ test.describe('Authentication', () => {
     await expect(page).toHaveURL('/login')
   })
 
-  test('should redirect to app when authenticated', async ({ page }) => {
+  test('should redirect to login when unauthenticated', async ({ page }) => {
     test.skip(
       !process.env.NEXT_PUBLIC_SUPABASE_URL || 
       process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder'),

@@ -27,10 +27,11 @@ const widthClasses = {
   xl: 'w-[600px]',
 }
 
-const panelVariants = {
-  closed: { x: '100%', opacity: 0 },
+// Position-aware panel variants
+const getPanelVariants = (position: PanelPosition) => ({
+  closed: { x: position === 'left' ? '-100%' : '100%', opacity: 0 },
   open: { x: 0, opacity: 1 },
-}
+});
 
 const backdropVariants = {
   closed: { opacity: 0 },
@@ -108,7 +109,7 @@ export function PanelContainer({
             initial="closed"
             animate="open"
             exit="closed"
-            variants={panelVariants}
+            variants={getPanelVariants(position)}
             transition={{ 
               type: 'spring', 
               damping: 25, 

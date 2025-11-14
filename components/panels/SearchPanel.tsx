@@ -50,8 +50,12 @@ export function SearchPanel({ isOpen, onClose }: SearchPanelProps) {
   useEffect(() => {
     if (!debouncedQuery.trim()) {
       setResults([])
+      setError(null)
+      setIsSearching(false)
       return
     }
+
+    let canceled = false
 
     const performSearch = async () => {
       try {
@@ -91,17 +95,24 @@ export function SearchPanel({ isOpen, onClose }: SearchPanelProps) {
           fileUrl: drop.fileUrl || undefined,
         }))
         
+        if (canceled) return
         setResults(streamDrops)
       } catch (err) {
         console.error("[Search] Error:", err)
+        if (canceled) return
         setError("Failed to search. Please try again.")
         setResults([])
       } finally {
+        if (canceled) return
         setIsSearching(false)
       }
     }
 
     performSearch()
+
+    return () => {
+      canceled = true
+    }
   }, [debouncedQuery])
 
   return (

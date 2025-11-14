@@ -13,13 +13,19 @@ import { useState, useEffect } from 'react';
  * const isMobile = useMediaQuery('(max-width: 767px)');
  */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false);
+  // Lazy initialize from current media query (SSR-safe)
+  const [matches, setMatches] = useState(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia(query).matches;
+    }
+    return false;
+  });
 
   useEffect(() => {
     // Handle SSR/initial render
     const media = window.matchMedia(query);
     
-    // Set initial value
+    // Set initial value if needed
     if (media.matches !== matches) {
       setMatches(media.matches);
     }
@@ -36,7 +42,7 @@ export function useMediaQuery(query: string): boolean {
     // Fallback for older browsers
     media.addListener(listener);
     return () => media.removeListener(listener);
-  }, [matches, query]);
+  }, [query]);
 
   return matches;
 }

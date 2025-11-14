@@ -22,6 +22,33 @@ export async function POST(req: NextRequest) {
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
+    // Check if a summary for this period already exists
+    const existingSummary = await prisma.weeklySummary.findFirst({
+      where: {
+        userId: user.id,
+        startDate: {
+          lte: new Date(),
+        },
+        endDate: {
+          gte: oneWeekAgo,
+        },
+      },
+    });
+
+    if (existingSummary) {
+      return NextResponse.json({
+        summary: {
+          id: existingSummary.id,
+          summary: existingSummary.summary,
+          startDate: existingSummary.startDate,
+          endDate: existingSummary.endDate,
+          noteCount: existingSummary.noteCount,
+          topTags: existingSummary.topTags,
+        },
+        message: "Summary already exists for this period",
+      });
+    }
+
     const weeklyNotes = await prisma.note.findMany({
       where: {
         userId: user.id,
@@ -33,6 +60,7 @@ export async function POST(req: NextRequest) {
       orderBy: {
         createdAt: 'asc',
       },
+      take: 500, // Limit to avoid memory issues
       include: {
         tags: {
           include: {

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiGet } from "@/lib/clientApi";
 import type { NoteDTO } from "@/lib/dto";
+import { generateNoteTitle } from "@/lib/utils/noteUtils";
 
 interface StackItem {
   id: string;
@@ -41,7 +42,7 @@ export default function StackDetailPage() {
       
       const items: StackItem[] = response.map(note => ({
         id: note.id,
-        title: note.content.slice(0, 50) + (note.content.length > 50 ? '...' : ''),
+        title: generateNoteTitle(note.content),
         description: note.content,
         tags: note.tags.map(t => ({ label: t })),
         pinned: false,
