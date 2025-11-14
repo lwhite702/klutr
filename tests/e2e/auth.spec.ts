@@ -42,14 +42,14 @@ test.describe('Authentication', () => {
   })
 
   test('should redirect to app when authenticated', async ({ page }) => {
-    // Skip this test if no auth configured
     test.skip(
       !process.env.NEXT_PUBLIC_SUPABASE_URL || 
       process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder'),
       'Supabase not configured'
     )
 
-    // This test would need actual auth credentials in CI
-    // For now, just verify redirect logic exists
+    // Verify that unauthenticated users are redirected to login
+    await page.goto('/app')
+    await expect(page).toHaveURL(/\/login/)
   })
 })
