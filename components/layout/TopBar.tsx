@@ -21,7 +21,6 @@ import {
 import { MobileNavSheet } from "./MobileNavSheet";
 import { isDemoMode } from "@/lib/onboarding";
 import { HelpCircle, Sun, Moon, Plus } from "lucide-react";
-import { brandColors } from "@/lib/brand";
 import { HelpCenter } from "@/components/help/HelpCenter";
 
 export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
@@ -52,7 +51,7 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
   };
 
   return (
-    <header className="border-b bg-gradient-to-r from-[var(--klutr-mint)]/10 to-transparent sticky top-0 z-10 backdrop-blur-sm">
+    <header className="border-b bg-gradient-to-r from-accent-mint/10 to-transparent sticky top-0 z-10 backdrop-blur-sm">
       <div className="flex items-center gap-4 p-4">
         <MobileNavSheet />
 
@@ -75,10 +74,7 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
                     // Navigate to stream and focus input
                     window.location.href = "/app/stream";
                   }}
-                  style={{
-                    backgroundColor: brandColors.coral,
-                    color: "#ffffff",
-                  }}
+                  className="bg-accent-coral text-white"
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Drop

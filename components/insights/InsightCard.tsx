@@ -16,7 +16,7 @@ const sentimentColors: Record<string, string> = {
 
 export function InsightCard({ week, summary, sentiment }: InsightCardProps) {
   return (
-    <Card className="hover:shadow-xl transition-all duration-300 border-[var(--klutr-outline)]/20 rounded-2xl shadow-lg">
+    <Card className="hover:shadow-xl transition-all duration-300 border-border/20 rounded-2xl shadow-lg">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-display">{week}</CardTitle>

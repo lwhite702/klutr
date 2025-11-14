@@ -390,18 +390,18 @@ export default async function MarketingHomePage() {
         </section>
 
         {/* Beta CTA Banner */}
-        <section className="bg-[var(--klutr-mint)] dark:bg-[var(--klutr-mint)] py-24">
+        <section className="bg-accent-mint dark:bg-accent-mint py-24">
           <div className="container mx-auto px-6">
             <AnimatedFadeIn className="max-w-3xl mx-auto text-center space-y-8">
-              <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: '#2B2E3F' }}>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight text-primary">
                 Free Beta now open
               </h2>
-              <p className="text-xl md:text-2xl opacity-90 leading-relaxed" style={{ color: '#2B2E3F' }}>
+              <p className="text-xl md:text-2xl opacity-90 leading-relaxed text-primary">
                 Join early users and help shape the future of note-taking. No credit card required. Just drop your thoughts into the Stream and watch the magic.
               </p>
               <Button
                 size="lg"
-                className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
+                className="bg-accent-coral hover:bg-accent-coral/90 text-white"
                 asChild
               >
                 <Link href="/login" aria-label="Get started with free beta">
