@@ -1,4 +1,4 @@
-import { basehubClient } from '@/lib/basehub'
+import { basehubClient } from '../../basehub'
 import { draftMode } from 'next/headers'
 
 /**

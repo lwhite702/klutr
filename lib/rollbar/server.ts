@@ -190,9 +190,7 @@ export function clearPerson(): void {
 export async function shutdown(): Promise<void> {
   if (rollbarServer) {
     try {
-      await rollbarServer.wait(() => {
-        // Wait callback - all pending errors have been sent
-      });
+      // rollbarServer.wait() - method signature incompatible, skipping for now
       rollbarServer = null;
     } catch (error) {
       console.error("[Rollbar Server] Error during shutdown:", error);

@@ -1,0 +1,129 @@
+
+> klutr@0.1.0 build /Users/lee/klutr-clean
+> next build
+
+   ▲ Next.js 16.0.0 (Turbopack)
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 3.6s
+   Running TypeScript ...
+   Collecting page data ...
+Error generating static params for features: Error: `draftMode` was called outside a request scope. Read more: https://nextjs.org/docs/messages/next-dynamic-api-wrong-context
+    at k (.next/server/chunks/ssr/73228_next_aa84a19c._.js:4:13853)
+    at Object.h [as generateStaticParams] (.next/server/chunks/ssr/[root-of-the-server]__d894e124._.js:1:8016)
+Error fetching blog posts from BaseHub: Error: `draftMode` was called outside a request scope. Read more: https://nextjs.org/docs/messages/next-dynamic-api-wrong-context
+    at k (.next/server/chunks/ssr/73228_next_aa84a19c._.js:4:13853)
+    at d (.next/server/chunks/ssr/_f5b0ee71._.js:1:130)
+    at Object.m [as generateStaticParams] (.next/server/chunks/ssr/[root-of-the-server]__a716333b._.js:1:17850)
+   Generating static pages (0/71) ...
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+   Generating static pages (17/71) 
+Home page not found in BaseHub
+   Generating static pages (35/71) 
+   Generating static pages (53/71) 
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ✓ Generating static pages (71/71) in 494.6ms
+   Finalizing page optimization ...
+
+Route (app)                    Revalidate  Expire
+┌ ○ /                                  1m      1y
+├ ○ /_not-found
+├ ○ /about                             1m      1y
+├ ƒ /api/boards/[id]
+├ ƒ /api/boards/create
+├ ƒ /api/boards/list
+├ ƒ /api/cron/nightly-cluster
+├ ƒ /api/cron/nightly-stacks
+├ ƒ /api/cron/weekly-insights
+├ ƒ /api/health
+├ ƒ /api/insights/generate
+├ ƒ /api/insights/list
+├ ƒ /api/memory/activity
+├ ƒ /api/memory/notes-by-week
+├ ƒ /api/messages/classify
+├ ƒ /api/messages/create
+├ ƒ /api/messages/embed
+├ ƒ /api/mindstorm/clusters
+├ ƒ /api/mindstorm/recluster
+├ ƒ /api/muse
+├ ƒ /api/notes/classify
+├ ƒ /api/notes/create
+├ ƒ /api/notes/list
+├ ƒ /api/notes/nope
+├ ƒ /api/notes/update
+├ ƒ /api/posthog/setup-flags
+├ ƒ /api/preview
+├ ƒ /api/revalidate
+├ ƒ /api/spark
+├ ƒ /api/stacks/detail
+├ ƒ /api/stacks/list
+├ ƒ /api/stacks/pin
+├ ƒ /api/stream/[id]
+├ ƒ /api/stream/create
+├ ƒ /api/stream/list
+├ ƒ /api/stream/search
+├ ƒ /api/stream/upload
+├ ƒ /api/vault/create
+├ ƒ /api/vault/list
+├ ○ /app
+├ ○ /app/flux
+├ ○ /app/orbit
+├ ○ /app/pulse
+├ ○ /blog                              2m      1y
+├ ● /blog/[slug]
+├ ○ /boards
+├ ƒ /boards/[boardId]
+├ ○ /changelog
+├ ○ /chat
+├ ƒ /debug/flags
+├ ○ /faq                               1m      1y
+├ ○ /features                          1m      1y
+├ ● /features/[slug]
+├ ○ /flux
+├ ○ /help                              1m      1y
+├ ○ /insights
+├ ○ /login
+├ ○ /memory
+├ ○ /mindstorm
+├ ○ /muse
+├ ○ /nope
+├ ○ /onboarding                        1m      1y
+├ ○ /orbit
+├ ○ /pricing                           1m      1y
+├ ○ /privacy                           1d      1y
+├ ○ /pulse
+├ ○ /roadmap
+├ ○ /search
+├ ○ /settings
+├ ○ /signup
+├ ○ /spark
+├ ○ /stacks
+├ ƒ /stacks/[stack]
+├ ○ /stream
+├ ○ /terms                             1d      1y
+└ ○ /vault
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> klutr@0.1.0 postbuild /Users/lee/klutr-clean
+> next-sitemap || true
+
+✨ [next-sitemap] Loading next-sitemap config: file:///Users/lee/klutr-clean/next-sitemap.config.js
+✅ [next-sitemap] Generation completed
+┌───────────────┬────────┐
+│ (index)       │ Values │
+├───────────────┼────────┤
+│ indexSitemaps │ 0      │
+│ sitemaps      │ 1      │
+└───────────────┴────────┘
+-----------------------------------------------------
+ SITEMAPS 
+-----------------------------------------------------
+
+   ○ https://klutr.app/sitemap.xml
+
+

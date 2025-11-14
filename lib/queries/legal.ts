@@ -19,12 +19,12 @@ export async function getLegalPage(slug: string): Promise<LegalPage | null> {
     const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const result = await client.query({
+    const result = await (client as any).query({
       marketingSite: {
         legal: {
           __args: {
             filter: {
-              slug: { _eq: slug },
+              slug: { eq: slug },
             },
           },
           items: {

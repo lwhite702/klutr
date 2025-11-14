@@ -18,36 +18,36 @@
           "title": "Chat-First Notes",
           "description": "Type, talk, or drop files. Klutr organizes everything behind the scenes.",
           "icon": {
-            "url": "/images/icons/chat.svg",
-            "fileName": "chat.svg",
-            "altText": "Chat icon"
+            "url": "/illustrations/ux-colors/cloud-connecting-1.svg",
+            "fileName": "cloud-connecting-1.svg",
+            "altText": "Stream capture illustration"
           }
         },
         {
           "title": "Smart Clustering",
           "description": "Notes, links, and media are intelligently grouped into topics and insights.",
           "icon": {
-            "url": "/images/icons/cluster.svg",
-            "fileName": "cluster.svg",
-            "altText": "Cluster icon"
+            "url": "/illustrations/ux-colors/chatting-with-bot-2.svg",
+            "fileName": "chatting-with-bot-2.svg",
+            "altText": "AI clustering illustration"
           }
         },
         {
           "title": "Search That Thinks",
           "description": "Find anything instantly — even if you don't remember the exact words.",
           "icon": {
-            "url": "/images/icons/search.svg",
-            "fileName": "search.svg",
-            "altText": "Search icon"
+            "url": "/illustrations/ux-colors/fast-email.svg",
+            "fileName": "fast-email.svg",
+            "altText": "Search feature illustration"
           }
         },
         {
           "title": "Drop Anything",
           "description": "Audio, screenshots, files, voice memos — all organized automatically.",
           "icon": {
-            "url": "/images/icons/drop.svg",
-            "fileName": "drop.svg",
-            "altText": "Drop icon"
+            "url": "/illustrations/ux-colors/cloud-download-1.svg",
+            "fileName": "cloud-download-1.svg",
+            "altText": "Drop step illustration"
           }
         }
       ]
@@ -62,38 +62,38 @@
         "altText": "Jordan Lee, UX Researcher"
       }
     },
-    "howItWorksBlock": {
-      "heading": "How Klutr Works",
-      "steps": [
-        {
-          "title": "Drop Anything",
-          "description": "Start by sending your ideas, files, or messages into Klutr's chat.",
-          "icon": {
-            "url": "/images/icons/drop.svg",
-            "fileName": "drop.svg",
-            "altText": "Drop step icon"
-          }
-        },
-        {
-          "title": "Watch It Organize",
-          "description": "Klutr automatically classifies and tags your content using smart AI.",
-          "icon": {
-            "url": "/images/icons/organize.svg",
-            "fileName": "organize.svg",
-            "altText": "Organize step icon"
-          }
-        },
-        {
-          "title": "Search & Share",
-          "description": "Instantly find what matters or share threads with collaborators.",
-          "icon": {
-            "url": "/images/icons/share.svg",
-            "fileName": "share.svg",
-            "altText": "Share step icon"
-          }
-        }
-      ]
-    },
+            "howItWorksBlock": {
+              "heading": "How Klutr Works",
+              "steps": [
+                {
+                  "title": "Drop Anything",
+                  "description": "Start by sending your ideas, files, or messages into Klutr's chat.",
+                  "icon": {
+                    "url": "/illustrations/ux-colors/cloud-download-1.svg",
+                    "fileName": "cloud-download-1.svg",
+                    "altText": "Drop step illustration"
+                  }
+                },
+                {
+                  "title": "Watch It Organize",
+                  "description": "Klutr automatically classifies and tags your content using smart AI.",
+                  "icon": {
+                    "url": "/illustrations/ux-colors/cloud-data-exchange.svg",
+                    "fileName": "cloud-data-exchange.svg",
+                    "altText": "Organize step illustration"
+                  }
+                },
+                {
+                  "title": "Search & Share",
+                  "description": "Instantly find what matters or share threads with collaborators.",
+                  "icon": {
+                    "url": "/illustrations/ux-colors/phone-message.svg",
+                    "fileName": "phone-message.svg",
+                    "altText": "Discover step illustration"
+                  }
+                }
+              ]
+            },
     "ctaBlock": {
       "headline": "Start Organizing Smarter",
       "ctaText": "Get Early Access",
@@ -202,36 +202,36 @@
           "title": "Conversational Capture",
           "description": "Turn chats, thoughts, and brainstorms into searchable knowledge.",
           "icon": {
-            "url": "/images/icons/chat.svg",
-            "fileName": "chat.svg",
-            "altText": "Conversational capture icon"
+            "url": "/illustrations/ux-colors/cloud-connecting-1.svg",
+            "fileName": "cloud-connecting-1.svg",
+            "altText": "Stream capture illustration"
           }
         },
         {
           "title": "Auto-Tagging & Clustering",
           "description": "AI organizes your data while you work — no manual tagging required.",
           "icon": {
-            "url": "/images/icons/cluster.svg",
-            "fileName": "cluster.svg",
-            "altText": "Auto-tagging icon"
+            "url": "/illustrations/ux-colors/chatting-with-bot-2.svg",
+            "fileName": "chatting-with-bot-2.svg",
+            "altText": "AI clustering illustration"
           }
         },
         {
           "title": "Rich Media Support",
           "description": "Attach images, files, and audio — all processed and indexed instantly.",
           "icon": {
-            "url": "/images/icons/media.svg",
-            "fileName": "media.svg",
-            "altText": "Rich media icon"
+            "url": "/illustrations/ux-colors/cloud-connecting-1.svg",
+            "fileName": "cloud-connecting-1.svg",
+            "altText": "Rich media illustration"
           }
         },
         {
           "title": "Instant Retrieval",
           "description": "Find anything you've ever dropped into Klutr — instantly.",
           "icon": {
-            "url": "/images/icons/search.svg",
-            "fileName": "search.svg",
-            "altText": "Search icon"
+            "url": "/illustrations/ux-colors/fast-email.svg",
+            "fileName": "fast-email.svg",
+            "altText": "Search feature illustration"
           }
         }
       ]

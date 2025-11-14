@@ -120,7 +120,7 @@ function generateHTMLReport(result: AuditResult): string {
       <details>
         <summary>Affected Elements (${v.nodes.length})</summary>
         <ul>
-          ${v.nodes.map(node => `<li><code>${node.html}</code></li>`).join('')}
+          ${v.nodes.map((node: any) => `<li><code>${node.html}</code></li>`).join('')}
         </ul>
       </details>
     </div>

@@ -26,7 +26,7 @@ export async function getFeatures(): Promise<FeatureData[]> {
     const client = basehubClient(isEnabled)
 
     // Try querying first, if empty and not in draft mode, try draft mode as fallback
-    let result = await client.query({
+    let result = await (client as any).query({
       marketingSite: {
         features: {
           items: {
@@ -38,11 +38,8 @@ export async function getFeatures(): Promise<FeatureData[]> {
             description: {
               plainText: true,
             },
-            illustrationUrl: {
-              url: true,
-              fileName: true,
-              altText: true,
-            },
+            // illustrationUrl: MediaBlockUnion requires inline fragments which BaseHub query builder doesn't support
+            // Will be handled separately or via BaseHub UI
             seoKeywords: true,
           },
         },
@@ -57,7 +54,7 @@ export async function getFeatures(): Promise<FeatureData[]> {
             slug: string
             tagline: string
             description?: { plainText?: string }
-            illustrationUrl?: { url: string; fileName: string; altText: string | null }
+            illustrationUrl?: null
             seoKeywords: string | null
           }>
         }
@@ -71,7 +68,7 @@ export async function getFeatures(): Promise<FeatureData[]> {
     if (features.length === 0 && !isEnabled) {
       try {
         const draftClient = basehubClient(true)
-        const draftResult = await draftClient.query({
+        const draftResult = await (draftClient as any).query({
           marketingSite: {
             features: {
               items: {
@@ -118,13 +115,7 @@ export async function getFeatures(): Promise<FeatureData[]> {
       slug: feature.slug || '',
       tagline: feature.tagline || '',
       description: feature.description?.plainText || null,
-      illustrationUrl: feature.illustrationUrl
-        ? {
-            url: feature.illustrationUrl.url || '',
-            fileName: feature.illustrationUrl.fileName || '',
-            altText: feature.illustrationUrl.altText || null,
-          }
-        : null,
+      illustrationUrl: null, // Media queries require inline fragments - skip for now
       seoKeywords: feature.seoKeywords || null,
     }))
   } catch (error) {

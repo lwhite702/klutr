@@ -17,12 +17,12 @@ export async function getPageMetadata(
     const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const result = await client.query({
+    const result = await (client as any).query({
       marketingSite: {
         pages: {
           __args: {
             filter: {
-              slug: { _eq: slug },
+              slug: { eq: slug },
             },
           },
           items: {

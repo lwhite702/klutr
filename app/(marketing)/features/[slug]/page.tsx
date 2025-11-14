@@ -10,8 +10,9 @@ import { ArrowLeft } from "lucide-react"
  */
 export async function generateStaticParams() {
   try {
-    const client = basehubClient()
-    const result = await client.query({
+    const { isEnabled } = await draftMode()
+    const client = basehubClient(isEnabled)
+    const result = (await (client as any).query({
       marketingSite: {
         features: {
           items: {
@@ -19,7 +20,7 @@ export async function generateStaticParams() {
           },
         },
       },
-    }) as { marketingSite?: { features?: { items?: Array<{ slug: string }> } } }
+    })) as { marketingSite?: { features?: { items?: Array<{ slug: string }> } } }
 
     const features = result.marketingSite?.features?.items || []
     return features.map((feature) => ({
@@ -48,7 +49,7 @@ export default async function FeaturePage({ params }: FeaturePageProps) {
   const client = basehubClient(isEnabled)
 
   try {
-    const result = await client.query({
+    const result = await (client as any).query({
       marketingSite: {
         features: {
           __args: {

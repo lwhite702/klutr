@@ -274,9 +274,63 @@
   --shadow-lg-dark: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
 }
 
-/* Gradient utility class - Official brand colors */
+/* Gradient utility classes - Official brand colors */
 .bg-chaos-clarity {
   background: linear-gradient(135deg, #FF6B6B 0%, #00C896 100%);
+}
+
+/* Feature section gradients */
+.bg-gradient-mint-subtle {
+  background: linear-gradient(135deg, rgba(0, 200, 150, 0.05) 0%, rgba(0, 200, 150, 0.02) 50%, transparent 100%);
+}
+
+.bg-gradient-coral-subtle {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, rgba(255, 107, 107, 0.02) 50%, transparent 100%);
+}
+
+.bg-gradient-mint-coral {
+  background: linear-gradient(135deg, rgba(0, 200, 150, 0.05) 0%, rgba(255, 107, 107, 0.05) 100%);
+}
+
+/* Timeline and process flow utilities */
+.timeline-line {
+  background: linear-gradient(to bottom, 
+    rgba(0, 200, 150, 0.3) 0%, 
+    rgba(255, 107, 107, 0.3) 50%, 
+    rgba(0, 200, 150, 0.3) 100%);
+}
+
+.process-connector {
+  background: linear-gradient(to right, 
+    rgba(0, 200, 150, 0.3) 0%, 
+    rgba(255, 107, 107, 0.3) 50%, 
+    rgba(0, 200, 150, 0.3) 100%);
+}
+
+/* Enhanced card gradients */
+.card-gradient-mint {
+  background: linear-gradient(to bottom right, 
+    var(--background) 0%, 
+    rgba(0, 200, 150, 0.05) 100%);
+}
+
+.card-gradient-coral {
+  background: linear-gradient(to bottom right, 
+    var(--background) 0%, 
+    rgba(255, 107, 107, 0.05) 100%);
+}
+
+/* Icon background gradients */
+.icon-bg-mint {
+  background: linear-gradient(to bottom right, 
+    rgba(0, 200, 150, 0.2) 0%, 
+    rgba(0, 200, 150, 0.1) 100%);
+}
+
+.icon-bg-coral {
+  background: linear-gradient(to bottom right, 
+    rgba(255, 107, 107, 0.2) 0%, 
+    rgba(255, 107, 107, 0.1) 100%);
 }
 
 @layer base {

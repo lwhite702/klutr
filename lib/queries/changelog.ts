@@ -22,7 +22,7 @@ export async function getChangelogEntries(): Promise<ChangelogEntry[]> {
     const { isEnabled } = await draftMode()
     const client = basehubClient(isEnabled)
 
-    const result = await client.query({
+    const result = await (client as any).query({
       marketingSite: {
         changelog: {
           items: {

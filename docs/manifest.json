@@ -1,0 +1,396 @@
+{
+  "generated_at": "2025-11-12T21:31:57.892418Z",
+  "summary": "Auto-generated docs manifest",
+  "files": [
+    {
+      "path": "PRD.md",
+      "target": "docs/internal/PRD.md",
+      "category": "internal"
+    },
+    {
+      "path": "VERCEL_SETUP.md",
+      "target": "docs/internal/VERCEL_SETUP.md",
+      "category": "internal"
+    },
+    {
+      "path": "MIGRATION_SUMMARY.md",
+      "target": "docs/internal/MIGRATION_SUMMARY.md",
+      "category": "internal"
+    },
+    {
+      "path": "POSTHOG_MCP_SETUP_INSTRUCTIONS.md",
+      "target": "docs/internal/POSTHOG_MCP_SETUP_INSTRUCTIONS.md",
+      "category": "internal"
+    },
+    {
+      "path": "event-tracking-report.md",
+      "target": "docs/internal/event-tracking-report.md",
+      "category": "internal"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "target": "docs/internal/CHANGELOG.md",
+      "category": "internal"
+    },
+    {
+      "path": "BRAND_VOICE.md",
+      "target": "docs/internal/BRAND_VOICE.md",
+      "category": "internal"
+    },
+    {
+      "path": "MERGE_COMPLETION_SUMMARY.md",
+      "target": "docs/internal/MERGE_COMPLETION_SUMMARY.md",
+      "category": "internal"
+    },
+    {
+      "path": "API_ROUTES_FIXED.md",
+      "target": "docs/internal/API_ROUTES_FIXED.md",
+      "category": "internal"
+    },
+    {
+      "path": "main-opus-merge-surgery.plan.md",
+      "target": "docs/internal/main-opus-merge-surgery.plan.md",
+      "category": "internal"
+    },
+    {
+      "path": "README.md",
+      "target": "docs/internal/README.md",
+      "category": "internal"
+    },
+    {
+      "path": "DOPPLER.md",
+      "target": "docs/internal/DOPPLER.md",
+      "category": "internal"
+    },
+    {
+      "path": "BRAND_GUIDE.md",
+      "target": "docs/external/BRAND_GUIDE.md",
+      "category": "external"
+    },
+    {
+      "path": "agents.md",
+      "target": "docs/internal/agents.md",
+      "category": "internal"
+    },
+    {
+      "path": "SUPABASE_MIGRATION.md",
+      "target": "docs/internal/SUPABASE_MIGRATION.md",
+      "category": "internal"
+    },
+    {
+      "path": "README_POSTHOG_FLAGS.md",
+      "target": "docs/internal/README_POSTHOG_FLAGS.md",
+      "category": "internal"
+    },
+    {
+      "path": "MIGRATION_STATUS.md",
+      "target": "docs/internal/MIGRATION_STATUS.md",
+      "category": "internal"
+    },
+    {
+      "path": "mintlify/stream.mdx",
+      "target": "docs/external/stream.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/notes-guide.mdx",
+      "target": "docs/external/notes-guide.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/vault.mdx",
+      "target": "docs/external/vault.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/boards.mdx",
+      "target": "docs/external/boards.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/spark.mdx",
+      "target": "docs/external/spark.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/overview.mdx",
+      "target": "docs/external/overview.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/feature-flags.mdx",
+      "target": "docs/external/feature-flags.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/stacks.mdx",
+      "target": "docs/external/stacks.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/mindstorm.mdx",
+      "target": "docs/external/mindstorm.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/memory-lane.mdx",
+      "target": "docs/external/memory-lane.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/getting-started.mdx",
+      "target": "docs/external/getting-started.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/muse.mdx",
+      "target": "docs/external/muse.mdx",
+      "category": "external"
+    },
+    {
+      "path": "mintlify/insights.mdx",
+      "target": "docs/external/insights.mdx",
+      "category": "external"
+    },
+    {
+      "path": "docs/accessibility-report.md",
+      "target": "docs/external/accessibility-report.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/accessibility-audit.md",
+      "target": "docs/external/accessibility-audit.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/posthog-flags-created.md",
+      "target": "docs/external/posthog-flags-created.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/illustrations-implementation-summary.md",
+      "target": "docs/external/illustrations-implementation-summary.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/architecture.md",
+      "target": "docs/internal/architecture.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/ui-map.md",
+      "target": "docs/external/ui-map.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/vault.md",
+      "target": "docs/external/vault.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/brand-guidelines.md",
+      "target": "docs/external/brand-guidelines.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_SUMMARY.md",
+      "target": "docs/external/IMPLEMENTATION_SUMMARY.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/basehub-migration.md",
+      "target": "docs/external/basehub-migration.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/changelog.md",
+      "target": "docs/external/changelog.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/posthog-mcp-setup.md",
+      "target": "docs/external/posthog-mcp-setup.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/basehub-implementation-summary.md",
+      "target": "docs/external/basehub-implementation-summary.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/basehub-schema.md",
+      "target": "docs/external/basehub-schema.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/architecture-chat-extension.md",
+      "target": "docs/internal/architecture-chat-extension.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/posthog-mcp-cursor-setup.md",
+      "target": "docs/external/posthog-mcp-cursor-setup.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/ui-components.md",
+      "target": "docs/external/ui-components.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/content-map.md",
+      "target": "docs/external/content-map.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/basehub-seed-summary.md",
+      "target": "docs/external/basehub-seed-summary.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/marketing.md",
+      "target": "docs/external/marketing.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/branding.md",
+      "target": "docs/external/branding.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/roadmap.md",
+      "target": "docs/external/roadmap.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/deployment.md",
+      "target": "docs/internal/deployment.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/basehub-population-summary.md",
+      "target": "docs/external/basehub-population-summary.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/basehub-population-guide.md",
+      "target": "docs/external/basehub-population-guide.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/BRAND_COLOR_UPDATE_SUMMARY.md",
+      "target": "docs/external/BRAND_COLOR_UPDATE_SUMMARY.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/dev-setup.md",
+      "target": "docs/external/dev-setup.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/illustrations-integration.md",
+      "target": "docs/external/illustrations-integration.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/cron.md",
+      "target": "docs/external/cron.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/posthog-mcp-quickstart.md",
+      "target": "docs/external/posthog-mcp-quickstart.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/database.md",
+      "target": "docs/external/database.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/brand/klutr-brand-guide.md",
+      "target": "docs/external/klutr-brand-guide.md",
+      "category": "external"
+    },
+    {
+      "path": "docs/internal/stream-architecture.md",
+      "target": "docs/internal/stream-architecture.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/testing-checklist.md",
+      "target": "docs/internal/testing-checklist.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/monorepo.md",
+      "target": "docs/internal/monorepo.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/resend-setup.md",
+      "target": "docs/internal/resend-setup.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/mcp-troubleshooting.md",
+      "target": "docs/internal/mcp-troubleshooting.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/setup-guide.md",
+      "target": "docs/internal/setup-guide.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/supabase-auth-config.md",
+      "target": "docs/internal/supabase-auth-config.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/ai-architecture.md",
+      "target": "docs/internal/ai-architecture.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/email-templates.md",
+      "target": "docs/internal/email-templates.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/brand-redesign.md",
+      "target": "docs/internal/brand-redesign.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/refreshing-marketing-content.md",
+      "target": "docs/internal/refreshing-marketing-content.md",
+      "category": "internal"
+    },
+    {
+      "path": "docs/internal/basehub-content-updates.md",
+      "target": "docs/internal/basehub-content-updates.md",
+      "category": "internal"
+    },
+    {
+      "path": "public/illustrations/README.md",
+      "target": "docs/internal/README.md",
+      "category": "internal"
+    },
+    {
+      "path": "public/brand/README.md",
+      "target": "docs/internal/README.md",
+      "category": "internal"
+    },
+    {
+      "path": "scripts/create-posthog-flags-via-mcp.md",
+      "target": "docs/internal/create-posthog-flags-via-mcp.md",
+      "category": "internal"
+    },
+    {
+      "path": "lib/mcp-resource-1762742920988.md",
+      "target": "docs/internal/mcp-resource-1762742920988.md",
+      "category": "internal"
+    }
+  ]
+}

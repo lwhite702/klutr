@@ -38,13 +38,13 @@ async function auditRoute(path: string, name: string) {
   
   // Dynamic imports to handle missing dependencies gracefully
   const lighthouse = (await import('lighthouse')).default
-  const chromeLauncher = await import('chrome-launcher')
+  const chromeLauncher = await import('chrome-launcher') as any
   
   const chrome = await chromeLauncher.default.launch({ chromeFlags: ['--headless'] })
-  const options = {
-    logLevel: 'info' as const,
-    output: 'json' as const,
-    onlyCategories: ['accessibility'] as const,
+  const options: any = {
+    logLevel: 'info',
+    output: 'json',
+    onlyCategories: ['accessibility'],
     port: chrome.port,
   }
   
@@ -58,12 +58,13 @@ async function auditRoute(path: string, name: string) {
     
     // Save HTML report
     const htmlPath = join(REPORTS_DIR, `${name}-lighthouse.html`)
-    writeFileSync(htmlPath, runnerResult?.report || '')
+    const reportContent = runnerResult?.report
+    writeFileSync(htmlPath, Array.isArray(reportContent) ? reportContent.join('') : (reportContent || ''))
     console.log(`  ✓ Saved HTML report: ${htmlPath}`)
     
     // Log accessibility score
     const a11yScore = runnerResult?.lhr?.categories?.accessibility?.score
-    if (a11yScore !== undefined) {
+    if (a11yScore !== undefined && a11yScore !== null) {
       const scorePercent = Math.round(a11yScore * 100)
       console.log(`  Accessibility score: ${scorePercent}/100`)
     }
