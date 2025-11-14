@@ -32,10 +32,10 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 1rem; /* 2xl - Horizon UI primary border radius */
-  --radius-card: 1rem; /* 2xl */
-  --radius-input: 0.5rem;
-  --radius-chip: 9999px;
+  --radius: 1rem; /* 16px - Primary border radius */
+  --radius-card: 1rem; /* 16px - Card default */
+  --radius-input: 0.5rem; /* 8px - Input default */
+  --radius-chip: 9999px; /* Pills, chips */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -238,16 +238,21 @@
   --color-chaos: #FF6B6B;
   --color-clarity: #00C896;
   
-  /* Shadow tokens - Horizon UI */
+  /* Shadow tokens - Unified depth system */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-depth: 0 4px 12px rgba(0, 0, 0, 0.25);
 
-  /* Border radius - Horizon UI tokens */
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem; /* 2xl */
-  --radius-xl: 1.25rem;
-  --radius-2xl: 1rem; /* Primary border radius */
+  /* Border radius - Unified tokens */
+  --radius-sm: 0.5rem; /* 8px - Small elements */
+  --radius-md: 0.75rem; /* 12px - Buttons, inputs */
+  --radius-lg: 1rem; /* 16px - Cards, modals */
+  --radius-xl: 1.25rem; /* 20px - Large cards */
+  --radius-2xl: 1rem; /* 16px - Marketing sections */
 
   /* Brand color tokens */
   --color-coral: var(--color-coral);
@@ -259,16 +264,7 @@
   --color-chaos: var(--color-chaos);
   --color-clarity: var(--color-clarity);
   
-  /* Shadow utilities */
-  --shadow-xl: var(--shadow-xl);
-  --shadow-2xl: var(--shadow-2xl);
-  
-  /* Enhanced shadow utilities for dark mode depth */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  
-  /* Dark mode shadows with more depth */
+  /* Dark mode shadows with more depth (override in .dark) */
   --shadow-sm-dark: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md-dark: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
   --shadow-lg-dark: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
