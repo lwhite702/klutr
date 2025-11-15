@@ -19,10 +19,22 @@ export interface FeatureData {
 /**
  * Fetch all features from BaseHub
  * Supports draft mode for previewing unpublished content
+ * Note: draftMode() can only be called in request context, not during build
  */
 export async function getFeatures(): Promise<FeatureData[]> {
   try {
-    const { isEnabled } = await draftMode()
+    // Try to get draft mode, but handle gracefully if called outside request context (e.g., during build)
+    let isEnabled = false
+    try {
+      const draft = await draftMode()
+      isEnabled = draft.isEnabled
+    } catch (error) {
+      // draftMode() can't be called outside request context (e.g., in generateStaticParams)
+      // Default to production mode (isEnabled = false)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[BaseHub] draftMode() called outside request context, using production mode')
+      }
+    }
     const client = basehubClient(isEnabled)
 
     // Try querying first, if empty and not in draft mode, try draft mode as fallback
@@ -134,10 +146,22 @@ export async function getFeatures(): Promise<FeatureData[]> {
 /**
  * Fetch a single feature by slug from BaseHub
  * Supports draft mode for previewing unpublished content
+ * Note: draftMode() can only be called in request context, not during build
  */
 export async function getFeatureBySlug(slug: string): Promise<FeatureData | null> {
   try {
-    const { isEnabled } = await draftMode()
+    // Try to get draft mode, but handle gracefully if called outside request context (e.g., during build)
+    let isEnabled = false
+    try {
+      const draft = await draftMode()
+      isEnabled = draft.isEnabled
+    } catch (error) {
+      // draftMode() can't be called outside request context (e.g., in generateStaticParams)
+      // Default to production mode (isEnabled = false)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[BaseHub] draftMode() called outside request context, using production mode')
+      }
+    }
     const client = basehubClient(isEnabled)
 
     // Query with filter for slug - use 'eq' not '_eq', and fetch all then filter client-side
