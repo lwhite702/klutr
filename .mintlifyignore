@@ -1,0 +1,63 @@
+# Ignore all markdown files except those in docs/external directory
+*.md
+!docs/external/**/*.mdx
+
+# Ignore specific problematic files
+HYBRID_ARCHITECTURE_PLAN.md
+*.plan.md
+main-opus-merge-surgery.plan.md
+
+# Ignore internal documentation directories
+docs/internal/
+reports/
+
+# Note: docs/external/ is NOT ignored - it contains customer-facing docs
+
+# Ignore root-level documentation files
+README.md
+CHANGELOG.md
+BRAND_VOICE.md
+BRAND_GUIDE.md
+PRD.md
+agents.md
+
+# Ignore architecture and technical docs
+docs/architecture/
+docs/database/
+docs/security/
+docs/brand/
+docs/manifest.json
+docs/content-map.json
+docs/basehub-*.json
+docs/basehub-*.md
+
+# Ignore implementation and migration docs
+docs/*IMPLEMENTATION*.md
+docs/*MIGRATION*.md
+docs/*STATUS*.md
+docs/*SUMMARY*.md
+docs/*PROGRESS*.md
+docs/*CHECKPOINT*.md
+docs/*COMPLETE*.md
+docs/*FINAL*.md
+docs/*QUICK*.md
+
+# Ignore technical setup docs
+docs/deployment.md
+docs/operations.md
+docs/dev-setup.md
+docs/ui-components.md
+docs/ui-map.md
+docs/marketing.md
+docs/roadmap.md
+docs/changelog.md
+docs/cron.md
+docs/database.md
+docs/vault.md
+docs/illustrations-*.md
+docs/posthog-*.md
+docs/accessibility-*.md
+docs/architecture*.md
+docs/branding.md
+docs/brand-guidelines.md
+docs/BRAND_COLOR_UPDATE_SUMMARY.md
