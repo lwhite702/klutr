@@ -114,17 +114,20 @@ export default function BoardsPage() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-        <PageHeader
-          title="Boards"
-          description="Auto-organized collections of related notes"
-          actions={
-            <Button onClick={handleCreate}>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Board
-            </Button>
-          }
-        />
+    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-8">
+        {/* Fintask-inspired page header */}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-semibold text-foreground mb-2">Boards</h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Auto-organized collections of related notes
+            </p>
+          </div>
+          <Button onClick={handleCreate} className="shrink-0">
+            <Plus className="h-4 w-4 mr-2" />
+            Create Board
+          </Button>
+        </div>
         {isLoading ? (
           <div className="text-center py-16">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />

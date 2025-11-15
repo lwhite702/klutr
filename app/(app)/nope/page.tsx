@@ -115,22 +115,26 @@ export default function NopeBinPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-        <PageHeader
-          title="Nope Bin"
-          description="Stuff you set aside."
-          actions={
-            !onboarding.active && !dialogTour.open && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => dialogTour.startTour()}
-              >
-                Take tour
-              </Button>
-            )
-          }
-        />
+    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-8">
+        {/* Fintask-inspired page header */}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-semibold text-foreground mb-2">Nope Bin</h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Stuff you set aside. Nothing is permanently deleted.
+            </p>
+          </div>
+          {!onboarding.active && !dialogTour.open && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => dialogTour.startTour()}
+              className="shrink-0"
+            >
+              Take tour
+            </Button>
+          )}
+        </div>
 
         <SectionTourDialog
           title="Welcome to Nope Bin"

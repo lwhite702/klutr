@@ -120,35 +120,38 @@ export default function MemoryLanePage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-        <PageHeader
-          title="Memory Lane"
-          description="What you were thinking across time."
-          actions={
-            <>
-              {!onboarding.active && !dialogTour.open && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    posthog.capture('memory_tour_started', { trigger: 'manual_click' });
-                    dialogTour.startTour();
-                  }}
-                >
-                  Take tour
-                </Button>
-              )}
+    <div className="max-w-[1200px] mx-auto px-6 py-8 space-y-8">
+        {/* Fintask-inspired page header */}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-semibold text-foreground mb-2">Memory Lane</h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              What you were thinking across time. Rediscover forgotten ideas.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {!onboarding.active && !dialogTour.open && (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleGenerateWeeklySummary}
-                disabled={isGenerating}
+                onClick={() => {
+                  posthog.capture('memory_tour_started', { trigger: 'manual_click' });
+                  dialogTour.startTour();
+                }}
               >
-                {isGenerating ? 'Generating...' : 'Generate This Week'}
+                Take tour
               </Button>
-            </>
-          }
-        />
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleGenerateWeeklySummary}
+              disabled={isGenerating}
+            >
+              {isGenerating ? 'Generating...' : 'Generate This Week'}
+            </Button>
+          </div>
+        </div>
 
         <SectionTourDialog
           title="Welcome to Memory Lane"

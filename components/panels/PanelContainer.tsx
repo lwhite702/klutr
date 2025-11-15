@@ -88,7 +88,7 @@ export function PanelContainer({
     )
   }
 
-  // Desktop: Slide-in panel
+  // Desktop: Slide-in panel (Fintask-inspired styling)
   return (
     <AnimatePresence>
       {isOpen && (
@@ -100,11 +100,11 @@ export function PanelContainer({
             exit="closed"
             variants={backdropVariants}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            className="fixed inset-0 bg-black/20 z-40 md:hidden"
             onClick={onClose}
           />
 
-          {/* Panel */}
+          {/* Panel - Fintask-inspired clean borders and subtle shadow */}
           <motion.div
             initial="closed"
             animate="open"
@@ -117,7 +117,7 @@ export function PanelContainer({
               duration: 0.3 
             }}
             className={cn(
-              "fixed top-0 bottom-0 z-50 bg-background border-l shadow-xl",
+              "fixed top-0 bottom-0 z-50 bg-background border-l border-border/50 shadow-lg",
               position === 'right' ? 'right-0' : 'left-0',
               widthClasses[width],
               className
@@ -142,19 +142,33 @@ interface PanelHeaderProps {
   onClose?: () => void
 }
 
+/**
+ * PanelHeader - Fintask-inspired panel header
+ * 
+ * Features:
+ * - Clear title and description hierarchy
+ * - Action buttons on the right
+ * - Consistent padding and typography
+ */
 export function PanelHeader({ title, description, action, onClose }: PanelHeaderProps) {
   return (
-    <div className="border-b px-6 py-4 flex items-start justify-between bg-background sticky top-0 z-10">
-      <div className="flex-1">
-        <h2 className="text-xl font-semibold">{title}</h2>
+    <div className="border-b border-border/50 px-6 py-5 flex items-start justify-between bg-background sticky top-0 z-10">
+      <div className="flex-1 min-w-0">
+        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
         {description && (
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+          <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">{description}</p>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ml-4 shrink-0">
         {action}
         {onClose && (
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close panel">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onClose} 
+            aria-label="Close panel"
+            className="h-8 w-8"
+          >
             <X className="h-4 w-4" />
           </Button>
         )}
