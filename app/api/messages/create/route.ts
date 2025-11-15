@@ -46,7 +46,7 @@ async function createMessageHandler(req: NextRequest, data: any) {
         data: {
           userId: user.id,
           title: type === "text" ? content?.slice(0, 50) : null,
-          system_tags: [],
+          systemTags: [],
         },
       });
       targetThreadId = newThread.id;
@@ -138,7 +138,7 @@ async function createMessageHandler(req: NextRequest, data: any) {
               await prisma.conversationThread.update({
                 where: { id: targetThreadId },
                 data: {
-                  system_tags: classification.topics.length > 0 
+                  systemTags: classification.topics.length > 0 
                     ? classification.topics 
                     : undefined,
                   title: message.thread.title || classification.summary.slice(0, 50) || undefined,

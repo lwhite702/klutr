@@ -115,22 +115,31 @@ export default function NopeBinPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-        <PageHeader
-          title="Nope Bin"
-          description="Stuff you set aside."
-          actions={
-            !onboarding.active && !dialogTour.open && (
+    <div className="h-full">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Page Header - Fintask-inspired */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground">Nope Bin</h1>
+              <p className="text-sm text-muted-foreground mt-1.5">
+                Stuff you set aside.
+              </p>
+            </div>
+            {!onboarding.active && !dialogTour.open && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => dialogTour.startTour()}
+                className="shrink-0"
               >
                 Take tour
               </Button>
-            )
-          }
-        />
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-6">
 
         <SectionTourDialog
           title="Welcome to Nope Bin"
@@ -170,7 +179,7 @@ export default function NopeBinPage() {
               title={note.title}
               description={note.description}
               tags={note.tags}
-              pinned={note.pinned}
+              pinned={false}
               onClick={() => handleNoteClick(note.id)}
               onFavorite={() => handleNoteFavorite(note.id)}
               actionsRight={
@@ -232,6 +241,8 @@ export default function NopeBinPage() {
             <p>Your Nope Bin is empty. Nothing has been discarded yet.</p>
           </div>
         )}
+        </div>
       </div>
+    </div>
   );
 }

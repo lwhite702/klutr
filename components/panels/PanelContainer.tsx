@@ -144,20 +144,30 @@ interface PanelHeaderProps {
 
 export function PanelHeader({ title, description, action, onClose }: PanelHeaderProps) {
   return (
-    <div className="border-b px-6 py-4 flex items-start justify-between bg-background sticky top-0 z-10">
-      <div className="flex-1">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        {description && (
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
-        )}
-      </div>
-      <div className="flex items-center gap-2">
-        {action}
-        {onClose && (
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close panel">
-            <X className="h-4 w-4" />
-          </Button>
-        )}
+    <div className="border-b bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+      <div className="px-6 py-5 flex items-start justify-between">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+          {description && (
+            <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
+              {description}
+            </p>
+          )}
+        </div>
+        <div className="flex items-center gap-2 shrink-0 ml-4">
+          {action}
+          {onClose && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={onClose} 
+              aria-label="Close panel"
+              className="h-8 w-8"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -264,11 +264,11 @@ export default function StreamPage() {
   return (
     <StreamErrorBoundary>
       <DropZone onDrop={handleFileUpload}>
-        <div className="flex h-[calc(100vh-64px)] relative">
-          {/* Center - Stream */}
-          <div className="flex-1 flex flex-col">
-            <ScrollArea className="flex-1 px-4" ref={scrollRef}>
-              <div className="max-w-4xl mx-auto py-8">
+        <div className="flex h-[calc(100vh-4rem)] relative">
+          {/* Center - Stream (Fintask-inspired centered column) */}
+          <div className="flex-1 flex flex-col min-w-0">
+            <ScrollArea className="flex-1" ref={scrollRef}>
+              <div className="max-w-[960px] mx-auto px-6 py-8">
                 {isLoading ? (
                   <StreamSkeleton />
                 ) : error ? (
@@ -291,7 +291,7 @@ export default function StreamPage() {
                     </p>
                   </div>
                 ) : (
-                  <>
+                  <div className="space-y-4">
                     {drops.map((drop) => (
                       <StreamMessage
                         key={drop.id}
@@ -299,43 +299,26 @@ export default function StreamPage() {
                         isUser={drop.type === "text"}
                       />
                     ))}
-                  </>
+                  </div>
                 )}
               </div>
             </ScrollArea>
             <AutoSummary isAnalyzing={isAnalyzing} />
-            <div className="p-4 border-t">
-              <div className="max-w-4xl mx-auto mb-2">
-                <VoiceRecorder
-                  onRecordingComplete={handleVoiceRecord}
-                  onError={(err) => toast.error(err)}
+            <div className="border-t bg-background/95 backdrop-blur-sm">
+              <div className="max-w-[960px] mx-auto px-6 py-4">
+                <div className="mb-3">
+                  <VoiceRecorder
+                    onRecordingComplete={handleVoiceRecord}
+                    onError={(err) => toast.error(err)}
+                  />
+                </div>
+                <StreamInput
+                  onSend={handleSend}
+                  onFileUpload={handleFileUpload}
                 />
               </div>
-              <StreamInput
-                onSend={handleSend}
-                onFileUpload={handleFileUpload}
-              />
             </div>
           </div>
-
-          {/* Right Sidebar - Context/Tags Panel */}
-          <aside className="hidden lg:block w-64 border-l bg-muted/30 p-4">
-            <div className="space-y-4">
-              <h3 className="font-semibold text-sm">Active Tags</h3>
-              <div className="flex flex-wrap gap-2">
-                {Array.from(
-                  new Set(drops.flatMap((drop) => drop.tags.map((t) => t.label)))
-                ).map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2 py-1 rounded-full bg-muted"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </aside>
 
           {/* Panel Overlays */}
           <PanelContainer 

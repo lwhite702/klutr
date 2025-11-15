@@ -56,34 +56,31 @@ export function StreamMessage({ drop, isUser = false }: StreamMessageProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}
+      className="w-full"
     >
       <div
-        className={`max-w-[80%] rounded-2xl px-4 py-3 shadow-lg ${
-          isUser
-            ? "rounded-br-sm bg-[var(--klutr-coral)] text-white"
-            : "rounded-bl-sm bg-[var(--klutr-mint)]/20 dark:bg-[var(--klutr-mint)]/10 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]"
+        className={`rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md ${
+          isUser ? "border-accent-coral/20 bg-accent-coral/5" : ""
         }`}
       >
-        <div className="flex items-start gap-2">
-          {!isUser && getIcon() && (
-            <div className="mt-0.5">{getIcon()}</div>
+        <div className="flex items-start gap-3">
+          {getIcon() && (
+            <div className="mt-0.5 shrink-0 text-muted-foreground">
+              {getIcon()}
+            </div>
           )}
-          <div className="flex-1">
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">
+          <div className="flex-1 min-w-0">
+            <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground">
               {drop.content}
             </p>
             {getFilePreview()}
-            <div className="mt-2 flex items-center justify-between gap-2">
+            <div className="mt-3 flex items-center justify-between gap-2 flex-wrap">
               <TagChips tags={drop.tags} />
-              <span className="text-xs opacity-70 ml-auto whitespace-nowrap">
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
                 {timeAgo}
               </span>
             </div>
           </div>
-          {isUser && getIcon() && (
-            <div className="mt-0.5">{getIcon()}</div>
-          )}
         </div>
       </div>
     </motion.div>

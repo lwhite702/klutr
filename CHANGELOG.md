@@ -2,6 +2,19 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-15 08:30 ET
+
+- [ui] Refined authenticated app shell using Fintask-inspired layout while preserving stream-first architecture
+- [ui] Updated AppShell to match Fintask 3-part structure (sidebar, main content, right panel area)
+- [ui] Enhanced TopBar with larger Klutr branding, tagline, and improved visual hierarchy
+- [ui] Refined SidebarNav with Fintask-inspired styling and visible keyboard shortcut hints (⌘K, ⌘M, ⌘I, ⌘H)
+- [ui] Polished Stream layout with Fintask-inspired card styling, improved spacing, and centered column (max-width 960px)
+- [ui] Updated StreamMessage cards with cleaner borders, shadows, and hover effects matching Fintask patterns
+- [ui] Enhanced PanelContainer and PanelHeader with Fintask-like visual polish and improved typography
+- [ui] Updated Boards and Nope pages with Fintask-inspired layouts and consistent page headers
+- [brand] Increased Klutr logo presence in header (h-7, larger than before) with tagline visible on large screens
+- [brand] Maintained Klutr brand colors (coral, mint) while adopting Fintask structural patterns
+
 ## 2025-11-14 21:17 ET
 
 - [migration] **Complete Supabase migration** - Removed Prisma entirely, migrated all models to Supabase

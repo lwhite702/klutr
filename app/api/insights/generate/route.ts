@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     }, {} as Record<string, number>);
 
     const allTags = recentNotes.flatMap(note => 
-      note.tags.map(nt => nt.tag.name)
+      note.tags?.map((nt: any) => nt.tag?.name || nt.name || nt).filter(Boolean) || []
     );
     const tagCounts = allTags.reduce((acc, tag) => {
       acc[tag] = (acc[tag] || 0) + 1;
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     }, {} as Record<string, number>);
 
     const topTags = Object.entries(tagCounts)
-      .sort(([, a], [, b]) => b - a)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
       .slice(0, 5)
       .map(([tag]) => tag);
 
@@ -170,7 +170,7 @@ Return as a JSON array of objects with "title" and "description" fields.`;
         typeDistribution: noteTypes,
         clusterCount: Object.keys(clusters).length,
       },
-      cost: result.cost,
+      cost: result.usage,
     });
   } catch (error) {
     console.error("[API] Generate insights error:", error);

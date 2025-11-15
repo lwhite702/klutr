@@ -106,80 +106,105 @@ export function SidebarNav() {
   const { activePanel, openPanel } = usePanelState();
 
   return (
-    <TooltipProvider>
-      <nav className="flex flex-col gap-1 p-4">
-        {/* Page Links */}
-        {pageItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href;
+    <nav className="flex flex-col h-full">
+      {/* Logo Section - Moved to TopBar, keeping minimal branding here */}
+      <div className="p-6 pb-4 border-b">
+        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          Navigation
+        </div>
+      </div>
 
-          return (
-            <Button
-              key={item.href}
-              variant="ghost"
-              className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
-              asChild
-            >
-              <Link 
-                href={item.href} 
-                onClick={() => {
-                  posthog.capture('sidebar_navigation_link_clicked', {
-                    target_href: item.href,
-                    target_label: item.label,
-                  });
-                }}
-                aria-current={isActive ? "page" : undefined}
+      {/* Page Links Section */}
+      <div className="flex-1 overflow-y-auto px-3 py-4">
+        <div className="space-y-1">
+          {pageItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+
+            return (
+              <Button
+                key={item.href}
+                variant="ghost"
+                className={`w-full justify-start gap-3 h-9 px-3 ${
+                  isActive 
+                    ? "bg-accent text-accent-foreground font-medium" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                }`}
+                asChild
               >
-                <Icon
-                  className={`h-4 w-4 ${getIconStyles(item.color).className}`}
-                  style={getIconStyles(item.color).style}
-                  aria-hidden="true"
-                />
-                {item.label}
-              </Link>
-            </Button>
-          );
-        })}
-
-        {/* Divider */}
-        <div className="my-2 border-t" />
-
-        {/* Panel Triggers */}
-        {panelItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activePanel === item.id;
-
-          return (
-            <Tooltip key={item.id}>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
+                <Link 
+                  href={item.href} 
                   onClick={() => {
-                    openPanel(item.id);
-                    posthog.capture('sidebar_panel_opened', {
-                      panel: item.id,
-                      label: item.label,
+                    posthog.capture('sidebar_navigation_link_clicked', {
+                      target_href: item.href,
+                      target_label: item.label,
                     });
                   }}
-                  aria-label={`${item.label} panel (⌘${item.shortcut})`}
-                  aria-pressed={isActive}
+                  aria-current={isActive ? "page" : undefined}
                 >
                   <Icon
-                    className={`h-4 w-4 ${getIconStyles(item.color).className}`}
+                    className={`h-4 w-4 shrink-0 ${getIconStyles(item.color).className}`}
                     style={getIconStyles(item.color).style}
                     aria-hidden="true"
                   />
-                  {item.label}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>{item.label} (⌘{item.shortcut})</p>
-              </TooltipContent>
-            </Tooltip>
-          );
-        })}
-      </nav>
-    </TooltipProvider>
+                  <span className="flex-1 text-sm">{item.label}</span>
+                </Link>
+              </Button>
+            );
+          })}
+        </div>
+
+        {/* Divider */}
+        <div className="my-4 border-t" />
+
+        {/* Panel Triggers Section */}
+        <div className="space-y-1">
+          <div className="px-3 mb-2">
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Quick Access
+            </div>
+          </div>
+          {panelItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activePanel === item.id;
+
+            return (
+              <Button
+                key={item.id}
+                variant="ghost"
+                className={`w-full justify-between gap-3 h-9 px-3 ${
+                  isActive 
+                    ? "bg-accent text-accent-foreground font-medium" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                }`}
+                onClick={() => {
+                  openPanel(item.id);
+                  posthog.capture('sidebar_panel_opened', {
+                    panel: item.id,
+                    label: item.label,
+                  });
+                }}
+                aria-label={`${item.label} panel (⌘${item.shortcut})`}
+                aria-pressed={isActive}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <Icon
+                    className={`h-4 w-4 shrink-0 ${getIconStyles(item.color).className}`}
+                    style={getIconStyles(item.color).style}
+                    aria-hidden="true"
+                  />
+                  <span className="text-sm">{item.label}</span>
+                </div>
+                {/* Visible keyboard shortcut hint */}
+                <kbd className="hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-60">
+                  <span className="text-xs">⌘</span>
+                  {item.shortcut}
+                </kbd>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
   );
 }
