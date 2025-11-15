@@ -1,0 +1,8 @@
+# Ignore files outside the mintlify directory
+*.md
+!mintlify/**/*.mdx
+HYBRID_ARCHITECTURE_PLAN.md
+*.plan.md
+reports/
+docs/internal/
+docs/external/
