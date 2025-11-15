@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
           },
           take: 5,
           orderBy: {
-            clusterConfidence: 'desc',
+            createdAt: 'desc',
           },
           select: {
             id: true,

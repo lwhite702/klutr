@@ -114,17 +114,25 @@ export default function BoardsPage() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-        <PageHeader
-          title="Boards"
-          description="Auto-organized collections of related notes"
-          actions={
-            <Button onClick={handleCreate}>
+    <div className="h-full">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Page Header - Fintask-inspired */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground">Boards</h1>
+              <p className="text-sm text-muted-foreground mt-1.5">
+                Auto-organized collections of related notes
+              </p>
+            </div>
+            <Button onClick={handleCreate} className="shrink-0">
               <Plus className="h-4 w-4 mr-2" />
               Create Board
             </Button>
-          }
-        />
+          </div>
+        </div>
+
+        {/* Content */}
         {isLoading ? (
           <div className="text-center py-16">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
@@ -150,7 +158,7 @@ export default function BoardsPage() {
               ))}
             </CardGrid>
             {boards.length === 0 && (
-              <div className="text-center py-16">
+              <div className="text-center py-16 border border-dashed rounded-lg">
                 <p className="text-muted-foreground text-lg mb-2">
                   No boards yet
                 </p>
@@ -162,6 +170,7 @@ export default function BoardsPage() {
             )}
           </>
         )}
+      </div>
     </div>
   );
 }

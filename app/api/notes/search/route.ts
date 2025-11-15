@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Generate embedding for search query
-    const queryEmbedding = await generateAIEmbedding(query.trim());
+    const queryEmbedding = await generateAIEmbedding({ text: query.trim() });
 
     // Perform vector similarity search using pgvector
     // Use cosine distance operator: <->

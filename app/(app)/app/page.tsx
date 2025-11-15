@@ -141,8 +141,7 @@ export default function AllNotesPage() {
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (note) =>
-          note.title.toLowerCase().includes(query) ||
-          note.description?.toLowerCase().includes(query) ||
+          note.content.toLowerCase().includes(query) ||
           note.tags?.some((tag) => tag.label.toLowerCase().includes(query))
       );
     }
@@ -160,13 +159,14 @@ export default function AllNotesPage() {
       let comparison = 0;
       switch (sortBy) {
         case "title":
-          comparison = a.title.localeCompare(b.title);
+          comparison = a.content.localeCompare(b.content);
           break;
         case "tags":
           comparison = (a.tags?.length || 0) - (b.tags?.length || 0);
           break;
         case "pinned":
-          comparison = (a.pinned ? 1 : 0) - (b.pinned ? 1 : 0);
+          // Pinned not yet implemented in Note interface
+          comparison = 0;
           break;
         case "date":
         default:
@@ -176,10 +176,10 @@ export default function AllNotesPage() {
       return sortDirection === "asc" ? comparison : -comparison;
     });
 
-    // Pinned items first
-    if (sortBy !== "pinned") {
-      result.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
-    }
+    // Pinned items first (not yet implemented)
+    // if (sortBy !== "pinned") {
+    //   result.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+    // }
 
     return result;
   }, [notes, searchQuery, activeFilters, sortBy, sortDirection]);
@@ -331,10 +331,10 @@ export default function AllNotesPage() {
         {filteredAndSortedNotes.map((note) => (
           <ItemCard
             key={note.id}
-            title={note.title}
-            description={note.description}
+            title={note.content.substring(0, 50)}
+            description={note.content.length > 50 ? note.content.substring(50, 200) : undefined}
             tags={note.tags}
-            pinned={note.pinned}
+            pinned={false}
             onClick={() => handleNoteClick(note.id)}
             onFavorite={() => handleNoteFavorite(note.id)}
             variant={view}
