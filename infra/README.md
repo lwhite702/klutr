@@ -97,7 +97,7 @@ From your Supabase project settings:
 Supabase includes a PostgreSQL database. If using Supabase for auth and storage, use the same database:
 
 ```
-NEON_DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@[PROJECT-REF].supabase.co:5432/postgres
+DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@[PROJECT-REF].supabase.co:5432/postgres
 ```
 
 ### Option B: Use Separate Neon Database
@@ -109,7 +109,7 @@ If you prefer Neon for the database:
    ```sql
    CREATE EXTENSION IF NOT EXISTS vector;
    ```
-3. Copy the connection string → `NEON_DATABASE_URL`
+3. Copy the connection string → `DATABASE_URL`
 
 ### 2.2 Run Prisma Migrations
 
@@ -143,7 +143,7 @@ For each environment, add these secrets:
 
 #### Database
 ```
-NEON_DATABASE_URL=postgresql://...
+DATABASE_URL=postgresql://...
 ```
 
 #### Supabase
@@ -258,7 +258,7 @@ vercel link
 
 ```bash
 # Set production secrets
-vercel env add NEON_DATABASE_URL production
+   vercel env add DATABASE_URL production
 vercel env add SUPABASE_URL production
 vercel env add SUPABASE_ANON_KEY production
 vercel env add SUPABASE_SERVICE_ROLE_KEY production
@@ -556,7 +556,7 @@ Doppler automatically maintains secret history. No additional backup needed.
 doppler run -- npx prisma db pull
 
 # Check connection string format
-echo $NEON_DATABASE_URL
+echo $DATABASE_URL
 ```
 
 ### Supabase Auth Issues

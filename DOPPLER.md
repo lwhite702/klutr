@@ -8,7 +8,7 @@ This project uses Doppler for environment variable management instead of local `
 
 The following environment variables are currently configured in Doppler:
 
-- `NEON_DATABASE_URL` - PostgreSQL connection string from Neon
+- `DATABASE_URL` - PostgreSQL connection string (Supabase database)
 - `OPENAI_API_KEY` - OpenAI API key for AI features
 - `CRON_SECRET` - Secret key for authenticating cron job endpoints
 
@@ -96,6 +96,23 @@ The following variables are required for PostHog analytics and feature flag mana
 - A/B testing and experimentation
 
 The client-side key is exposed to the browser for analytics and feature flag evaluation. The server key is used for server-side feature flag checks in API routes and background jobs.
+
+### Cloudflare Turnstile CAPTCHA
+
+The following variable is required for Cloudflare Turnstile CAPTCHA protection on the signup page:
+
+**Client-side variables (NEXT_PUBLIC_ prefix):**
+- `NEXT_PUBLIC_TURNSTILE_SITEKEY` - Cloudflare Turnstile site key (exposed to browser, used for CAPTCHA verification)
+
+**Setup:**
+1. Create a Cloudflare account or log in to existing account
+2. Navigate to Cloudflare Dashboard → Turnstile
+3. Create a new site or use existing site
+4. Copy the site key
+5. Add to Doppler as `NEXT_PUBLIC_TURNSTILE_SITEKEY`
+6. For local testing, add `localhost` to the domain allowlist in Cloudflare Turnstile settings
+
+**Note:** The site key is used client-side in the signup form to render the Turnstile CAPTCHA widget. The CAPTCHA token is then passed to Supabase Auth during signup to verify the user is not a bot.
 
 ### Migration Notes
 
@@ -222,7 +239,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
 
    ```bash
    # Production
-   vercel env add NEON_DATABASE_URL production
+   vercel env add DATABASE_URL production
    vercel env add OPENAI_API_KEY production
    vercel env add CRON_SECRET production
    vercel env add SUPABASE_URL production
@@ -237,6 +254,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add NEXT_PUBLIC_POSTHOG_KEY production
    vercel env add NEXT_PUBLIC_POSTHOG_HOST production
    vercel env add POSTHOG_SERVER_KEY production
+   vercel env add NEXT_PUBLIC_TURNSTILE_SITEKEY production
 
    # Preview (for PR deployments)
    vercel env add NEON_DATABASE_URL preview
@@ -254,6 +272,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add NEXT_PUBLIC_POSTHOG_KEY preview
    vercel env add NEXT_PUBLIC_POSTHOG_HOST preview
    vercel env add POSTHOG_SERVER_KEY preview
+   vercel env add NEXT_PUBLIC_TURNSTILE_SITEKEY preview
 
    # Development (local dev with vercel dev)
    vercel env add NEON_DATABASE_URL development
@@ -271,6 +290,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add NEXT_PUBLIC_POSTHOG_KEY development
    vercel env add NEXT_PUBLIC_POSTHOG_HOST development
    vercel env add POSTHOG_SERVER_KEY development
+   vercel env add NEXT_PUBLIC_TURNSTILE_SITEKEY development
    ```
 
 3. **Verify variables are set:**
@@ -282,7 +302,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
 #### Important Notes
 
 - **Build-time variables**: All required variables must be set in Vercel **before** the build runs
-- **Prisma generation**: The `postinstall` script runs during Vercel builds, so `NEON_DATABASE_URL` must be available at build time (even if only for Prisma client generation)
+- **Database connection**: The `DATABASE_URL` should point to your Supabase PostgreSQL database connection string (format: `postgresql://postgres:[password]@[project-ref].supabase.co:5432/postgres`)
 - **CRON_SECRET**: Required for cron endpoint authentication. Vercel Cron jobs will automatically include this in headers if configured
 - **Do not commit secrets**: Never commit actual secret values to git. Use Vercel's environment variable interface or CLI
 

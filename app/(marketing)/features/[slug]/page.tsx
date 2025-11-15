@@ -1,5 +1,5 @@
-import { basehubClient } from "@/lib/basehub"
-import { draftMode } from "next/headers"
+import { getFeatureBySlug } from "@/lib/queries/features"
+import { Metadata } from "next"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
@@ -10,19 +10,8 @@ import { ArrowLeft } from "lucide-react"
  */
 export async function generateStaticParams() {
   try {
-    const { isEnabled } = await draftMode()
-    const client = basehubClient(isEnabled)
-    const result = (await (client as any).query({
-      marketingSite: {
-        features: {
-          items: {
-            slug: true,
-          },
-        },
-      },
-    })) as { marketingSite?: { features?: { items?: Array<{ slug: string }> } } }
-
-    const features = result.marketingSite?.features?.items || []
+    const { getFeatures } = await import("@/lib/queries/features")
+    const features = await getFeatures()
     return features.map((feature) => ({
       slug: feature.slug,
     }))
@@ -37,6 +26,68 @@ interface FeaturePageProps {
 }
 
 /**
+ * Generate metadata for feature pages
+ */
+export async function generateMetadata({ params }: FeaturePageProps): Promise<Metadata> {
+  const { slug } = await params
+  const feature = await getFeatureBySlug(slug)
+
+  if (!feature) {
+    return {
+      title: "Feature Not Found",
+      description: "The feature you're looking for doesn't exist.",
+    }
+  }
+
+  const title = `${feature.name} — ${feature.tagline} | Klutr`
+  const description = feature.description || feature.tagline
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://klutr.app/features/${slug}`,
+      siteName: "Klutr",
+      images: feature.illustrationUrl
+        ? [
+            {
+              url: feature.illustrationUrl.url,
+              width: 1200,
+              height: 630,
+              alt: feature.illustrationUrl.altText || feature.name,
+            },
+          ]
+        : [
+            {
+              url: "/og-image.png",
+              width: 1200,
+              height: 630,
+              alt: feature.name,
+            },
+          ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: feature.illustrationUrl
+        ? [feature.illustrationUrl.url]
+        : ["/og-image.png"],
+    },
+    alternates: {
+      canonical: `https://klutr.app/features/${slug}`,
+    },
+    keywords: feature.seoKeywords
+      ? feature.seoKeywords.split(",").map((k) => k.trim())
+      : undefined,
+  }
+}
+
+/**
  * Dynamic feature page that fetches content from BaseHub
  * Supports draft mode for previewing unpublished content
  * Revalidates every 60 seconds
@@ -45,54 +96,15 @@ export const revalidate = 60
 
 export default async function FeaturePage({ params }: FeaturePageProps) {
   const { slug } = await params
-  const { isEnabled } = await draftMode()
-  const client = basehubClient(isEnabled)
 
   try {
-    const result = await (client as any).query({
-      marketingSite: {
-        features: {
-          __args: {
-            filter: {
-              slug: { _eq: slug },
-            },
-          },
-          items: {
-            name: true,
-            tagline: true,
-            description: {
-              plainText: true,
-            },
-            illustrationUrl: {
-              url: true,
-              fileName: true,
-              altText: true,
-            },
-            seoKeywords: true,
-          },
-        },
-      },
-    }) as {
-      marketingSite?: {
-        features?: {
-          items?: Array<{
-            name: string
-            tagline: string
-            description?: { plainText?: string }
-            illustrationUrl?: { url: string; fileName: string; altText: string | null }
-            seoKeywords?: string | null
-          }>
-        }
-      }
-    }
-
-    const feature = result.marketingSite?.features?.items?.[0]
+    const feature = await getFeatureBySlug(slug)
 
     if (!feature) {
       return (
         <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] flex items-center justify-center">
           <div className="text-center space-y-4">
-            <h1 className="text-2xl font-bold">Feature not found</h1>
+            <h1 className="text-2xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">Feature not found</h1>
             <p className="text-muted-foreground">
               The feature you're looking for doesn't exist.
             </p>
@@ -135,10 +147,10 @@ export default async function FeaturePage({ params }: FeaturePageProps) {
                 </div>
               )}
 
-              {feature.description?.plainText && (
+              {feature.description && (
                 <div className="prose prose-lg dark:prose-invert max-w-none">
                   <p className="text-[var(--klutr-text-primary-light)]/80 dark:text-[var(--klutr-text-primary-dark)]/80 leading-relaxed">
-                    {feature.description.plainText}
+                    {feature.description}
                   </p>
                 </div>
               )}

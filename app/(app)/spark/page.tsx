@@ -18,7 +18,7 @@ export default function SparkPage() {
 
   return (
     <div className="max-w-2xl mx-auto py-12 px-4">
-        <h1 className="text-3xl font-display text-[#ff6b6b] mb-6">Spark</h1>
+        <h1 className="text-3xl font-display text-accent-coral mb-6">Spark</h1>
         <p className="text-slate-400 font-body mb-8">
           Your contextual AI partner. Analyze and expand on your notes with
           thoughtful insights.
@@ -65,7 +65,7 @@ export default function SparkPage() {
             <Button
               type="submit"
               disabled={loading || !noteId || !prompt}
-              className="bg-[#ff6b6b] hover:bg-[#ff6b6b]/90 text-white"
+              className="bg-accent-coral hover:bg-accent-coral/90 text-white"
             >
               {loading ? "Thinking..." : "Run Spark"}
             </Button>
@@ -90,13 +90,13 @@ export default function SparkPage() {
 
         {response && (
           <div className="mt-6 p-6 bg-slate-900/50 border border-slate-700 rounded-lg">
-            <h2 className="text-lg font-display text-[#ff6b6b] mb-3">
+            <h2 className="text-lg font-display text-accent-coral mb-3">
               Response
             </h2>
             <div className="text-slate-300 font-body whitespace-pre-line leading-relaxed">
               {response}
               {loading && (
-                <span className="inline-block w-2 h-4 bg-[#ff6b6b] ml-1 animate-pulse" />
+                <span className="inline-block w-2 h-4 bg-accent-coral ml-1 animate-pulse" />
               )}
             </div>
           </div>

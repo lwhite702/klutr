@@ -21,7 +21,18 @@ export interface BlogPost {
  */
 export async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    const { isEnabled } = await draftMode()
+    // Try to get draft mode, but handle gracefully if called outside request context (e.g., during build)
+    let isEnabled = false
+    try {
+      const draft = await draftMode()
+      isEnabled = draft.isEnabled
+    } catch (error) {
+      // draftMode() can't be called outside request context (e.g., in generateStaticParams)
+      // Default to production mode (isEnabled = false)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[BaseHub] draftMode() called outside request context, using production mode')
+      }
+    }
     const client = basehubClient(isEnabled)
 
     const result = await (client as any).query({
@@ -90,7 +101,18 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
  */
 export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    const { isEnabled } = await draftMode()
+    // Try to get draft mode, but handle gracefully if called outside request context (e.g., during build)
+    let isEnabled = false
+    try {
+      const draft = await draftMode()
+      isEnabled = draft.isEnabled
+    } catch (error) {
+      // draftMode() can't be called outside request context (e.g., in generateStaticParams)
+      // Default to production mode (isEnabled = false)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[BaseHub] draftMode() called outside request context, using production mode')
+      }
+    }
     const client = basehubClient(isEnabled)
 
     const result = await (client as any).query({

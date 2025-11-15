@@ -32,9 +32,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
-        run: pnpm db:generate
-
       - name: Run ESLint
         run: pnpm lint
 
@@ -63,18 +60,35 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
-        run: pnpm db:generate
-
       - name: Build application
         run: pnpm build
         env:
-          # Placeholder values for build
-          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # Database (Supabase PostgreSQL)
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder' }}
+          # Supabase (optional for build, but needed for some pages)
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key' }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key' }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key' }}
+          # BaseHub (required for marketing pages)
+          BASEHUB_TOKEN: ${{ secrets.BASEHUB_TOKEN || secrets.BASEHUB_API_TOKEN || '' }}
+          BASEHUB_API_TOKEN: ${{ secrets.BASEHUB_API_TOKEN || secrets.BASEHUB_TOKEN || '' }}
+          NEXT_PUBLIC_BASEHUB_TOKEN: ${{ secrets.NEXT_PUBLIC_BASEHUB_TOKEN || '' }}
+          NEXT_PUBLIC_BASEHUB_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_BASEHUB_PROJECT_ID || '' }}
+          # AI (optional for build)
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || 'placeholder-key' }}
+          # Security (optional for build)
+          CRON_SECRET: ${{ secrets.CRON_SECRET || 'placeholder-secret' }}
+          # PostHog (optional for build)
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.NEXT_PUBLIC_POSTHOG_KEY || '' }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com' }}
+          POSTHOG_SERVER_KEY: ${{ secrets.POSTHOG_SERVER_KEY || '' }}
+          # Turnstile (optional for build)
+          NEXT_PUBLIC_TURNSTILE_SITEKEY: ${{ secrets.NEXT_PUBLIC_TURNSTILE_SITEKEY || '' }}
+          # Build flags
           SKIP_ENV_VALIDATION: true
+          NODE_ENV: production
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -105,9 +119,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
-        run: pnpm db:generate
-
       - name: Run unit tests
         run: pnpm test || echo "No tests configured yet"
         env:
@@ -137,9 +148,6 @@ jobs:
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
-
-      - name: Generate Prisma Client
-        run: pnpm db:generate
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4

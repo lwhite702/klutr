@@ -32,19 +32,39 @@ import {
 export async function generateMetadata(): Promise<Metadata> {
   const meta = await getPageMetadata("home")
 
+  const title = meta?.seoTitle ?? "Klutr — AI Note App That Brings Order to Your Chaos"
+  const description =
+    meta?.metaDescription ??
+    "Capture everything, organize it effortlessly, and discover insights with AI. Klutr transforms your notes into meaning. Free beta now open."
+
   return {
-    title: meta?.seoTitle ?? "Klutr — AI Note App That Brings Order to Your Chaos",
-    description:
-      meta?.metaDescription ??
-      "Capture everything, organize it effortlessly, and discover insights with AI. Klutr transforms your notes into meaning. Free beta now open.",
+    title,
+    description,
     openGraph: {
-      title: meta?.seoTitle ?? "Klutr — AI Note App That Brings Order to Your Chaos",
-      description:
-        meta?.metaDescription ??
-        "Capture everything, organize it effortlessly, and discover insights with AI. Klutr transforms your notes into meaning. Free beta now open.",
+      title,
+      description,
       url: "https://klutr.app",
       siteName: "Klutr",
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Klutr — Organize Your Chaos",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
       images: ["/og-image.png"],
+      creator: "@klutr",
+    },
+    alternates: {
+      canonical: "https://klutr.app",
     },
   }
 }
@@ -331,7 +351,7 @@ export default async function MarketingHomePage() {
                 </div>
               </div>
               <h2 className="text-4xl md:text-6xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] leading-tight">
-                Ready to clear the clutr?
+                Ready to organize your chaos?
               </h2>
               <p className="text-xl md:text-2xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 max-w-2xl mx-auto leading-relaxed">
                 Join early users who are already freeing their minds from digital clutter. Drop your thoughts, let AI organize, stay creative.
@@ -390,18 +410,18 @@ export default async function MarketingHomePage() {
         </section>
 
         {/* Beta CTA Banner */}
-        <section className="bg-[var(--klutr-mint)] dark:bg-[var(--klutr-mint)] py-24">
+        <section className="bg-accent-mint dark:bg-accent-mint py-24">
           <div className="container mx-auto px-6">
             <AnimatedFadeIn className="max-w-3xl mx-auto text-center space-y-8">
-              <h2 className="text-4xl md:text-5xl font-bold leading-tight" style={{ color: '#2B2E3F' }}>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight text-primary">
                 Free Beta now open
               </h2>
-              <p className="text-xl md:text-2xl opacity-90 leading-relaxed" style={{ color: '#2B2E3F' }}>
+              <p className="text-xl md:text-2xl opacity-90 leading-relaxed text-primary">
                 Join early users and help shape the future of note-taking. No credit card required. Just drop your thoughts into the Stream and watch the magic.
               </p>
               <Button
                 size="lg"
-                className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
+                className="bg-accent-coral hover:bg-accent-coral/90 text-white"
                 asChild
               >
                 <Link href="/login" aria-label="Get started with free beta">

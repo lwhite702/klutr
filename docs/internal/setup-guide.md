@@ -21,7 +21,7 @@ All environment variables are managed via Doppler. Required variables:
 - `SUPABASE_URL` - Server-side Supabase URL (can be same as NEXT_PUBLIC)
 
 ### Database
-- `NEON_DATABASE_URL` - PostgreSQL connection string (format: `postgresql://user:password@host:port/database?sslmode=require`)
+- `DATABASE_URL` - PostgreSQL connection string (Supabase database, format: `postgresql://postgres:[password]@[project-ref].supabase.co:5432/postgres`)
 
 ### OpenAI
 - `OPENAI_API_KEY` - OpenAI API key for AI features (tagging, summarization, insights)
@@ -93,11 +93,12 @@ If accessing files from different domains, configure CORS in Supabase:
 
 ### 5. Setup Database
 
-#### Create Neon Database
-1. Go to [Neon Console](https://console.neon.tech)
-2. Create a new project
-3. Copy the connection string
-4. Add to Doppler as `NEON_DATABASE_URL`
+#### Create Supabase Database
+1. Go to [Supabase Dashboard](https://app.supabase.com)
+2. Create a new project or use existing project
+3. Go to Settings → Database → Connection string
+4. Copy the connection string (use the "URI" format)
+5. Add to Doppler as `DATABASE_URL`
 
 #### Run Migrations
 ```bash
@@ -238,7 +239,7 @@ stream-files/
 ## Troubleshooting
 
 ### Database Connection Issues
-- Verify `NEON_DATABASE_URL` is correct
+- Verify `DATABASE_URL` is correct
 - Check database is accessible from your IP
 - Verify SSL mode is set correctly
 

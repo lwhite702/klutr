@@ -2,6 +2,62 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-14 21:17 ET
+
+- [migration] **Complete Supabase migration** - Removed Prisma entirely, migrated all models to Supabase
+- [migration] Migrated chat models (conversation_threads, messages) to Supabase with full CRUD support
+- [migration] Created supabase/migrations/007_chat_models.sql with conversation_threads and messages tables
+- [migration] Implemented message and conversationThread CRUD methods in lib/supabase-db.ts
+- [migration] Updated lib/db.ts to remove PrismaClient and use only Supabase adapter
+- [migration] Removed @prisma/client and prisma from package.json dependencies
+- [migration] Removed postinstall script that ran prisma generate
+- [migration] Deleted prisma/schema.prisma and prisma/ directory
+- [migration] Renamed NEON_DATABASE_URL to DATABASE_URL throughout codebase and documentation
+- [migration] Updated .github/workflows/ci.yml to use DATABASE_URL instead of NEON_DATABASE_URL
+- [migration] Updated all documentation files (DOPPLER.md, VERCEL_SETUP.md, README.md, docs/) to reference DATABASE_URL
+- [migration] Updated MIGRATION_SUMMARY.md and SUPABASE_MIGRATION.md to reflect 100% complete migration status
+- [migration] Updated docs/roadmap.md to mark Phase 3 and Phase 5 as complete
+- [migration] Updated docs/architecture.md to remove Neon references and update to Supabase
+- [migration] Added $executeRaw support for message embedding updates in lib/supabase-db.ts
+- [docs] Updated migration documentation to reflect complete removal of Neon and Prisma dependencies
+
+## 2025-11-14 05:09 ET
+
+- [feature] Created comprehensive branded auth pages (login, signup, password reset) with Klutr illustrations, colors, and witty microcopy
+- [seo] Enhanced root layout with comprehensive metadata including OpenGraph, Twitter cards, and canonical URLs
+- [seo] Added full SEO metadata to all marketing pages (home, about, pricing, FAQ) with OG images and Twitter cards
+- [infra] Created site.webmanifest with proper PWA configuration and icon references
+- [ui] Created branded loading skeleton components (ShimmerSkeleton, CardSkeleton, NoteCardSkeleton, GridSkeleton) with Klutr color gradients
+- [ui] Updated StreamSkeleton to use new branded shimmer effect
+- [ui] Added shimmer animation keyframes to globals.css
+- [ui] Enhanced auth pages with smooth transitions, loading states, and branded error/success messages
+- [a11y] Improved SidebarNav accessibility with aria-labels, aria-current, and aria-pressed attributes
+- [a11y] Added aria-hidden to decorative icons in navigation
+- [content] Updated Basehub home page hero content with production-ready Klutr copy via mcp_basehub_klutr_update_blocks
+- [content] Verified features content is fully populated with 10 production-ready features
+- [content] Fixed Basehub validation errors by populating required fields in help topics and onboarding blocks
+- [content] Successfully committed Basehub content changes to main branch
+- [fix] Updated Hero secondary CTA link to point to /about instead of /login (matches "See how it works" copy)
+- [brand] Standardized tagline to "Organize your chaos. Keep the spark." across footer and marketing pages
+- [docs] Created BASEHUB_CONTENT_STATUS.md documenting Basehub content structure and population status
+- [docs] Created PRODUCTION_POLISH_COMPLETION.md with final completion summary
+- [docs] Created DOPPLER_BROWSER_TESTING.md guide for local development setup
+- [docs] Created BASEHUB_CONTENT_POPULATION_GUIDE.md with step-by-step instructions for pricing, FAQ, and testimonials
+- [test] Completed browser testing checklist - all items pass (see reports/BROWSER_TEST_RESULTS.md)
+- [fix] Updated login page tagline from "Clear the clutr" to "Welcome to Klutr" for brand consistency
+- [fix] Fixed illustration mapping to match actual file names (PascalCase with --Streamline-Ux suffix)
+- [fix] Fixed feature pages error - corrected BaseHub query syntax (removed _eq filter, fetch all then filter client-side, removed media union fields that require inline fragments)
+- [feature] Added getFeatureBySlug helper function to lib/queries/features.ts with proper error handling and draft mode fallback
+- [seo] Added generateMetadata to feature pages with OpenGraph and Twitter card support
+- [docs] Updated CHANGELOG with production polish work
+
+## 2025-01-XX XX:XX ET
+
+- [security] Added Cloudflare Turnstile CAPTCHA to signup page to prevent bot signups
+- [ui] Integrated @marsidev/react-turnstile component in signup form
+- [infra] Added NEXT_PUBLIC_TURNSTILE_SITEKEY environment variable configuration
+- [docs] Updated DOPPLER.md with Turnstile setup instructions and Vercel deployment notes
+
 ## [Production Readiness Sprint] - 2025-11-11
 
 ### Added

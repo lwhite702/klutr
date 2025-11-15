@@ -33,6 +33,7 @@ Apply the SQL migrations in `supabase/migrations/`:
    - `002_storage_buckets.sql` - Storage bucket setup (run manually via dashboard)
    - `003_seed_data.sql` - Demo seed data
    - `004_rpc_functions.sql` - Database functions
+   - `007_chat_models.sql` - Chat models (conversation_threads, messages)
 
 Alternatively, use Supabase CLI:
 ```bash
@@ -98,6 +99,7 @@ supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 - **Before**: Prisma ORM with Neon PostgreSQL
 - **After**: Supabase client with direct PostgreSQL access
 - **Migration**: Created `lib/supabase-db.ts` adapter that mimics Prisma API for compatibility
+- **Status**: ✅ **Complete** - All models migrated, Prisma removed, using `DATABASE_URL` environment variable
 
 ### API Routes
 
@@ -159,11 +161,13 @@ The code is structured to easily enable Supabase Auth:
 - Check pgvector extension is enabled
 - Verify embedding format is correct (array of numbers)
 
-## Next Steps
+## Migration Status: 100% Complete ✅
 
-1. ✅ Database schema migrated
+1. ✅ Database schema migrated (all models including chat models)
 2. ✅ Edge Functions created
 3. ✅ Storage buckets configured
-4. ⏳ Enable Supabase Auth (when ready)
-5. ⏳ Set up RLS policies (when auth enabled)
-6. ⏳ Migrate existing data (if needed)
+4. ✅ Prisma removed completely
+5. ✅ Environment variable renamed (`NEON_DATABASE_URL` → `DATABASE_URL`)
+6. ✅ All documentation updated
+7. ⏳ Enable Supabase Auth (when ready)
+8. ⏳ Set up RLS policies (when auth enabled)

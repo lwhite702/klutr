@@ -110,7 +110,7 @@ export default function Hero({
                   className="text-lg px-8 py-6 rounded-full"
                   asChild
                 >
-                  <Link href="/login" aria-label={secondaryCTA}>
+                  <Link href="/about" aria-label={secondaryCTA}>
                     {secondaryCTA}
                   </Link>
                 </Button>

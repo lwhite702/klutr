@@ -478,7 +478,7 @@ pnpm dev      # ✅ Requires Doppler for env vars
 Based on code analysis:
 
 ### Critical (Must Have):
-- `NEON_DATABASE_URL` - Neon PostgreSQL connection
+- `DATABASE_URL` - Supabase PostgreSQL connection
 - `OPENAI_API_KEY` - OpenAI API access
 - `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase anon key

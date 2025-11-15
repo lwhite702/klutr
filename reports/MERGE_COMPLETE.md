@@ -6,10 +6,12 @@
 ## Merged Branches
 
 1. ✅ **`marketing/tawk-widget`** → `main`
+
    - TawkWidget components
    - Marketing layout integration
 
 2. ✅ **`app/tawk-secure-login`** → `main`
+
    - Secure login API route
    - TawkAuth client component
    - App layout integration

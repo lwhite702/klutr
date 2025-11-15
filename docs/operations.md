@@ -186,12 +186,12 @@ curl https://api.neon.tech/v2/projects/[PROJECT_ID] \
   -H "Authorization: Bearer $NEON_API_KEY"
 
 # Test connection
-psql $NEON_DATABASE_URL -c "SELECT 1"
+psql $DATABASE_URL -c "SELECT 1"
 ```
 
 **Resolution:**
 1. Check Neon dashboard for outages
-2. Verify `NEON_DATABASE_URL` is correct
+2. Verify `DATABASE_URL` is correct
 3. Check Prisma connection pool settings
 4. Restart Vercel deployment
 
@@ -475,7 +475,7 @@ PREVENTION: [Action items]
 **Manual Backup:**
 ```bash
 # Export database
-pg_dump $NEON_DATABASE_URL > backup-$(date +%Y%m%d).sql
+pg_dump $DATABASE_URL > backup-$(date +%Y%m%d).sql
 
 # Compress
 gzip backup-$(date +%Y%m%d).sql
@@ -493,7 +493,7 @@ aws s3 cp s3://klutr-backups/backup-20251111.sql.gz .
 gunzip backup-20251111.sql.gz
 
 # Restore
-psql $NEON_DATABASE_URL < backup-20251111.sql
+psql $DATABASE_URL < backup-20251111.sql
 ```
 
 ### File Storage Backups

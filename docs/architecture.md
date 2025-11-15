@@ -12,7 +12,7 @@ Klutr is a Next.js 16 application with a PostgreSQL database, Supabase for authe
 
 - **Frontend:** Next.js 16 (App Router), React 19, TailwindCSS
 - **Backend:** Next.js API Routes, Server Components
-- **Database:** Neon PostgreSQL with pgvector extension
+- **Database:** Supabase PostgreSQL with pgvector extension
 - **Auth:** Supabase Auth
 - **Storage:** Supabase Storage
 - **AI:** OpenAI (via Vercel AI SDK)
@@ -48,12 +48,12 @@ Klutr is a Next.js 16 application with a PostgreSQL database, Supabase for authe
           ┌──────────┴──────────┐
           │                     │
 ┌─────────▼────────┐  ┌────────▼────────┐  ┌─────────────────┐
-│  Prisma ORM      │  │  Supabase       │  │  AI Provider     │
+│  Supabase Client │  │  Supabase       │  │  AI Provider     │
 │  (Database)      │  │  (Auth/Storage) │  │  (Vercel AI SDK) │
 └─────────┬────────┘  └────────┬────────┘  └────────┬─────────┘
           │                    │                     │
 ┌─────────▼────────┐  ┌────────▼────────┐  ┌────────▼─────────┐
-│  Neon Postgres   │  │  Supabase       │  │  OpenAI API      │
+│  Supabase Postgres│  │  Supabase       │  │  OpenAI API      │
 │  + pgvector      │  │  Infrastructure │  │  - GPT-4o-mini   │
 └──────────────────┘  └─────────────────┘  │  - Embeddings    │
                                            └──────────────────┘
@@ -97,7 +97,7 @@ Client
   → POST /api/messages/create
     → Middleware validates auth + rate limit
     → getCurrentUser()
-    → Prisma.message.create()
+    → Supabase adapter (prisma.message.create())
     → Background jobs:
       - Generate embedding (if feature flag enabled)
       - Classify message (if feature flag enabled)
@@ -319,7 +319,7 @@ const enabled = useFeatureFlag('embeddings')
 
 3. **Database Layer**
    - Row Level Security (RLS)
-   - Prepared statements (Prisma)
+   - Prepared statements (Supabase client)
    - Connection pooling
    - SSL connections
 
@@ -345,7 +345,7 @@ See `docs/security/rls.md` for full policy definitions.
 ### Database
 
 - Indexed queries (see `docs/database/indexes.md`)
-- Connection pooling via Prisma
+- Connection pooling via Supabase
 - Prepared statements
 - Vector index for fast similarity search
 
@@ -380,7 +380,6 @@ See `docs/security/rls.md` for full policy definitions.
 
 - Vercel: $20/month (Pro)
 - Supabase: $25/month (Pro)
-- Neon: $19/month (Scale)
 - OpenAI: Variable ($50-200/month typical)
 - PostHog: $0-50/month
 - Total: ~$115-315/month for 500 users
@@ -451,7 +450,7 @@ GitHub Push/PR
 ### Scalability
 
 **Current Limits:**
-- ~10K active users (single Neon database)
+- ~10K active users (single Supabase database)
 - ~100 req/s (Vercel Serverless)
 
 **Scaling Path:**

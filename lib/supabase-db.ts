@@ -1209,43 +1209,538 @@ export const db = {
     },
   },
   message: {
-    async create(options: { data: any }) {
-      // TODO: Implement when messages table is migrated to Supabase
-      throw new Error(
-        "Message model not yet migrated to Supabase. Use Prisma client directly."
-      );
+    async create(options: {
+      data: {
+        type: string;
+        content?: string | null;
+        fileUrl?: string | null;
+        transcription?: string | null;
+        metadata?: any;
+        threadId: string;
+        userId: string;
+      };
+      include?: {
+        thread?: boolean;
+        user?: boolean;
+      };
+    }) {
+      const data = options.data;
+      const { data: message, error } = await supabaseAdmin
+        .from("messages")
+        .insert({
+          type: data.type,
+          content: data.content || null,
+          file_url: data.fileUrl || null,
+          transcription: data.transcription || null,
+          metadata: data.metadata || null,
+          thread_id: data.threadId,
+          user_id: data.userId,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Fetch related data if requested
+      let thread: any = null;
+      if (options.include?.thread) {
+        const { data: threadData } = await supabaseAdmin
+          .from("conversation_threads")
+          .select("*")
+          .eq("id", message.thread_id)
+          .single();
+        if (threadData) {
+          thread = {
+            ...threadData,
+            userId: threadData.user_id,
+            systemTags: threadData.system_tags,
+            createdAt: new Date(threadData.created_at),
+          };
+        }
+      }
+
+      // Convert snake_case to camelCase
+      return {
+        ...message,
+        type: message.type,
+        fileUrl: message.file_url,
+        threadId: message.thread_id,
+        userId: message.user_id,
+        createdAt: new Date(message.created_at),
+        thread,
+      };
     },
-    async findFirst(options: { where: any }) {
-      // TODO: Implement when messages table is migrated to Supabase
-      throw new Error(
-        "Message model not yet migrated to Supabase. Use Prisma client directly."
-      );
+
+    async findFirst(options: {
+      where: {
+        id?: string;
+        threadId?: string;
+        userId?: string;
+        type?: string;
+      };
+      include?: {
+        thread?: boolean;
+        user?: boolean;
+      };
+    }) {
+      let query = supabaseAdmin.from("messages").select("*");
+
+      if (options.where.id) {
+        query = query.eq("id", options.where.id);
+      }
+      if (options.where.threadId) {
+        query = query.eq("thread_id", options.where.threadId);
+      }
+      if (options.where.userId) {
+        query = query.eq("user_id", options.where.userId);
+      }
+      if (options.where.type) {
+        query = query.eq("type", options.where.type);
+      }
+
+      const { data: message, error } = await query.maybeSingle();
+
+      if (error) throw error;
+      if (!message) return null;
+
+      // Fetch related data if requested
+      let thread: any = null;
+      if (options.include?.thread) {
+        const { data: threadData } = await supabaseAdmin
+          .from("conversation_threads")
+          .select("*")
+          .eq("id", message.thread_id)
+          .single();
+        if (threadData) {
+          thread = {
+            ...threadData,
+            userId: threadData.user_id,
+            systemTags: threadData.system_tags,
+            createdAt: new Date(threadData.created_at),
+          };
+        }
+      }
+
+      // Convert snake_case to camelCase
+      return {
+        ...message,
+        type: message.type,
+        fileUrl: message.file_url,
+        transcription: message.transcription,
+        threadId: message.thread_id,
+        userId: message.user_id,
+        createdAt: new Date(message.created_at),
+        thread,
+      };
     },
-    async update(options: { where: any; data: any }) {
-      // TODO: Implement when messages table is migrated to Supabase
-      throw new Error(
-        "Message model not yet migrated to Supabase. Use Prisma client directly."
+
+    async findMany(options: {
+      where?: {
+        threadId?: string;
+        userId?: string;
+        type?: string;
+      };
+      include?: {
+        thread?: boolean;
+      };
+      orderBy?: {
+        createdAt?: "asc" | "desc";
+      };
+      take?: number;
+    }) {
+      let query = supabaseAdmin.from("messages").select("*");
+
+      if (options.where?.threadId) {
+        query = query.eq("thread_id", options.where.threadId);
+      }
+      if (options.where?.userId) {
+        query = query.eq("user_id", options.where.userId);
+      }
+      if (options.where?.type) {
+        query = query.eq("type", options.where.type);
+      }
+
+      // Order by
+      if (options.orderBy?.createdAt) {
+        query = query.order("created_at", {
+          ascending: options.orderBy.createdAt === "asc",
+        });
+      } else {
+        query = query.order("created_at", { ascending: false });
+      }
+
+      // Limit
+      if (options.take) {
+        query = query.limit(options.take);
+      }
+
+      const { data: messages, error } = await query;
+
+      if (error) throw error;
+
+      // Fetch threads if requested
+      const threadIds = new Set<string>();
+      if (options.include?.thread && messages) {
+        messages.forEach((m: any) => {
+          if (m.thread_id) threadIds.add(m.thread_id);
+        });
+      }
+
+      const threadsMap = new Map();
+      if (threadIds.size > 0) {
+        const { data: threads } = await supabaseAdmin
+          .from("conversation_threads")
+          .select("*")
+          .in("id", Array.from(threadIds));
+
+        if (threads) {
+          threads.forEach((t: any) => {
+            threadsMap.set(t.id, {
+              ...t,
+              userId: t.user_id,
+              systemTags: t.system_tags,
+              createdAt: new Date(t.created_at),
+            });
+          });
+        }
+      }
+
+      // Convert snake_case to camelCase
+      return (messages || []).map((message: any) => ({
+        ...message,
+        type: message.type,
+        fileUrl: message.file_url,
+        transcription: message.transcription,
+        threadId: message.thread_id,
+        userId: message.user_id,
+        createdAt: new Date(message.created_at),
+        thread: options.include?.thread ? threadsMap.get(message.thread_id) : undefined,
+      }));
+    },
+
+    async update(options: {
+      where: { id: string };
+      data: {
+        content?: string | null;
+        fileUrl?: string | null;
+        transcription?: string | null;
+        metadata?: any;
+        embedding?: number[] | null;
+      };
+    }) {
+      const updateData: any = {};
+
+      if (options.data.content !== undefined) {
+        updateData.content = options.data.content;
+      }
+      if (options.data.fileUrl !== undefined) {
+        updateData.file_url = options.data.fileUrl;
+      }
+      if (options.data.transcription !== undefined) {
+        updateData.transcription = options.data.transcription;
+      }
+      if (options.data.metadata !== undefined) {
+        updateData.metadata = options.data.metadata;
+      }
+      if (options.data.embedding !== undefined) {
+        updateData.embedding = options.data.embedding;
+      }
+
+      const { data: message, error } = await supabaseAdmin
+        .from("messages")
+        .update(updateData)
+        .eq("id", options.where.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Convert snake_case to camelCase
+      return {
+        ...message,
+        type: message.type,
+        fileUrl: message.file_url,
+        transcription: message.transcription,
+        threadId: message.thread_id,
+        userId: message.user_id,
+        createdAt: new Date(message.created_at),
+      };
+    },
+
+    async delete(options: { where: { id: string } }) {
+      const { error } = await supabaseAdmin
+        .from("messages")
+        .delete()
+        .eq("id", options.where.id);
+
+      if (error) throw error;
+      return { id: options.where.id };
+    },
+
+    // Raw SQL execution for embedding updates
+    async $executeRaw(query: TemplateStringsArray, ...values: any[]) {
+      // Parse the SQL to extract message ID and embedding
+      // Expected format: UPDATE messages SET embedding = ${embedding}::vector WHERE id = ${messageId}
+      const sql = query.join("?");
+      if (sql.includes("UPDATE messages") && sql.includes("embedding")) {
+        // Extract message ID (last value) and embedding (first value)
+        const embeddingStr = values[0];
+        const messageId = values[1] || values[values.length - 1];
+
+        let embedding: number[];
+        if (Array.isArray(embeddingStr)) {
+          embedding = embeddingStr;
+        } else if (typeof embeddingStr === "string") {
+          try {
+            embedding = JSON.parse(embeddingStr);
+          } catch {
+            // If it's already a string representation, try to parse it
+            embedding = embeddingStr.split(",").map(Number);
+          }
+        } else {
+          throw new Error("Invalid embedding format");
+        }
+
+        // Update embedding directly
+        const { error: updateError } = await supabaseAdmin
+          .from("messages")
+          .update({ embedding })
+          .eq("id", messageId);
+
+        if (updateError) throw updateError;
+        return Promise.resolve();
+      }
+      console.warn(
+        "Raw SQL execution not fully supported for messages. Use update() method instead."
       );
+      return Promise.resolve();
     },
   },
   conversationThread: {
-    async create(options: { data: any }) {
-      // TODO: Implement when conversation_threads table is migrated to Supabase
-      throw new Error(
-        "ConversationThread model not yet migrated to Supabase. Use Prisma client directly."
-      );
+    async create(options: {
+      data: {
+        userId: string;
+        title?: string | null;
+        systemTags?: string[];
+      };
+      include?: {
+        messages?: boolean;
+        user?: boolean;
+      };
+    }) {
+      const data = options.data;
+      const { data: thread, error } = await supabaseAdmin
+        .from("conversation_threads")
+        .insert({
+          user_id: data.userId,
+          title: data.title || null,
+          system_tags: data.systemTags || [],
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Fetch messages if requested
+      let messages: any[] = [];
+      if (options.include?.messages) {
+        const { data: messagesData } = await supabaseAdmin
+          .from("messages")
+          .select("*")
+          .eq("thread_id", thread.id)
+          .order("created_at", { ascending: true });
+
+        messages = (messagesData || []).map((m: any) => ({
+          ...m,
+          type: m.type,
+          fileUrl: m.file_url,
+          transcription: m.transcription,
+          threadId: m.thread_id,
+          userId: m.user_id,
+          createdAt: new Date(m.created_at),
+        }));
+      }
+
+      // Convert snake_case to camelCase
+      return {
+        ...thread,
+        userId: thread.user_id,
+        systemTags: thread.system_tags || [],
+        createdAt: new Date(thread.created_at),
+        messages,
+      };
     },
-    async findFirst(options: { where: any }) {
-      // TODO: Implement when conversation_threads table is migrated to Supabase
-      throw new Error(
-        "ConversationThread model not yet migrated to Supabase. Use Prisma client directly."
-      );
+
+    async findFirst(options: {
+      where: {
+        id?: string;
+        userId?: string;
+      };
+      include?: {
+        messages?: boolean;
+        user?: boolean;
+      };
+    }) {
+      let query = supabaseAdmin.from("conversation_threads").select("*");
+
+      if (options.where.id) {
+        query = query.eq("id", options.where.id);
+      }
+      if (options.where.userId) {
+        query = query.eq("user_id", options.where.userId);
+      }
+
+      const { data: thread, error } = await query.maybeSingle();
+
+      if (error) throw error;
+      if (!thread) return null;
+
+      // Fetch messages if requested
+      let messages: any[] = [];
+      if (options.include?.messages) {
+        const { data: messagesData } = await supabaseAdmin
+          .from("messages")
+          .select("*")
+          .eq("thread_id", thread.id)
+          .order("created_at", { ascending: true });
+
+        messages = (messagesData || []).map((m: any) => ({
+          ...m,
+          type: m.type,
+          fileUrl: m.file_url,
+          transcription: m.transcription,
+          threadId: m.thread_id,
+          userId: m.user_id,
+          createdAt: new Date(m.created_at),
+        }));
+      }
+
+      // Convert snake_case to camelCase
+      return {
+        ...thread,
+        userId: thread.user_id,
+        systemTags: thread.system_tags || [],
+        createdAt: new Date(thread.created_at),
+        messages,
+      };
     },
-    async update(options: { where: any; data: any }) {
-      // TODO: Implement when conversation_threads table is migrated to Supabase
-      throw new Error(
-        "ConversationThread model not yet migrated to Supabase. Use Prisma client directly."
-      );
+
+    async findMany(options: {
+      where?: {
+        userId?: string;
+      };
+      include?: {
+        messages?: boolean;
+      };
+      orderBy?: {
+        createdAt?: "asc" | "desc";
+      };
+      take?: number;
+    }) {
+      let query = supabaseAdmin.from("conversation_threads").select("*");
+
+      if (options.where?.userId) {
+        query = query.eq("user_id", options.where.userId);
+      }
+
+      // Order by
+      if (options.orderBy?.createdAt) {
+        query = query.order("created_at", {
+          ascending: options.orderBy.createdAt === "asc",
+        });
+      } else {
+        query = query.order("created_at", { ascending: false });
+      }
+
+      // Limit
+      if (options.take) {
+        query = query.limit(options.take);
+      }
+
+      const { data: threads, error } = await query;
+
+      if (error) throw error;
+
+      // Fetch messages if requested
+      const threadsMap = new Map();
+      if (options.include?.messages && threads) {
+        const threadIds = threads.map((t: any) => t.id);
+        const { data: allMessages } = await supabaseAdmin
+          .from("messages")
+          .select("*")
+          .in("thread_id", threadIds)
+          .order("created_at", { ascending: true });
+
+        if (allMessages) {
+          threads.forEach((t: any) => {
+            const threadMessages = allMessages
+              .filter((m: any) => m.thread_id === t.id)
+              .map((m: any) => ({
+                ...m,
+                type: m.type,
+                fileUrl: m.file_url,
+                transcription: m.transcription,
+                threadId: m.thread_id,
+                userId: m.user_id,
+                createdAt: new Date(m.created_at),
+              }));
+            threadsMap.set(t.id, threadMessages);
+          });
+        }
+      }
+
+      // Convert snake_case to camelCase
+      return (threads || []).map((thread: any) => ({
+        ...thread,
+        userId: thread.user_id,
+        systemTags: thread.system_tags || [],
+        createdAt: new Date(thread.created_at),
+        messages: options.include?.messages ? threadsMap.get(thread.id) || [] : undefined,
+      }));
+    },
+
+    async update(options: {
+      where: { id: string };
+      data: {
+        title?: string | null;
+        systemTags?: string[];
+      };
+    }) {
+      const updateData: any = {};
+
+      if (options.data.title !== undefined) {
+        updateData.title = options.data.title;
+      }
+      if (options.data.systemTags !== undefined) {
+        updateData.system_tags = options.data.systemTags;
+      }
+
+      const { data: thread, error } = await supabaseAdmin
+        .from("conversation_threads")
+        .update(updateData)
+        .eq("id", options.where.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Convert snake_case to camelCase
+      return {
+        ...thread,
+        userId: thread.user_id,
+        systemTags: thread.system_tags || [],
+        createdAt: new Date(thread.created_at),
+      };
+    },
+
+    async delete(options: { where: { id: string } }) {
+      const { error } = await supabaseAdmin
+        .from("conversation_threads")
+        .delete()
+        .eq("id", options.where.id);
+
+      if (error) throw error;
+      return { id: options.where.id };
     },
   },
 };
@@ -1257,7 +1752,17 @@ async function $queryRaw(query: TemplateStringsArray, ...values: any[]) {
 }
 
 async function $executeRaw(query: TemplateStringsArray, ...values: any[]) {
-  return db.note.$executeRaw(query, ...values);
+  // Try note first (for backward compatibility)
+  const sql = query.join("?");
+  if (sql.includes("UPDATE notes") && sql.includes("embedding")) {
+    return db.note.$executeRaw(query, ...values);
+  }
+  // Try message
+  if (sql.includes("UPDATE messages") && sql.includes("embedding")) {
+    return db.message.$executeRaw(query, ...values);
+  }
+  console.warn("$executeRaw not fully supported for this query. Use model methods instead.");
+  return Promise.resolve();
 }
 
 // Legacy Prisma compatibility
