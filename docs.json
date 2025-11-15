@@ -66,6 +66,12 @@
         "memory-lane",
         "feature-flags"
       ]
+    },
+    {
+      "group": "Support",
+      "pages": [
+        "support"
+      ]
     }
   ],
   "footerSocials": {
