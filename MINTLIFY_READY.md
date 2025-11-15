@@ -5,7 +5,7 @@
 
 ## ✅ Documentation Organization Complete
 
-### Customer-Facing Docs (`/docs/external/mintlify/`)
+### Customer-Facing Docs (`/docs/external/`)
 **14 MDX files** - All ready for Mintlify Cloud:
 
 1. `overview.mdx` - Welcome page
@@ -79,7 +79,8 @@ Support
 2. **Connect Your Repository**
    - Connect GitHub repository: `lwhite702/klutr`
    - Select branch (usually `main` or `master`)
-   - **Set docs directory to:** `docs/external/mintlify` ⚠️ **IMPORTANT**
+   - **Set docs directory to:** `docs/external` ⚠️ **IMPORTANT**
+   - **Config file:** `docs.json` (should be auto-detected at root)
 
 3. **Configure Settings**
    - Site name: "Klutr Documentation"
@@ -109,7 +110,7 @@ Support
 
 ## 📊 File Summary
 
-- **Customer-facing (Mintlify):** 14 MDX files in `/docs/external/mintlify/`
+- **Customer-facing (Mintlify):** 14 MDX files in `/docs/external/`
 - **Internal docs:** 12 MD files in `/docs/internal/` (excluded)
 - **Configuration:** `docs.json` (root) + `.mintlifyignore` (root)
 - **Total:** Ready for deployment
@@ -122,12 +123,11 @@ Support
 ├── .mintlifyignore             # Ignore patterns (root)
 ├── docs/
 │   ├── internal/               # Internal docs (excluded)
-│   └── external/               # External/customer-facing docs
+│   └── external/               # External/customer-facing docs ⭐
 │       ├── README.md           # This directory's purpose
-│       └── mintlify/           # Mintlify source files ⭐
-│           ├── overview.mdx
-│           ├── getting-started.mdx
-│           └── ... (14 total)
+│       ├── overview.mdx
+│       ├── getting-started.mdx
+│       └── ... (14 total MDX files)
 ```
 
 ---
@@ -136,4 +136,4 @@ Support
 
 All customer-facing documentation is properly organized in `/docs/external/mintlify/` for consistency with the `/docs/internal/` structure. The configuration is complete and ready for you to connect to Mintlify Cloud.
 
-**⚠️ Important:** When setting up Mintlify Cloud, specify the docs directory as `docs/external/mintlify` (not just `mintlify`).
+**⚠️ Important:** When setting up Mintlify Cloud, specify the docs directory as `docs/external` and ensure `docs.json` is at the repository root.
