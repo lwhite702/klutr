@@ -8,7 +8,7 @@ This project uses Doppler for environment variable management instead of local `
 
 The following environment variables are currently configured in Doppler:
 
-- `NEON_DATABASE_URL` - PostgreSQL connection string from Neon
+- `DATABASE_URL` - PostgreSQL connection string (Supabase database)
 - `OPENAI_API_KEY` - OpenAI API key for AI features
 - `CRON_SECRET` - Secret key for authenticating cron job endpoints
 
@@ -239,7 +239,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
 
    ```bash
    # Production
-   vercel env add NEON_DATABASE_URL production
+   vercel env add DATABASE_URL production
    vercel env add OPENAI_API_KEY production
    vercel env add CRON_SECRET production
    vercel env add SUPABASE_URL production
@@ -302,7 +302,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
 #### Important Notes
 
 - **Build-time variables**: All required variables must be set in Vercel **before** the build runs
-- **Prisma generation**: The `postinstall` script runs during Vercel builds, so `NEON_DATABASE_URL` must be available at build time (even if only for Prisma client generation)
+- **Database connection**: The `DATABASE_URL` should point to your Supabase PostgreSQL database connection string (format: `postgresql://postgres:[password]@[project-ref].supabase.co:5432/postgres`)
 - **CRON_SECRET**: Required for cron endpoint authentication. Vercel Cron jobs will automatically include this in headers if configured
 - **Do not commit secrets**: Never commit actual secret values to git. Use Vercel's environment variable interface or CLI
 

@@ -79,7 +79,7 @@ We support three environments in Doppler:
 These environments define (at minimum):
 
 ```
-NEON_DATABASE_URL
+DATABASE_URL
 OPENAI_API_KEY
 CRON_SECRET
 NEXT_PUBLIC_SUPABASE_URL

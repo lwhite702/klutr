@@ -32,11 +32,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
-        run: pnpm db:generate
-        env:
-          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder' }}
-
       - name: Run ESLint
         run: pnpm lint
 
@@ -65,16 +60,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
-        run: pnpm db:generate
-        env:
-          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder' }}
-
       - name: Build application
         run: pnpm build
         env:
-          # Database (required for Prisma)
-          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder' }}
+          # Database (Supabase PostgreSQL)
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder' }}
           # Supabase (optional for build, but needed for some pages)
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key' }}
@@ -129,11 +119,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma Client
-        run: pnpm db:generate
-        env:
-          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder' }}
-
       - name: Run unit tests
         run: pnpm test || echo "No tests configured yet"
         env:
@@ -163,11 +148,6 @@ jobs:
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
-
-      - name: Generate Prisma Client
-        run: pnpm db:generate
-        env:
-          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder' }}
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4

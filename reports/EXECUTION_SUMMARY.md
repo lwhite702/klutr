@@ -261,7 +261,7 @@ Klutr has been transformed from a development prototype into a **production-read
    ```
 
 2. **Configure secrets in Doppler:**
-   - `NEON_DATABASE_URL`
+   - `DATABASE_URL`
    - `SUPABASE_URL` and keys
    - `OPENAI_API_KEY`
    - `POSTHOG_API_KEY`

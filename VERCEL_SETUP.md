@@ -37,9 +37,9 @@ This creates `.vercel/project.json` and `.vercel/.gitignore`.
 
 2. **For each variable, add to Vercel:**
    ```bash
-   vercel env add NEON_DATABASE_URL production
-   vercel env add NEON_DATABASE_URL preview
-   vercel env add NEON_DATABASE_URL development
+   vercel env add DATABASE_URL production
+   vercel env add DATABASE_URL preview
+   vercel env add DATABASE_URL development
    
    vercel env add OPENAI_API_KEY production
    vercel env add OPENAI_API_KEY preview
@@ -63,7 +63,7 @@ Required environment variables:
 
 | Variable | Description | Required For |
 |----------|-------------|--------------|
-| `NEON_DATABASE_URL` | PostgreSQL connection string | Database connection |
+| `DATABASE_URL` | PostgreSQL connection string (Supabase) | Database connection |
 | `OPENAI_API_KEY` | OpenAI API key | AI features (clustering, insights) |
 | `CRON_SECRET` | Secret for cron endpoint auth | Cron job security |
 
@@ -112,7 +112,7 @@ npm start
 Verify:
 - App builds without errors
 - Prisma client is generated (via `postinstall` script)
-- Database connection works (if `NEON_DATABASE_URL` is set locally)
+- Database connection works (if `DATABASE_URL` is set locally)
 - No TypeScript errors (we removed `ignoreBuildErrors`)
 
 ## Step 6: Deploy to Vercel
@@ -204,8 +204,8 @@ vercel env add VARIABLE_NAME production
 ### Database Connection Fails
 
 **Solution:**
-1. Verify `NEON_DATABASE_URL` is set correctly
-2. Check Neon database allows connections from Vercel IPs (usually open by default)
+1. Verify `DATABASE_URL` is set correctly
+2. Check Supabase database allows connections from Vercel IPs (usually open by default)
 3. Test connection string locally:
    ```bash
    doppler run -- npx prisma db push

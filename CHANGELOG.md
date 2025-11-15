@@ -2,6 +2,25 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-01-XX XX:XX ET
+
+- [migration] **Complete Supabase migration** - Removed Prisma entirely, migrated all models to Supabase
+- [migration] Migrated chat models (conversation_threads, messages) to Supabase with full CRUD support
+- [migration] Created supabase/migrations/007_chat_models.sql with conversation_threads and messages tables
+- [migration] Implemented message and conversationThread CRUD methods in lib/supabase-db.ts
+- [migration] Updated lib/db.ts to remove PrismaClient and use only Supabase adapter
+- [migration] Removed @prisma/client and prisma from package.json dependencies
+- [migration] Removed postinstall script that ran prisma generate
+- [migration] Deleted prisma/schema.prisma and prisma/ directory
+- [migration] Renamed NEON_DATABASE_URL to DATABASE_URL throughout codebase and documentation
+- [migration] Updated .github/workflows/ci.yml to use DATABASE_URL instead of NEON_DATABASE_URL
+- [migration] Updated all documentation files (DOPPLER.md, VERCEL_SETUP.md, README.md, docs/) to reference DATABASE_URL
+- [migration] Updated MIGRATION_SUMMARY.md and SUPABASE_MIGRATION.md to reflect 100% complete migration status
+- [migration] Updated docs/roadmap.md to mark Phase 3 and Phase 5 as complete
+- [migration] Updated docs/architecture.md to remove Neon references and update to Supabase
+- [migration] Added $executeRaw support for message embedding updates in lib/supabase-db.ts
+- [docs] Updated migration documentation to reflect complete removal of Neon and Prisma dependencies
+
 ## 2025-11-14 05:09 ET
 
 - [feature] Created comprehensive branded auth pages (login, signup, password reset) with Klutr illustrations, colors, and witty microcopy

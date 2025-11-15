@@ -38,7 +38,7 @@ This checklist ensures all production-readiness requirements are met before depl
 
 #### Required (Production)
 
-- [ ] `NEON_DATABASE_URL` - Database connection string
+- [ ] `DATABASE_URL` - Database connection string (Supabase)
 - [ ] `SUPABASE_URL` - Supabase project URL
 - [ ] `SUPABASE_ANON_KEY` - Supabase anon key
 - [ ] `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key
