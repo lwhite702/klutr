@@ -5,7 +5,7 @@
 
 ## ✅ Documentation Organization Complete
 
-### Customer-Facing Docs (`/mintlify/`)
+### Customer-Facing Docs (`/docs/external/mintlify/`)
 **14 MDX files** - All ready for Mintlify Cloud:
 
 1. `overview.mdx` - Welcome page
@@ -24,8 +24,7 @@
 14. `support.mdx` - Contact support
 
 ### Internal Docs (Excluded)
-- `/docs/internal/` - 12 developer/internal docs
-- `/docs/external/` - Empty (support doc moved to mintlify/)
+- `/docs/internal/` - 12 developer/internal docs (excluded)
 - All technical docs properly excluded via `.mintlifyignore`
 
 ## ✅ Configuration Files
@@ -38,10 +37,10 @@
 - ✅ Topbar and footer links set
 
 ### `.mintlifyignore`
-- ✅ Excludes all `.md` files except `/mintlify/*.mdx`
-- ✅ Excludes `/docs/internal/` and `/docs/external/`
+- ✅ Excludes all `.md` files except `/docs/external/mintlify/*.mdx`
+- ✅ Excludes `/docs/internal/` directory
 - ✅ Excludes root-level technical docs
-- ✅ Excludes problematic files (HYBRID_ARCHITECTURE_PLAN.md, etc.)
+- ✅ Excludes problematic files
 
 ## 📋 Navigation Structure
 
@@ -80,12 +79,12 @@ Support
 2. **Connect Your Repository**
    - Connect GitHub repository: `lwhite702/klutr`
    - Select branch (usually `main` or `master`)
-   - Set docs directory to: `mintlify`
+   - **Set docs directory to:** `docs/external/mintlify` ⚠️ **IMPORTANT**
 
 3. **Configure Settings**
    - Site name: "Klutr Documentation"
    - Custom domain (optional): `docs.klutr.app`
-   - Verify `docs.json` is detected
+   - Verify `docs.json` is detected at project root
 
 4. **Deploy**
    - Mintlify will automatically deploy from your repo
@@ -99,7 +98,7 @@ Support
 
 ## 📝 Verification Checklist
 
-- [x] All customer-facing docs in `/mintlify/` directory
+- [x] All customer-facing docs in `/docs/external/mintlify/` directory
 - [x] All internal docs in `/docs/internal/` (excluded)
 - [x] `docs.json` configured with latest schema
 - [x] Navigation matches all 14 MDX files
@@ -110,13 +109,31 @@ Support
 
 ## 📊 File Summary
 
-- **Customer-facing (Mintlify):** 14 MDX files
-- **Internal docs:** 12 MD files (excluded)
-- **Configuration:** `docs.json` + `.mintlifyignore`
+- **Customer-facing (Mintlify):** 14 MDX files in `/docs/external/mintlify/`
+- **Internal docs:** 12 MD files in `/docs/internal/` (excluded)
+- **Configuration:** `docs.json` (root) + `.mintlifyignore` (root)
 - **Total:** Ready for deployment
+
+## 📁 Directory Structure
+
+```
+/workspace/
+├── docs.json                    # Mintlify configuration (root)
+├── .mintlifyignore             # Ignore patterns (root)
+├── docs/
+│   ├── internal/               # Internal docs (excluded)
+│   └── external/               # External/customer-facing docs
+│       ├── README.md           # This directory's purpose
+│       └── mintlify/           # Mintlify source files ⭐
+│           ├── overview.mdx
+│           ├── getting-started.mdx
+│           └── ... (14 total)
+```
 
 ---
 
 **Status:** ✅ **READY FOR MINTLIFY CLOUD**
 
-All customer-facing documentation is properly organized in `/mintlify/` and internal documentation is excluded. The configuration is complete and ready for you to connect to Mintlify Cloud.
+All customer-facing documentation is properly organized in `/docs/external/mintlify/` for consistency with the `/docs/internal/` structure. The configuration is complete and ready for you to connect to Mintlify Cloud.
+
+**⚠️ Important:** When setting up Mintlify Cloud, specify the docs directory as `docs/external/mintlify` (not just `mintlify`).

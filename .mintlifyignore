@@ -1,6 +1,6 @@
-# Ignore all markdown files except those in mintlify directory
+# Ignore all markdown files except those in docs/external/mintlify directory
 *.md
-!mintlify/**/*.mdx
+!docs/external/mintlify/**/*.mdx
 
 # Ignore specific problematic files
 HYBRID_ARCHITECTURE_PLAN.md
@@ -9,8 +9,9 @@ main-opus-merge-surgery.plan.md
 
 # Ignore internal documentation directories
 docs/internal/
-docs/external/
 reports/
+
+# Note: docs/external/mintlify/ is NOT ignored - it contains customer-facing docs
 
 # Ignore root-level documentation files
 README.md
