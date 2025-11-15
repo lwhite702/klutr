@@ -101,85 +101,115 @@ function getIconStyles(color: string) {
   return { className: '', style: undefined };
 }
 
+/**
+ * SidebarNav - Fintask-inspired navigation with visible keyboard shortcuts
+ * 
+ * Features:
+ * - Compact icons with clear selected state
+ * - Subtle background on active items
+ * - Visible keyboard shortcut hints (right-aligned, low-contrast)
+ * - Grouped sections: Primary pages vs Panels
+ */
 export function SidebarNav() {
   const pathname = usePathname();
   const { activePanel, openPanel } = usePanelState();
 
   return (
-    <TooltipProvider>
-      <nav className="flex flex-col gap-1 p-4">
-        {/* Page Links */}
-        {pageItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href;
+    <nav className="flex flex-col h-full">
+      {/* Primary Pages Section */}
+      <div className="p-4 pb-2">
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
+          Pages
+        </h3>
+        <div className="flex flex-col gap-1">
+          {pageItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
 
-          return (
-            <Button
-              key={item.href}
-              variant="ghost"
-              className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
-              asChild
-            >
-              <Link 
-                href={item.href} 
-                onClick={() => {
-                  posthog.capture('sidebar_navigation_link_clicked', {
-                    target_href: item.href,
-                    target_label: item.label,
-                  });
-                }}
-                aria-current={isActive ? "page" : undefined}
+            return (
+              <Button
+                key={item.href}
+                variant="ghost"
+                className={`justify-between gap-2 h-9 px-3 ${
+                  isActive 
+                    ? "bg-accent text-accent-foreground font-medium" 
+                    : "hover:bg-accent/50"
+                }`}
+                asChild
               >
-                <Icon
-                  className={`h-4 w-4 ${getIconStyles(item.color).className}`}
-                  style={getIconStyles(item.color).style}
-                  aria-hidden="true"
-                />
-                {item.label}
-              </Link>
-            </Button>
-          );
-        })}
-
-        {/* Divider */}
-        <div className="my-2 border-t" />
-
-        {/* Panel Triggers */}
-        {panelItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activePanel === item.id;
-
-          return (
-            <Tooltip key={item.id}>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
+                <Link 
+                  href={item.href} 
                   onClick={() => {
-                    openPanel(item.id);
-                    posthog.capture('sidebar_panel_opened', {
-                      panel: item.id,
-                      label: item.label,
+                    posthog.capture('sidebar_navigation_link_clicked', {
+                      target_href: item.href,
+                      target_label: item.label,
                     });
                   }}
-                  aria-label={`${item.label} panel (⌘${item.shortcut})`}
-                  aria-pressed={isActive}
+                  aria-current={isActive ? "page" : undefined}
+                  className="flex items-center gap-3 flex-1"
                 >
                   <Icon
-                    className={`h-4 w-4 ${getIconStyles(item.color).className}`}
+                    className={`h-4 w-4 shrink-0 ${getIconStyles(item.color).className}`}
                     style={getIconStyles(item.color).style}
                     aria-hidden="true"
                   />
-                  {item.label}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>{item.label} (⌘{item.shortcut})</p>
-              </TooltipContent>
-            </Tooltip>
-          );
-        })}
-      </nav>
-    </TooltipProvider>
+                  <span className="flex-1 text-left text-sm">{item.label}</span>
+                </Link>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="mx-4 my-2 border-t" />
+
+      {/* Panels Section */}
+      <div className="p-4 pt-2 flex-1">
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">
+          Panels
+        </h3>
+        <div className="flex flex-col gap-1">
+          {panelItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activePanel === item.id;
+
+            return (
+              <Button
+                key={item.id}
+                variant="ghost"
+                className={`justify-between gap-2 h-9 px-3 ${
+                  isActive 
+                    ? "bg-accent text-accent-foreground font-medium" 
+                    : "hover:bg-accent/50"
+                }`}
+                onClick={() => {
+                  openPanel(item.id);
+                  posthog.capture('sidebar_panel_opened', {
+                    panel: item.id,
+                    label: item.label,
+                  });
+                }}
+                aria-label={`${item.label} panel (⌘${item.shortcut})`}
+                aria-pressed={isActive}
+              >
+                <div className="flex items-center gap-3 flex-1">
+                  <Icon
+                    className={`h-4 w-4 shrink-0 ${getIconStyles(item.color).className}`}
+                    style={getIconStyles(item.color).style}
+                    aria-hidden="true"
+                  />
+                  <span className="flex-1 text-left text-sm">{item.label}</span>
+                </div>
+                {/* Keyboard shortcut hint - visible, low-contrast */}
+                <kbd className="hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-60">
+                  ⌘{item.shortcut}
+                </kbd>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+    </nav>
   );
 }
