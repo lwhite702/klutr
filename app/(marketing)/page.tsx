@@ -32,19 +32,39 @@ import {
 export async function generateMetadata(): Promise<Metadata> {
   const meta = await getPageMetadata("home")
 
+  const title = meta?.seoTitle ?? "Klutr — AI Note App That Brings Order to Your Chaos"
+  const description =
+    meta?.metaDescription ??
+    "Capture everything, organize it effortlessly, and discover insights with AI. Klutr transforms your notes into meaning. Free beta now open."
+
   return {
-    title: meta?.seoTitle ?? "Klutr — AI Note App That Brings Order to Your Chaos",
-    description:
-      meta?.metaDescription ??
-      "Capture everything, organize it effortlessly, and discover insights with AI. Klutr transforms your notes into meaning. Free beta now open.",
+    title,
+    description,
     openGraph: {
-      title: meta?.seoTitle ?? "Klutr — AI Note App That Brings Order to Your Chaos",
-      description:
-        meta?.metaDescription ??
-        "Capture everything, organize it effortlessly, and discover insights with AI. Klutr transforms your notes into meaning. Free beta now open.",
+      title,
+      description,
       url: "https://klutr.app",
       siteName: "Klutr",
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Klutr — Organize Your Chaos",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
       images: ["/og-image.png"],
+      creator: "@klutr",
+    },
+    alternates: {
+      canonical: "https://klutr.app",
     },
   }
 }
@@ -331,7 +351,7 @@ export default async function MarketingHomePage() {
                 </div>
               </div>
               <h2 className="text-4xl md:text-6xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)] leading-tight">
-                Ready to clear the clutr?
+                Ready to organize your chaos?
               </h2>
               <p className="text-xl md:text-2xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 max-w-2xl mx-auto leading-relaxed">
                 Join early users who are already freeing their minds from digital clutter. Drop your thoughts, let AI organize, stay creative.

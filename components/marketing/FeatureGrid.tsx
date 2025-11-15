@@ -107,7 +107,7 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
             className="text-center space-y-4 max-w-2xl mx-auto"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-              Everything you need to clear the clutr
+              Everything you need to organize your chaos
             </h2>
             <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
               Capture anything. We organize it. You stay creative.

@@ -26,18 +26,38 @@ import { Lightbulb, Target, Heart } from "lucide-react";
 export async function generateMetadata(): Promise<Metadata> {
   const meta = await getPageMetadata("about");
 
+  const title = meta?.seoTitle ?? "About — Klutr";
+  const description =
+    meta?.metaDescription ??
+    "Klutr is a practical, clever note-taking app that helps you organize your chaos. Built for forward-thinking people who value clarity.";
+
   return {
-    title: meta?.seoTitle ?? "About — Klutr",
-    description:
-      meta?.metaDescription ??
-      "Klutr is a practical, clever note-taking app that helps you organize your chaos. Built for forward-thinking people who value clarity.",
+    title,
+    description,
     openGraph: {
-      title: meta?.seoTitle ?? "About — Klutr",
-      description:
-        meta?.metaDescription ??
-        "Klutr is a practical, clever note-taking app that helps you organize your chaos. Built for forward-thinking people who value clarity.",
+      title,
+      description,
       url: "https://klutr.app/about",
       siteName: "Klutr",
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "About Klutr",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.png"],
+    },
+    alternates: {
+      canonical: "https://klutr.app/about",
     },
   };
 }
@@ -163,7 +183,7 @@ export default async function AboutPage() {
             {aboutContent.ctaBlock ? (
               <AnimatedFadeIn className="text-center space-y-6 pt-8">
                 <h2 className="text-2xl md:text-3xl font-display font-bold">
-                  {aboutContent.ctaBlock.headline || "Ready to clear the clutr?"}
+                  {aboutContent.ctaBlock.headline || "Ready to organize your chaos?"}
                 </h2>
                 {aboutContent.ctaBlock.ctaText && (
                   <Button
@@ -180,7 +200,7 @@ export default async function AboutPage() {
             ) : (
               <AnimatedFadeIn className="text-center space-y-6 pt-8">
                 <h2 className="text-2xl md:text-3xl font-display font-bold">
-                  Ready to clear the clutr?
+                  Ready to organize your chaos?
                 </h2>
                 <p className="text-lg font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
                   Join early users who are already freeing their minds from

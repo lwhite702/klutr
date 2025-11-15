@@ -120,15 +120,20 @@ export function SidebarNav() {
               className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
               asChild
             >
-              <Link href={item.href} onClick={() => {
-                posthog.capture('sidebar_navigation_link_clicked', {
-                  target_href: item.href,
-                  target_label: item.label,
-                });
-              }}>
+              <Link 
+                href={item.href} 
+                onClick={() => {
+                  posthog.capture('sidebar_navigation_link_clicked', {
+                    target_href: item.href,
+                    target_label: item.label,
+                  });
+                }}
+                aria-current={isActive ? "page" : undefined}
+              >
                 <Icon
                   className={`h-4 w-4 ${getIconStyles(item.color).className}`}
                   style={getIconStyles(item.color).style}
+                  aria-hidden="true"
                 />
                 {item.label}
               </Link>
@@ -157,10 +162,13 @@ export function SidebarNav() {
                       label: item.label,
                     });
                   }}
+                  aria-label={`${item.label} panel (⌘${item.shortcut})`}
+                  aria-pressed={isActive}
                 >
                   <Icon
                     className={`h-4 w-4 ${getIconStyles(item.color).className}`}
                     style={getIconStyles(item.color).style}
+                    aria-hidden="true"
                   />
                   {item.label}
                 </Button>

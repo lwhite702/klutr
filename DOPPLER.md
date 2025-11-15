@@ -97,6 +97,23 @@ The following variables are required for PostHog analytics and feature flag mana
 
 The client-side key is exposed to the browser for analytics and feature flag evaluation. The server key is used for server-side feature flag checks in API routes and background jobs.
 
+### Cloudflare Turnstile CAPTCHA
+
+The following variable is required for Cloudflare Turnstile CAPTCHA protection on the signup page:
+
+**Client-side variables (NEXT_PUBLIC_ prefix):**
+- `NEXT_PUBLIC_TURNSTILE_SITEKEY` - Cloudflare Turnstile site key (exposed to browser, used for CAPTCHA verification)
+
+**Setup:**
+1. Create a Cloudflare account or log in to existing account
+2. Navigate to Cloudflare Dashboard → Turnstile
+3. Create a new site or use existing site
+4. Copy the site key
+5. Add to Doppler as `NEXT_PUBLIC_TURNSTILE_SITEKEY`
+6. For local testing, add `localhost` to the domain allowlist in Cloudflare Turnstile settings
+
+**Note:** The site key is used client-side in the signup form to render the Turnstile CAPTCHA widget. The CAPTCHA token is then passed to Supabase Auth during signup to verify the user is not a bot.
+
 ### Migration Notes
 
 - Doppler handles all environments (dev, staging, production)
@@ -237,6 +254,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add NEXT_PUBLIC_POSTHOG_KEY production
    vercel env add NEXT_PUBLIC_POSTHOG_HOST production
    vercel env add POSTHOG_SERVER_KEY production
+   vercel env add NEXT_PUBLIC_TURNSTILE_SITEKEY production
 
    # Preview (for PR deployments)
    vercel env add NEON_DATABASE_URL preview
@@ -254,6 +272,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add NEXT_PUBLIC_POSTHOG_KEY preview
    vercel env add NEXT_PUBLIC_POSTHOG_HOST preview
    vercel env add POSTHOG_SERVER_KEY preview
+   vercel env add NEXT_PUBLIC_TURNSTILE_SITEKEY preview
 
    # Development (local dev with vercel dev)
    vercel env add NEON_DATABASE_URL development
@@ -271,6 +290,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    vercel env add NEXT_PUBLIC_POSTHOG_KEY development
    vercel env add NEXT_PUBLIC_POSTHOG_HOST development
    vercel env add POSTHOG_SERVER_KEY development
+   vercel env add NEXT_PUBLIC_TURNSTILE_SITEKEY development
    ```
 
 3. **Verify variables are set:**

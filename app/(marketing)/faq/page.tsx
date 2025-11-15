@@ -22,18 +22,38 @@ import { Sparkles } from "lucide-react";
 export async function generateMetadata(): Promise<Metadata> {
   const meta = await getPageMetadata("faq");
 
+  const title = meta?.seoTitle ?? "FAQ — Klutr";
+  const description =
+    meta?.metaDescription ??
+    "Frequently asked questions about Klutr. Learn about features, pricing, and how to get started.";
+
   return {
-    title: meta?.seoTitle ?? "FAQ — Klutr",
-    description:
-      meta?.metaDescription ??
-      "Frequently asked questions about Klutr. Learn about features, pricing, and how to get started.",
+    title,
+    description,
     openGraph: {
-      title: meta?.seoTitle ?? "FAQ — Klutr",
-      description:
-        meta?.metaDescription ??
-        "Frequently asked questions about Klutr. Learn about features, pricing, and how to get started.",
+      title,
+      description,
       url: "https://klutr.app/faq",
       siteName: "Klutr",
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Klutr FAQ",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.png"],
+    },
+    alternates: {
+      canonical: "https://klutr.app/faq",
     },
   };
 }

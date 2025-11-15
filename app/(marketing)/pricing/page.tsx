@@ -25,18 +25,38 @@ import { Check, Sparkles } from "lucide-react";
 export async function generateMetadata(): Promise<Metadata> {
   const meta = await getPageMetadata("pricing");
 
+  const title = meta?.seoTitle ?? "Pricing — Klutr";
+  const description =
+    meta?.metaDescription ??
+    "Free during Beta! Join early users and help shape the future of note-taking. No credit card required.";
+
   return {
-    title: meta?.seoTitle ?? "Pricing — Klutr",
-    description:
-      meta?.metaDescription ??
-      "Free during Beta! Join early users and help shape the future of note-taking. No credit card required.",
+    title,
+    description,
     openGraph: {
-      title: meta?.seoTitle ?? "Pricing — Klutr",
-      description:
-        meta?.metaDescription ??
-        "Free during Beta! Join early users and help shape the future of note-taking. No credit card required.",
+      title,
+      description,
       url: "https://klutr.app/pricing",
       siteName: "Klutr",
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Klutr Pricing",
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.png"],
+    },
+    alternates: {
+      canonical: "https://klutr.app/pricing",
     },
   };
 }

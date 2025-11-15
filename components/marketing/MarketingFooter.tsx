@@ -128,7 +128,7 @@ function MarketingFooterContent({
           <div className="space-y-4">
             <FooterLogo />
             <p className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-              Clear the clutr. Keep the spark.
+              Organize your chaos. Keep the spark.
             </p>
           </div>
           <div>

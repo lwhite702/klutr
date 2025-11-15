@@ -1,39 +1,43 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
-import { Turnstile } from '@marsidev/react-turnstile'
-import { Lightbulb, Mail, Lock, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react'
+import { Lock, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react'
 
-export default function SignupPage() {
+export default function ConfirmResetPasswordPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
+  const searchParams = useSearchParams()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [captchaToken, setCaptchaToken] = useState<string | undefined>()
+  const [success, setSuccess] = useState(false)
 
-  async function handleSignup(e: React.FormEvent) {
+  useEffect(() => {
+    // Verify we have the necessary tokens from the reset link
+    const hashParams = new URLSearchParams(window.location.hash.substring(1))
+    const accessToken = hashParams.get('access_token')
+    const type = hashParams.get('type')
+
+    if (!accessToken || type !== 'recovery') {
+      toast.error('Invalid or expired reset link')
+      router.push('/reset-password')
+    }
+  }, [router])
+
+  async function handleReset(e: React.FormEvent) {
     e.preventDefault()
 
     if (password !== confirmPassword) {
       toast.error('Passwords don\'t match. Try again?')
-      return
-    }
-
-    if (!agreedToTerms) {
-      toast.error('Please agree to the terms and conditions')
       return
     }
 
@@ -42,46 +46,92 @@ export default function SignupPage() {
       return
     }
 
-    if (!captchaToken && process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY) {
-      toast.error('Please complete the verification')
-      return
-    }
-
     setLoading(true)
 
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-          data: {
-            email,
-          },
-          captchaToken,
-        },
+      const hashParams = new URLSearchParams(window.location.hash.substring(1))
+      const accessToken = hashParams.get('access_token')
+
+      if (!accessToken) {
+        throw new Error('Missing reset token')
+      }
+
+      const { error } = await supabase.auth.updateUser({
+        password: password,
       })
 
       if (error) throw error
 
-      if (data.user?.identities?.length === 0) {
-        toast.error('An account with this email already exists')
-        return
-      }
-
-      toast.success('Check your email to confirm your account')
-      router.push('/login')
+      setSuccess(true)
+      toast.success('Password updated successfully!')
+      
+      // Redirect to login after a short delay
+      setTimeout(() => {
+        router.push('/login')
+      }, 2000)
     } catch (error: any) {
-      toast.error(error.message || 'Couldn\'t create your account. Try again?')
+      toast.error(error.message || 'Couldn\'t reset password. Try again?')
     } finally {
       setLoading(false)
     }
   }
 
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--klutr-background)] via-[var(--klutr-background)] to-[var(--klutr-mint)]/5 dark:from-[var(--klutr-surface-dark)] dark:via-[var(--klutr-surface-dark)] dark:to-[var(--klutr-mint)]/10 p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md"
+        >
+          <Card className="border-[var(--klutr-outline)]/20 shadow-xl bg-white/80 dark:bg-[var(--klutr-surface-dark)]/80 backdrop-blur-sm">
+            <CardHeader className="space-y-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Image
+                  src="/logos/klutr-logo-light-noslogan.svg"
+                  alt="Klutr"
+                  width={120}
+                  height={40}
+                  className="h-8 w-auto dark:hidden"
+                  priority
+                />
+                <Image
+                  src="/logos/klutr-logo-dark-noslogan.svg"
+                  alt="Klutr"
+                  width={120}
+                  height={40}
+                  className="h-8 w-auto hidden dark:block"
+                  priority
+                />
+              </div>
+              <div className="w-16 h-16 rounded-full bg-[var(--klutr-mint)]/20 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-8 h-8 text-[var(--klutr-mint)]" />
+              </div>
+              <CardTitle className="text-2xl font-display font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+                Password updated!
+              </CardTitle>
+              <CardDescription className="text-base font-body">
+                Your password has been reset successfully. Redirecting to sign in...
+              </CardDescription>
+            </CardHeader>
+            <CardFooter>
+              <Button
+                className="w-full bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white rounded-2xl"
+                onClick={() => router.push('/login')}
+              >
+                Go to sign in
+              </Button>
+            </CardFooter>
+          </Card>
+        </motion.div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--klutr-background)] via-[var(--klutr-background)] to-[var(--klutr-coral)]/5 dark:from-[var(--klutr-surface-dark)] dark:via-[var(--klutr-surface-dark)] dark:to-[var(--klutr-coral)]/10 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--klutr-background)] via-[var(--klutr-background)] to-[var(--klutr-mint)]/5 dark:from-[var(--klutr-surface-dark)] dark:via-[var(--klutr-surface-dark)] dark:to-[var(--klutr-mint)]/10 p-4">
       <div className="w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
-        {/* Left side - Illustration and branding */}
+        {/* Left side - Illustration */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -89,17 +139,12 @@ export default function SignupPage() {
           className="hidden md:flex flex-col items-center justify-center space-y-8"
         >
           <div className="relative w-full max-w-md">
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--klutr-coral)]/20 to-[var(--klutr-mint)]/20 rounded-3xl blur-3xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--klutr-mint)]/20 to-[var(--klutr-coral)]/20 rounded-3xl blur-3xl" />
             <div className="relative bg-white dark:bg-[var(--klutr-surface-dark)] rounded-3xl p-12 shadow-2xl border border-[var(--klutr-outline)]/20">
               <div className="flex flex-col items-center space-y-6">
                 <motion.div
                   animate={{
                     scale: [1, 1.1, 1],
-                    filter: [
-                      "drop-shadow(0 0 8px rgba(0, 200, 150, 0.4))",
-                      "drop-shadow(0 0 16px rgba(0, 200, 150, 0.6))",
-                      "drop-shadow(0 0 8px rgba(0, 200, 150, 0.4))",
-                    ],
                   }}
                   transition={{
                     duration: 2,
@@ -108,14 +153,14 @@ export default function SignupPage() {
                   }}
                   className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--klutr-mint)]/20 to-[var(--klutr-coral)]/20 flex items-center justify-center"
                 >
-                  <CheckCircle2 className="w-12 h-12 text-[var(--klutr-mint)]" />
+                  <Lock className="w-12 h-12 text-[var(--klutr-mint)]" />
                 </motion.div>
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl font-display font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                    Start organizing
+                    Set new password
                   </h2>
                   <p className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 font-body">
-                    Join the beta and help shape Klutr
+                    Choose a strong password to keep your account secure
                   </p>
                 </div>
               </div>
@@ -123,7 +168,7 @@ export default function SignupPage() {
           </div>
         </motion.div>
 
-        {/* Right side - Signup form */}
+        {/* Right side - Form */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -151,35 +196,17 @@ export default function SignupPage() {
                 />
               </div>
               <CardTitle className="text-3xl font-display font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                Create your account
+                Reset password
               </CardTitle>
               <CardDescription className="text-base font-body">
-                Start capturing ideas with Klutr. Free beta, no credit card required.
+                Enter your new password below
               </CardDescription>
             </CardHeader>
-            <form onSubmit={handleSignup}>
+            <form onSubmit={handleReset}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">
-                    Email
-                  </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--klutr-text-primary-light)]/40 dark:text-[var(--klutr-text-primary-dark)]/40" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      disabled={loading}
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
                   <Label htmlFor="password" className="text-sm font-medium">
-                    Password
+                    New Password
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--klutr-text-primary-light)]/40 dark:text-[var(--klutr-text-primary-dark)]/40" />
@@ -215,44 +242,6 @@ export default function SignupPage() {
                     />
                   </div>
                 </div>
-                <div className="flex items-start space-x-2">
-                  <Checkbox
-                    id="terms"
-                    checked={agreedToTerms}
-                    onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
-                    disabled={loading}
-                    className="mt-1"
-                  />
-                  <label
-                    htmlFor="terms"
-                    className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 leading-relaxed font-body cursor-pointer"
-                  >
-                    I agree to the{' '}
-                    <Link
-                      href="/terms"
-                      className="text-[var(--klutr-coral)] hover:text-[var(--klutr-coral)]/80 transition-colors font-medium"
-                    >
-                      Terms of Service
-                    </Link>{' '}
-                    and{' '}
-                    <Link
-                      href="/privacy"
-                      className="text-[var(--klutr-coral)] hover:text-[var(--klutr-coral)]/80 transition-colors font-medium"
-                    >
-                      Privacy Policy
-                    </Link>
-                  </label>
-                </div>
-                {process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY && (
-                  <div className="flex justify-center pt-2">
-                    <Turnstile
-                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITEKEY}
-                      onSuccess={(token) => {
-                        setCaptchaToken(token)
-                      }}
-                    />
-                  </div>
-                )}
               </CardContent>
               <CardFooter className="flex flex-col space-y-4">
                 <Button
@@ -263,24 +252,21 @@ export default function SignupPage() {
                   {loading ? (
                     <span className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 animate-spin" />
-                      Creating account...
+                      Updating...
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
-                      Create account
+                      Update password
                       <ArrowRight className="w-4 h-4" />
                     </span>
                   )}
                 </Button>
-                <div className="text-sm text-center text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 font-body">
-                  Already have an account?{' '}
-                  <Link
-                    href="/login"
-                    className="text-[var(--klutr-coral)] hover:text-[var(--klutr-coral)]/80 font-medium transition-colors"
-                  >
-                    Sign in
-                  </Link>
-                </div>
+                <Link
+                  href="/login"
+                  className="text-sm text-center text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 font-body"
+                >
+                  Back to sign in
+                </Link>
               </CardFooter>
             </form>
           </Card>
@@ -289,3 +275,6 @@ export default function SignupPage() {
     </div>
   )
 }
+
+
+

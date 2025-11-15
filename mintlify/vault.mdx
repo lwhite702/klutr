@@ -1,11 +1,16 @@
 ---
-title: "Vault"
-description: "Learn how encrypted notes and private files are stored securely with client-side encryption."
+title: "Vault - Encrypted Notes Storage | Klutr"
+description: "Learn how Vault encrypts notes on your device before uploading. Client-side encryption ensures complete privacy—we never see your plaintext content."
+openGraph:
+  title: "Vault - Encrypted Notes | Klutr"
+  description: "Store sensitive thoughts securely. Vault encrypts everything on your device—we never see your plaintext content."
 ---
 
 # Vault
 
-The Vault is your secure space for sensitive thoughts and confidential information. Everything you store here is encrypted on your device before being sent to our servers, ensuring complete privacy.
+The Vault is your secure space for sensitive thoughts and confidential information. Everything you store here is encrypted on your device before being sent to our servers, ensuring complete privacy. We never see your plaintext content—not even we can read what you store in your Vault.
+
+![Vault encryption security](/illustrations/ux-colors/Fingerprint-Passcode--Streamline-Ux.svg)
 
 ## How Vault Encryption Works
 
@@ -25,11 +30,13 @@ The Vault is your secure space for sensitive thoughts and confidential informati
 
 ### Encryption Process
 
-1. **Password Creation** - You set a vault password
-2. **Key Derivation** - Password converted to encryption key
-3. **Note Encryption** - Content encrypted before transmission
+1. **Password Creation** - You set a vault password (we never store it)
+2. **Key Derivation** - Password converted to encryption key using PBKDF2
+3. **Note Encryption** - Content encrypted on your device before transmission
 4. **Secure Storage** - Only encrypted data stored on servers
-5. **Client Decryption** - Notes decrypted when you unlock vault
+5. **Client Decryption** - Notes decrypted when you unlock vault with your password
+
+The key point: encryption happens on your device. We only ever see encrypted data.
 
 ## Setting Up Your Vault
 
@@ -110,10 +117,10 @@ The Vault is your secure space for sensitive thoughts and confidential informati
 
 **What We Don't Guarantee**
 
-- Browser security: We rely on your browser's security
-- Device security: We cannot protect against compromised devices
-- Password recovery: Forgotten passwords cannot be recovered
-- Network security: We cannot protect against network-level attacks
+- Browser security: We rely on your browser's security. Keep your browser updated.
+- Device security: We cannot protect against compromised devices. Use secure devices.
+- Password recovery: Forgotten passwords cannot be recovered. This is by design for security.
+- Network security: We cannot protect against network-level attacks. Use secure networks when possible.
 
 ## Managing Your Vault
 
@@ -193,9 +200,14 @@ The Vault is your secure space for sensitive thoughts and confidential informati
 
 ### Can't Remember Password
 
-- We cannot recover forgotten passwords
-- This is by design for security
-- Consider using a password manager
+**Critical:** We cannot recover forgotten passwords. This is by design—if we could recover passwords, we could decrypt your vault, which defeats the purpose of zero-knowledge encryption.
+
+**Solutions:**
+- Use a password manager to store your vault password securely
+- Write down your password in a secure location (not in plain text)
+- Consider creating a backup of your vault password in a secure password manager
+
+**If you've lost your password:** Unfortunately, your vault content cannot be recovered. This is the trade-off for true zero-knowledge encryption.
 
 ### Vault Won't Unlock
 
@@ -243,4 +255,4 @@ The Vault is your secure space for sensitive thoughts and confidential informati
 
 ---
 
-_Need help with vault security? Check our [Security FAQ](/security-faq) or contact our support team._
+_Need help with vault security? Review the encryption details above, or check out [Getting Started](/getting-started) for general guidance._
