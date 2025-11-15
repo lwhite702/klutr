@@ -2,7 +2,7 @@
 
 All notable changes to Klutr will be documented in this file.
 
-## 2025-01-XX XX:XX ET
+## 2025-11-14 21:17 ET
 
 - [migration] **Complete Supabase migration** - Removed Prisma entirely, migrated all models to Supabase
 - [migration] Migrated chat models (conversation_threads, messages) to Supabase with full CRUD support
