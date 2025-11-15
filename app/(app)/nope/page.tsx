@@ -116,7 +116,7 @@ export default function NopeBinPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-[1100px] mx-auto space-y-6">
         <PageHeader
           title="Nope Bin"
           description="Stuff you set aside."
@@ -126,6 +126,7 @@ export default function NopeBinPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => dialogTour.startTour()}
+                className="rounded-lg"
               >
                 Take tour
               </Button>

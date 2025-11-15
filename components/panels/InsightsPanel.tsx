@@ -91,10 +91,10 @@ export function InsightsPanel() {
         <div className="p-6">
           {isLoading ? (
             <div className="text-center py-12 text-muted-foreground">
-              <p>Loading insights...</p>
+              <p className="text-sm">Loading insights...</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {insights.map((insight) => (
                 <InsightCard
                   key={insight.id}
@@ -106,7 +106,7 @@ export function InsightsPanel() {
               
               {insights.length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
-                  <p>No insights yet. Generate your first insights to get started.</p>
+                  <p className="text-sm">No insights yet. Generate your first insights to get started.</p>
                 </div>
               )}
             </div>

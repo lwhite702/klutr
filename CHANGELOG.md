@@ -2,6 +2,20 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-15 15:30 ET
+
+- [ui] Refined authenticated app shell using Fintask-inspired layout while preserving stream-first architecture
+- [brand] Increased Klutr logo presence in header with larger logo (56px height) and wordmark with tagline
+- [ui] Updated sidebar navigation with Fintask-inspired styling, keyboard shortcut hints (⌘M, ⌘I, ⌘H, ⌘K), and improved active states with left border indicators
+- [ui] Enhanced Stream page with Fintask-inspired card layouts, max-width column (1100px), and improved spacing (16px vertical gap)
+- [ui] Refined panel components (MindStorm, Insights, Memory, Search) with Fintask-inspired visual polish and consistent spacing
+- [ui] Updated secondary pages (Boards, Nope, Memory) with Fintask-inspired layouts and max-width constraints
+- [ui] Applied Fintask spacing proportions: sidebar 240px, header 64px height, content padding 24px, card spacing 16px
+- [ui] Updated StreamMessage cards with Fintask-inspired styling: rounded-lg borders, subtle shadows, consistent padding
+- [ui] Improved StreamInput styling to match Fintask form inputs with rounded-lg borders
+- [ui] Enhanced PanelContainer with Fintask-inspired side panel design: clean borders, subtle shadow, proper flex layout
+- [ui] Updated PanelHeader with improved typography hierarchy and consistent padding (24px horizontal, 16px vertical)
+
 ## 2025-11-15 03:06 ET
 
 - [build] Fixed TypeScript build errors for Vercel deployment

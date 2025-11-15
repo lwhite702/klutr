@@ -104,7 +104,7 @@ export function PanelContainer({
             onClick={onClose}
           />
 
-          {/* Panel */}
+          {/* Panel - Fintask-inspired side panel design */}
           <motion.div
             initial="closed"
             animate="open"
@@ -117,7 +117,8 @@ export function PanelContainer({
               duration: 0.3 
             }}
             className={cn(
-              "fixed top-0 bottom-0 z-50 bg-background border-l shadow-xl",
+              "fixed top-0 bottom-0 z-50 bg-background border-l border-border shadow-lg",
+              "flex flex-col",
               position === 'right' ? 'right-0' : 'left-0',
               widthClasses[width],
               className
@@ -132,8 +133,13 @@ export function PanelContainer({
 }
 
 /**
- * Standard panel header component
+ * Standard panel header component - Fintask-inspired design
  * Used inside PanelContainer for consistent headers
+ * 
+ * Design matches Fintask detail panes:
+ * - Clear typography hierarchy
+ * - Consistent padding (24px horizontal, 16px vertical)
+ * - Subtle border separation
  */
 interface PanelHeaderProps {
   title: string
@@ -144,17 +150,23 @@ interface PanelHeaderProps {
 
 export function PanelHeader({ title, description, action, onClose }: PanelHeaderProps) {
   return (
-    <div className="border-b px-6 py-4 flex items-start justify-between bg-background sticky top-0 z-10">
-      <div className="flex-1">
-        <h2 className="text-xl font-semibold">{title}</h2>
+    <div className="border-b border-border px-6 py-4 flex items-start justify-between bg-background sticky top-0 z-10">
+      <div className="flex-1 min-w-0">
+        <h2 className="text-xl font-semibold text-foreground leading-tight">{title}</h2>
         {description && (
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+          <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">{description}</p>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-shrink-0 ml-4">
         {action}
         {onClose && (
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close panel">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onClose} 
+            aria-label="Close panel"
+            className="h-8 w-8"
+          >
             <X className="h-4 w-4" />
           </Button>
         )}

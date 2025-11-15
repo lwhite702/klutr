@@ -1,8 +1,9 @@
 # Hybrid UI Architecture
 
 **Status**: ✅ Implemented  
-**Version**: 1.0  
-**Date**: 2025-11-11
+**Version**: 2.0  
+**Date**: 2025-11-15  
+**Last Updated**: 2025-11-15 (Fintask-inspired visual refactor)
 
 ## Overview
 
@@ -10,6 +11,45 @@ Klutr uses a hybrid stream-first architecture that combines:
 - **Primary Stream** (`/app/stream`) as the central hub for content capture
 - **Overlay Panels** for detailed features (MindStorm, Insights, Memory, Search)
 - **Direct Pages** for distinct features (Boards, Vault, Settings, Nope)
+
+## Visual Design System
+
+### Fintask-Inspired Layout
+
+The authenticated app shell uses a Fintask-inspired layout structure while maintaining Klutr's unique brand identity:
+
+**Layout Structure:**
+- **Left Sidebar**: 240px fixed width (persistent navigation)
+- **Main Content**: Flexible with max-width constraint (1100px centered)
+- **Right Panel Area**: Visual constraint for overlay panels (handled by PanelContainer)
+
+**Spacing Proportions:**
+- Sidebar width: 240px (matches Fintask)
+- Header height: 64px (h-16)
+- Content padding: 24px (p-6)
+- Card spacing: 16px vertical gap (space-y-4)
+- Panel padding: 24px horizontal (px-6), 16px vertical (py-4)
+
+**Typography:**
+- Headings: h1 (32px), h2 (24px), h3 (20px)
+- Subheadings: 18px, 16px
+- Body text: 14px (text-sm)
+- Metadata: 12px (text-xs), 11px for shortcuts
+- Font stack: Inter for headings, system fonts for body
+
+**Card Styling:**
+- Border radius: 8px (rounded-lg)
+- Border: 1px subtle border (border-border)
+- Shadow: subtle elevation (shadow-sm, hover:shadow-md)
+- Padding: 16px internal (px-4 py-3)
+- Background: bg-card with proper contrast
+
+**Brand Integration:**
+- Logo: 56px height in header (h-12)
+- Wordmark: Visible on large screens (lg:flex)
+- Tagline: "Organize your chaos. Keep the spark." in header
+- Colors: Coral (#FF6B6B) and Mint (#00C896) from brand palette
+- Active states: Left border indicator with brand color
 
 ## Architecture Components
 
@@ -53,6 +93,12 @@ Generic container for all panel components with:
   - Escape key to close
   - Backdrop click to close
   - Smooth transitions
+
+**Fintask-Inspired Design:**
+- Clean borders: border-l border-border
+- Subtle shadow: shadow-lg (not shadow-xl)
+- Proper flex layout: flex flex-col for proper content flow
+- Panel header: Consistent padding (px-6 py-4), clear typography hierarchy
 
 **Props**:
 ```typescript
@@ -110,10 +156,14 @@ Two types of navigation items:
 - Memory (⌘H)
 - Search (⌘K)
 
-Visual feedback:
-- Active panel highlighted
-- Keyboard shortcuts in tooltips
-- Clear divider between types
+**Fintask-Inspired Styling:**
+- Compact icons: 20px (h-5 w-5)
+- Clear selected state: Background with brand color tint, left border indicator (2px)
+- Keyboard shortcut hints: Visible in nav items (right-aligned, 11px, low-contrast)
+- Font sizes: 14px for labels (text-sm), 11px for shortcuts
+- Spacing: 10px height (h-10), 12px horizontal padding (px-3)
+- Hover state: Subtle background change (hover:bg-accent/50)
+- Active state: bg-accent with left border in brand color
 
 ### 5. Keyboard Shortcuts
 
@@ -349,6 +399,104 @@ export type PanelType = 'mindstorm' | 'insights' | 'memory' | 'search' | 'mynew'
 </PanelContainer>
 ```
 
+## Fintask-Inspired Design System
+
+### App Shell Structure
+
+**File**: `components/layout/AppShell.tsx`
+
+The app shell implements a 3-part structure inspired by Fintask's layout:
+
+1. **Left Sidebar** (240px fixed)
+   - Persistent navigation
+   - Fintask-inspired compact styling
+   - Keyboard shortcut hints visible
+
+2. **Main Content Area** (flexible with max-width)
+   - Stream: max-width 1100px centered
+   - Other pages: max-width 1100px centered
+   - Consistent padding: 24px (p-6)
+
+3. **Right Panel Area** (visual constraint)
+   - Panels render as overlays via PanelContainer
+   - Desktop: Slide-in from right
+   - Mobile: Full-screen sheets
+
+### TopBar Design
+
+**File**: `components/layout/TopBar.tsx`
+
+**Layout:**
+- Left: Klutr logo (56px height) + wordmark + tagline
+- Center: Contextual controls (search, actions)
+- Right: User menu (avatar, theme toggle, help)
+
+**Branding:**
+- Logo prominently displayed (h-12, 56px)
+- Wordmark visible on large screens (lg:flex)
+- Tagline: "Organize your chaos. Keep the spark."
+- Height: 64px (h-16) matches Fintask
+
+### Stream Layout
+
+**File**: `app/(app)/stream/page.tsx`
+
+**Design:**
+- Max-width column: 1100px centered
+- Card spacing: 16px vertical gap (space-y-4)
+- Fintask-inspired card styling on StreamMessage components
+- Consistent padding and typography
+
+### Card Styling Standards
+
+All cards follow Fintask-inspired patterns:
+
+```css
+/* Standard card */
+.rounded-lg          /* 8px border radius */
+.border              /* 1px subtle border */
+.bg-card             /* Proper background */
+.shadow-sm           /* Subtle elevation */
+.hover:shadow-md     /* Enhanced on hover */
+.px-4.py-3           /* 16px internal padding */
+```
+
+### Typography Scale
+
+Matches Fintask font sizes:
+
+- **Headings**: 
+  - h1: 32px (text-3xl)
+  - h2: 24px (text-2xl)
+  - h3: 20px (text-xl)
+- **Subheadings**: 18px, 16px
+- **Body**: 14px (text-sm)
+- **Metadata**: 12px (text-xs), 11px for shortcuts
+
+### Brand Colors
+
+Applied throughout the UI:
+
+- **Coral** (#FF6B6B): Primary actions, active states, accents
+- **Mint** (#00C896): Secondary actions, highlights
+- **Charcoal** (#2B2E3F): Text, borders
+- **Neutrals**: Backgrounds, muted text
+
+### Responsive Breakpoints
+
+- **Mobile**: < 768px
+  - Sidebar: Hidden (hamburger menu)
+  - Panels: Full-screen sheets
+  - Touch targets: Minimum 44px (h-11)
+  
+- **Tablet**: 768px - 1023px
+  - Sidebar: Visible (240px)
+  - Panels: Slide-in (reduced width)
+  
+- **Desktop**: >= 1024px
+  - Full Fintask-like layout
+  - All features visible
+
 ---
 
-**Questions?** Contact the team or check the implementation in `components/panels/`.
+**Questions?** Contact the team or check the implementation in `components/panels/` and `components/layout/`.

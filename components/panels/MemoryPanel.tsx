@@ -106,24 +106,26 @@ export function MemoryPanel() {
         <div className="p-6">
           {isLoading ? (
             <div className="text-center py-12 text-muted-foreground">
-              <p>Loading summaries...</p>
+              <p className="text-sm">Loading summaries...</p>
             </div>
           ) : summaries.length > 0 ? (
-            <TimelineGrid
-              items={summaries.map((item) => {
-                const startDate = new Date(item.startDate)
-                const endDate = new Date(item.endDate)
-                return {
-                  week: `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`,
-                  count: item.noteCount,
-                  topics: item.topTags,
-                }
-              })}
-              onRevisit={handleRevisitWeek}
-            />
+            <div className="space-y-3">
+              <TimelineGrid
+                items={summaries.map((item) => {
+                  const startDate = new Date(item.startDate)
+                  const endDate = new Date(item.endDate)
+                  return {
+                    week: `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`,
+                    count: item.noteCount,
+                    topics: item.topTags,
+                  }
+                })}
+                onRevisit={handleRevisitWeek}
+              />
+            </div>
           ) : (
             <div className="text-center py-12 text-muted-foreground">
-              <p>No weekly summaries yet. Add some notes and generate your first summary.</p>
+              <p className="text-sm">No weekly summaries yet. Add some notes and generate your first summary.</p>
             </div>
           )}
         </div>

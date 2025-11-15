@@ -112,13 +112,13 @@ export function MindStormPanel() {
       />
       
       <ScrollArea className="flex-1">
-        <div className="p-6">
+        <div className="p-6 space-y-4">
           {isLoading ? (
             <div className="text-center py-12 text-muted-foreground">
-              <p>Loading clusters...</p>
+              <p className="text-sm">Loading clusters...</p>
             </div>
           ) : displayClusters.length > 0 ? (
-            <CardGrid view="grid">
+            <div className="space-y-3">
               {displayClusters.map((cluster) => (
                 <ItemCard
                   key={cluster.id}
@@ -131,10 +131,10 @@ export function MindStormPanel() {
                   variant="grid"
                 />
               ))}
-            </CardGrid>
+            </div>
           ) : (
             <div className="text-center py-12 text-muted-foreground">
-              <p>No clusters yet. Add some notes to see them grouped automatically.</p>
+              <p className="text-sm">No clusters yet. Add some notes to see them grouped automatically.</p>
             </div>
           )}
         </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +23,18 @@ import { MobileNavSheet } from "./MobileNavSheet";
 import { isDemoMode } from "@/lib/onboarding";
 import { HelpCircle, Sun, Moon, Plus } from "lucide-react";
 import { HelpCenter } from "@/components/help/HelpCenter";
+import { brandColors } from "@/lib/brand";
 
+/**
+ * TopBar - Fintask-inspired header with prominent Klutr branding
+ * 
+ * Layout:
+ * - Left: Klutr logo (56px height) + wordmark + tagline
+ * - Center: Contextual controls (search, actions)
+ * - Right: User menu (avatar, theme toggle, help)
+ * 
+ * Height: 64px (matches Fintask)
+ */
 export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [demoMode, setDemoMode] = useState(false);
@@ -50,16 +62,46 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
     console.log("[v0] Sign out clicked");
   };
 
-  return (
-    <header className="border-b bg-gradient-to-r from-accent-mint/10 to-transparent sticky top-0 z-10 backdrop-blur-sm">
-      <div className="flex items-center gap-4 p-4">
-        <MobileNavSheet />
+  const isDark = resolvedTheme === "dark";
 
-        <div className="flex-1 max-w-md">
-          <Input placeholder="Search your stream..." className="w-full" />
+  return (
+    <header className="h-16 border-b bg-background sticky top-0 z-10">
+      <div className="flex items-center h-full px-6 gap-6">
+        {/* Mobile Menu */}
+        <div className="md:hidden">
+          <MobileNavSheet />
         </div>
 
-        <div className="flex items-center gap-2 ml-auto">
+        {/* Left: Brand Section - Logo + Wordmark + Tagline */}
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <Image
+              src={isDark ? "/logos/klutr-logo-dark-noslogan.svg" : "/logos/klutr-logo-light-noslogan.svg"}
+              alt="Klutr"
+              width={140}
+              height={56}
+              className="h-12 w-auto"
+              priority
+            />
+            <div className="hidden lg:flex flex-col">
+              <span className="text-lg font-semibold leading-none">Klutr</span>
+              <span className="text-xs text-muted-foreground leading-tight mt-0.5">
+                Organize your chaos. Keep the spark.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Center: Contextual Controls */}
+        <div className="flex-1 max-w-md hidden md:block">
+          <Input 
+            placeholder="Search your stream..." 
+            className="w-full" 
+          />
+        </div>
+
+        {/* Right: User Actions */}
+        <div className="flex items-center gap-2 ml-auto flex-shrink-0">
           {(demoMode || showDemoBadge) && (
             <Badge variant="secondary" className="hidden sm:flex">
               demo
@@ -74,10 +116,11 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
                     // Navigate to stream and focus input
                     window.location.href = "/app/stream";
                   }}
-                  className="bg-accent-coral text-white"
+                  className="bg-[var(--klutr-coral)] hover:bg-[var(--klutr-coral)]/90 text-white"
+                  style={{ backgroundColor: brandColors.coral }}
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Drop
+                  <span className="hidden sm:inline">Drop</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>

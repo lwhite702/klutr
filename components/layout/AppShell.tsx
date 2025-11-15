@@ -1,9 +1,6 @@
 "use client";
 
 import type React from "react";
-import Image from "next/image";
-import { useTheme } from "next-themes";
-import { motion } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarNav } from "./SidebarNav";
 import { TopBar } from "./TopBar";
@@ -13,44 +10,44 @@ interface AppShellProps {
   showDemoBadge?: boolean;
 }
 
+/**
+ * AppShell - Fintask-inspired 3-part layout structure
+ * 
+ * Structure:
+ * - Left sidebar: 240px fixed width (persistent navigation)
+ * - Main column: Flexible with max-width constraint (Stream/content)
+ * - Right panel area: Visual constraint for panels (handled by PanelContainer overlays)
+ * 
+ * Spacing matches Fintask proportions:
+ * - Sidebar: 240px
+ * - Header: 64px height
+ * - Content padding: 24px
+ * - Card spacing: 16px vertical gap
+ */
 export function AppShell({
   children,
   showDemoBadge = false,
 }: AppShellProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Desktop Sidebar - Horizon UI dashboard layout */}
-      <aside className="hidden md:flex w-64 border-r bg-background flex-col rounded-r-2xl">
-        <div className="p-4 border-b">
-          <div className="flex items-center">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="lightbulb-glow"
-            >
-              <Image
-                src={isDark ? "/logos/klutr-logo-dark-noslogan.svg" : "/logos/klutr-logo-light-noslogan.svg"}
-                alt="Klutr"
-                width={120}
-                height={40}
-                className="h-8 md:h-10 lg:h-12 w-auto"
-                priority
-              />
-            </motion.div>
-          </div>
-        </div>
+    <div className="flex h-screen overflow-hidden bg-background">
+      {/* Left Sidebar - 240px fixed width (matches Fintask) */}
+      <aside className="hidden md:flex w-[240px] border-r bg-background flex-col">
         <SidebarNav />
       </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        {/* Top Bar - 64px height (matches Fintask) */}
         <TopBar showDemoBadge={showDemoBadge} />
+        
+        {/* Scrollable Content Area */}
         <ScrollArea className="flex-1">
-          <main className="p-6 md:p-8">{children}</main>
+          <main className="p-6">{children}</main>
         </ScrollArea>
       </div>
+      
+      {/* Right Panel Area - Visual constraint for panels
+          Panels are rendered as overlays via PanelContainer in individual pages */}
     </div>
   );
 }

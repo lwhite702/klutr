@@ -17,12 +17,7 @@ import {
 import posthog from 'posthog-js';
 import { brandColors } from "@/lib/brand";
 import { usePanelState, type PanelType } from "@/lib/hooks/usePanelState";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 // Panel items (open as overlays in stream)
 const panelItems = [
@@ -51,7 +46,7 @@ const panelItems = [
     id: 'search' as PanelType,
     label: "Search",
     icon: Search,
-    color: "text-muted-foreground",
+    color: brandColors.mint,
     shortcut: "K",
   },
 ];
@@ -80,106 +75,133 @@ const pageItems = [
     href: "/app/nope",
     label: "Nope Bin",
     icon: Trash,
-    color: "text-muted-foreground",
+    color: brandColors.mint,
   },
   {
     href: "/app/settings",
     label: "Settings",
     icon: Settings,
-    color: "text-muted-foreground",
+    color: "muted",
   },
 ];
 
-// Helper function to get icon styles based on color prop
-function getIconStyles(color: string) {
-  if (typeof color === 'string' && color.startsWith('text-')) {
-    return { className: color, style: undefined };
-  }
-  if (typeof color === 'string' && !color.startsWith('text-')) {
-    return { className: '', style: { color } };
-  }
-  return { className: '', style: undefined };
-}
-
+/**
+ * SidebarNav - Fintask-inspired navigation with keyboard shortcut hints
+ * 
+ * Visual Design:
+ * - Compact icons (20px)
+ * - Clear selected state with background color and left border indicator
+ * - Subtle background on active item
+ * - Keyboard shortcut hints visible (right-aligned, low-contrast)
+ * - Font sizes: 14px labels, 11px shortcuts
+ */
 export function SidebarNav() {
   const pathname = usePathname();
   const { activePanel, openPanel } = usePanelState();
 
+  // Helper function to get icon styles based on color prop
+  function getIconStyles(color: string | typeof brandColors.coral) {
+    if (color === "muted") {
+      return { className: "text-muted-foreground", style: undefined };
+    }
+    if (typeof color === 'string' && color.startsWith('text-')) {
+      return { className: color, style: undefined };
+    }
+    if (typeof color === 'string' && !color.startsWith('text-')) {
+      return { className: '', style: { color } };
+    }
+    return { className: '', style: undefined };
+  }
+
   return (
-    <TooltipProvider>
-      <nav className="flex flex-col gap-1 p-4">
-        {/* Page Links */}
-        {pageItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href;
+    <nav className="flex flex-col gap-0.5 p-3">
+      {/* Page Links */}
+      {pageItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = pathname === item.href;
 
-          return (
-            <Button
-              key={item.href}
-              variant="ghost"
-              className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
-              asChild
+        return (
+          <Button
+            key={item.href}
+            variant="ghost"
+            className={cn(
+              "justify-start gap-3 h-10 px-3 rounded-md text-sm font-medium",
+              "hover:bg-accent/50 transition-colors",
+              isActive && "bg-accent border-l-2 border-l-[var(--klutr-coral)]"
+            )}
+            style={isActive ? { borderLeftColor: brandColors.coral } : undefined}
+            asChild
+          >
+            <Link 
+              href={item.href} 
+              onClick={() => {
+                posthog.capture('sidebar_navigation_link_clicked', {
+                  target_href: item.href,
+                  target_label: item.label,
+                });
+              }}
+              aria-current={isActive ? "page" : undefined}
             >
-              <Link 
-                href={item.href} 
-                onClick={() => {
-                  posthog.capture('sidebar_navigation_link_clicked', {
-                    target_href: item.href,
-                    target_label: item.label,
-                  });
-                }}
-                aria-current={isActive ? "page" : undefined}
-              >
-                <Icon
-                  className={`h-4 w-4 ${getIconStyles(item.color).className}`}
-                  style={getIconStyles(item.color).style}
-                  aria-hidden="true"
-                />
-                {item.label}
-              </Link>
-            </Button>
-          );
-        })}
+              <Icon
+                className={cn(
+                  "h-5 w-5 flex-shrink-0",
+                  getIconStyles(item.color).className
+                )}
+                style={getIconStyles(item.color).style}
+                aria-hidden="true"
+              />
+              <span className="flex-1 text-left">{item.label}</span>
+            </Link>
+          </Button>
+        );
+      })}
 
-        {/* Divider */}
-        <div className="my-2 border-t" />
+      {/* Divider */}
+      <div className="my-2 border-t border-border" />
 
-        {/* Panel Triggers */}
-        {panelItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activePanel === item.id;
+      {/* Panel Triggers */}
+      {panelItems.map((item) => {
+        const Icon = item.icon;
+        const isActive = activePanel === item.id;
 
-          return (
-            <Tooltip key={item.id}>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className={`justify-start gap-3 ${isActive ? "bg-accent" : ""}`}
-                  onClick={() => {
-                    openPanel(item.id);
-                    posthog.capture('sidebar_panel_opened', {
-                      panel: item.id,
-                      label: item.label,
-                    });
-                  }}
-                  aria-label={`${item.label} panel (⌘${item.shortcut})`}
-                  aria-pressed={isActive}
-                >
-                  <Icon
-                    className={`h-4 w-4 ${getIconStyles(item.color).className}`}
-                    style={getIconStyles(item.color).style}
-                    aria-hidden="true"
-                  />
-                  {item.label}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p>{item.label} (⌘{item.shortcut})</p>
-              </TooltipContent>
-            </Tooltip>
-          );
-        })}
-      </nav>
-    </TooltipProvider>
+        return (
+          <Button
+            key={item.id}
+            variant="ghost"
+            className={cn(
+              "justify-between gap-3 h-10 px-3 rounded-md text-sm font-medium w-full",
+              "hover:bg-accent/50 transition-colors",
+              isActive && "bg-accent border-l-2"
+            )}
+            style={isActive ? { borderLeftColor: brandColors.coral } : undefined}
+            onClick={() => {
+              openPanel(item.id);
+              posthog.capture('sidebar_panel_opened', {
+                panel: item.id,
+                label: item.label,
+              });
+            }}
+            aria-label={`${item.label} panel (⌘${item.shortcut})`}
+            aria-pressed={isActive}
+          >
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <Icon
+                className={cn(
+                  "h-5 w-5 flex-shrink-0",
+                  getIconStyles(item.color).className
+                )}
+                style={getIconStyles(item.color).style}
+                aria-hidden="true"
+              />
+              <span className="flex-1 text-left truncate">{item.label}</span>
+            </div>
+            {/* Keyboard shortcut hint - subtle, low-contrast */}
+            <span className="text-[11px] text-muted-foreground/60 font-mono flex-shrink-0">
+              ⌘{item.shortcut}
+            </span>
+          </Button>
+        );
+      })}
+    </nav>
   );
 }

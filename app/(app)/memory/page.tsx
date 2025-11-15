@@ -120,7 +120,7 @@ export default function MemoryLanePage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-[1100px] mx-auto space-y-6">
         <PageHeader
           title="Memory Lane"
           description="What you were thinking across time."
@@ -134,6 +134,7 @@ export default function MemoryLanePage() {
                     posthog.capture('memory_tour_started', { trigger: 'manual_click' });
                     dialogTour.startTour();
                   }}
+                  className="rounded-lg"
                 >
                   Take tour
                 </Button>
@@ -143,6 +144,7 @@ export default function MemoryLanePage() {
                 size="sm"
                 onClick={handleGenerateWeeklySummary}
                 disabled={isGenerating}
+                className="rounded-lg"
               >
                 {isGenerating ? 'Generating...' : 'Generate This Week'}
               </Button>
@@ -197,7 +199,7 @@ export default function MemoryLanePage() {
             )}
           {isLoading ? (
             <div className="text-center py-12 text-muted-foreground">
-              <p>Loading summaries...</p>
+              <p className="text-sm">Loading summaries...</p>
             </div>
           ) : memoryItems.length > 0 ? (
             <TimelineGrid
@@ -225,7 +227,7 @@ export default function MemoryLanePage() {
             />
           ) : (
             <div className="text-center py-12 text-muted-foreground">
-              <p>No weekly summaries yet. Add some notes and generate your first summary.</p>
+              <p className="text-sm">No weekly summaries yet. Add some notes and generate your first summary.</p>
             </div>
           )}
         </div>

@@ -114,12 +114,12 @@ export default function BoardsPage() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-[1100px] mx-auto space-y-6">
         <PageHeader
           title="Boards"
           description="Auto-organized collections of related notes"
           actions={
-            <Button onClick={handleCreate}>
+            <Button onClick={handleCreate} className="rounded-lg">
               <Plus className="h-4 w-4 mr-2" />
               Create Board
             </Button>
@@ -128,12 +128,12 @@ export default function BoardsPage() {
         {isLoading ? (
           <div className="text-center py-16">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">Loading boards...</p>
+            <p className="text-sm text-muted-foreground">Loading boards...</p>
           </div>
         ) : error ? (
           <div className="text-center py-16">
             <p className="text-destructive text-lg mb-2">{error}</p>
-            <Button onClick={loadBoards} variant="outline">
+            <Button onClick={loadBoards} variant="outline" className="rounded-lg">
               Retry
             </Button>
           </div>
@@ -157,7 +157,7 @@ export default function BoardsPage() {
                 <p className="text-muted-foreground text-sm mb-4">
                   Boards are automatically created as you add notes to your stream
                 </p>
-                <Button onClick={handleCreate}>Create your first board</Button>
+                <Button onClick={handleCreate} className="rounded-lg">Create your first board</Button>
               </div>
             )}
           </>
