@@ -74,9 +74,9 @@ async function classifyMessageHandler(req: NextRequest, data: any) {
     const updatedThread = await prisma.conversationThread.update({
       where: { id: message.threadId },
       data: {
-        system_tags: classification.topics.length > 0 
+        systemTags: classification.topics.length > 0 
           ? classification.topics 
-          : message.thread.system_tags,
+          : message.thread.system_tags || message.thread.systemTags || [],
         // Update title if thread doesn't have one and we have a summary
         title: message.thread.title || classification.summary.slice(0, 50) || undefined,
       },

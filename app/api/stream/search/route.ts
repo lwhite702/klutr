@@ -19,37 +19,11 @@ export async function GET(req: NextRequest) {
 
     const searchTerm = query.trim().toLowerCase();
 
-    // Search in content, fileName, and tags
-    const notes = await prisma.note.findMany({
+    // Fetch notes and filter client-side (Supabase adapter doesn't support Prisma-style contains)
+    const allNotes = await prisma.note.findMany({
       where: {
         userId: user.id,
         archived: false,
-        OR: [
-          {
-            content: {
-              contains: searchTerm,
-              mode: "insensitive",
-            },
-          },
-          {
-            fileName: {
-              contains: searchTerm,
-              mode: "insensitive",
-            },
-          },
-          {
-            tags: {
-              some: {
-                tag: {
-                  name: {
-                    contains: searchTerm,
-                    mode: "insensitive",
-                  },
-                },
-              },
-            },
-          },
-        ],
       },
       include: {
         tags: {
@@ -61,8 +35,20 @@ export async function GET(req: NextRequest) {
       orderBy: {
         createdAt: "desc",
       },
-      take: 100,
+      take: 200, // Get more to filter
     });
+
+    // Filter by content, fileName, or tag names containing search term (case-insensitive)
+    const notes = allNotes.filter((note: any) => {
+      const matchesContent = note.content?.toLowerCase().includes(searchTerm);
+      const matchesFileName = note.fileName?.toLowerCase().includes(searchTerm) || 
+                              note.file_name?.toLowerCase().includes(searchTerm);
+      const matchesTags = note.tags?.some((nt: any) => 
+        nt.tag?.name?.toLowerCase().includes(searchTerm) || 
+        nt.tags?.name?.toLowerCase().includes(searchTerm)
+      );
+      return matchesContent || matchesFileName || matchesTags;
+    }).slice(0, 100);
 
     return NextResponse.json(notes.map(toNoteDTO));
   } catch (error) {

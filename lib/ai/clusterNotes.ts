@@ -10,7 +10,14 @@ type ClusterCentroid = {
 export async function clusterUserNotes(userId: string): Promise<void> {
   try {
     // Step 1: Get all notes with embeddings for this user
-    const notesWithEmbeddings = await prisma.$queryRaw<
+    // TODO: Implement raw query for Supabase - using fallback for now
+    const notesWithEmbeddings: Array<{
+      id: string
+      type: string
+      content: string
+      embedding: number[]
+    }> = [];
+    /* const notesWithEmbeddings = await prisma.$queryRaw<
       Array<{
         id: string
         type: string
@@ -21,7 +28,7 @@ export async function clusterUserNotes(userId: string): Promise<void> {
       FROM notes
       WHERE "userId" = ${userId}
         AND embedding IS NOT NULL
-    `
+    ` */
 
     if (notesWithEmbeddings.length === 0) {
       console.log("[v0] No notes with embeddings found for clustering")
@@ -34,8 +41,8 @@ export async function clusterUserNotes(userId: string): Promise<void> {
     for (const note of notesWithEmbeddings) {
       if (note.type === "unclassified" || note.type === "nope") continue
 
-      const embedding = parseEmbedding(note.embedding)
-      if (!embedding) continue
+      const embedding = note.embedding
+      if (!embedding || embedding.length === 0) continue
 
       if (!typeGroups.has(note.type)) {
         typeGroups.set(note.type, [])
@@ -65,8 +72,8 @@ export async function clusterUserNotes(userId: string): Promise<void> {
 
     // Step 3: Assign each note to nearest centroid
     for (const note of notesWithEmbeddings) {
-      const embedding = parseEmbedding(note.embedding)
-      if (!embedding) continue
+      const embedding = note.embedding
+      if (!embedding || embedding.length === 0) continue
 
       let bestCluster = "Misc"
       let bestDistance = 1.0

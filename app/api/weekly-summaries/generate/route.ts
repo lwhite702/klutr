@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 
     // Aggregate weekly data
     const allTags = weeklyNotes.flatMap(note => 
-      note.tags.map(nt => nt.tag.name)
+      note.tags?.map((nt: any) => nt.tag?.name || nt.name || nt).filter(Boolean) || []
     );
     const tagCounts = allTags.reduce((acc, tag) => {
       acc[tag] = (acc[tag] || 0) + 1;
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     }, {} as Record<string, number>);
 
     const topTags = Object.entries(tagCounts)
-      .sort(([, a], [, b]) => b - a)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
       .slice(0, 5)
       .map(([tag]) => tag);
 
@@ -94,14 +94,13 @@ Create a concise, engaging summary (3-4 sentences) that:
     const summary = result.text.trim();
 
     // Store summary in database
-    const weeklySummary = await prisma.weeklySummary.create({
+    const weeklySummary = await prisma.weeklyInsight.create({
       data: {
         userId: user.id,
-        startDate: oneWeekAgo,
-        endDate: new Date(),
+        weekStart: oneWeekAgo,
         summary,
+        sentiment: "positive", // Default sentiment
         noteCount: weeklyNotes.length,
-        topTags,
       },
     });
 
@@ -109,12 +108,12 @@ Create a concise, engaging summary (3-4 sentences) that:
       summary: {
         id: weeklySummary.id,
         summary: weeklySummary.summary,
-        startDate: weeklySummary.startDate,
-        endDate: weeklySummary.endDate,
+        startDate: weeklySummary.weekStart,
+        endDate: new Date(),
         noteCount: weeklySummary.noteCount,
-        topTags: weeklySummary.topTags,
+        topTags,
       },
-      cost: result.cost,
+      cost: result.usage,
     });
   } catch (error) {
     console.error("[API] Generate weekly summary error:", error);

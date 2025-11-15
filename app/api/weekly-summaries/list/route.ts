@@ -20,12 +20,12 @@ export async function GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    const summaries = await prisma.weeklySummary.findMany({
+    const summaries = await prisma.weeklyInsight.findMany({
       where: {
         userId: user.id,
       },
       orderBy: {
-        endDate: 'desc',
+        weekStart: 'desc',
       },
       take: limit,
     });

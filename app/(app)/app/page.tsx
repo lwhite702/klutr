@@ -28,6 +28,9 @@ interface Note {
   tags: Array<{ label: string }>;
   createdAt: Date;
   archived: boolean;
+  title?: string;
+  description?: string;
+  pinned?: boolean;
 }
 
 export default function AllNotesPage() {
@@ -76,14 +79,28 @@ export default function AllNotesPage() {
       setIsLoading(true);
       const response = await apiGet<NoteDTO[]>('/api/notes/list?limit=100');
       
-      const notesData: Note[] = response.map(note => ({
-        id: note.id,
-        content: note.content,
-        type: note.type,
-        tags: note.tags.map(t => ({ label: t })),
-        createdAt: new Date(note.createdAt),
-        archived: note.archived,
-      }));
+      const notesData: Note[] = response.map(note => {
+        // Extract title from content (first line or first 50 chars)
+        const contentLines = note.content.split('\n');
+        const title = contentLines[0] || note.content.substring(0, 50);
+        const description = contentLines.length > 1 
+          ? contentLines.slice(1).join('\n').substring(0, 200)
+          : note.content.length > 50 
+            ? note.content.substring(50, 250)
+            : undefined;
+        
+        return {
+          id: note.id,
+          content: note.content,
+          type: note.type,
+          tags: note.tags.map(t => ({ label: t })),
+          createdAt: new Date(note.createdAt),
+          archived: note.archived,
+          title,
+          description,
+          pinned: false, // TODO: Add pinning support
+        };
+      });
       
       setNotes(notesData);
     } catch (error) {
@@ -103,6 +120,14 @@ export default function AllNotesPage() {
         type: 'misc',
       });
       
+      const contentLines = response.content.split('\n');
+      const title = contentLines[0] || response.content.substring(0, 50);
+      const description = contentLines.length > 1 
+        ? contentLines.slice(1).join('\n').substring(0, 200)
+        : response.content.length > 50 
+          ? response.content.substring(50, 250)
+          : undefined;
+      
       const newNote: Note = {
         id: response.id,
         content: response.content,
@@ -110,6 +135,9 @@ export default function AllNotesPage() {
         tags: response.tags.map(t => ({ label: t })),
         createdAt: new Date(response.createdAt),
         archived: response.archived,
+        title,
+        description,
+        pinned: false,
       };
       
       setNotes([newNote, ...notes]);
@@ -141,8 +169,7 @@ export default function AllNotesPage() {
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (note) =>
-          note.title.toLowerCase().includes(query) ||
-          note.description?.toLowerCase().includes(query) ||
+          note.content.toLowerCase().includes(query) ||
           note.tags?.some((tag) => tag.label.toLowerCase().includes(query))
       );
     }
@@ -160,7 +187,7 @@ export default function AllNotesPage() {
       let comparison = 0;
       switch (sortBy) {
         case "title":
-          comparison = a.title.localeCompare(b.title);
+          comparison = (a.title || a.content).localeCompare(b.title || b.content);
           break;
         case "tags":
           comparison = (a.tags?.length || 0) - (b.tags?.length || 0);
@@ -331,10 +358,10 @@ export default function AllNotesPage() {
         {filteredAndSortedNotes.map((note) => (
           <ItemCard
             key={note.id}
-            title={note.title}
+            title={note.title || note.content.substring(0, 50)}
             description={note.description}
             tags={note.tags}
-            pinned={note.pinned}
+            pinned={note.pinned || false}
             onClick={() => handleNoteClick(note.id)}
             onFavorite={() => handleNoteFavorite(note.id)}
             variant={view}

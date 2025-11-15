@@ -29,6 +29,7 @@ interface NopeNote {
   title: string;
   description: string;
   tags: Array<{ label: string; colorClassName?: string }>;
+  pinned?: boolean;
 }
 
 export default function NopeBinPage() {
@@ -170,7 +171,7 @@ export default function NopeBinPage() {
               title={note.title}
               description={note.description}
               tags={note.tags}
-              pinned={note.pinned}
+              pinned={note.pinned || false}
               onClick={() => handleNoteClick(note.id)}
               onFavorite={() => handleNoteFavorite(note.id)}
               actionsRight={

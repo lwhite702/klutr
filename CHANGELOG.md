@@ -2,6 +2,28 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-15 03:06 ET
+
+- [build] Fixed TypeScript build errors for Vercel deployment
+- [fix] Updated Note interface in app/(app)/app/page.tsx to include optional title, description, and pinned properties
+- [fix] Fixed NopeNote interface to include optional pinned property
+- [fix] Updated insights/generate route to use result.usage instead of result.cost
+- [fix] Fixed system_tags to systemTags in messages routes (create, classify)
+- [fix] Updated notes/clusters route to use createdAt for orderBy instead of clusterConfidence
+- [fix] Updated notes/search route to use Supabase adapter with client-side filtering
+- [fix] Added delete method to note model in Supabase adapter
+- [fix] Added dropType, fileUrl, fileName, fileType fields to note.create in Supabase adapter
+- [fix] Added skip parameter support to note.findMany in Supabase adapter
+- [fix] Added count method to note model in Supabase adapter
+- [fix] Updated stream/search route to use client-side filtering instead of Prisma contains
+- [fix] Fixed weekly-summaries routes to use weeklyInsight model instead of weeklySummary
+- [fix] Updated weekly-summaries to use weekStart instead of startDate/endDate
+- [fix] Commented out $queryRaw usage in analyzeTimeline.ts (raw SQL not yet supported)
+- [fix] Commented out $queryRaw usage in clusterNotes.ts (raw SQL not yet supported)
+- [fix] Updated embedNote.ts to use generateAIEmbedding with object parameter
+- [fix] Wrapped useSearchParams in Suspense boundary in reset-password/confirm page
+- [build] Build now succeeds and is ready for Vercel deployment
+
 ## 2025-11-14 21:17 ET
 
 - [migration] **Complete Supabase migration** - Removed Prisma entirely, migrated all models to Supabase
@@ -51,7 +73,7 @@ All notable changes to Klutr will be documented in this file.
 - [seo] Added generateMetadata to feature pages with OpenGraph and Twitter card support
 - [docs] Updated CHANGELOG with production polish work
 
-## 2025-01-XX XX:XX ET
+## 2025-11-14 18:00 ET
 
 - [security] Added Cloudflare Turnstile CAPTCHA to signup page to prevent bot signups
 - [ui] Integrated @marsidev/react-turnstile component in signup form

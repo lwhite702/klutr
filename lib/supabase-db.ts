@@ -18,6 +18,10 @@ export const db = {
         content: string;
         type?: string;
         archived?: boolean;
+        dropType?: string | null;
+        fileUrl?: string | null;
+        fileName?: string | null;
+        fileType?: string | null;
       };
       include?: {
         tags?: {
@@ -35,6 +39,10 @@ export const db = {
           content: data.content,
           type: data.type || "unclassified",
           archived: data.archived || false,
+          drop_type: data.dropType || null,
+          file_url: data.fileUrl || null,
+          file_name: data.fileName || null,
+          file_type: data.fileType || null,
         })
         .select()
         .single();
@@ -97,6 +105,7 @@ export const db = {
         createdAt?: "asc" | "desc";
       };
       take?: number;
+      skip?: number;
     }) {
       // Handle select option
       let selectFields = "*";
@@ -171,7 +180,9 @@ export const db = {
         });
       }
 
-      if (options.take) {
+      if (options.skip !== undefined && options.take) {
+        query = query.range(options.skip, options.skip + options.take - 1);
+      } else if (options.take) {
         query = query.limit(options.take);
       }
 
@@ -367,6 +378,31 @@ export const db = {
         clusterUpdatedAt: updatedNote.cluster_updated_at,
         tags,
       };
+    },
+
+    async delete(options: { where: { id: string } }) {
+      const { error } = await supabaseAdmin
+        .from("notes")
+        .delete()
+        .eq("id", options.where.id);
+
+      if (error) throw error;
+      return { id: options.where.id };
+    },
+
+    async count(options?: { where?: { userId?: string; archived?: boolean } }) {
+      let query = supabaseAdmin.from("notes").select("*", { count: "exact", head: true });
+      
+      if (options?.where?.userId) {
+        query = query.eq("user_id", options.where.userId);
+      }
+      if (options?.where?.archived !== undefined) {
+        query = query.eq("archived", options.where.archived);
+      }
+
+      const { count, error } = await query;
+      if (error) throw error;
+      return count || 0;
     },
 
     async groupBy(options: {

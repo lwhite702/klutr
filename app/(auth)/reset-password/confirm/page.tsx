@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 import { motion } from 'framer-motion'
 import { Lock, ArrowRight, Sparkles, CheckCircle2 } from 'lucide-react'
 
-export default function ConfirmResetPasswordPage() {
+function ConfirmResetPasswordPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [password, setPassword] = useState('')
@@ -273,6 +273,18 @@ export default function ConfirmResetPasswordPage() {
         </motion.div>
       </div>
     </div>
+  )
+}
+
+export default function ConfirmResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">Loading...</div>
+      </div>
+    }>
+      <ConfirmResetPasswordPageContent />
+    </Suspense>
   )
 }
 
