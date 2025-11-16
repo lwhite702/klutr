@@ -280,28 +280,16 @@ In Vercel project settings:
 - **Output Directory:** `.next`
 - **Node Version:** 18.x or 20.x
 
-### 4.5 Configure Cron Jobs
+### 4.5 Cron Jobs (Handled by Supabase)
 
-Create `vercel.json` in project root (already exists, verify):
+**Note:** All cron jobs are handled by Supabase Edge Functions with pg_cron scheduling. No Vercel cron configuration is needed.
 
-```json
-{
-  "crons": [
-    {
-      "path": "/api/cron/nightly-cluster",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/nightly-stacks",
-      "schedule": "0 3 * * *"
-    },
-    {
-      "path": "/api/cron/weekly-insights",
-      "schedule": "0 9 * * 1"
-    }
-  ]
-}
-```
+Cron jobs are configured via Supabase:
+- **Edge Functions**: Located in `/supabase/functions/` (nightly-cluster, nightly-stacks, weekly-insights)
+- **Scheduling**: Configured via pg_cron extension in Supabase (see `supabase/migrations/005_cron_jobs.sql`)
+- **Documentation**: See `docs/cron.md` for complete details
+
+The API routes under `/app/api/cron/` remain available for manual testing/debugging but are not scheduled by Vercel.
 
 ### 4.6 Deploy
 

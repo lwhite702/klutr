@@ -2,6 +2,13 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-16 00:18 ET
+
+- [infra] Removed Vercel cron job configuration from vercel.json to fix deployment error (plan limit: 2 cron jobs, attempted: 3)
+- [infra] All cron jobs now handled by Supabase Edge Functions with pg_cron scheduling (nightly-cluster, nightly-stacks, weekly-insights)
+- [docs] Updated VERCEL_SETUP.md and infra/README.md to reflect Supabase cron job handling
+- [docs] API routes under /app/api/cron/ remain available for manual testing/debugging but are not scheduled by Vercel
+
 ## 2025-11-15 15:30 ET
 
 - [ui] Refined authenticated app shell using Fintask-inspired layout while preserving stream-first architecture

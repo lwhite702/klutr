@@ -72,30 +72,16 @@ Verify all are set:
 vercel env ls
 ```
 
-## Step 4: Configure Vercel Cron Jobs
+## Step 4: Cron Jobs (Handled by Supabase)
 
-If using Vercel Cron, update `vercel.json` with cron job definitions:
+**Note:** All cron jobs are handled by Supabase Edge Functions with pg_cron scheduling. No Vercel cron configuration is needed.
 
-```json
-{
-  "crons": [
-    {
-      "path": "/api/cron/nightly-cluster",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/nightly-stacks",
-      "schedule": "0 3 * * *"
-    },
-    {
-      "path": "/api/cron/weekly-insights",
-      "schedule": "0 4 * * 1"
-    }
-  ]
-}
-```
+Cron jobs are configured via Supabase:
+- **Edge Functions**: Located in `/supabase/functions/` (nightly-cluster, nightly-stacks, weekly-insights)
+- **Scheduling**: Configured via pg_cron extension in Supabase (see `supabase/migrations/005_cron_jobs.sql`)
+- **Documentation**: See `docs/cron.md` for complete details
 
-Each cron job must include the `Authorization: Bearer ${CRON_SECRET}` header.
+The API routes under `/app/api/cron/` remain available for manual testing/debugging but are not scheduled by Vercel.
 
 ## Step 5: Test Local Production Build
 
@@ -151,15 +137,19 @@ Should return:
 }
 ```
 
-### Cron Endpoints
+### Cron Endpoints (Manual Testing Only)
 
-Test cron endpoints (replace `YOUR_CRON_SECRET`):
+The cron API routes are available for manual testing but are not scheduled by Vercel. All automated scheduling is handled by Supabase Edge Functions.
+
+To manually test a cron endpoint (replace `YOUR_CRON_SECRET`):
 ```bash
 curl -H "Authorization: Bearer YOUR_CRON_SECRET" \
   https://your-project.vercel.app/api/cron/nightly-cluster
 ```
 
 Should return `{ error: "Unauthorized" }` if secret is wrong, or job results if correct.
+
+**Note:** For production cron jobs, use Supabase Edge Functions. See `docs/cron.md` for details.
 
 ## Step 8: Monitor Builds
 
@@ -197,9 +187,9 @@ vercel env add VARIABLE_NAME production
 ### Cron Jobs Return 401 Unauthorized
 
 **Solution:** 
-1. Verify `CRON_SECRET` is set in Vercel environment variables
+1. Verify `CRON_SECRET` is set in Vercel environment variables (for manual testing only)
 2. Check that cron requests include the header: `Authorization: Bearer ${CRON_SECRET}`
-3. For Vercel Cron, ensure the secret is available to cron functions
+3. **Note:** Production cron jobs are handled by Supabase Edge Functions, not Vercel. See `docs/cron.md` for Supabase cron configuration.
 
 ### Database Connection Fails
 
@@ -215,7 +205,7 @@ vercel env add VARIABLE_NAME production
 
 - [ ] Set up custom domain (if needed)
 - [ ] Configure Vercel Analytics (if desired)
-- [ ] Set up Vercel Cron jobs (if not using external cron service)
+- [ ] Verify Supabase cron jobs are configured (see `docs/cron.md`)
 - [ ] Configure preview deployments for pull requests
 - [ ] Set up monitoring and alerts
 
@@ -223,6 +213,6 @@ vercel env add VARIABLE_NAME production
 
 - **Vercel CLI Docs**: https://vercel.com/docs/cli
 - **Environment Variables**: https://vercel.com/docs/projects/environment-variables
-- **Cron Jobs**: https://vercel.com/docs/cron-jobs
+- **Cron Jobs**: See `docs/cron.md` (handled by Supabase Edge Functions)
 - **Doppler Integration**: See `DOPPLER.md`
 
