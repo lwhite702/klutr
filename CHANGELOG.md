@@ -2,6 +2,19 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-01-27 14:30 ET
+
+- [marketing] Updated home page with ND-focused messaging and hero content
+- [marketing] Added "Klutr for Neurodivergent Minds" section to home page
+- [marketing] Updated "How It Works" section with 4-step process (Dump, We sort, Nope the noise, Rediscover gems)
+- [marketing] Rebuilt features page with two-column Fintask modules
+- [marketing] Added neurodivergent resource hub page at /neurodivergent
+- [marketing] Added Compare Us page at /compare with feature comparison table
+- [marketing] Updated navigation to include "For Neurodivergent Minds" and "Compare Us" links
+- [ui] Created FeatureModule component for two-column feature layouts
+- [basehub] Updated home page hero content (primaryCTA: "Start dumping", heroSubtext: "Dump everything—Klutr handles the sorting.")
+- [basehub] Committed all marketing content updates to Basehub
+
 ## 2025-11-16 22:45 ET
 
 - [fix] Removed .DS_Store files from git tracking and added macOS system file patterns to .gitignore

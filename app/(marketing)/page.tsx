@@ -144,6 +144,46 @@ export default async function MarketingHomePage() {
 
         <FeatureGrid features={features} />
 
+        {/* Klutr for Neurodivergent Minds Section */}
+        <section className="container mx-auto px-6 py-20">
+          <AnimatedSection className="space-y-12">
+            <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+                Klutr for Neurodivergent Minds
+              </h2>
+              <p className="text-xl text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                Designed for chaotic brains. Loved by everyone.
+              </p>
+            </AnimatedItem>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {[
+                "Low-friction capture",
+                "Automatic sorting (executive-function support)",
+                "No \"perfect system\" pressure",
+                "Gentle resurfacing (memory-friendly)",
+                "Nope as cognitive relief",
+                "Visual clustering for pattern recognition",
+                "Local-first privacy",
+                "Voice → structure",
+                "Screenshots → searchable",
+                "Predictable home base (Fintask-style layout)",
+                "Encouraging microcopy",
+                "Daily wins / micro-momentum",
+              ].map((feature, index) => (
+                <AnimatedItem key={index}>
+                  <Card className="h-full border-[var(--klutr-outline)]/20 hover:border-[var(--klutr-coral)]/50 transition-colors">
+                    <CardContent className="p-6">
+                      <p className="text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
+                        {feature}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedItem>
+              ))}
+            </div>
+          </AnimatedSection>
+        </section>
+
         {/* How It Works Section - Use BaseHub howItWorksBlock if available */}
         {homeContent.howItWorksBlock ? (
           <section className="container mx-auto px-6 py-20">
@@ -194,21 +234,21 @@ export default async function MarketingHomePage() {
                   </h2>
                 </div>
                 <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                  Drop, tag, board, discover—effortlessly
+                  Simple steps to organize your chaos
                 </p>
               </AnimatedItem>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <AnimatedItem>
                   <Card className="h-full border-[var(--klutr-outline)]/20">
                     <CardHeader>
                       <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
                         <Zap className="w-6 h-6 text-[var(--klutr-coral)]" />
                       </div>
-                      <CardTitle className="text-2xl">Drop</CardTitle>
+                      <CardTitle className="text-2xl">1. Dump</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                        Add notes, files, or voice recordings to your Stream. Chat-style interface, zero friction.
+                        Drop everything into your Stream. Text, voice, images—no formatting needed.
                       </p>
                     </CardContent>
                   </Card>
@@ -219,11 +259,11 @@ export default async function MarketingHomePage() {
                       <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
                         <Layers className="w-6 h-6 text-[var(--klutr-mint)]" />
                       </div>
-                      <CardTitle className="text-2xl">Organize</CardTitle>
+                      <CardTitle className="text-2xl">2. We sort</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                        AI automatically tags your drops and groups them into Boards. No manual filing required.
+                        Automatic tagging and clustering. No organizational energy required from you.
                       </p>
                     </CardContent>
                   </Card>
@@ -234,11 +274,26 @@ export default async function MarketingHomePage() {
                       <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
                         <Search className="w-6 h-6 text-[var(--klutr-coral)]" />
                       </div>
-                      <CardTitle className="text-2xl">Discover</CardTitle>
+                      <CardTitle className="text-2xl">3. Nope the noise</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                        Muse provides weekly insights. Search finds connections. Turn chaos into clarity.
+                        Quick rejection without guilt. Swipe away what doesn't serve you.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </AnimatedItem>
+                <AnimatedItem>
+                  <Card className="h-full border-[var(--klutr-outline)]/20">
+                    <CardHeader>
+                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
+                        <Sparkles className="w-6 h-6 text-[var(--klutr-mint)]" />
+                      </div>
+                      <CardTitle className="text-2xl">4. Rediscover gems</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+                        Gentle resurfacing brings back forgotten ideas when you need them.
                       </p>
                     </CardContent>
                   </Card>

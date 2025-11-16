@@ -4,7 +4,7 @@ import { getPageMetadata } from "@/lib/queries/metadata";
 import type { Metadata } from "next";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
-import FeatureGrid from "@/components/marketing/FeatureGrid";
+import FeatureModule from "@/components/marketing/FeatureModule";
 import {
   AnimatedSection,
   AnimatedFadeIn,
@@ -60,25 +60,49 @@ export default async function FeaturesPage() {
             </p>
           </AnimatedFadeIn>
 
-          {/* Use BaseHub featureGridBlock if available, otherwise fallback to existing getFeatures() */}
-          {featuresContent.featureGridBlock && featuresContent.featureGridBlock.features.length > 0 ? (
-            <FeatureGrid features={featuresContent.featureGridBlock.features.map((f, idx) => ({
-              _id: `feature-${idx}`,
-              _title: f.title || "",
-              name: f.title || "",
-              slug: f.title?.toLowerCase().replace(/\s+/g, '-') || `feature-${idx}`,
-              tagline: f.description || "",
-              description: f.description || null,
-              illustrationUrl: f.icon ? {
-                url: f.icon.url,
-                fileName: f.icon.fileName,
-                altText: f.icon.altText,
-              } : null,
-              seoKeywords: null,
-            }))} />
-          ) : (
-            <FeatureGrid features={features} />
-          )}
+          {/* Two-column feature modules */}
+          <div className="space-y-0">
+            <FeatureModule
+              title="Stream"
+              description="One box for everything your brain throws at you."
+              reverse={false}
+            />
+            <FeatureModule
+              title="Multi-modal capture"
+              description="Brains don't format ideas. Neither do we."
+              reverse={true}
+            />
+            <FeatureModule
+              title="Automatic sorting"
+              description="Organization without organizational energy."
+              reverse={false}
+            />
+            <FeatureModule
+              title="MindStorm"
+              description="See your brain patterns in color."
+              reverse={true}
+            />
+            <FeatureModule
+              title="Insights"
+              description="Your ideas, rediscovered."
+              reverse={false}
+            />
+            <FeatureModule
+              title="Memory Lane"
+              description="Because your brain doesn't run on folders."
+              reverse={true}
+            />
+            <FeatureModule
+              title="Nope Bin"
+              description="Quick rejection without guilt."
+              reverse={false}
+            />
+            <FeatureModule
+              title="Vault"
+              description="Your encrypted zone for sensitive notes."
+              reverse={true}
+            />
+          </div>
         </AnimatedSection>
       </main>
 
