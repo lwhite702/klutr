@@ -55,13 +55,39 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    return NextResponse.json(toBoardDTO(board));
+    // For board detail, include notes in response
+    const boardDTO = toBoardDTO(board);
+    const notes =
+      board.boardNotes
+        ?.map((bn: any) => {
+          const note = bn.note;
+          if (!note) return null;
+          return {
+            id: note.id,
+            content: note.content,
+            type: note.type,
+            archived: note.archived || false,
+            createdAt:
+              note.createdAt?.toISOString() || new Date().toISOString(),
+            tags:
+              note.tags
+                ?.map((nt: any) => nt.tag?.name || nt.name || nt)
+                .filter(Boolean) || [],
+            dropType: note.dropType || note.drop_type || "text",
+            fileUrl: note.fileUrl || note.file_url || null,
+            fileName: note.fileName || note.file_name || null,
+            fileType: note.fileType || note.file_type || null,
+          };
+        })
+        .filter(Boolean) || [];
+
+    return NextResponse.json({
+      ...boardDTO,
+      notes, // Include notes for board detail page
+    });
   } catch (error) {
     console.error("[v0] Get board error:", error);
-    return NextResponse.json(
-      { error: "Failed to get board" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to get board" }, { status: 500 });
   }
 }
 
@@ -96,7 +122,8 @@ async function updateBoardHandler(
 
     const updateData: any = {};
     if (data.name !== undefined) updateData.name = data.name;
-    if (data.description !== undefined) updateData.description = data.description;
+    if (data.description !== undefined)
+      updateData.description = data.description;
     if (data.pinned !== undefined) updateData.pinned = data.pinned;
 
     const board = await prisma.board.update({
@@ -149,7 +176,7 @@ export async function PATCH(
     const { id } = await params;
     const body = await req.json();
     const data = { ...body, id };
-    
+
     // Validate request
     const validation = UpdateBoardSchema.safeParse(data);
     if (!validation.success) {
@@ -212,4 +239,3 @@ export async function DELETE(
     );
   }
 }
-

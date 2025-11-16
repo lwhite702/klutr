@@ -11,7 +11,10 @@ import {
   createSuccessResponse,
   RATE_LIMITS,
 } from "@/lib/validation/middleware";
-import { CreateMessageSchema, MessageDTOSchema } from "@/lib/validation/schemas";
+import {
+  CreateMessageSchema,
+  MessageDTOSchema,
+} from "@/lib/validation/schemas";
 
 async function createMessageHandler(req: NextRequest, data: any) {
   try {
@@ -30,7 +33,10 @@ async function createMessageHandler(req: NextRequest, data: any) {
       return createErrorResponse("Content is required for text messages", 400);
     }
     if ((type === "audio" || type === "image" || type === "file") && !fileUrl) {
-      return createErrorResponse("File URL is required for file-based messages", 400);
+      return createErrorResponse(
+        "File URL is required for file-based messages",
+        400
+      );
     }
     if (type === "link" && !url) {
       return createErrorResponse("URL is required for link messages", 400);
@@ -38,18 +44,51 @@ async function createMessageHandler(req: NextRequest, data: any) {
 
     // Determine or create thread
     let targetThreadId = threadId;
-    
+
     if (!targetThreadId) {
-      // TODO: Implement thread matching based on similarity
-      // For now, create a new thread
-      const newThread = await prisma.conversationThread.create({
-        data: {
-          userId: user.id,
-          title: type === "text" ? content?.slice(0, 50) : null,
-          systemTags: [],
-        },
-      });
-      targetThreadId = newThread.id;
+      // Try to find similar thread based on content similarity
+      const textToMatch = type === "text" ? content : null;
+      if (textToMatch && textToMatch.trim().length > 0) {
+        try {
+          const { findSimilarThread } = await import(
+            "@/lib/ai/findSimilarThread"
+          );
+          const similarThreadId = await findSimilarThread(user.id, textToMatch);
+          if (similarThreadId) {
+            // Verify thread belongs to user
+            const existingThread = await prisma.conversationThread.findFirst({
+              where: {
+                id: similarThreadId,
+                userId: user.id,
+              },
+            });
+            if (existingThread) {
+              targetThreadId = similarThreadId;
+              log.info("Matched message to existing thread", {
+                messageId: "pending",
+                threadId: similarThreadId,
+              });
+            }
+          }
+        } catch (matchError) {
+          log.error(
+            "Thread matching error (will create new thread):",
+            matchError
+          );
+        }
+      }
+
+      // If no similar thread found, create a new one
+      if (!targetThreadId) {
+        const newThread = await prisma.conversationThread.create({
+          data: {
+            userId: user.id,
+            title: type === "text" ? content?.slice(0, 50) : null,
+            systemTags: [],
+          },
+        });
+        targetThreadId = newThread.id;
+      }
     } else {
       // Verify thread belongs to user
       const thread = await prisma.conversationThread.findFirst({
@@ -58,7 +97,7 @@ async function createMessageHandler(req: NextRequest, data: any) {
           userId: user.id,
         },
       });
-      
+
       if (!thread) {
         return createErrorResponse("Thread not found", 404);
       }
@@ -87,13 +126,14 @@ async function createMessageHandler(req: NextRequest, data: any) {
         try {
           if (await featureEnabled("embeddings", user.id)) {
             // Only embed if we have text content
-            const textToEmbed = message.type === "audio" 
-              ? message.transcription 
-              : message.content;
-            
+            const textToEmbed =
+              message.type === "audio"
+                ? message.transcription
+                : message.content;
+
             if (textToEmbed && textToEmbed.trim().length > 0) {
               const embedding = await generateEmbedding(textToEmbed);
-              
+
               if (embedding.length > 0) {
                 // Store embedding using raw SQL (pgvector)
                 await (prisma as any).$executeRaw`
@@ -101,27 +141,33 @@ async function createMessageHandler(req: NextRequest, data: any) {
                   SET embedding = ${JSON.stringify(embedding)}::vector
                   WHERE id = ${message.id}
                 `;
-                log.info("Generated embedding for message", { messageId: message.id });
+                log.info("Generated embedding for message", {
+                  messageId: message.id,
+                });
               }
             }
           }
         } catch (err) {
-          log.error("Embedding generation error", { messageId: message.id, error: err });
+          log.error("Embedding generation error", {
+            messageId: message.id,
+            error: err,
+          });
         }
       })(),
-      
+
       // Classify message if enabled
       (async () => {
         try {
           if (await featureEnabled("classification", user.id)) {
             // Only classify if we have text content
-            const textToClassify = message.type === "audio" 
-              ? message.transcription 
-              : message.content;
-            
+            const textToClassify =
+              message.type === "audio"
+                ? message.transcription
+                : message.content;
+
             if (textToClassify && textToClassify.trim().length > 0) {
               const classification = await classifyMessage(textToClassify);
-              
+
               // Update message metadata
               await prisma.message.update({
                 where: { id: message.id },
@@ -133,28 +179,100 @@ async function createMessageHandler(req: NextRequest, data: any) {
                   },
                 },
               });
-              
+
               // Update thread with classification
               await prisma.conversationThread.update({
                 where: { id: targetThreadId },
                 data: {
-                  systemTags: classification.topics.length > 0 
-                    ? classification.topics 
-                    : undefined,
-                  title: message.thread.title || classification.summary.slice(0, 50) || undefined,
+                  systemTags:
+                    classification.topics.length > 0
+                      ? classification.topics
+                      : undefined,
+                  title:
+                    message.thread.title ||
+                    classification.summary.slice(0, 50) ||
+                    undefined,
                 },
               });
-              
-              log.info("Classified message", { messageId: message.id, topics: classification.topics });
+
+              log.info("Classified message", {
+                messageId: message.id,
+                topics: classification.topics,
+              });
             }
           }
         } catch (err) {
-          log.error("Classification error", { messageId: message.id, error: err });
+          log.error("Classification error", {
+            messageId: message.id,
+            error: err,
+          });
         }
       })(),
-      
-      // TODO: Implement audio transcription if type === "audio"
-      // TODO: Implement thread matching using pgvector similarity
+
+      // Transcribe audio if type === "audio"
+      (async () => {
+        try {
+          if (message.type === "audio" && message.fileUrl) {
+            const { transcribeAudio } = await import(
+              "@/lib/ai/transcribeAudio"
+            );
+            const transcription = await transcribeAudio(message.fileUrl);
+
+            // Update message with transcription
+            await prisma.message.update({
+              where: { id: message.id },
+              data: { transcription },
+            });
+
+            log.info("Transcribed audio message", { messageId: message.id });
+
+            // After transcription, generate embedding and classify if enabled
+            if (
+              (await featureEnabled("embeddings", user.id)) &&
+              transcription.trim().length > 0
+            ) {
+              const embedding = await generateEmbedding(transcription);
+              if (embedding.length > 0) {
+                await (prisma as any).$executeRaw`
+                  UPDATE messages
+                  SET embedding = ${JSON.stringify(embedding)}::vector
+                  WHERE id = ${message.id}
+                `;
+                log.info("Generated embedding from transcription", {
+                  messageId: message.id,
+                });
+              }
+            }
+
+            if (
+              (await featureEnabled("classification", user.id)) &&
+              transcription.trim().length > 0
+            ) {
+              const classification = await classifyMessage(transcription);
+              await prisma.message.update({
+                where: { id: message.id },
+                data: {
+                  metadata: {
+                    topics: classification.topics,
+                    summary: classification.summary,
+                    sentiment: classification.sentiment,
+                  },
+                },
+              });
+              log.info("Classified transcribed message", {
+                messageId: message.id,
+              });
+            }
+          }
+        } catch (err) {
+          log.error("Audio transcription error", {
+            messageId: message.id,
+            error: err,
+          });
+        }
+      })(),
+
+      // Thread matching is now handled before message creation (above)
     ]).catch((err) => log.error("Background processing error", err));
 
     // Return message with thread
@@ -173,7 +291,10 @@ async function createMessageHandler(req: NextRequest, data: any) {
       return createErrorResponse("Invalid response format", 500);
     }
 
-    log.info("Message created", { messageId: message.id, threadId: targetThreadId });
+    log.info("Message created", {
+      messageId: message.id,
+      threadId: targetThreadId,
+    });
     return createSuccessResponse(response);
   } catch (error) {
     log.error("Create message error", error);
@@ -186,4 +307,3 @@ export const POST = withValidationAndRateLimit(
   RATE_LIMITS.CREATE_NOTE, // Reuse note rate limit for now
   createMessageHandler
 );
-

@@ -5,16 +5,18 @@ import { Pin, PinOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 import { TagChips } from "@/components/stream/TagChips";
-import type { Board } from "@/lib/mockData";
+import type { BoardDTO } from "@/lib/dto";
 
 interface BoardCardProps {
-  board: Board;
+  board: BoardDTO;
   onPin?: (boardId: string) => void;
   onClick?: (boardId: string) => void;
 }
 
 export function BoardCard({ board, onPin, onClick }: BoardCardProps) {
-  const timeAgo = formatDistanceToNow(board.lastActivity, { addSuffix: true });
+  const timeAgo = formatDistanceToNow(new Date(board.updatedAt), {
+    addSuffix: true,
+  });
 
   return (
     <motion.div
@@ -28,9 +30,7 @@ export function BoardCard({ board, onPin, onClick }: BoardCardProps) {
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-lg">{board.name}</h3>
-            {board.pinned && (
-              <Pin className="h-4 w-4 text-muted-foreground" />
-            )}
+            {board.pinned && <Pin className="h-4 w-4 text-muted-foreground" />}
           </div>
           <p className="text-sm text-muted-foreground mb-2">
             {board.description}
@@ -54,7 +54,7 @@ export function BoardCard({ board, onPin, onClick }: BoardCardProps) {
         </Button>
       </div>
       <div className="flex items-center justify-between mt-3">
-        <TagChips tags={board.tags} />
+        <TagChips tags={board.tags.map((label) => ({ label }))} />
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
           <span>{board.noteCount} notes</span>
           <span>•</span>
@@ -64,4 +64,3 @@ export function BoardCard({ board, onPin, onClick }: BoardCardProps) {
     </motion.div>
   );
 }
-

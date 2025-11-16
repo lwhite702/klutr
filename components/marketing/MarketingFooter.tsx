@@ -9,33 +9,75 @@ import { Linkedin, Facebook, Twitter } from "lucide-react";
 function EmailSignup() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Integrate with email service
-    console.log("Email signup:", email);
-    setSubmitted(true);
-    setEmail("");
-    setTimeout(() => setSubmitted(false), 3000);
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/marketing/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to subscribe");
+      }
+
+      setSubmitted(true);
+      setEmail("");
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to subscribe. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-row items-start gap-0">
-      <Input
-        type="email"
-        placeholder="email address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-[234px] h-[62px] bg-[#FAFAFA] border-2 border-[rgba(0,0,0,0.04)] rounded-l-[12px] rounded-r-0 text-xl text-[rgba(0,0,0,0.48)] px-4"
-        required
-      />
-      <Button
-        type="submit"
-        className="h-[62px] bg-[#975BEC] border-2 border-[#7345B3] rounded-r-[12px] rounded-l-0 px-8 text-white font-bold text-lg hover:bg-[#8450CE]"
-      >
-        Subscribe
-      </Button>
-    </form>
+    <div className="space-y-2">
+      <form onSubmit={handleSubmit} className="flex flex-row items-start gap-0">
+        <Input
+          type="email"
+          placeholder="email address"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError(null);
+          }}
+          disabled={isLoading || submitted}
+          className="w-[234px] h-[62px] bg-[#FAFAFA] border-2 border-[rgba(0,0,0,0.04)] rounded-l-[12px] rounded-r-0 text-xl text-[rgba(0,0,0,0.48)] px-4 disabled:opacity-50"
+          required
+        />
+        <Button
+          type="submit"
+          disabled={isLoading || submitted}
+          className="h-[62px] bg-[#975BEC] border-2 border-[#7345B3] rounded-r-[12px] rounded-l-0 px-8 text-white font-bold text-lg hover:bg-[#8450CE] disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isLoading ? "..." : submitted ? "✓" : "Subscribe"}
+        </Button>
+      </form>
+      {submitted && (
+        <p className="text-sm text-green-600">
+          Thanks for subscribing! Check your email.
+        </p>
+      )}
+      {error && (
+        <p className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }
 

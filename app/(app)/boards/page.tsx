@@ -10,10 +10,9 @@ import { useRouter } from "next/navigation";
 import { apiGet, apiPost, apiPatch } from "@/lib/clientApi";
 import { toast } from "sonner";
 import type { BoardDTO } from "@/lib/dto";
-import type { Board } from "@/lib/mockData";
 
 export default function BoardsPage() {
-  const [boards, setBoards] = useState<Board[]>([]);
+  const [boards, setBoards] = useState<BoardDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -27,19 +26,7 @@ export default function BoardsPage() {
       setIsLoading(true);
       setError(null);
       const response = await apiGet<BoardDTO[]>("/api/boards/list");
-      
-      // Convert BoardDTO to Board format
-      const boardsData: Board[] = response.map((board) => ({
-        id: board.id,
-        name: board.name,
-        description: board.description || "",
-        tags: board.tags.map((label) => ({ label })),
-        noteCount: board.noteCount,
-        pinned: board.pinned,
-        lastActivity: new Date(board.updatedAt),
-      }));
-      
-      setBoards(boardsData);
+      setBoards(response);
     } catch (err) {
       console.error("[v0] Load boards error:", err);
       setError("Failed to load boards. Please try again.");
@@ -56,9 +43,7 @@ export default function BoardsPage() {
 
       // Optimistic update
       setBoards((prev) =>
-        prev.map((b) =>
-          b.id === boardId ? { ...b, pinned: !b.pinned } : b
-        )
+        prev.map((b) => (b.id === boardId ? { ...b, pinned: !b.pinned } : b))
       );
 
       // Update via API
@@ -88,17 +73,7 @@ export default function BoardsPage() {
         pinned: false,
       });
 
-      const newBoard: Board = {
-        id: response.id,
-        name: response.name,
-        description: response.description || "",
-        tags: response.tags.map((label) => ({ label })),
-        noteCount: response.noteCount,
-        pinned: response.pinned,
-        lastActivity: new Date(response.updatedAt),
-      };
-
-      setBoards((prev) => [...prev, newBoard]);
+      setBoards((prev) => [...prev, response]);
       toast.success("Board created");
     } catch (err) {
       console.error("[v0] Create board error:", err);
@@ -106,62 +81,64 @@ export default function BoardsPage() {
     }
   };
 
-  // Sort: pinned first, then by last activity
+  // Sort: pinned first, then by updated date
   const sortedBoards = [...boards].sort((a, b) => {
     if (a.pinned && !b.pinned) return -1;
     if (!a.pinned && b.pinned) return 1;
-    return b.lastActivity.getTime() - a.lastActivity.getTime();
+    return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
   });
 
   return (
     <div className="max-w-[1100px] mx-auto space-y-6">
-        <PageHeader
-          title="Boards"
-          description="Auto-organized collections of related notes"
-          actions={
-            <Button onClick={handleCreate} className="rounded-lg">
-              <Plus className="h-4 w-4 mr-2" />
-              Create Board
-            </Button>
-          }
-        />
-        {isLoading ? (
-          <div className="text-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">Loading boards...</p>
-          </div>
-        ) : error ? (
-          <div className="text-center py-16">
-            <p className="text-destructive text-lg mb-2">{error}</p>
-            <Button onClick={loadBoards} variant="outline" className="rounded-lg">
-              Retry
-            </Button>
-          </div>
-        ) : (
-          <>
-            <CardGrid>
-              {sortedBoards.map((board) => (
-                <BoardCard
-                  key={board.id}
-                  board={board}
-                  onPin={handlePin}
-                  onClick={handleClick}
-                />
-              ))}
-            </CardGrid>
-            {boards.length === 0 && (
-              <div className="text-center py-16">
-                <p className="text-muted-foreground text-lg mb-2">
-                  No boards yet
-                </p>
-                <p className="text-muted-foreground text-sm mb-4">
-                  Boards are automatically created as you add notes to your stream
-                </p>
-                <Button onClick={handleCreate} className="rounded-lg">Create your first board</Button>
-              </div>
-            )}
-          </>
-        )}
+      <PageHeader
+        title="Boards"
+        description="Auto-organized collections of related notes"
+        actions={
+          <Button onClick={handleCreate} className="rounded-lg">
+            <Plus className="h-4 w-4 mr-2" />
+            Create Board
+          </Button>
+        }
+      />
+      {isLoading ? (
+        <div className="text-center py-16">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">Loading boards...</p>
+        </div>
+      ) : error ? (
+        <div className="text-center py-16">
+          <p className="text-destructive text-lg mb-2">{error}</p>
+          <Button onClick={loadBoards} variant="outline" className="rounded-lg">
+            Retry
+          </Button>
+        </div>
+      ) : (
+        <>
+          <CardGrid>
+            {sortedBoards.map((board) => (
+              <BoardCard
+                key={board.id}
+                board={board}
+                onPin={handlePin}
+                onClick={handleClick}
+              />
+            ))}
+          </CardGrid>
+          {boards.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-muted-foreground text-lg mb-2">
+                No boards yet
+              </p>
+              <p className="text-muted-foreground text-sm mb-4">
+                Boards are automatically created as you add notes to your stream
+              </p>
+              <Button onClick={handleCreate} className="rounded-lg">
+                Create your first board
+              </Button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

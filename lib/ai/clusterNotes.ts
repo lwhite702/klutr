@@ -1,65 +1,89 @@
-import { prisma } from "../db"
+import { prisma } from "../db";
+import { supabaseAdmin } from "../supabase";
 
-const CLUSTER_THRESHOLD = 0.35
+const CLUSTER_THRESHOLD = 0.35;
 
 type ClusterCentroid = {
-  name: string
-  centroid: number[]
-}
+  name: string;
+  centroid: number[];
+};
 
 export async function clusterUserNotes(userId: string): Promise<void> {
   try {
     // Step 1: Get all notes with embeddings for this user
-    // TODO: Implement raw query for Supabase - using fallback for now
+    // Use Supabase directly to query notes with embeddings
+    const { data: notesData, error: notesError } = await supabaseAdmin
+      .from("notes")
+      .select("id, type, content, embedding")
+      .eq("user_id", userId)
+      .not("embedding", "is", null);
+
+    if (notesError) {
+      console.error("[clusterNotes] Error fetching notes:", notesError);
+      throw new Error(`Failed to fetch notes: ${notesError.message}`);
+    }
+
+    // Convert Supabase response to expected format
     const notesWithEmbeddings: Array<{
-      id: string
-      type: string
-      content: string
-      embedding: number[]
-    }> = [];
-    /* const notesWithEmbeddings = await prisma.$queryRaw<
-      Array<{
-        id: string
-        type: string
-        embedding: string
-      }>
-    >`
-      SELECT id, type, embedding::text
-      FROM notes
-      WHERE "userId" = ${userId}
-        AND embedding IS NOT NULL
-    ` */
+      id: string;
+      type: string;
+      content: string;
+      embedding: number[];
+    }> = (notesData || [])
+      .map((note: any) => {
+        // Parse embedding from vector format
+        let embedding: number[] = [];
+        if (note.embedding) {
+          if (Array.isArray(note.embedding)) {
+            embedding = note.embedding;
+          } else if (typeof note.embedding === "string") {
+            // Parse string format "[0.1,0.2,...]"
+            const cleaned = note.embedding.replace(/^\[|\]$/g, "");
+            embedding = cleaned
+              .split(",")
+              .map(Number)
+              .filter((n: number) => !isNaN(n));
+          }
+        }
+        return {
+          id: note.id,
+          type: note.type || "unclassified",
+          content: note.content || "",
+          embedding,
+        };
+      })
+      .filter((note) => note.embedding.length > 0);
 
     if (notesWithEmbeddings.length === 0) {
-      console.log("[v0] No notes with embeddings found for clustering")
-      return
+      console.log("[v0] No notes with embeddings found for clustering");
+      return;
     }
 
     // Step 2: Calculate centroids for each base type
-    const typeGroups = new Map<string, number[][]>()
+    const typeGroups = new Map<string, number[][]>();
 
     for (const note of notesWithEmbeddings) {
-      if (note.type === "unclassified" || note.type === "nope") continue
+      if (note.type === "unclassified" || note.type === "nope") continue;
 
-      const embedding = note.embedding
-      if (!embedding || embedding.length === 0) continue
+      const embedding = note.embedding;
+      if (!embedding || embedding.length === 0) continue;
 
       if (!typeGroups.has(note.type)) {
-        typeGroups.set(note.type, [])
+        typeGroups.set(note.type, []);
       }
-      typeGroups.get(note.type)!.push(embedding)
+      typeGroups.get(note.type)!.push(embedding);
     }
 
     // Calculate centroids (average embedding per type)
-    const centroids: ClusterCentroid[] = []
+    const centroids: ClusterCentroid[] = [];
     for (const [type, embeddings] of typeGroups.entries()) {
-      if (embeddings.length === 0) continue
+      if (embeddings.length === 0) continue;
 
-      const centroid = calculateCentroid(embeddings)
+      const centroid = calculateCentroid(embeddings);
       centroids.push({
         name: capitalizeType(type),
         centroid,
-      })
+      });
     }
 
     // Add a "Misc" centroid if we have enough notes
@@ -67,34 +91,34 @@ export async function clusterUserNotes(userId: string): Promise<void> {
       centroids.push({
         name: "Misc",
         centroid: [], // Will catch outliers
-      })
+      });
     }
 
     // Step 3: Assign each note to nearest centroid
     for (const note of notesWithEmbeddings) {
-      const embedding = note.embedding
-      if (!embedding || embedding.length === 0) continue
+      const embedding = note.embedding;
+      if (!embedding || embedding.length === 0) continue;
 
-      let bestCluster = "Misc"
-      let bestDistance = 1.0
-      let bestConfidence = 0.0
+      let bestCluster = "Misc";
+      let bestDistance = 1.0;
+      let bestConfidence = 0.0;
 
       for (const { name, centroid } of centroids) {
-        if (centroid.length === 0) continue // Skip Misc centroid in distance calc
+        if (centroid.length === 0) continue; // Skip Misc centroid in distance calc
 
-        const distance = cosineDistance(embedding, centroid)
+        const distance = cosineDistance(embedding, centroid);
         if (distance < bestDistance) {
-          bestDistance = distance
-          bestCluster = name
+          bestDistance = distance;
+          bestCluster = name;
         }
       }
 
       // Only assign cluster if distance is below threshold
       if (bestDistance < CLUSTER_THRESHOLD) {
-        bestConfidence = 1 - bestDistance
+        bestConfidence = 1 - bestDistance;
       } else {
-        bestCluster = "Misc"
-        bestConfidence = 0.5
+        bestCluster = "Misc";
+        bestConfidence = 0.5;
       }
 
       // Update note with cluster assignment
@@ -105,58 +129,64 @@ export async function clusterUserNotes(userId: string): Promise<void> {
           clusterConfidence: bestConfidence,
           clusterUpdatedAt: new Date(),
         },
-      })
+      });
     }
 
-    console.log(`[v0] Clustered ${notesWithEmbeddings.length} notes into ${centroids.length} clusters`)
+    console.log(
+      `[v0] Clustered ${notesWithEmbeddings.length} notes into ${centroids.length} clusters`
+    );
   } catch (error) {
-    console.error("[v0] Clustering error:", error)
-    throw new Error(`Failed to cluster notes: ${error instanceof Error ? error.message : "Unknown error"}`)
+    console.error("[v0] Clustering error:", error);
+    throw new Error(
+      `Failed to cluster notes: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 }
 
 function parseEmbedding(embeddingStr: string): number[] | null {
   try {
     // pgvector returns embeddings as "[0.1,0.2,...]"
-    const cleaned = embeddingStr.replace(/^\[|\]$/g, "")
-    return cleaned.split(",").map(Number)
+    const cleaned = embeddingStr.replace(/^\[|\]$/g, "");
+    return cleaned.split(",").map(Number);
   } catch {
-    return null
+    return null;
   }
 }
 
 function calculateCentroid(embeddings: number[][]): number[] {
-  if (embeddings.length === 0) return []
+  if (embeddings.length === 0) return [];
 
-  const dimensions = embeddings[0].length
-  const centroid = new Array(dimensions).fill(0)
+  const dimensions = embeddings[0].length;
+  const centroid = new Array(dimensions).fill(0);
 
   for (const embedding of embeddings) {
     for (let i = 0; i < dimensions; i++) {
-      centroid[i] += embedding[i]
+      centroid[i] += embedding[i];
     }
   }
 
   for (let i = 0; i < dimensions; i++) {
-    centroid[i] /= embeddings.length
+    centroid[i] /= embeddings.length;
   }
 
-  return centroid
+  return centroid;
 }
 
 function cosineDistance(a: number[], b: number[]): number {
-  let dotProduct = 0
-  let normA = 0
-  let normB = 0
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
 
   for (let i = 0; i < a.length; i++) {
-    dotProduct += a[i] * b[i]
-    normA += a[i] * a[i]
-    normB += b[i] * b[i]
+    dotProduct += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
   }
 
-  const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB))
-  return 1 - similarity // Convert similarity to distance
+  const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  return 1 - similarity; // Convert similarity to distance
 }
 
 function capitalizeType(type: string): string {
@@ -168,6 +198,6 @@ function capitalizeType(type: string): string {
     image: "Images",
     voice: "Voice",
     misc: "Misc",
-  }
-  return typeMap[type] || "Misc"
+  };
+  return typeMap[type] || "Misc";
 }

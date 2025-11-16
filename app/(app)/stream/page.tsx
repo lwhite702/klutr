@@ -16,7 +16,7 @@ import { classifyDrop } from "@/lib/ai/classifyDrop";
 import { useKeyboardShortcuts } from "@/lib/hooks/useKeyboardShortcuts";
 import { useCurrentUser } from "@/lib/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
-import type { StreamDrop } from "@/lib/mockData";
+import type { StreamDrop } from "@/lib/types/stream";
 import type { NoteDTO } from "@/lib/dto";
 import { usePanelState } from "@/lib/hooks/usePanelState";
 
@@ -58,7 +58,7 @@ export default function StreamPage() {
       key: "k",
       meta: true,
       handler: () => {
-        openPanel('search');
+        openPanel("search");
       },
       description: "Open search",
     },
@@ -66,7 +66,7 @@ export default function StreamPage() {
       key: "m",
       meta: true,
       handler: () => {
-        openPanel('mindstorm');
+        openPanel("mindstorm");
       },
       description: "Open MindStorm",
     },
@@ -74,7 +74,7 @@ export default function StreamPage() {
       key: "i",
       meta: true,
       handler: () => {
-        openPanel('insights');
+        openPanel("insights");
       },
       description: "Open Insights",
     },
@@ -82,7 +82,7 @@ export default function StreamPage() {
       key: "h",
       meta: true,
       handler: () => {
-        openPanel('memory');
+        openPanel("memory");
       },
       description: "Open Memory",
     },
@@ -178,7 +178,7 @@ export default function StreamPage() {
       for (const file of files) {
         // Upload file first
         const uploadResult = await uploadFile(file, user.id);
-        
+
         const dropType = await classifyDrop("", file.type);
 
         // Create drop with file URL
