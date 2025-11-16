@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import MarketingHeader from '@/components/marketing/MarketingHeader'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
-import { getLatestChangelogEntries, getUpcomingRoadmapItems } from '@/lib/queries'
 
 export const revalidate = 120
 
@@ -23,11 +22,6 @@ export const metadata: Metadata = {
 export default async function BlogPage() {
   const posts = await getBlogPosts()
   
-  // Fetch footer data
-  const [latestReleases, upcomingItems] = await Promise.all([
-    getLatestChangelogEntries(2),
-    getUpcomingRoadmapItems(2),
-  ])
 
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
@@ -83,7 +77,7 @@ export default async function BlogPage() {
         </section>
       </main>
 
-      <MarketingFooter latestReleases={latestReleases} upcomingItems={upcomingItems} />
+      <MarketingFooter />
     </div>
   )
 }

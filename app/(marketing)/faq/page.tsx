@@ -1,8 +1,4 @@
 import { getPageMetadata } from "@/lib/queries/metadata";
-import {
-  getLatestChangelogEntries,
-  getUpcomingRoadmapItems,
-} from "@/lib/queries";
 import { getFaqContent } from "@/lib/basehub/queries/pages";
 import type { Metadata } from "next";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
@@ -62,10 +58,6 @@ export const revalidate = 60;
 
 export default async function FAQPage() {
   const faqContent = await getFaqContent();
-  const [latestReleases, upcomingItems] = await Promise.all([
-    getLatestChangelogEntries(),
-    getUpcomingRoadmapItems(),
-  ]);
 
   // Fallback FAQ data if BaseHub is unavailable
   const faqData = faqContent.faqBlock || {
@@ -124,10 +116,7 @@ export default async function FAQPage() {
         </AnimatedSection>
       </main>
 
-      <MarketingFooter
-        latestReleases={latestReleases}
-        upcomingItems={upcomingItems}
-      />
+      <MarketingFooter />
     </div>
   );
 }

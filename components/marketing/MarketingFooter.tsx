@@ -1,161 +1,93 @@
-import Image from "next/image"
-import Link from "next/link"
-import React from "react"
-import { getLatestChangelogEntries, getUpcomingRoadmapItems } from "@/lib/queries"
-import { Sparkles, Calendar } from "lucide-react"
+"use client";
 
-function FooterWidgets({
-  latestReleases,
-  upcomingItems,
-}: {
-  latestReleases: Awaited<ReturnType<typeof getLatestChangelogEntries>>
-  upcomingItems: Awaited<ReturnType<typeof getUpcomingRoadmapItems>>
-}) {
+import Link from "next/link";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Linkedin, Facebook, Twitter } from "lucide-react";
+
+function EmailSignup() {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Integrate with email service
+    console.log("Email signup:", email);
+    setSubmitted(true);
+    setEmail("");
+    setTimeout(() => setSubmitted(false), 3000);
+  };
+
   return (
-    <div className="grid md:grid-cols-2 gap-8 mb-8">
-      {/* Latest Release */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="w-4 h-4 text-[var(--klutr-coral)]" />
-          <h3 className="font-semibold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-            Latest Release
-          </h3>
-        </div>
-        {latestReleases.length > 0 ? (
-          <ul className="space-y-3">
-            {latestReleases.map((entry) => (
-              <li key={entry._id}>
-                <Link
-                  href="/changelog"
-                  className="block text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors group"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="group-hover:underline">{entry.title}</span>
-                    {entry.version && (
-                      <span className="text-xs text-[var(--klutr-text-primary-light)]/50 dark:text-[var(--klutr-text-primary-dark)]/50 whitespace-nowrap">
-                        v{entry.version}
-                      </span>
-                    )}
-                  </div>
-                  {entry.releaseDate && (
-                    <p className="text-xs text-[var(--klutr-text-primary-light)]/50 dark:text-[var(--klutr-text-primary-dark)]/50 mt-1">
-                      {new Date(entry.releaseDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </p>
-                  )}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-[var(--klutr-text-primary-light)]/50 dark:text-[var(--klutr-text-primary-dark)]/50">
-            No releases yet
-          </p>
-        )}
-        <Link
-          href="/changelog"
-          className="text-xs text-[var(--klutr-coral)] hover:underline mt-2 inline-block"
-        >
-          View all →
-        </Link>
-      </div>
-
-      {/* Next Up */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Calendar className="w-4 h-4 text-[var(--klutr-coral)]" />
-          <h3 className="font-semibold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-            Next Up
-          </h3>
-        </div>
-        {upcomingItems.length > 0 ? (
-          <ul className="space-y-3">
-            {upcomingItems.map((item) => (
-              <li key={item._id}>
-                <Link
-                  href="/roadmap"
-                  className="block text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors group"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="group-hover:underline">{item.title}</span>
-                    {item.status && (
-                      <span className="text-xs text-[var(--klutr-text-primary-light)]/50 dark:text-[var(--klutr-text-primary-dark)]/50 whitespace-nowrap capitalize">
-                        {item.status.replace("-", " ")}
-                      </span>
-                    )}
-                  </div>
-                  {item.targetDate && (
-                    <p className="text-xs text-[var(--klutr-text-primary-light)]/50 dark:text-[var(--klutr-text-primary-dark)]/50 mt-1">
-                      {new Date(item.targetDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </p>
-                  )}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-[var(--klutr-text-primary-light)]/50 dark:text-[var(--klutr-text-primary-dark)]/50">
-            No upcoming items yet
-          </p>
-        )}
-        <Link
-          href="/roadmap"
-          className="text-xs text-[var(--klutr-coral)] hover:underline mt-2 inline-block"
-        >
-          View roadmap →
-        </Link>
-      </div>
-    </div>
-  )
+    <form onSubmit={handleSubmit} className="flex flex-row items-start gap-0">
+      <Input
+        type="email"
+        placeholder="email address"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-[234px] h-[62px] bg-[#FAFAFA] border-2 border-[rgba(0,0,0,0.04)] rounded-l-[12px] rounded-r-0 text-xl text-[rgba(0,0,0,0.48)] px-4"
+        required
+      />
+      <Button
+        type="submit"
+        className="h-[62px] bg-[#975BEC] border-2 border-[#7345B3] rounded-r-[12px] rounded-l-0 px-8 text-white font-bold text-lg hover:bg-[#8450CE]"
+      >
+        Subscribe
+      </Button>
+    </form>
+  );
 }
 
-function MarketingFooterContent({
-  latestReleases,
-  upcomingItems,
-}: {
-  latestReleases: Awaited<ReturnType<typeof getLatestChangelogEntries>>
-  upcomingItems: Awaited<ReturnType<typeof getUpcomingRoadmapItems>>
-}) {
+export default function MarketingFooter() {
   return (
-    <footer className="bg-background dark:bg-[var(--klutr-surface-dark)] border-t border-[var(--klutr-outline)]/20 py-12">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+    <footer className="bg-white border-t border-[#D6D6D6] py-12">
+      <div className="container mx-auto px-6 max-w-[1440px]">
+        <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div className="space-y-4">
-            <FooterLogo />
-            <p className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-              Organize your chaos. Keep the spark.
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 bg-[var(--klutr-coral)] rounded-full flex items-center justify-center shadow-[inset_0px_0px_6px_rgba(255,255,255,0.25)]">
+                <div className="w-10 h-10 bg-white rounded-full shadow-[inset_0px_5px_4px_var(--klutr-coral)]" />
+              </div>
+              <span className="text-[48px] font-bold leading-[60px] text-black">
+                Klutr
+              </span>
+            </div>
+            <p className="text-xl text-black/88 leading-[30px]">
+              Stay organized and productive with Klutr.
             </p>
           </div>
           <div>
-            <h3 className="font-semibold mb-4 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-              Product
-            </h3>
-            <ul className="space-y-2 text-sm">
+            <h3 className="font-medium text-2xl mb-6 text-black">Explore</h3>
+            <ul className="space-y-3 text-xl text-black">
+              <li>
+                <Link
+                  href="/pricing"
+                  className="hover:text-[var(--klutr-coral)] transition-colors"
+                >
+                  Pricing
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/features"
-                  className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
+                  className="hover:text-[var(--klutr-coral)] transition-colors"
                 >
                   Features
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/roadmap"
-                  className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
+                  href="/blog"
+                  className="hover:text-[var(--klutr-coral)] transition-colors"
                 >
-                  Roadmap
+                  Blog
                 </Link>
               </li>
               <li>
                 <Link
                   href="/changelog"
-                  className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
+                  className="hover:text-[var(--klutr-coral)] transition-colors"
                 >
                   Changelog
                 </Link>
@@ -163,118 +95,94 @@ function MarketingFooterContent({
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold mb-4 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-              Resources
+            <h3 className="font-medium text-2xl mb-6 text-black">
+              Keep in touch
             </h3>
-            <ul className="space-y-2 text-sm">
-              <li>
+            <EmailSignup />
+            <div className="mt-8">
+              <h4 className="font-medium text-2xl mb-4 text-black">
+                Follow us
+              </h4>
+              <div className="flex items-center gap-4">
                 <Link
-                  href="/blog"
-                  className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-                >
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={process.env.NEXT_PUBLIC_DOCS_URL || "https://help.klutr.app"}
-                  className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
+                  href="https://linkedin.com/company/klutr"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="w-12 h-12 border border-[rgba(0,0,0,0.05)] rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-6 h-6 text-black" />
+                </Link>
+                <Link
+                  href="https://facebook.com/klutr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 border border-[rgba(0,0,0,0.05)] rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-6 h-6 text-black" />
+                </Link>
+                <Link
+                  href="https://twitter.com/klutr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 border border-[rgba(0,0,0,0.05)] rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="w-6 h-6 text-black" />
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3 className="font-medium text-2xl mb-6 text-black">Resources</h3>
+            <ul className="space-y-3 text-xl text-black">
+              <li>
+                <Link
+                  href="/help"
+                  className="hover:text-[var(--klutr-coral)] transition-colors"
                 >
                   Help Center
                 </Link>
               </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-4 text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-              Legal
-            </h3>
-            <ul className="space-y-2 text-sm">
               <li>
                 <Link
-                  href="/privacy"
-                  className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
+                  href="/roadmap"
+                  className="hover:text-[var(--klutr-coral)] transition-colors"
                 >
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms"
-                  className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
-                >
-                  Terms
+                  Roadmap
                 </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        <FooterWidgets latestReleases={latestReleases} upcomingItems={upcomingItems} />
-
-        <div className="pt-8 border-t border-[var(--klutr-outline)]/20 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-            &copy; {new Date().getFullYear()} Klutr. All rights reserved.
+        <div className="pt-8 border-t border-[#D6D6D6] flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-base text-black">
+            Copyright © {new Date().getFullYear()} Klutr · All Rights Reserved
           </p>
-          <div className="flex items-center gap-4">
-            {(process.env.NODE_ENV === "development" ||
-              (typeof process !== "undefined" &&
-                process.env.NEXT_PUBLIC_BASEHUB_PROJECT_ID)) && (
-                <Link
-                  href={`https://basehub.com/projects/${process.env.NEXT_PUBLIC_BASEHUB_PROJECT_ID}/collections/pages`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-[var(--klutr-text-primary-light)]/50 dark:text-[var(--klutr-text-primary-dark)]/50 hover:text-[var(--klutr-coral)] transition-colors"
-                >
-                  Edit in BaseHub
-                </Link>
-              )}
+          <div className="flex items-center gap-8">
             <Link
               href="/privacy"
-              className="text-sm text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70 hover:text-[var(--klutr-coral)] transition-colors"
+              className="text-lg text-black hover:text-[var(--klutr-coral)] transition-colors"
             >
               Privacy policy
+            </Link>
+            <Link
+              href="/terms"
+              className="text-lg text-black hover:text-[var(--klutr-coral)] transition-colors"
+            >
+              Security
+            </Link>
+            <Link
+              href="/terms"
+              className="text-lg text-black hover:text-[var(--klutr-coral)] transition-colors"
+            >
+              Legal documents
             </Link>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }
-
-// Export the content component as default for use in pages
-export default MarketingFooterContent
-
-// Export async wrapper for pages that want to fetch data
-export async function MarketingFooterWithData() {
-  const [latestReleases, upcomingItems] = await Promise.all([
-    getLatestChangelogEntries(2),
-    getUpcomingRoadmapItems(2),
-  ])
-  
-  return <MarketingFooterContent latestReleases={latestReleases} upcomingItems={upcomingItems} />
-}
-
-function FooterLogo() {
-  return (
-    <div className="relative">
-      <Image
-        src="/logos/klutr-logo-light.svg"
-        alt="Klutr"
-        width={200}
-        height={67}
-        className="h-10 w-auto dark:hidden"
-      />
-      <Image
-        src="/logos/klutr-logo-dark.svg"
-        alt="Klutr"
-        width={200}
-        height={67}
-        className="h-10 w-auto hidden dark:block"
-      />
-    </div>
-  )
-}
-

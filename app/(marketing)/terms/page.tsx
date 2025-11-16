@@ -3,7 +3,6 @@ import type { Metadata } from 'next'
 import { marked } from 'marked'
 import MarketingHeader from '@/components/marketing/MarketingHeader'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
-import { getLatestChangelogEntries, getUpcomingRoadmapItems } from '@/lib/queries'
 
 export const revalidate = 86400 // Revalidate daily
 
@@ -33,11 +32,6 @@ export default async function TermsOfServicePage() {
       })
     : ''
 
-  // Fetch footer data
-  const [latestReleases, upcomingItems] = await Promise.all([
-    getLatestChangelogEntries(2),
-    getUpcomingRoadmapItems(2),
-  ])
 
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
@@ -75,7 +69,7 @@ export default async function TermsOfServicePage() {
         </section>
       </main>
 
-      <MarketingFooter latestReleases={latestReleases} upcomingItems={upcomingItems} />
+      <MarketingFooter />
     </div>
   )
 }

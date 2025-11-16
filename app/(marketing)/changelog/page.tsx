@@ -1,7 +1,5 @@
 import {
   getChangelogEntries,
-  getLatestChangelogEntries,
-  getUpcomingRoadmapItems,
 } from "@/lib/queries";
 import { getPageMetadata } from "@/lib/queries/metadata";
 import type { Metadata } from "next";
@@ -73,11 +71,6 @@ function CategoryBadge({ category }: { category: string | null }) {
 export default async function ChangelogPage() {
   const changelogEntries = await getChangelogEntries();
 
-  // Fetch footer data
-  const [latestReleases, upcomingItems] = await Promise.all([
-    getLatestChangelogEntries(2),
-    getUpcomingRoadmapItems(2),
-  ]);
 
   // Group entries by release date (month/year)
   const groupedEntries = changelogEntries.reduce((acc, entry) => {
@@ -201,10 +194,7 @@ export default async function ChangelogPage() {
         </AnimatedSection>
       </main>
 
-      <MarketingFooter
-        latestReleases={latestReleases}
-        upcomingItems={upcomingItems}
-      />
+      <MarketingFooter />
     </div>
   );
 }

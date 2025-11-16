@@ -1,4 +1,4 @@
-import { getHomePage, getFeatures, getLatestChangelogEntries, getUpcomingRoadmapItems } from "@/lib/queries"
+import { getHomePage, getFeatures } from "@/lib/queries"
 import { getPageMetadata } from "@/lib/queries/metadata"
 import { getHomeContent } from "@/lib/basehub/queries/pages"
 import type { Metadata } from "next"
@@ -77,11 +77,6 @@ export default async function MarketingHomePage() {
   const home = await getHomePage()
   const features = await getFeatures()
   
-  // Fetch footer data
-  const [latestReleases, upcomingItems] = await Promise.all([
-    getLatestChangelogEntries(2),
-    getUpcomingRoadmapItems(2),
-  ])
 
   // Use BaseHub heroBlock if available, otherwise fallback to existing getHomePage()
   const heroData = homeContent.heroBlock || {
@@ -433,7 +428,7 @@ export default async function MarketingHomePage() {
         </section>
       </main>
 
-      <MarketingFooter latestReleases={latestReleases} upcomingItems={upcomingItems} />
+      <MarketingFooter />
     </div>
   )
 }

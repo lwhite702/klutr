@@ -2,6 +2,36 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-16 20:00 ET
+
+- [fix] Resolved Next.js route conflict by removing `app/(app)/page.tsx` and using redirect in `next.config.mjs` instead
+- [fix] Fixed all MarketingFooter TypeScript errors by removing invalid `latestReleases` and `upcomingItems` props from all marketing pages
+- [fix] Removed unused imports and variables (`getLatestChangelogEntries`, `getUpcomingRoadmapItems`) from marketing pages
+- [fix] Updated ScrollArea component to forward refs using React.forwardRef, fixing auto-scroll bug in Stream page
+- [build] Production build now completes successfully with all TypeScript errors resolved
+- [ready] Application is ready for production deployment
+
+## 2025-11-16 19:30 ET
+
+- [fix] Fixed Next.js route conflict by removing redundant `/app` redirect from `next.config.mjs` (now handled by `app/(app)/page.tsx`)
+- [fix] Removed duplicate `app/(app)/app` directory that was creating conflicting routes
+- [fix] Updated ScrollArea component to forward refs using React.forwardRef, fixing auto-scroll bug in Stream page
+- [fix] Auto-scroll to bottom now works correctly when new drops are added to the stream (ref now properly targets ScrollArea viewport)
+
+## 2025-11-16 18:55 ET
+
+- [ui] Redesigned marketing pages with Fintask-inspired layout while maintaining Klutr-specific content
+- [ui] Created design tokens system (`lib/design-tokens.ts`) with Fintask color mappings and Klutr brand integration
+- [ui] Updated MarketingHeader to match Fintask header: white background with shadow, rounded corners, brutalist button style
+- [ui] Redesigned MarketingFooter with Fintask-inspired layout: email signup form, social links, 4-column grid
+- [ui] Created new pricing components: PricingTierCard, BillingToggle, FAQAccordion, UseCaseCard, DecorativeBackground
+- [ui] Completely redesigned pricing page with Klutr-specific tiers (Free Beta, Pro $8/mo, Team $20/user), use cases, and FAQ
+- [content] All marketing copy updated to be Klutr-specific (not Fintask placeholders): features, pricing, FAQs, use cases
+- [content] Pricing page includes Klutr-specific FAQs: "What makes Klutr different from Notion/Apple Notes?", "How does AI clustering work?", etc.
+- [content] Use cases written for Klutr: "For Individuals" (low-friction capture), "For Power Users" (advanced insights), "For Teams" (collaboration)
+- [brand] Maintained Klutr brand voice throughout: friendly, irreverent, transparent (per BRAND_VOICE.md)
+- [brand] Used Klutr pricing tiers and features from BaseHub seed data: Free Beta ($0), Pro ($8/mo), Team ($20/user)
+
 ## 2025-11-16 12:00 ET
 
 - [fix] Created `/app` redirect to `/app/stream` to fix routing issue (was showing "Flux — Coming soon")

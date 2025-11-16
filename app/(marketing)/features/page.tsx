@@ -1,10 +1,6 @@
 import { getFeatures } from "@/lib/queries/features";
 import { getFeaturesContent } from "@/lib/basehub/queries/pages";
 import { getPageMetadata } from "@/lib/queries/metadata";
-import {
-  getLatestChangelogEntries,
-  getUpcomingRoadmapItems,
-} from "@/lib/queries";
 import type { Metadata } from "next";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
@@ -42,11 +38,7 @@ export const revalidate = 60;
 
 export default async function FeaturesPage() {
   const featuresContent = await getFeaturesContent();
-  const [features, latestReleases, upcomingItems] = await Promise.all([
-    getFeatures(),
-    getLatestChangelogEntries(),
-    getUpcomingRoadmapItems(),
-  ]);
+  const features = await getFeatures();
 
   // Use BaseHub featureGridBlock heading if available
   const heading = featuresContent.featureGridBlock?.heading || "Everything you need to organize your chaos";
@@ -90,10 +82,7 @@ export default async function FeaturesPage() {
         </AnimatedSection>
       </main>
 
-      <MarketingFooter
-        latestReleases={latestReleases}
-        upcomingItems={upcomingItems}
-      />
+      <MarketingFooter />
     </div>
   );
 }

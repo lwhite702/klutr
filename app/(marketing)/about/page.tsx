@@ -1,8 +1,4 @@
 import { getPageMetadata } from "@/lib/queries/metadata";
-import {
-  getLatestChangelogEntries,
-  getUpcomingRoadmapItems,
-} from "@/lib/queries";
 import { getAboutContent } from "@/lib/basehub/queries/pages";
 import type { Metadata } from "next";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
@@ -66,10 +62,6 @@ export const revalidate = 60;
 
 export default async function AboutPage() {
   const aboutContent = await getAboutContent();
-  const [latestReleases, upcomingItems] = await Promise.all([
-    getLatestChangelogEntries(),
-    getUpcomingRoadmapItems(),
-  ]);
 
   // Use BaseHub aboutBlock if available, otherwise use fallback content
   const aboutData = aboutContent.aboutBlock || {
@@ -221,10 +213,7 @@ export default async function AboutPage() {
         </AnimatedSection>
       </main>
 
-      <MarketingFooter
-        latestReleases={latestReleases}
-        upcomingItems={upcomingItems}
-      />
+      <MarketingFooter />
     </div>
   );
 }
