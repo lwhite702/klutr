@@ -2,6 +2,13 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-16 12:00 ET
+
+- [fix] Created `/app` redirect to `/app/stream` to fix routing issue (was showing "Flux — Coming soon")
+- [fix] Moved panel rendering from `stream/page.tsx` to `app/(app)/layout.tsx` so panels work on all authenticated pages
+- [ui] Simplified TopBar logo: removed wordmark/tagline, increased logo size to h-16/h-20, made flush to left edge
+- [ui] Panels (MindStorm, Insights, Memory, Search) now accessible from any authenticated page via sidebar or keyboard shortcuts
+
 ## 2025-11-16 00:18 ET
 
 - [infra] Removed Vercel cron job configuration from vercel.json to fix deployment error (plan limit: 2 cron jobs, attempted: 3)

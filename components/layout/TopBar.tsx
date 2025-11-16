@@ -72,24 +72,16 @@ export function TopBar({ showDemoBadge = false }: { showDemoBadge?: boolean }) {
           <MobileNavSheet />
         </div>
 
-        {/* Left: Brand Section - Logo + Wordmark + Tagline */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <Image
-              src={isDark ? "/logos/klutr-logo-dark-noslogan.svg" : "/logos/klutr-logo-light-noslogan.svg"}
-              alt="Klutr"
-              width={140}
-              height={56}
-              className="h-12 w-auto"
-              priority
-            />
-            <div className="hidden lg:flex flex-col">
-              <span className="text-lg font-semibold leading-none">Klutr</span>
-              <span className="text-xs text-muted-foreground leading-tight mt-0.5">
-                Organize your chaos. Keep the spark.
-              </span>
-            </div>
-          </div>
+        {/* Left: Brand Section - Logo only (larger, flush to left) */}
+        <div className="flex items-center min-w-0">
+          <Image
+            src={isDark ? "/logos/klutr-logo-dark-noslogan.svg" : "/logos/klutr-logo-light-noslogan.svg"}
+            alt="Klutr"
+            width={200}
+            height={80}
+            className="h-16 md:h-20 w-auto"
+            priority
+          />
         </div>
 
         {/* Center: Contextual Controls */}

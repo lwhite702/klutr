@@ -19,11 +19,6 @@ import { useRouter } from "next/navigation";
 import type { StreamDrop } from "@/lib/mockData";
 import type { NoteDTO } from "@/lib/dto";
 import { usePanelState } from "@/lib/hooks/usePanelState";
-import { PanelContainer } from "@/components/panels/PanelContainer";
-import { MindStormPanel } from "@/components/panels/MindStormPanel";
-import { InsightsPanel } from "@/components/panels/InsightsPanel";
-import { MemoryPanel } from "@/components/panels/MemoryPanel";
-import { SearchPanel } from "@/components/panels/SearchPanel";
 
 interface StreamDropsResponse {
   drops: NoteDTO[];
@@ -43,7 +38,7 @@ export default function StreamPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { user, loading: userLoading } = useCurrentUser();
-  const { activePanel, openPanel, closePanel } = usePanelState();
+  const { openPanel } = usePanelState();
 
   // Load drops on mount
   useEffect(() => {
@@ -319,37 +314,6 @@ export default function StreamPage() {
               </div>
             </div>
           </div>
-
-          {/* Panel Overlays */}
-          <PanelContainer 
-            isOpen={activePanel === 'mindstorm'} 
-            onClose={closePanel}
-            width="lg"
-          >
-            <MindStormPanel />
-          </PanelContainer>
-
-          <PanelContainer 
-            isOpen={activePanel === 'insights'} 
-            onClose={closePanel}
-            width="lg"
-          >
-            <InsightsPanel />
-          </PanelContainer>
-
-          <PanelContainer 
-            isOpen={activePanel === 'memory'} 
-            onClose={closePanel}
-            width="lg"
-          >
-            <MemoryPanel />
-          </PanelContainer>
-
-          {/* Search uses special modal design */}
-          <SearchPanel 
-            isOpen={activePanel === 'search'} 
-            onClose={closePanel}
-          />
         </div>
       </DropZone>
     </StreamErrorBoundary>
