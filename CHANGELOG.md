@@ -2,6 +2,40 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-16 22:45 ET
+
+- [fix] Removed .DS_Store files from git tracking and added macOS system file patterns to .gitignore
+- [git] Added .DS_Store, **/.DS_Store, .AppleDouble, and **/.AppleDouble to .gitignore to prevent macOS system files from being committed
+
+## 2025-11-16 22:30 ET
+
+- [feature] Implemented audio transcription using OpenAI Whisper API in messages/create route
+- [feature] Implemented thread similarity matching using pgvector cosine distance to automatically group related messages
+- [feature] Implemented Supabase queries in clusterNotes.ts and analyzeTimeline.ts (replaced TODO placeholders)
+- [fix] Replaced all mockData type imports with proper types from lib/types/stream.ts and lib/dto.ts
+- [fix] Updated BoardCard component to use BoardDTO instead of mock Board type
+- [api] Created lib/ai/transcribeAudio.ts for audio transcription functionality
+- [api] Created lib/ai/findSimilarThread.ts for thread similarity matching
+- [types] Created lib/types/stream.ts for StreamDrop type definitions (extracted from mockData)
+- [build] All TypeScript errors resolved, production build succeeds
+
+## 2025-11-16 22:00 ET
+
+- [feature] Added database storage for email subscriptions using Supabase (gracefully handles missing table)
+- [fix] Replaced all mock data usage in app pages with real API calls:
+  - Board detail page now uses `/api/boards/[id]` with notes included
+  - Muse page now uses `/api/insights/generate` and `/api/insights/list` for real insights
+  - Vault page now uses `/api/vault/list` for real vault notes
+- [api] Updated board detail API to include notes in response for board detail page
+
+## 2025-11-16 21:30 ET
+
+- [feature] Implemented email subscription API route (`/api/marketing/subscribe`) with Resend integration
+- [feature] Added email subscription form to MarketingFooter with proper error handling and success feedback
+- [feature] Email subscription sends welcome email via Resend (if configured) and logs subscription for future database storage
+- [ui] Email subscription form shows loading state, success message, and error messages
+- [todo] Completed TODO: Integrate email service in MarketingFooter component
+
 ## 2025-11-16 21:15 ET
 
 - [decision] Proceeding without Figma extraction - only 6 calls/month available, will use existing design tokens and Fintask-inspired patterns
@@ -134,7 +168,7 @@ All notable changes to Klutr will be documented in this file.
 - [test] Completed browser testing checklist - all items pass (see reports/BROWSER_TEST_RESULTS.md)
 - [fix] Updated login page tagline from "Clear the clutr" to "Welcome to Klutr" for brand consistency
 - [fix] Fixed illustration mapping to match actual file names (PascalCase with --Streamline-Ux suffix)
-- [fix] Fixed feature pages error - corrected BaseHub query syntax (removed _eq filter, fetch all then filter client-side, removed media union fields that require inline fragments)
+- [fix] Fixed feature pages error - corrected BaseHub query syntax (removed \_eq filter, fetch all then filter client-side, removed media union fields that require inline fragments)
 - [feature] Added getFeatureBySlug helper function to lib/queries/features.ts with proper error handling and draft mode fallback
 - [seo] Added generateMetadata to feature pages with OpenGraph and Twitter card support
 - [docs] Updated CHANGELOG with production polish work
@@ -151,6 +185,7 @@ All notable changes to Klutr will be documented in this file.
 ### Added
 
 **Infrastructure & Security**
+
 - [infra] Complete infrastructure setup guide in `infra/README.md`
 - [security] Row Level Security (RLS) policies for all user data tables
 - [security] RLS documentation in `docs/security/rls.md`
@@ -159,6 +194,7 @@ All notable changes to Klutr will be documented in this file.
 - [security] Removed unsafe stub user fallback - auth now throws on failure
 
 **Authentication**
+
 - [feature] Complete Supabase Auth integration
 - [ui] Login page at `/login` with email/password and magic link
 - [ui] Signup page at `/signup` with validation
@@ -167,6 +203,7 @@ All notable changes to Klutr will be documented in this file.
 - [api] Proper error handling for unauthenticated requests
 
 **AI & Cost Management**
+
 - [feature] Vercel AI SDK abstraction layer in `lib/ai/provider.ts`
 - [feature] Support for multiple AI providers (OpenAI, Anthropic)
 - [feature] Automatic retry logic with exponential backoff (3 retries)
@@ -178,6 +215,7 @@ All notable changes to Klutr will be documented in this file.
 - [docs] Cost estimator tool in `lib/ai/cost-estimator.ts`
 
 **Database**
+
 - [docs] Database index documentation in `docs/database/indexes.md`
 - [db] Setup script for pgvector and indexes in `scripts/setup-database.sql`
 - [db] Vector indexes for similarity search (IVFFlat)
@@ -185,6 +223,7 @@ All notable changes to Klutr will be documented in this file.
 - [db] Analytics indexes for time-series queries
 
 **CI/CD & Testing**
+
 - [ci] Complete GitHub Actions workflow in `.github/workflows/ci.yml`
 - [ci] Deployment workflow in `.github/workflows/deploy.yml`
 - [ci] Lint, type-check, build, and test jobs
@@ -196,6 +235,7 @@ All notable changes to Klutr will be documented in this file.
 - [ci] Accessibility testing in CI pipeline
 
 **Documentation**
+
 - [docs] Feature state report in `reports/feature-state.json` and `reports/feature-state.md`
 - [docs] Architecture documentation in `docs/architecture.md`
 - [docs] Operations runbook in `docs/operations.md`
@@ -205,6 +245,7 @@ All notable changes to Klutr will be documented in this file.
 - [docs] Infrastructure setup guide in `infra/README.md`
 
 **Configuration**
+
 - [config] Vercel deployment configuration in `vercel.json`
 - [config] Cron job schedules for background tasks
 - [config] Security headers for all API routes
@@ -239,6 +280,7 @@ All notable changes to Klutr will be documented in this file.
 ### [Initial Development] - 2024-2025
 
 **Core Features Implemented:**
+
 - Notes and messages capture
 - MindStorm clustering algorithm
 - Smart Stacks generation
@@ -251,6 +293,7 @@ All notable changes to Klutr will be documented in this file.
 - Onboarding flow
 
 **Infrastructure:**
+
 - Next.js 16 with App Router
 - React 19
 - Prisma ORM
@@ -269,16 +312,19 @@ All notable changes to Klutr will be documented in this file.
 If you're upgrading from the previous version:
 
 1. **Authentication Changes:**
+
    - Remove any code that relied on stub user `user_dev_123`
    - Update API calls to handle 401 errors properly
    - Ensure Supabase environment variables are set
 
 2. **AI Code Changes:**
+
    - Replace `openai.chat.completions.create()` with `generateAIText()` from `lib/ai/provider.ts`
    - Replace `getEmbedding()` with `generateAIEmbedding()`
    - Update imports to use new AI abstraction layer
 
 3. **Database:**
+
    - Run RLS policy script: `psql $DATABASE_URL < scripts/apply-rls-policies.sql`
    - Run index setup: `psql $DATABASE_URL < scripts/setup-database.sql`
    - Verify pgvector extension is enabled
@@ -295,17 +341,20 @@ If you're upgrading from the previous version:
 ### Version 1.0.0 (Production Ready)
 
 **Authentication:**
+
 - `getCurrentUser()` now throws instead of returning stub
 - `getCurrentUserId()` is deprecated
 
 **AI:**
+
 - Direct OpenAI SDK usage replaced with Vercel AI SDK
 - New function signatures for AI operations
 
 **Security:**
+
 - All routes now require authentication
 - RLS policies must be applied to database
 
 ---
 
-*For full details, see the git commit history and documentation in `/docs`.*
+_For full details, see the git commit history and documentation in `/docs`._
