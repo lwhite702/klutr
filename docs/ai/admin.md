@@ -10,6 +10,52 @@ updated: 2025-11-17
 
 The Klutr AI Engine includes a comprehensive admin control system that allows authorized administrators to monitor, modify, and manage AI behavior in real-time without redeploying the application.
 
+## Admin Portal
+
+The Klutr Admin Portal provides a secure web interface for monitoring and managing the system. Access the portal at `/admin` (requires admin authentication).
+
+### Portal Sections
+
+1. **Overview** (`/admin`)
+   - Summary cards: Total users, active users, notes created, AI cost
+   - Recent AI errors table
+   - Quick system health indicators
+
+2. **Users** (`/admin/users`)
+   - User management table with stats
+   - Filters: Active in last 7 days, high AI cost
+   - User detail pages with activity timeline
+
+3. **AI Usage** (`/admin/ai`)
+   - Usage statistics by feature and model
+   - Cost breakdowns
+   - Request analytics
+
+4. **AI Models** (`/admin/ai/models`)
+   - Tier-to-model mappings
+   - Model override controls
+   - Gateway routing configuration
+
+5. **AI Features** (`/admin/ai/features`)
+   - Feature flag toggles
+   - Enable/disable individual AI features
+   - Feature metadata and descriptions
+
+6. **AI Logs** (`/admin/ai/logs`)
+   - Paginated usage logs
+   - Filters by feature, model, user, date range
+   - Detailed request information
+
+7. **System Health** (`/admin/system`)
+   - Health check status for all components
+   - Environment variable validation
+   - Database connectivity checks
+   - AI Gateway status
+
+8. **System Logs** (`/admin/system/logs`)
+   - Application-level error logs
+   - System event tracking
+
 ## Admin Authentication
 
 ### Becoming an Admin
