@@ -2,6 +2,32 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-01-27 18:30 ET
+
+- [ui] Created KlutrFeaturesSection component replacing individual SpotlightSection components
+- [ui] KlutrFeaturesSection uses alternating left/right layout with gradient backgrounds
+- [ui] Added Screenshot sub-component with gradient overlay effects using Klutr brand colors
+- [ui] KlutrFeaturesSection supports badge tags per feature (optional)
+- [ui] Icon support via iconName string pattern (consistent with existing components)
+- [marketing] Replaced 6 individual SpotlightSection components with single KlutrFeaturesSection
+- [marketing] Features: Stream, MindStorm, Insights, Memory Lane, Nope, Vault with alternating coral/mint colors
+- [marketing] Added feature badges: Fast Capture, Visual Clusters, Weekly Summaries, etc.
+- [ui] Gradient backgrounds use Klutr brand colors (#FF6B6B coral, #00C896 mint)
+- [ui] Framer Motion scroll animations with staggered delays
+- [ui] Responsive design with mobile stacking and desktop alternating layout
+- [build] Production build successful - all routes compile without errors
+- [codacy] KlutrFeaturesSection passes code quality analysis with no issues
+
+## 2025-01-27 17:15 ET
+
+- [ui] Created FeaturesSection component for two-column feature grid display
+- [ui] FeaturesSection includes icon, title, description, and screenshot in device frame
+- [ui] FeaturesSection supports configurable background colors (coral, mint, yellow, purple)
+- [marketing] Added FeaturesSection to homepage after Core Value Grid
+- [marketing] FeaturesSection showcases Stream and MindStorm in two-column layout
+- [ui] FeaturesSection includes framer-motion scroll animations and hover effects
+- [build] Production build successful with new FeaturesSection component
+
 ## 2025-11-17 20:00 ET
 
 - [feature] **Complete Klutr Admin Portal implementation**

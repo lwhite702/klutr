@@ -7,7 +7,8 @@ import MarketingFooter from "@/components/marketing/MarketingFooter";
 import Hero from "@/components/marketing/Hero";
 import ProblemStatement from "@/components/marketing/ProblemStatement";
 import ValueGrid from "@/components/marketing/ValueGrid";
-import SpotlightSection from "@/components/marketing/SpotlightSection";
+import FeaturesSection from "@/components/marketing/FeaturesSection";
+import KlutrFeaturesSection from "@/components/marketing/KlutrFeaturesSection";
 import PersonaGrid from "@/components/marketing/PersonaGrid";
 import PricingCard from "@/components/marketing/PricingCard";
 import {
@@ -201,59 +202,98 @@ export default async function MarketingHomePage() {
           </AnimatedSection>
         </section>
 
-        {/* 4. FEATURE SPOTLIGHTS (6 alternating sections) */}
-        <SpotlightSection
-          title="Stream"
-          description="Your always-on inbox. One place for every idea your brain throws at you."
-          imageSrc="/illustrations/notes-tasks/note-01.svg"
-          imageAlt="Stream interface"
-          reverse={false}
-          accentColor="coral"
+        {/* 3.5. FEATURES SECTION (Two-column grid) */}
+        <FeaturesSection
+          headline="The features both familiar and new"
+          subheadline="Everything you need to capture, organize, and rediscover your ideas"
+          features={[
+            {
+              iconName: "MessageSquare",
+              title: "Stream",
+              description: "Your always-on inbox. One place for every idea your brain throws at you—text, voice, images, or screenshots.",
+              imageSrc: "/illustrations/notes-tasks/note-01.svg",
+              imageAlt: "Stream interface showing chat-style capture",
+              backgroundColor: "yellow",
+            },
+            {
+              iconName: "Brain",
+              title: "MindStorm",
+              description: "See how your ideas connect. Visual clusters reveal patterns and relationships instantly, turning scattered notes into coherent thinking.",
+              imageSrc: "/illustrations/notes-tasks/sticky-note-02.svg",
+              imageAlt: "MindStorm clustering visualization",
+              backgroundColor: "purple",
+            },
+          ]}
+          columns={2}
         />
 
-        <SpotlightSection
-          title="MindStorm"
-          description="See how your ideas connect. Clusters turn scattered notes into coherent thinking."
-          imageSrc="/illustrations/notes-tasks/sticky-note-02.svg"
-          imageAlt="MindStorm clustering"
-          reverse={true}
-          accentColor="mint"
-        />
-
-        <SpotlightSection
-          title="Insights"
-          description="Your brain, summarized. Weekly highlights show trends and forgotten gems."
-          imageSrc="/illustrations/notes-tasks/notebook.svg"
-          imageAlt="Insights dashboard"
-          reverse={false}
-          accentColor="coral"
-        />
-
-        <SpotlightSection
-          title="Memory Lane"
-          description="Rediscover anything. A clean timeline of everything you've captured."
-          imageSrc="/illustrations/notes-tasks/note-done.svg"
-          imageAlt="Memory timeline"
-          reverse={true}
-          accentColor="mint"
-        />
-
-        <SpotlightSection
-          title="Nope"
-          description="Clear noise without guilt. Not every idea sticks."
-          imageSrc="/illustrations/notes-tasks/note-02.svg"
-          imageAlt="Nope bin"
-          reverse={false}
-          accentColor="coral"
-        />
-
-        <SpotlightSection
-          title="Vault"
-          description="Sensitive notes stay encrypted. On-device processing + encryption keep thoughts private."
-          imageSrc="/illustrations/security/padlock-01.svg"
-          imageAlt="Encrypted vault"
-          reverse={true}
-          accentColor="mint"
+        {/* 4. FEATURE SPOTLIGHTS (Alternating layout) */}
+        <KlutrFeaturesSection
+          headline="Everything you need to succeed"
+          subheadline="Powerful features designed to help you capture, organize, and rediscover your ideas."
+          badgeLabel="Features"
+          features={[
+            {
+              id: 1,
+              title: "Stream",
+              description: "Your always-on inbox. One place for every idea your brain throws at you—text, voice, images, or screenshots.",
+              iconName: "MessageSquare",
+              screenshot: "/illustrations/notes-tasks/note-01.svg",
+              screenshotAlt: "Stream interface showing chat-style capture",
+              color: "coral",
+              badges: ["Fast Capture", "Multi-format", "Always On"],
+            },
+            {
+              id: 2,
+              title: "MindStorm",
+              description: "See how your ideas connect. Visual clusters reveal patterns and relationships instantly, turning scattered notes into coherent thinking.",
+              iconName: "Brain",
+              screenshot: "/illustrations/notes-tasks/sticky-note-02.svg",
+              screenshotAlt: "MindStorm clustering visualization",
+              color: "mint",
+              badges: ["Visual Clusters", "Auto-Organize", "Pattern Discovery"],
+            },
+            {
+              id: 3,
+              title: "Insights",
+              description: "Your brain, summarized. Weekly highlights show trends and forgotten gems.",
+              iconName: "Eye",
+              screenshot: "/illustrations/notes-tasks/notebook.svg",
+              screenshotAlt: "Insights dashboard showing weekly summaries",
+              color: "coral",
+              badges: ["Weekly Summaries", "Trend Analysis", "Smart Resurfacing"],
+            },
+            {
+              id: 4,
+              title: "Memory Lane",
+              description: "Rediscover anything. A clean timeline of everything you've captured.",
+              iconName: "Clock",
+              screenshot: "/illustrations/notes-tasks/note-done.svg",
+              screenshotAlt: "Memory timeline view",
+              color: "mint",
+              badges: ["Timeline View", "Easy Search", "Full History"],
+            },
+            {
+              id: 5,
+              title: "Nope",
+              description: "Clear noise without guilt. Not every idea sticks.",
+              iconName: "XCircle",
+              screenshot: "/illustrations/notes-tasks/note-02.svg",
+              screenshotAlt: "Nope bin for rejected ideas",
+              color: "coral",
+              badges: ["Quick Rejection", "No Guilt", "Clean Workspace"],
+            },
+            {
+              id: 6,
+              title: "Vault",
+              description: "Sensitive notes stay encrypted. On-device processing + encryption keep thoughts private.",
+              iconName: "Lock",
+              screenshot: "/illustrations/security/padlock-01.svg",
+              screenshotAlt: "Encrypted vault for sensitive notes",
+              color: "mint",
+              badges: ["End-to-End Encryption", "Private", "Secure"],
+            },
+          ]}
         />
 
         {/* 5. HOW IT WORKS */}
