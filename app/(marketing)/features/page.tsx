@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import MarketingHeader from "@/components/marketing/MarketingHeader";
 import MarketingFooter from "@/components/marketing/MarketingFooter";
 import FeatureModule from "@/components/marketing/FeatureModule";
+import SpotlightSection from "@/components/marketing/SpotlightSection";
 import {
   AnimatedSection,
   AnimatedFadeIn,
@@ -59,6 +60,58 @@ export default async function FeaturesPage() {
               and gets automatically organized on the backend.
             </p>
           </AnimatedFadeIn>
+
+          {/* Feature Spotlights */}
+          <SpotlightSection
+            features={[
+              {
+                id: "stream-spotlight",
+                preheader: "Capture",
+                title: (
+                  <>
+                    Your always-on <span className="text-[#FF6B6B]">Stream</span>
+                  </>
+                ),
+                description:
+                  "One place for every idea your brain throws at you—text, voice, images, or screenshots. No formatting needed. Just dump everything in and let Klutr handle the rest.",
+                imageSrc: "/illustrations/barcelona/Welcome-1--Streamline-Barcelona.svg",
+                imageAlt: "Stream capture interface",
+                ctaText: "Try Stream",
+                ctaLink: "/login",
+              },
+              {
+                id: "mindstorm-spotlight",
+                preheader: "Organize",
+                title: (
+                  <>
+                    See connections with <span className="text-[#00C896]">MindStorm</span>
+                  </>
+                ),
+                description:
+                  "Visual clusters reveal patterns and relationships instantly. Watch your scattered notes transform into coherent thinking as AI discovers connections you never noticed.",
+                imageSrc: "/illustrations/brooklyn/Success-3--Streamline-Brooklyn.svg",
+                imageAlt: "MindStorm clustering visualization",
+                ctaText: "Explore MindStorm",
+                ctaLink: "/login",
+              },
+              {
+                id: "vault-spotlight",
+                preheader: "Secure",
+                title: (
+                  <>
+                    Your encrypted <span className="text-[#FF6B6B]">Vault</span>
+                  </>
+                ),
+                description:
+                  "Sensitive notes stay encrypted. On-device processing and end-to-end encryption keep your thoughts private. Only you can access what's in your Vault.",
+                imageSrc: "/illustrations/barcelona/Enter-Password-1--Streamline-Barcelona.svg",
+                imageAlt: "Encrypted vault for sensitive notes",
+                ctaText: "Learn About Vault",
+                ctaLink: "/login",
+              },
+            ]}
+            accentColor="coral"
+          />
 
           {/* Two-column feature modules */}
           <div className="space-y-0">

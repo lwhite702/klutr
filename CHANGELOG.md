@@ -2,6 +2,24 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-01-27 19:30 ET
+
+- [ui] Created SpotlightSection component for alternating left/right feature showcases
+- [ui] SpotlightSection supports preheader, title with accent highlights, description, and CTA buttons
+- [ui] Decorative background gradients and floating accent blur effects
+- [ui] Framer Motion animations with stagger for smooth scroll-triggered reveals
+- [ui] Uses Next.js Image component for optimized illustration loading
+- [ui] Supports accent colors: coral (#FF6B6B), mint (#00C896), or default
+- [ui] CTA buttons support both Link navigation (ctaLink) and action handlers (ctaAction)
+- [marketing] Added SpotlightSection to /features page showcasing Stream, MindStorm, and Vault
+- [marketing] Uses engaging illustrations from barcelona and brooklyn sets (not notes-tasks)
+- [marketing] FeaturesSection on homepage remains unchanged - both components coexist
+- [ui] Illustrations: Welcome-1 (Barcelona) for Stream, Success-3 (Brooklyn) for MindStorm, Enter-Password-1 (Barcelona) for Vault
+- [ui] Responsive design with mobile stacking and desktop alternating layout
+- [ui] Background gradient effects with subtle blur for depth
+- [build] Production build successful - all routes compile without errors
+- [codacy] SpotlightSection passes code quality analysis with no issues
+
 ## 2025-01-27 19:00 ET
 
 - [ui] Created HowItWorksSection component replacing static 4-card grid
