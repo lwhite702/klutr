@@ -2,6 +2,99 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-17 16:45 ET
+
+- [feature] **Complete AI Engine implementation with GPT-5 integration and admin control system**
+- [infra] Added comprehensive model tier system: CHEAP, MEDIUM, EXPENSIVE, CHAT, CODE, EMBEDDING, LEGACY
+- [feature] Integrated GPT-5 and GPT-5.1-code models into model catalog
+- [feature] Implemented admin override system for real-time AI control without redeployment
+- [feature] Added model overrides (force specific tier to use different model)
+- [feature] Added tier overrides (force specific feature to use different tier)
+- [feature] Added gateway routing overrides (control provider preference order)
+- [feature] Added AI feature flags system (enable/disable features individually)
+- [feature] Implemented AI kill switch for emergency global AI shutdown
+- [db] Created Supabase migration 008_ai_admin_tables.sql with 6 new tables
+- [db] Added ai_usage_logs table for comprehensive request tracking
+- [db] Added ai_error_logs table for error monitoring
+- [db] Added ai_overrides table for admin-configured overrides
+- [db] Added ai_feature_flags table with default flags for all features
+- [db] Added ai_cost_history table for aggregated cost analytics
+- [db] Added ai_kill_switch table for global emergency control
+- [db] Created migration 009_add_user_roles.sql to add is_admin column to users table
+- [api] Implemented 10 admin API endpoints under /api/admin/ai/
+- [api] Created /api/admin/ai/usage (GET usage logs and summaries)
+- [api] Created /api/admin/ai/cost (GET cost analytics and trends)
+- [api] Created /api/admin/ai/models (GET model catalog and provider states)
+- [api] Created /api/admin/ai/features (GET feature flags list)
+- [api] Created /api/admin/ai/logs (GET error logs)
+- [api] Created /api/admin/ai/override/model (POST model override)
+- [api] Created /api/admin/ai/override/tier (POST tier override)
+- [api] Created /api/admin/ai/override/gateway-routing (POST routing override)
+- [api] Created /api/admin/ai/toggle/feature (POST feature enable/disable)
+- [api] Created /api/admin/ai/kill-switch (GET/POST kill switch control)
+- [lib] Created lib/admin/auth.ts with requireAdmin() and isCurrentUserAdmin()
+- [lib] Created lib/admin/ai/usage.ts with usage tracking and analytics functions
+- [lib] Created lib/admin/ai/overrides.ts with setModelOverride(), setTierOverride(), setRoutingOverride()
+- [lib] Created lib/admin/ai/features.ts with feature flag management and kill switch
+- [lib] Created lib/admin/ai/models.ts with model catalog and health checks
+- [lib] Implemented applyOverrides(), recordAIUsage(), recordAIError(), applyFeatureFlags() in provider.ts
+- [lib] Updated generateAIText() with admin override integration, usage tracking, error logging
+- [lib] Updated generateAIObject() with admin override integration, usage tracking, error logging
+- [lib] Updated streamAIText() with admin override integration and error logging
+- [lib] Updated generateAIEmbedding() with admin override support
+- [lib] Updated generateAIEmbeddingsBatch() with override checks and enhanced logging
+- [lib] Created lib/ai/features/ directory with modular AI feature implementations
+- [lib] Moved classifyNote to lib/ai/features/classifyNote.ts (backward compatible re-export)
+- [lib] Created lib/ai/features/spark.ts for Spark contextual assistant
+- [lib] Created lib/ai/features/muse.ts for Muse idea remixing
+- [lib] Created lib/ai/features/mindstormReasoner.ts for note clustering AI
+- [lib] Created lib/ai/features/weeklyInsights.ts for weekly summary generation
+- [lib] Created lib/ai/features/stacks.ts for smart stack summarization
+- [refactor] Updated all AI function signatures to use ModelTier type instead of string literals
+- [refactor] Changed default tier references from lowercase to UPPERCASE (CHEAP, MEDIUM, EXPENSIVE)
+- [refactor] Updated tier parameters in app/api/insights/generate/route.ts
+- [refactor] Updated tier parameters in app/api/weekly-summaries/generate/route.ts
+- [refactor] Updated tier parameters in lib/ai/classifyNote.ts
+- [feature] Added feature and userId parameters to all AI functions for admin tracking
+- [feature] Automatic usage logging to database after every AI request
+- [feature] Automatic error logging to database for all AI failures
+- [docs] Created docs/ai/engine.md with comprehensive AI Engine documentation
+- [docs] Created docs/ai/admin.md with admin control guide and troubleshooting
+- [docs] Created docs/ai/features.md with detailed feature documentation and examples
+- [security] All admin API endpoints protected with requireAdmin() middleware
+- [security] AI admin tables have RLS enabled with no user policies (admin-only access)
+- [benefit] Real-time AI control without redeployment - admins can modify behavior instantly
+- [benefit] Comprehensive monitoring - every AI request and error tracked in database
+- [benefit] Cost visibility - detailed cost analytics by feature, model, and provider
+- [benefit] Emergency controls - kill switch and feature toggles for incident response
+- [benefit] Modular architecture - AI features cleanly separated for maintainability
+- [risk] In-memory override cache - server restart required to reload if DB directly modified
+- [risk] Admin tables accessible only via service role - ensure proper RLS configuration
+- [note] Admin system ready for Klutr Admin Portal integration
+- [note] All AI features maintain backward compatibility with existing code
+- [note] Build succeeds with all TypeScript checks passing
+
+## 2025-11-17 15:30 ET
+
+- [infra] Configured Vercel AI Gateway integration for unified AI provider access
+- [feature] Installed @ai-sdk/gateway package (v2.0.9) for AI Gateway support
+- [refactor] Updated lib/ai/provider.ts to support AI Gateway alongside direct provider access
+- [feature] Added AI Gateway provider option with automatic fallback to direct providers
+- [feature] Implemented advanced AI Gateway features: provider routing, failover models, usage tracking
+- [feature] Added GatewayOptions interface for configuring provider order, restrictions, and analytics tags
+- [feature] Updated generateAIText(), generateAIObject(), streamAIText(), and generateAIEmbedding() with AI Gateway support
+- [config] Added AI_GATEWAY_API_KEY environment variable (optional, uses VERCEL_OIDC_TOKEN as fallback)
+- [docs] Updated DOPPLER.md with comprehensive AI Gateway configuration and benefits
+- [docs] Created docs/ai-gateway.md with implementation guide, examples, and migration strategy
+- [docs] Documented AI Gateway authentication methods, cost tracking, and monitoring
+- [risk] AI Gateway uses same provider API keys - gateway routes requests but doesn't replace provider keys
+- [benefit] Single API for all AI providers (OpenAI, Anthropic, Google, xAI) - no vendor lock-in
+- [benefit] Automatic failover between providers for higher reliability
+- [benefit] Built-in cost tracking and usage analytics via Vercel dashboard
+- [benefit] Request logging and monitoring for all AI operations
+- [note] AI Gateway is default but optional - system falls back to direct provider access if unavailable
+- [note] Production deployments automatically use VERCEL_OIDC_TOKEN for AI Gateway authentication
+
 ## 2025-01-27 16:45 ET
 
 - [marketing] Complete landing page redesign with 10 required sections following wireframe spec

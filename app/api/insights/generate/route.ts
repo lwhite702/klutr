@@ -109,8 +109,9 @@ Return as a JSON array of objects with "title" and "description" fields.`;
     const result = await generateAIText({
       prompt,
       systemPrompt: "You are an insightful note analysis assistant. Provide helpful, actionable insights based on user's note patterns.",
-      tier: "medium", // Use GPT-4o for better quality insights
+      tier: "MEDIUM", // Use GPT-4o for better quality insights
       provider: "openai",
+      feature: "insights",
     });
 
     // Parse AI response (should be JSON array)

@@ -87,7 +87,8 @@ Create a concise, engaging summary (3-4 sentences) that:
     const result = await generateAIText({
       prompt,
       systemPrompt: "You are a helpful note summarization assistant. Create engaging weekly summaries.",
-      tier: "cheap", // Use cost-efficient model
+      tier: "CHEAP", // Use cost-efficient model
+      feature: "weekly-insights",
       provider: "openai",
     });
 

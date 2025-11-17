@@ -20,12 +20,32 @@ The following variables are required for Spark and Muse AI features:
 - `SUPABASE_URL` - Supabase project URL (server-side only)
 - `SUPABASE_SERVICE_ROLE_KEY` - Server-side Supabase admin key (bypasses RLS)
 - `SUPABASE_ANON_KEY` - Supabase anonymous key (for server-side API routes)
+- `AI_GATEWAY_API_KEY` - Vercel AI Gateway API key (optional, uses VERCEL_OIDC_TOKEN if not provided)
 
 **Client-side variables (NEXT_PUBLIC_ prefix):**
 - `NEXT_PUBLIC_SUPABASE_URL` - Public Supabase project URL (exposed to browser)
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Client-side Supabase public key (exposed to browser)
 
 **Note:** The hybrid pattern allows server routes to use service role key for admin operations while client components use the safer anon key.
+
+#### Vercel AI Gateway
+
+Vercel AI Gateway provides unified access to multiple AI providers (OpenAI, Anthropic, Google, xAI, etc.) with automatic failover, cost tracking, and analytics.
+
+**Setup:**
+1. The AI Gateway API key is **optional** for Vercel deployments
+2. In production, the `VERCEL_OIDC_TOKEN` is automatically available and used as a fallback
+3. For local development, you can optionally set `AI_GATEWAY_API_KEY` in Doppler
+4. If neither key is available, the system falls back to direct provider access (e.g., `OPENAI_API_KEY`)
+
+**Benefits:**
+- Single API for all AI providers - no vendor lock-in
+- Automatic failover between providers for higher reliability
+- Built-in cost tracking and usage analytics
+- Request logging and monitoring
+- Load balancing across multiple providers
+
+**Note:** See `docs/ai-gateway.md` for implementation details and advanced features like provider routing, fallback models, and usage tracking.
 
 ### Email Service (Resend)
 
@@ -241,6 +261,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    # Production
    vercel env add DATABASE_URL production
    vercel env add OPENAI_API_KEY production
+   vercel env add AI_GATEWAY_API_KEY production
    vercel env add CRON_SECRET production
    vercel env add SUPABASE_URL production
    vercel env add SUPABASE_SERVICE_ROLE_KEY production
@@ -259,6 +280,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    # Preview (for PR deployments)
    vercel env add NEON_DATABASE_URL preview
    vercel env add OPENAI_API_KEY preview
+   vercel env add AI_GATEWAY_API_KEY preview
    vercel env add CRON_SECRET preview
    vercel env add SUPABASE_URL preview
    vercel env add SUPABASE_SERVICE_ROLE_KEY preview
@@ -277,6 +299,7 @@ For Vercel deployments, environment variables must be manually synced from Doppl
    # Development (local dev with vercel dev)
    vercel env add NEON_DATABASE_URL development
    vercel env add OPENAI_API_KEY development
+   vercel env add AI_GATEWAY_API_KEY development
    vercel env add CRON_SECRET development
    vercel env add SUPABASE_URL development
    vercel env add SUPABASE_SERVICE_ROLE_KEY development
