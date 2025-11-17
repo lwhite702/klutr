@@ -2,6 +2,25 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-01-27 19:00 ET
+
+- [ui] Created HowItWorksSection component replacing static 4-card grid
+- [ui] HowItWorksSection features interactive step selection with click handlers
+- [ui] Auto-play functionality cycles through 4 steps with 4-second intervals
+- [ui] Progress bars animate for active step showing auto-play progress
+- [ui] Animated visual representations for each step: chaos, sort, reject, rediscover
+- [ui] Floating background fragments with subtle animations
+- [ui] Sticky visual display on desktop with step indicators
+- [ui] Ambient glow effects that pulse with active step accent color
+- [marketing] Replaced static "How It Works" grid with interactive HowItWorksSection
+- [ui] Uses Klutr brand colors: coral (#FF6B6B) and mint (#00C896)
+- [ui] Background matches existing homepage aesthetic (light/dark mode support)
+- [ui] Responsive design: mobile stacking, desktop two-column layout
+- [ui] Step cards show checkmark when completed, number when pending
+- [ui] Badge tags: CAPTURE, ORGANIZE, FILTER, RESURFACE
+- [build] Production build successful - all routes compile without errors
+- [codacy] HowItWorksSection passes code quality analysis (minor length warnings acceptable)
+
 ## 2025-01-27 18:30 ET
 
 - [ui] Created KlutrFeaturesSection component replacing individual SpotlightSection components

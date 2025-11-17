@@ -9,6 +9,7 @@ import ProblemStatement from "@/components/marketing/ProblemStatement";
 import ValueGrid from "@/components/marketing/ValueGrid";
 import FeaturesSection from "@/components/marketing/FeaturesSection";
 import KlutrFeaturesSection from "@/components/marketing/KlutrFeaturesSection";
+import HowItWorksSection from "@/components/marketing/HowItWorksSection";
 import PersonaGrid from "@/components/marketing/PersonaGrid";
 import PricingCard from "@/components/marketing/PricingCard";
 import {
@@ -24,7 +25,6 @@ import {
   Layers,
   Brain,
   RotateCcw,
-  Zap,
   Eye,
   Clock,
   XCircle,
@@ -35,7 +35,6 @@ import {
   Lightbulb,
   Briefcase,
   PenTool,
-  Sparkles,
 } from "lucide-react";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -297,90 +296,7 @@ export default async function MarketingHomePage() {
         />
 
         {/* 5. HOW IT WORKS */}
-        <section className="bg-[var(--klutr-surface-light)] dark:bg-[var(--klutr-surface-dark)] py-20">
-          <div className="container mx-auto px-6">
-            <AnimatedSection className="space-y-12">
-              <AnimatedItem className="text-center space-y-4 max-w-3xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
-                  How It Works
-                </h2>
-                <p className="text-lg text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                  Four simple steps to organize your chaos
-                </p>
-              </AnimatedItem>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <AnimatedItem>
-                  <Card className="h-full border-[var(--klutr-outline)]/20">
-                    <CardHeader>
-                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
-                        <Zap className="w-6 h-6 text-[var(--klutr-coral)]" />
-                      </div>
-                      <CardTitle className="text-2xl">1. Dump</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                        Drop everything into your Stream. Text, voice, images—no
-                        formatting needed.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </AnimatedItem>
-                <AnimatedItem>
-                  <Card className="h-full border-[var(--klutr-outline)]/20">
-                    <CardHeader>
-                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
-                        <Layers className="w-6 h-6 text-[var(--klutr-mint)]" />
-                      </div>
-                      <CardTitle className="text-2xl">2. We sort</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                        Automatic tagging and clustering. No organizational
-                        energy required from you.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </AnimatedItem>
-                <AnimatedItem>
-                  <Card className="h-full border-[var(--klutr-outline)]/20">
-                    <CardHeader>
-                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-coral)]/10 flex items-center justify-center mb-4">
-                        <XCircle className="w-6 h-6 text-[var(--klutr-coral)]" />
-                      </div>
-                      <CardTitle className="text-2xl">
-                        3. Nope the noise
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                        Quick rejection without guilt. Swipe away what doesn't
-                        serve you.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </AnimatedItem>
-                <AnimatedItem>
-                  <Card className="h-full border-[var(--klutr-outline)]/20">
-                    <CardHeader>
-                      <div className="w-12 h-12 rounded-lg bg-[var(--klutr-mint)]/10 flex items-center justify-center mb-4">
-                        <Sparkles className="w-6 h-6 text-[var(--klutr-mint)]" />
-                      </div>
-                      <CardTitle className="text-2xl">
-                        4. Rediscover gems
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
-                        Gentle resurfacing brings back forgotten ideas when you
-                        need them.
-                      </p>
-                    </CardContent>
-                  </Card>
-                </AnimatedItem>
-              </div>
-            </AnimatedSection>
-          </div>
-        </section>
+        <HowItWorksSection />
 
         {/* 6. PERSONA GRID */}
         <section className="container mx-auto px-6 py-20">
