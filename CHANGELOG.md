@@ -2,6 +2,45 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-01-27 16:45 ET
+
+- [marketing] Complete landing page redesign with 10 required sections following wireframe spec
+- [basehub] Updated hero block with new copy: "Organize your chaos. Keep the spark."
+- [basehub] Hero CTA changed to "Start Dumping" with secondary "See How It Works"
+- [ui] Created SpotlightSection component for alternating L/R feature showcases with framer-motion
+- [ui] Created ValueGrid component for 2/3/4-column core value displays with icon support
+- [ui] Created PersonaGrid component for 2/3-column persona/user type displays
+- [ui] Created ProblemStatement component for centered problem statement sections
+- [ui] Created PricingCard component with tier, price, features, and CTA support
+- [marketing] Removed old feature grid, testimonials, and company sections per spec
+- [marketing] New homepage sections: Hero, Problem Statement, Core Values (4), Feature Spotlights (6), How It Works (4 steps), Persona Grid (6), ND Callout, Pricing (2 tiers), Final CTA
+- [marketing] Feature spotlights: Stream, MindStorm, Insights, Memory Lane, Nope, Vault (all with alternating layouts)
+- [marketing] Personas: Creators, Founders, Students, ND Minds, Writers, Multitaskers
+- [marketing] Pricing: Free (100 notes) and Pro ($12/mo, highlighted as "Most Popular")
+- [marketing] Final CTA: "Ready to clear the clutr?" with "Start Dumping" button
+- [seo] Updated homepage metadata: title "Klutr – Organize Your Chaos. Keep the Spark." and description focused on capture-and-organize value prop
+- [fix] Fixed React Server/Client Component boundary - converted icon props from components to string names in ValueGrid and PersonaGrid
+- [fix] Fixed framer-motion variant type errors - simplified to inline props matching existing AnimatedSection pattern
+- [build] Production build successful - all 78 routes compile without errors
+- [risk] 21st dev MCP initially unavailable but reconnected successfully - all components created manually following established patterns
+- [note] Sections 8 and 9 (Privacy & Security, Comparison Table) removed per requirements - they exist on separate pages (/compare)
+
+## 2025-01-27 15:15 ET
+
+- [fix] Fixed React Server/Client Component boundary issue - changed Features component to accept icon names as strings instead of icon components
+- [fix] Fixed quote escaping errors in compare and neurodivergent pages
+- [fix] Removed unused icon imports from marketing pages after switching to string-based icon names
+
+## 2025-01-27 15:00 ET
+
+- [ui] Integrated interactive Features component with auto-rotating progress bars
+- [marketing] Replaced FeatureGrid with interactive Features component on home page
+- [marketing] Added interactive Features showcase to neurodivergent page after hero section
+- [ui] Created Features component in components/ui/features.tsx with Klutr brand colors
+- [ui] Added no-scrollbar utility class to globals.css for horizontal scroll containers
+- [marketing] Home page features: Stream, Automatic Sorting, MindStorm, Gentle Resurfacing
+- [marketing] ND page features: Low-Friction Capture, Automatic Organization, Visual Clustering, Gentle Resurfacing
+
 ## 2025-01-27 14:30 ET
 
 - [marketing] Updated home page with ND-focused messaging and hero content

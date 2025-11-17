@@ -255,7 +255,7 @@ export default async function ComparePage() {
                 },
                 {
                   title: "Rejection workflow",
-                  description: "Nope bin lets you quickly reject without guilt. No second-guessing or "maybe later" piles.",
+                  description: "Nope bin lets you quickly reject without guilt. No second-guessing or \"maybe later\" piles.",
                 },
                 {
                   title: "Visual clustering",

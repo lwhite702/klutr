@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Brain, Sparkles, Eye, BookOpen, Target, Heart } from "lucide-react";
+import { Features } from "@/components/ui/features";
 
 export async function generateMetadata(): Promise<Metadata> {
   const meta = await getPageMetadata("neurodivergent");
@@ -59,6 +60,39 @@ export async function generateMetadata(): Promise<Metadata> {
 export const revalidate = 60;
 
 export default async function NeurodivergentPage() {
+  // Feature data for interactive Features component
+  // Note: icon names as strings to pass from Server to Client Component
+  const ndFeatures = [
+    {
+      id: 1,
+      icon: "Zap",
+      title: "Low-Friction Capture",
+      description: "Zero setup, just dump.",
+      image: "/illustrations/notes-tasks/note-add.svg",
+    },
+    {
+      id: 2,
+      icon: "Layers",
+      title: "Automatic Organization",
+      description: "Executive function support built in.",
+      image: "/illustrations/notes-tasks/notebook.svg",
+    },
+    {
+      id: 3,
+      icon: "Brain",
+      title: "Visual Clustering",
+      description: "MindStorm shows patterns in color.",
+      image: "/illustrations/notes-tasks/sticky-note-01.svg",
+    },
+    {
+      id: 4,
+      icon: "RotateCcw",
+      title: "Gentle Resurfacing",
+      description: "Memory-friendly insights.",
+      image: "/illustrations/notes-tasks/note-done.svg",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
       <MarketingHeader />
@@ -75,6 +109,13 @@ export default async function NeurodivergentPage() {
             </p>
           </AnimatedFadeIn>
         </AnimatedSection>
+
+        {/* Interactive Features Showcase */}
+        <Features
+          features={ndFeatures}
+          headerBadge="For Neurodivergent Minds"
+          headerTitle="Features That Work With Your Brain"
+        />
 
         {/* ADHD-Friendly Features */}
         <section className="container mx-auto px-6 py-16">
@@ -256,7 +297,7 @@ export default async function NeurodivergentPage() {
                 },
                 {
                   title: "No perfect system pressure",
-                  description: "There's no "right" way to use Klutr. Dump everything and we'll figure it out.",
+                  description: "There's no \"right\" way to use Klutr. Dump everything and we'll figure it out.",
                 },
                 {
                   title: "Gentle reminders",
