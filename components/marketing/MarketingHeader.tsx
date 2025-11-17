@@ -31,14 +31,16 @@ export default function MarketingHeader() {
           {mounted && (
             <Link
               href="/"
-              className="flex items-center gap-3 transition-transform duration-300 hover:scale-105"
+              className="flex items-center transition-transform duration-300 hover:scale-105"
             >
-              <div className="w-10 h-10 bg-[var(--klutr-coral)] rounded-full flex items-center justify-center shadow-[inset_0px_0px_6px_rgba(255,255,255,0.25)]">
-                <div className="w-6 h-6 bg-white rounded-full shadow-[inset_0px_5px_4px_var(--klutr-coral)]" />
-              </div>
-              <span className="text-[32px] font-bold leading-[40px] text-black hidden sm:block">
-                Klutr
-              </span>
+              <Image
+                src={isDark ? "/logos/klutr-logo-dark.svg" : "/logos/klutr-logo-light.svg"}
+                alt="Klutr"
+                width={160}
+                height={80}
+                className="h-12 md:h-16 w-auto"
+                priority
+              />
             </Link>
           )}
           <div className="hidden md:flex items-center gap-8">

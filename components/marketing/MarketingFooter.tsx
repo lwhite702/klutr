@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import React, { useState } from "react";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Linkedin, Facebook, Twitter } from "lucide-react";
@@ -82,18 +84,23 @@ function EmailSignup() {
 }
 
 export default function MarketingFooter() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   return (
     <footer className="bg-white border-t border-[#D6D6D6] py-12">
       <div className="container mx-auto px-6 max-w-[1440px]">
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-16 h-16 bg-[var(--klutr-coral)] rounded-full flex items-center justify-center shadow-[inset_0px_0px_6px_rgba(255,255,255,0.25)]">
-                <div className="w-10 h-10 bg-white rounded-full shadow-[inset_0px_5px_4px_var(--klutr-coral)]" />
-              </div>
-              <span className="text-[48px] font-bold leading-[60px] text-black">
-                Klutr
-              </span>
+            <div className="flex items-center">
+              <Image
+                src={isDark ? "/logos/klutr-logo-dark.svg" : "/logos/klutr-logo-light.svg"}
+                alt="Klutr"
+                width={200}
+                height={100}
+                className="h-16 md:h-20 w-auto"
+                priority
+              />
             </div>
             <p className="text-xl text-black/88 leading-[30px]">
               Stay organized and productive with Klutr.
