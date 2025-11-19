@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import type React from "react";
+import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
@@ -29,9 +30,13 @@ export default function InsightsPage() {
   const generateButtonRef = useRef<HTMLButtonElement>(null);
 
   // Dialog tour for first-time onboarding (auto-starts)
-  const dialogTour = useSectionTour("insights", getDialogTourSteps("insights"), {
-    autoStart: true,
-  });
+  const dialogTour = useSectionTour(
+    "insights",
+    getDialogTourSteps("insights"),
+    {
+      autoStart: true,
+    }
+  );
 
   // Callout tour for contextual hints (manual trigger)
   const onboarding = useSectionOnboarding({
@@ -60,16 +65,16 @@ export default function InsightsPage() {
   async function loadInsights() {
     try {
       setIsLoading(true);
-      const response = await fetch('/api/insights/generate');
-      
+      const response = await fetch("/api/insights/generate");
+
       if (!response.ok) {
-        throw new Error('Failed to load insights');
+        throw new Error("Failed to load insights");
       }
-      
+
       const data = await response.json();
       setInsights(data.insights || []);
     } catch (error) {
-      console.error('[Insights] Error loading:', error);
+      console.error("[Insights] Error loading:", error);
       // Don't show error on initial load - just show empty state
     } finally {
       setIsLoading(false);
@@ -79,20 +84,20 @@ export default function InsightsPage() {
   const handleGenerateSummary = async () => {
     try {
       setIsGenerating(true);
-      const response = await fetch('/api/insights/generate', {
-        method: 'POST',
+      const response = await fetch("/api/insights/generate", {
+        method: "POST",
       });
-      
+
       if (!response.ok) {
-        throw new Error('Failed to generate insights');
+        throw new Error("Failed to generate insights");
       }
-      
+
       const data = await response.json();
       setInsights(data.insights || []);
-      toast.success('Insights generated successfully!');
+      toast.success("Insights generated successfully!");
     } catch (error) {
-      console.error('[Insights] Generate error:', error);
-      toast.error('Failed to generate insights. Try again.');
+      console.error("[Insights] Generate error:", error);
+      toast.error("Failed to generate insights. Try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -100,7 +105,7 @@ export default function InsightsPage() {
 
   const handleInsightClick = (insightId: string) => {
     // Navigate to related notes or cluster
-    toast.info('Insight details coming soon');
+    toast.info("Insight details coming soon");
   };
 
   const GenerateButton = () => (
@@ -114,7 +119,7 @@ export default function InsightsPage() {
       data-onboarding="generate-button"
       className="relative"
     >
-      {isGenerating ? 'Generating...' : 'Generate Summary'}
+      {isGenerating ? "Generating..." : "Generate Summary"}
       {onboarding.active && onboarding.currentStep && onboarding.step === 1 && (
         <TourCallout
           title={onboarding.currentStep.title}
@@ -129,7 +134,8 @@ export default function InsightsPage() {
   );
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <AppShell activeRoute="/app/insights">
+      <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title="Weekly Insights"
           description="Highlights from your recent activity."
@@ -205,5 +211,6 @@ export default function InsightsPage() {
           </>
         )}
       </div>
+    </AppShell>
   );
 }

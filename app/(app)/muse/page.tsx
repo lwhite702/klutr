@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { InsightCard } from "@/components/muse/InsightCard";
@@ -125,7 +126,8 @@ export default function MusePage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-5xl mx-auto space-y-6">
+      <AppShell activeRoute="/app/muse">
+        <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader
           title="Muse"
           description="Weekly AI insights about your note-taking patterns and idea connections"
@@ -135,11 +137,13 @@ export default function MusePage() {
           <p className="text-sm text-muted-foreground">Loading insights...</p>
         </div>
       </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <AppShell activeRoute="/app/muse">
+      <div className="max-w-5xl mx-auto space-y-6">
       <PageHeader
         title="Muse"
         description="Weekly AI insights about your note-taking patterns and idea connections"
@@ -208,6 +212,7 @@ export default function MusePage() {
           )}
         </>
       )}
-    </div>
+      </div>
+    </AppShell>
   );
 }

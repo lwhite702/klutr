@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import type React from "react";
 import posthog from 'posthog-js';
+import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { SectionSummary } from "@/components/ui/SectionSummary";
 import { TourCallout } from "@/components/tour/TourCallout";
@@ -120,7 +121,8 @@ export default function MemoryLanePage() {
   };
 
   return (
-    <div className="max-w-[1100px] mx-auto space-y-6">
+    <AppShell activeRoute="/app/memory">
+      <div className="max-w-[1100px] mx-auto space-y-6">
         <PageHeader
           title="Memory Lane"
           description="What you were thinking across time."
@@ -232,5 +234,6 @@ export default function MemoryLanePage() {
           )}
         </div>
       </div>
+    </AppShell>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { AppShell } from "@/components/layout/AppShell";
 import { StreamInput } from "@/components/stream/StreamInput";
 import { StreamMessage } from "@/components/stream/StreamMessage";
 import { DropZone } from "@/components/stream/DropZone";
@@ -257,65 +258,67 @@ export default function StreamPage() {
   };
 
   return (
-    <StreamErrorBoundary>
-      <DropZone onDrop={handleFileUpload}>
-        <div className="flex h-[calc(100vh-64px)] relative">
-          {/* Center - Stream with max-width constraint (matches Fintask central column) */}
-          <div className="flex-1 flex flex-col">
-            <ScrollArea className="flex-1" ref={scrollRef}>
-              <div className="max-w-[1100px] mx-auto px-6 py-6">
-                {isLoading ? (
-                  <StreamSkeleton />
-                ) : error ? (
-                  <div className="text-center py-16">
-                    <p className="text-destructive text-lg mb-2">{error}</p>
-                    <button
-                      onClick={loadDrops}
-                      className="text-sm text-muted-foreground hover:text-foreground underline"
-                    >
-                      Retry
-                    </button>
+    <AppShell activeRoute="/app/stream">
+      <StreamErrorBoundary>
+        <DropZone onDrop={handleFileUpload}>
+          <div className="flex h-[calc(100vh-64px)] relative">
+            {/* Center - Stream with max-width constraint (matches Fintask central column) */}
+            <div className="flex-1 flex flex-col">
+              <ScrollArea className="flex-1" ref={scrollRef}>
+                <div className="max-w-[1100px] mx-auto px-6 py-6">
+                  {isLoading ? (
+                    <StreamSkeleton />
+                  ) : error ? (
+                    <div className="text-center py-16">
+                      <p className="text-destructive text-lg mb-2">{error}</p>
+                      <button
+                        onClick={loadDrops}
+                        className="text-sm text-muted-foreground hover:text-foreground underline"
+                      >
+                        Retry
+                      </button>
+                    </div>
+                  ) : drops.length === 0 ? (
+                    <div className="text-center py-16">
+                      <p className="text-muted-foreground text-lg mb-2">
+                        Your stream is empty
+                      </p>
+                      <p className="text-muted-foreground text-sm">
+                        Start by adding a note, file, or voice recording
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {drops.map((drop) => (
+                        <StreamMessage
+                          key={drop.id}
+                          drop={drop}
+                          isUser={drop.type === "text"}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+              <AutoSummary isAnalyzing={isAnalyzing} />
+              <div className="border-t bg-background">
+                <div className="max-w-[1100px] mx-auto px-6 py-4">
+                  <div className="mb-3">
+                    <VoiceRecorder
+                      onRecordingComplete={handleVoiceRecord}
+                      onError={(err) => toast.error(err)}
+                    />
                   </div>
-                ) : drops.length === 0 ? (
-                  <div className="text-center py-16">
-                    <p className="text-muted-foreground text-lg mb-2">
-                      Your stream is empty
-                    </p>
-                    <p className="text-muted-foreground text-sm">
-                      Start by adding a note, file, or voice recording
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {drops.map((drop) => (
-                      <StreamMessage
-                        key={drop.id}
-                        drop={drop}
-                        isUser={drop.type === "text"}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-            <AutoSummary isAnalyzing={isAnalyzing} />
-            <div className="border-t bg-background">
-              <div className="max-w-[1100px] mx-auto px-6 py-4">
-                <div className="mb-3">
-                  <VoiceRecorder
-                    onRecordingComplete={handleVoiceRecord}
-                    onError={(err) => toast.error(err)}
+                  <StreamInput
+                    onSend={handleSend}
+                    onFileUpload={handleFileUpload}
                   />
                 </div>
-                <StreamInput
-                  onSend={handleSend}
-                  onFileUpload={handleFileUpload}
-                />
               </div>
             </div>
           </div>
-        </div>
-      </DropZone>
-    </StreamErrorBoundary>
+        </DropZone>
+      </StreamErrorBoundary>
+    </AppShell>
   );
 }

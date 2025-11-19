@@ -8,6 +8,8 @@ import Hero from "@/components/marketing/Hero";
 import ProblemStatement from "@/components/marketing/ProblemStatement";
 import ValueGrid from "@/components/marketing/ValueGrid";
 import FeaturesSection from "@/components/marketing/FeaturesSection";
+import FeatureGridWithMockups from "@/components/marketing/FeatureGridWithMockups";
+import TrustSection from "@/components/marketing/TrustSection";
 import KlutrFeaturesSection from "@/components/marketing/KlutrFeaturesSection";
 import HowItWorksSection from "@/components/marketing/HowItWorksSection";
 import PersonaGrid from "@/components/marketing/PersonaGrid";
@@ -201,29 +203,42 @@ export default async function MarketingHomePage() {
           </AnimatedSection>
         </section>
 
-        {/* 3.5. FEATURES SECTION (Two-column grid) */}
-        <FeaturesSection
-          headline="The features both familiar and new"
-          subheadline="Everything you need to capture, organize, and rediscover your ideas"
+        {/* 3.5. FEATURE GRID WITH MOCKUPS (Three-column grid with device frames) */}
+        <FeatureGridWithMockups
+          headline="The features Both familiar and new."
           features={[
             {
-              iconName: "MessageSquare",
               title: "Stream",
               description: "Your always-on inbox. One place for every idea your brain throws at you—text, voice, images, or screenshots.",
-              imageSrc: "/illustrations/notes-tasks/note-01.svg",
+              imageSrc: "/illustrations/barcelona/Welcome-1--Streamline-Barcelona.svg",
               imageAlt: "Stream interface showing chat-style capture",
-              backgroundColor: "yellow",
+              gradientColor: "yellow",
             },
             {
-              iconName: "Brain",
               title: "MindStorm",
               description: "See how your ideas connect. Visual clusters reveal patterns and relationships instantly, turning scattered notes into coherent thinking.",
-              imageSrc: "/illustrations/notes-tasks/sticky-note-02.svg",
+              imageSrc: "/illustrations/brooklyn/Success-3--Streamline-Brooklyn.svg",
               imageAlt: "MindStorm clustering visualization",
-              backgroundColor: "purple",
+              gradientColor: "purple",
+            },
+            {
+              title: "Insights",
+              description: "Your brain, summarized. Weekly highlights show trends and forgotten gems that help you see patterns in your thinking.",
+              imageSrc: "/illustrations/barcelona/Finding-1--Streamline-Barcelona.svg",
+              imageAlt: "Insights dashboard showing weekly summaries",
+              gradientColor: "blue",
             },
           ]}
-          columns={2}
+        />
+
+        {/* 3.6. TRUST SECTION (Centered CTA) */}
+        <TrustSection
+          preheader="Advantages"
+          headline="A note-taking system you can trust for your ideas"
+          description="Capture anything, organize automatically, and rediscover insights without overthinking your system."
+          ctaText="Get Started"
+          ctaLink="/login"
+          preheaderColor="purple"
         />
 
         {/* 4. FEATURE SPOTLIGHTS (Alternating layout) */}

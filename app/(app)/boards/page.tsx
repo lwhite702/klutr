@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { CardGrid } from "@/components/ui/CardGrid";
 import { BoardCard } from "@/components/boards/BoardCard";
@@ -89,56 +90,63 @@ export default function BoardsPage() {
   });
 
   return (
-    <div className="max-w-[1100px] mx-auto space-y-6">
-      <PageHeader
-        title="Boards"
-        description="Auto-organized collections of related notes"
-        actions={
-          <Button onClick={handleCreate} className="rounded-lg">
-            <Plus className="h-4 w-4 mr-2" />
-            Create Board
-          </Button>
-        }
-      />
-      {isLoading ? (
-        <div className="text-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Loading boards...</p>
-        </div>
-      ) : error ? (
-        <div className="text-center py-16">
-          <p className="text-destructive text-lg mb-2">{error}</p>
-          <Button onClick={loadBoards} variant="outline" className="rounded-lg">
-            Retry
-          </Button>
-        </div>
-      ) : (
-        <>
-          <CardGrid>
-            {sortedBoards.map((board) => (
-              <BoardCard
-                key={board.id}
-                board={board}
-                onPin={handlePin}
-                onClick={handleClick}
-              />
-            ))}
-          </CardGrid>
-          {boards.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-muted-foreground text-lg mb-2">
-                No boards yet
-              </p>
-              <p className="text-muted-foreground text-sm mb-4">
-                Boards are automatically created as you add notes to your stream
-              </p>
-              <Button onClick={handleCreate} className="rounded-lg">
-                Create your first board
-              </Button>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+    <AppShell activeRoute="/app/boards">
+      <div className="max-w-[1100px] mx-auto space-y-6">
+        <PageHeader
+          title="Boards"
+          description="Auto-organized collections of related notes"
+          actions={
+            <Button onClick={handleCreate} className="rounded-lg">
+              <Plus className="h-4 w-4 mr-2" />
+              Create Board
+            </Button>
+          }
+        />
+        {isLoading ? (
+          <div className="text-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Loading boards...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-16">
+            <p className="text-destructive text-lg mb-2">{error}</p>
+            <Button
+              onClick={loadBoards}
+              variant="outline"
+              className="rounded-lg"
+            >
+              Retry
+            </Button>
+          </div>
+        ) : (
+          <>
+            <CardGrid>
+              {sortedBoards.map((board) => (
+                <BoardCard
+                  key={board.id}
+                  board={board}
+                  onPin={handlePin}
+                  onClick={handleClick}
+                />
+              ))}
+            </CardGrid>
+            {boards.length === 0 && (
+              <div className="text-center py-16">
+                <p className="text-muted-foreground text-lg mb-2">
+                  No boards yet
+                </p>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Boards are automatically created as you add notes to your
+                  stream
+                </p>
+                <Button onClick={handleCreate} className="rounded-lg">
+                  Create your first board
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </AppShell>
   );
 }

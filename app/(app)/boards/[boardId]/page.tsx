@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useState, useEffect } from "react";
+import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StreamMessage } from "@/components/stream/StreamMessage";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -63,30 +64,35 @@ export default function BoardDetailPage({
 
   if (isLoading) {
     return (
-      <div className="max-w-5xl mx-auto space-y-6">
+      <AppShell activeRoute="/app/boards">
+        <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader title="Loading..." />
         <div className="text-center py-16">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">Loading board...</p>
         </div>
       </div>
+      </AppShell>
     );
   }
 
   if (error || !board) {
     return (
-      <div className="max-w-5xl mx-auto space-y-6">
+      <AppShell activeRoute="/app/boards">
+        <div className="max-w-5xl mx-auto space-y-6">
         <PageHeader title={error || "Board not found"} />
         <Button onClick={() => router.push("/app/boards")}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Boards
         </Button>
       </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <AppShell activeRoute="/app/boards">
+      <div className="max-w-5xl mx-auto space-y-6">
       <PageHeader
         title={board.name}
         description={board.description || undefined}
@@ -115,6 +121,7 @@ export default function BoardDetailPage({
           )}
         </div>
       </ScrollArea>
-    </div>
+      </div>
+    </AppShell>
   );
 }

@@ -2,6 +2,48 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-17 17:29 ET
+
+- [ui] Integrated MynaHero component from external source
+- [ui] Created myna-hero.tsx in /components/ui folder
+- [ui] Adapted MynaHero to use Klutr brand colors (--klutr-coral instead of #FF6B2C)
+- [ui] Integrated with existing shadcn/ui components (Button, Sheet)
+- [ui] Uses existing framer-motion and lucide-react dependencies
+- [ui] Responsive design with mobile sheet menu and desktop navigation
+- [ui] Animated hero section with staggered word reveals
+- [ui] Feature cards with icon badges and descriptions
+- [marketing] Created demo page at /myna-demo for component showcase
+- [build] Production build successful - all routes compile without errors
+- [codacy] Component passes code quality analysis (minor complexity warnings acceptable)
+
+## 2025-11-17 17:24 ET
+
+- [marketing] Created FeatureGridWithMockups component for 3-column feature grid with device frame mockups
+- [marketing] FeatureGridWithMockups supports gradient backgrounds (yellow, purple, blue, coral, mint)
+- [marketing] Device frame mockups include top bar, content area, and bottom home indicator
+- [marketing] Created TrustSection component for centered CTA section with preheader, headline, description, and button
+- [marketing] TrustSection supports customizable preheader colors (purple, coral, mint)
+- [marketing] Integrated FeatureGridWithMockups into homepage replacing existing FeaturesSection
+- [marketing] Added TrustSection to homepage after Core Value Grid
+- [marketing] FeatureGridWithMockups showcases Stream, MindStorm, and Insights with device frames
+- [marketing] Uses illustrations from barcelona and brooklyn sets (Welcome-1, Success-3, Finding-1)
+- [marketing] TrustSection adapted to Klutr: "A note-taking system you can trust for your ideas"
+- [ui] Responsive design: 3-column grid on desktop, stacks on mobile
+- [ui] Framer Motion animations with stagger for smooth scroll-triggered reveals
+- [ui] Hover effects and transitions for interactive elements
+- [build] Production build successful - all routes compile without errors
+
+## 2025-11-17 16:58 ET
+
+- [architecture] Implemented per-page AppShell rendering pattern for layout flexibility
+- [ui] Added activeRoute prop to AppShell component (optional, for future use)
+- [ui] Removed global AppShell wrapper from app/(app)/layout.tsx
+- [ui] Updated all 18 pages in app/(app)/ to explicitly render AppShell with activeRoute prop
+- [ui] Pages updated: stream, boards, boards/[boardId], vault, insights, memory, nope, search, settings, mindstorm, stacks, stacks/[stack], muse, spark, pulse, orbit, flux, chat
+- [architecture] Panels remain in layout.tsx as overlays (work across all pages)
+- [build] Production build successful - all routes compile without errors
+- [architecture] Enables future layout divergence (e.g., Vault could have different shell than MindStorm)
+
 ## 2025-01-27 19:30 ET
 
 - [ui] Created SpotlightSection component for alternating left/right feature showcases

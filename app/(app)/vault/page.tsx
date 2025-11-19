@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { VaultLockScreen } from "@/components/vault/VaultLockScreen";
 import { CardGrid } from "@/components/ui/CardGrid";
@@ -57,78 +58,82 @@ export default function VaultPage() {
 
   if (!isUnlocked) {
     return (
-      <div className="max-w-5xl mx-auto space-y-6">
-        <PageHeader
-          title="Vault"
-          description="Encrypted notes that only you can read"
-        />
-        <div className="flex flex-col items-center gap-4">
-          <Input
-            type="password"
-            placeholder="Enter passphrase"
-            value={passphrase}
-            onChange={(e) => setPassphrase(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleUnlock();
-              }
-            }}
-            className="max-w-md"
+      <AppShell activeRoute="/app/vault">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <PageHeader
+            title="Vault"
+            description="Encrypted notes that only you can read"
           />
-          <VaultLockScreen onUnlock={handleUnlock} />
+          <div className="flex flex-col items-center gap-4">
+            <Input
+              type="password"
+              placeholder="Enter passphrase"
+              value={passphrase}
+              onChange={(e) => setPassphrase(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleUnlock();
+                }
+              }}
+              className="max-w-md"
+            />
+            <VaultLockScreen onUnlock={handleUnlock} />
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <PageHeader title="Vault" description="Your encrypted notes" />
-      {isLoading ? (
-        <div className="text-center py-16">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
-            Loading vault notes...
-          </p>
-        </div>
-      ) : error ? (
-        <div className="text-center py-16">
-          <p className="text-destructive text-lg mb-2">{error}</p>
-          <Button
-            onClick={loadVaultNotes}
-            variant="outline"
-            className="rounded-lg"
-          >
-            Retry
-          </Button>
-        </div>
-      ) : (
-        <>
-          <CardGrid>
-            {vaultNotes.map((note) => (
-              <ItemCard
-                key={note.id}
-                title={`Vault Note ${note.id.slice(0, 8)}`}
-                description={`Created ${new Date(
-                  note.createdAt
-                ).toLocaleDateString()}`}
-                tags={[{ label: "encrypted" }]}
-                pinned={false}
-              />
-            ))}
-          </CardGrid>
-          {vaultNotes.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-muted-foreground text-lg mb-2">
-                No encrypted notes yet
-              </p>
-              <p className="text-muted-foreground text-sm">
-                Add notes to your vault to keep them encrypted and secure
-              </p>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+    <AppShell activeRoute="/app/vault">
+      <div className="max-w-5xl mx-auto space-y-6">
+        <PageHeader title="Vault" description="Your encrypted notes" />
+        {isLoading ? (
+          <div className="text-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">
+              Loading vault notes...
+            </p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-16">
+            <p className="text-destructive text-lg mb-2">{error}</p>
+            <Button
+              onClick={loadVaultNotes}
+              variant="outline"
+              className="rounded-lg"
+            >
+              Retry
+            </Button>
+          </div>
+        ) : (
+          <>
+            <CardGrid>
+              {vaultNotes.map((note) => (
+                <ItemCard
+                  key={note.id}
+                  title={`Vault Note ${note.id.slice(0, 8)}`}
+                  description={`Created ${new Date(
+                    note.createdAt
+                  ).toLocaleDateString()}`}
+                  tags={[{ label: "encrypted" }]}
+                  pinned={false}
+                />
+              ))}
+            </CardGrid>
+            {vaultNotes.length === 0 && (
+              <div className="text-center py-16">
+                <p className="text-muted-foreground text-lg mb-2">
+                  No encrypted notes yet
+                </p>
+                <p className="text-muted-foreground text-sm">
+                  Add notes to your vault to keep them encrypted and secure
+                </p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </AppShell>
   );
 }
