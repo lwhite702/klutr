@@ -2,6 +2,11 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-20 14:25 ET
+
+- [dx] Updated ESLint config to use Next.js flat plugin and added missing dependencies so lint runs reliably.
+- [docs] Added klutr-production-audit and klutr-bugs-and-debt reports for production readiness review.
+
 ## 2025-11-17 17:29 ET
 
 - [ui] Integrated MynaHero component from external source

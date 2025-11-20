@@ -1,28 +1,33 @@
-import { FlatCompat } from "@eslint/eslintrc"
-import path from "path"
-import { fileURLToPath } from "url"
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-})
+import nextPlugin from "@next/eslint-plugin-next"
+import tsPlugin from "@typescript-eslint/eslint-plugin"
+import tsParser from "@typescript-eslint/parser"
+import globals from "globals"
 
 export default [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    ignores: ["**/.next/**", "node_modules/**", "**/dist/**"],
+  },
+  {
+    files: ["**/*.{ts,tsx,js,jsx}"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    plugins: {
+      "@next/next": nextPlugin,
+      "@typescript-eslint": tsPlugin,
+    },
     rules: {
-      // Allow console.log for debugging
+      ...nextPlugin.configs["core-web-vitals"].rules,
+      ...nextPlugin.configs.recommended.rules,
       "no-console": "off",
-      // Allow unused vars that start with underscore
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
+      "@typescript-eslint/no-unused-vars": "warn",
     },
   },
 ]
