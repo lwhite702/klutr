@@ -279,7 +279,6 @@ export default async function MarketingHomePage() {
                   "Everything in Free",
                   "MindStorm clustering",
                   "Weekly Insights",
-                  "Encrypted Vault",
                   "Unlimited notes",
                   "Priority support",
                 ]}

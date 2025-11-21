@@ -24,6 +24,13 @@ All notable changes to Klutr will be documented in this file.
 - [ui] Uses illustrations from barcelona and brooklyn directories exclusively
 - [build] Production build successful - all routes compile without errors
 
+## 2025-11-21 00:20 ET
+
+- [marketing] Removed "Encrypted Vault" from Pro plan pricing to align with current feature set
+- [fix] Wired up `isAnalyzing` state in StreamPage to show feedback during drops and uploads
+- [refactor] Removed unused handlers and imports in Insights, Memory, and Search pages to reduce bundle size
+- [docs] Updated audit reports to reflect P1 polish fixes
+
 ## 2025-11-20 15:13 ET
 
 - [feature] Rebuilt `/app/stacks` to show live smart stacks with pinned prioritization, search, and manual rebuild controls

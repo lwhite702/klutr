@@ -64,11 +64,11 @@ export default function MemoryLanePage() {
     try {
       setIsLoading(true);
       const response = await fetch('/api/weekly-summaries/list?limit=20');
-      
+
       if (!response.ok) {
         throw new Error('Failed to load summaries');
       }
-      
+
       const data = await response.json();
       setMemoryItems(data.summaries || []);
     } catch (error) {
@@ -85,11 +85,11 @@ export default function MemoryLanePage() {
       const response = await fetch('/api/weekly-summaries/generate', {
         method: 'POST',
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to generate summary');
       }
-      
+
       toast.success('Weekly summary generated!');
       await loadWeeklySummaries();
     } catch (error) {
@@ -109,16 +109,7 @@ export default function MemoryLanePage() {
     }
   };
 
-  const handleMemoryClick = (memoryId: string) => {
-    const summary = memoryItems.find(s => s.id === memoryId);
-    if (summary) {
-      toast.info(summary.summary, { duration: 10000 });
-    }
-  };
 
-  const handleMemoryFavorite = (memoryId: string) => {
-    toast.info('Favorites coming soon');
-  };
 
   return (
     <AppShell activeRoute="/app/memory">

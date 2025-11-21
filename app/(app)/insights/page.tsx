@@ -103,10 +103,7 @@ export default function InsightsPage() {
     }
   };
 
-  const handleInsightClick = (insightId: string) => {
-    // Navigate to related notes or cluster
-    toast.info("Insight details coming soon");
-  };
+
 
   const GenerateButton = () => (
     <Button

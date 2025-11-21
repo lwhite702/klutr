@@ -128,6 +128,7 @@ export default function StreamPage() {
 
   const handleSend = async (content: string) => {
     try {
+      setIsAnalyzing(true);
       // Optimistic update
       const tempId = `temp-${Date.now()}`;
       const optimisticDrop: StreamDrop = {
@@ -166,6 +167,8 @@ export default function StreamPage() {
       toast.error("Failed to add drop. Please try again.");
       // Remove optimistic drop on error
       setDrops((prev) => prev.filter((drop) => !drop.id.startsWith("temp-")));
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -176,6 +179,7 @@ export default function StreamPage() {
     }
 
     try {
+      setIsAnalyzing(true);
       for (const file of files) {
         // Upload file first
         const uploadResult = await uploadFile(file, user.id);
@@ -209,6 +213,8 @@ export default function StreamPage() {
     } catch (err) {
       console.error("[v0] File upload error:", err);
       toast.error("Failed to upload file. Please try again.");
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -219,6 +225,7 @@ export default function StreamPage() {
     }
 
     try {
+      setIsAnalyzing(true);
       // Convert blob to File for upload
       const audioFile = new File([audioBlob], `voice-${Date.now()}.webm`, {
         type: "audio/webm",
@@ -254,6 +261,8 @@ export default function StreamPage() {
       console.error("[v0] Voice upload error:", err);
       toast.error("Failed to save voice note. Please try again.");
       throw err;
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
