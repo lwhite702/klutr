@@ -2,6 +2,12 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-20 15:13 ET
+
+- [feature] Rebuilt `/app/stacks` to show live smart stacks with pinned prioritization, search, and manual rebuild controls
+- [feature] Enhanced `/app/stacks/[stack]` with summaries, keyword chips, filters, and refreshed loaders
+- [docs] Added build-branch production audit and bugs/debt reports for the stacks refresh
+
 ## 2025-11-17 17:29 ET
 
 - [ui] Integrated MynaHero component from external source
