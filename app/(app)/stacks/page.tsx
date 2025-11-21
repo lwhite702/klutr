@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Sparkles, RefreshCw, Pin } from "lucide-react";
+import { AlertCircle, Pin, RefreshCw, Sparkles } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { StackCard } from "@/components/stacks/StackCard";
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { apiGet } from "@/lib/clientApi";
 
@@ -101,6 +102,15 @@ export default function StacksPage() {
             </div>
           }
         />
+
+        <Alert variant="outline" className="border-amber-200 bg-amber-50">
+          <AlertCircle className="h-4 w-4 text-amber-600" />
+          <AlertTitle>Early beta</AlertTitle>
+          <AlertDescription>
+            Stacks is live again, but it is still in early beta. Expect occasional
+            rough edges or mis-grouped notes while we stabilize clustering.
+          </AlertDescription>
+        </Alert>
 
         <div className="grid gap-4 md:grid-cols-3">
           <div className="p-4 rounded-xl border bg-card shadow-sm">
