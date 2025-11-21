@@ -24,6 +24,12 @@ All notable changes to Klutr will be documented in this file.
 - [ui] Uses illustrations from barcelona and brooklyn directories exclusively
 - [build] Production build successful - all routes compile without errors
 
+## 2025-11-20 15:13 ET
+
+- [feature] Rebuilt `/app/stacks` to show live smart stacks with pinned prioritization, search, and manual rebuild controls
+- [feature] Enhanced `/app/stacks/[stack]` with summaries, keyword chips, filters, and refreshed loaders
+- [docs] Added build-branch production audit and bugs/debt reports for the stacks refresh
+
 ## 2025-11-20 14:25 ET
 
 - [dx] Updated ESLint config to use Next.js flat plugin and added missing dependencies so lint runs reliably.
