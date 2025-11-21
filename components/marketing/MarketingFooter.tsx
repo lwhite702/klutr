@@ -90,7 +90,8 @@ export default function MarketingFooter() {
   return (
     <footer className="bg-white border-t border-[#D6D6D6] py-12">
       <div className="container mx-auto px-6 max-w-[1440px]">
-        <div className="grid md:grid-cols-4 gap-12 mb-12">
+        <div className="grid md:grid-cols-3 gap-12 mb-12">
+          {/* Left: Logo + Description */}
           <div className="space-y-4">
             <div className="flex items-center">
               <Image
@@ -102,19 +103,21 @@ export default function MarketingFooter() {
                 priority
               />
             </div>
-            <p className="text-xl text-black/88 leading-[30px]">
-              Stay organized and productive with Klutr.
+            <p className="text-lg text-black/88 leading-relaxed">
+              Capture anything, let AI organize everything. Klutr turns scattered ideas into clear insights.
             </p>
           </div>
+          
+          {/* Center: Product, Features, Pricing, Docs, Support */}
           <div>
-            <h3 className="font-medium text-2xl mb-6 text-black">Explore</h3>
-            <ul className="space-y-3 text-xl text-black">
+            <h3 className="font-medium text-xl mb-6 text-black">Links</h3>
+            <ul className="space-y-3 text-lg text-black">
               <li>
                 <Link
-                  href="/pricing"
+                  href="/"
                   className="hover:text-[var(--klutr-coral)] transition-colors"
                 >
-                  Pricing
+                  Product
                 </Link>
               </li>
               <li>
@@ -127,29 +130,41 @@ export default function MarketingFooter() {
               </li>
               <li>
                 <Link
-                  href="/blog"
+                  href="/pricing"
                   className="hover:text-[var(--klutr-coral)] transition-colors"
                 >
-                  Blog
+                  Pricing
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/changelog"
+                  href={process.env.NEXT_PUBLIC_DOCS_URL || "https://help.klutr.app"}
+                  className="hover:text-[var(--klutr-coral)] transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Docs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/help"
                   className="hover:text-[var(--klutr-coral)] transition-colors"
                 >
-                  Changelog
+                  Support
                 </Link>
               </li>
             </ul>
           </div>
+          
+          {/* Right: Newsletter + Social */}
           <div>
-            <h3 className="font-medium text-2xl mb-6 text-black">
-              Keep in touch
+            <h3 className="font-medium text-xl mb-6 text-black">
+              Newsletter
             </h3>
             <EmailSignup />
             <div className="mt-8">
-              <h4 className="font-medium text-2xl mb-4 text-black">
+              <h4 className="font-medium text-lg mb-4 text-black">
                 Follow us
               </h4>
               <div className="flex items-center gap-4">
@@ -183,27 +198,6 @@ export default function MarketingFooter() {
               </div>
             </div>
           </div>
-          <div>
-            <h3 className="font-medium text-2xl mb-6 text-black">Resources</h3>
-            <ul className="space-y-3 text-xl text-black">
-              <li>
-                <Link
-                  href="/help"
-                  className="hover:text-[var(--klutr-coral)] transition-colors"
-                >
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/roadmap"
-                  className="hover:text-[var(--klutr-coral)] transition-colors"
-                >
-                  Roadmap
-                </Link>
-              </li>
-            </ul>
-          </div>
         </div>
 
         <div className="pt-8 border-t border-[#D6D6D6] flex flex-col md:flex-row justify-between items-center gap-4">
@@ -235,3 +229,4 @@ export default function MarketingFooter() {
     </footer>
   );
 }
+

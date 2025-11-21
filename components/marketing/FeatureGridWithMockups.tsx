@@ -19,7 +19,7 @@ interface FeatureGridWithMockupsProps {
 }
 
 export default function FeatureGridWithMockups({
-  headline = "The features Both familiar and new.",
+  headline = "Both familiar and new.",
   features,
 }: FeatureGridWithMockupsProps) {
   const getGradientClass = (color: Feature["gradientColor"]) => {
@@ -40,7 +40,7 @@ export default function FeatureGridWithMockups({
   };
 
   return (
-    <section className="container mx-auto px-6 py-20">
+    <section id="features" className="container mx-auto px-6 py-20">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -45,22 +45,16 @@ export default function MarketingHeader() {
           )}
           <div className="hidden md:flex items-center gap-8">
             <Link
+              href="/"
+              className="text-lg font-normal text-black hover:text-[var(--klutr-coral)] transition-colors"
+            >
+              Product
+            </Link>
+            <Link
               href="/features"
               className="text-lg font-normal text-black hover:text-[var(--klutr-coral)] transition-colors"
             >
               Features
-            </Link>
-            <Link
-              href="/neurodivergent"
-              className="text-lg font-normal text-black hover:text-[var(--klutr-coral)] transition-colors"
-            >
-              For Neurodivergent Minds
-            </Link>
-            <Link
-              href="/compare"
-              className="text-lg font-normal text-black hover:text-[var(--klutr-coral)] transition-colors"
-            >
-              Compare Us
             </Link>
             <Link
               href="/pricing"
@@ -76,7 +70,7 @@ export default function MarketingHeader() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Help
+              Docs
             </Link>
           </div>
           <Button
@@ -86,8 +80,8 @@ export default function MarketingHeader() {
             }}
             asChild
           >
-            <Link href="/login" aria-label="Join free beta">
-              Join Free
+            <Link href="/login" aria-label="Join Beta Free">
+              Join Beta Free
             </Link>
           </Button>
         </nav>

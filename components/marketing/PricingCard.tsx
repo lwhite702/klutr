@@ -20,6 +20,9 @@ interface PricingCardProps {
   cta: string;
   ctaLink: string;
   highlighted?: boolean;
+  isBeta?: boolean;
+  betaBadgeText?: string;
+  lifetimeDiscountNote?: string;
 }
 
 export default function PricingCard({
@@ -30,6 +33,9 @@ export default function PricingCard({
   cta,
   ctaLink,
   highlighted = false,
+  isBeta = false,
+  betaBadgeText = "Join now. Save forever.",
+  lifetimeDiscountNote,
 }: PricingCardProps) {
   return (
     <motion.div
@@ -47,9 +53,9 @@ export default function PricingCard({
             : "border-[var(--klutr-outline)]/20"
         }`}
       >
-        {highlighted && (
+        {(highlighted || isBeta) && (
           <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[var(--klutr-coral)] text-white px-4 py-1 rounded-full text-sm font-semibold">
-            Most Popular
+            {isBeta ? betaBadgeText : "Most Popular"}
           </div>
         )}
         <CardHeader className="text-center space-y-4 pt-8">
@@ -61,6 +67,11 @@ export default function PricingCard({
             {price !== "Free" && (
               <CardDescription className="text-sm">
                 per {period}
+              </CardDescription>
+            )}
+            {isBeta && lifetimeDiscountNote && (
+              <CardDescription className="text-xs text-[var(--klutr-coral)] dark:text-[var(--klutr-coral)] font-medium pt-2">
+                {lifetimeDiscountNote}
               </CardDescription>
             )}
           </div>

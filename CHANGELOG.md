@@ -2,6 +2,28 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-20 21:57 ET
+
+- [marketing] Complete landing page redesign following Fintask-inspired wireframe structure
+- [marketing] Updated MarketingHeader with Product/Features/Pricing/Docs navigation and "Join Beta Free" CTA
+- [marketing] Redesigned Hero component: left-aligned headline "Organize your chaos. Keep the spark." with right-aligned floating UI mockup showing Stream, MindStorm, and Insights panels
+- [marketing] Created UIPreviewStrip component: thin section with floating overlapping cards showing Stream, MindStorm, and Insights
+- [marketing] Updated FeatureGridWithMockups: headline changed to "Both familiar and new." with three feature tiles (Stream everything instantly, MindStorm to find patterns, Insights that reveal meaning)
+- [marketing] Created ColorBlockSection reusable component for horizontal color-block sections with left-aligned text and right-aligned UI preview
+- [marketing] Added 4 color-block sections: Coral (Stream), Teal (MindStorm), Soft Neutral (Memory), Purple (Organization)
+- [marketing] Created BetaCTABlock component: full-width high-contrast section with "Ready to clear the clutter?" headline and lifetime discount messaging
+- [marketing] Updated PersonaGrid with 4 new personas: The Fast Thinker, The Overloaded Multi-Tasker, The Creative Brain, The Organizer-at-Heart
+- [marketing] Updated PricingCard component to support beta badge ("Join now. Save forever.") and lifetime discount note
+- [marketing] Updated pricing section with Free (Beta), Pro, and Team plans with beta badge highlighting
+- [marketing] Created FinalCTAStrip component: thin centered layout with "Still deciding?" messaging and "Get Early Access" button
+- [marketing] Updated MarketingFooter to match Fintask structure: logo+description left, Product/Features/Pricing/Docs/Support center, newsletter+social right
+- [marketing] Reorganized app/(marketing)/page.tsx to match wireframe section order: Header, Hero, UIPreviewStrip, FeatureGrid, ColorBlocks, BetaCTA, PersonaGrid, Pricing, FinalCTA, Footer
+- [ui] All new components use Klutr brand colors (coral #FF6B6B, mint #00C896, slate #111111, soft neutral #F7F7F9)
+- [ui] Framer Motion animations throughout with smooth scroll-triggered reveals
+- [ui] Responsive design maintained across all new components
+- [ui] Uses illustrations from barcelona and brooklyn directories exclusively
+- [build] Production build successful - all routes compile without errors
+
 ## 2025-11-19 10:30 ET
 
 - [audit] Completed comprehensive production readiness audit (85% ready)
