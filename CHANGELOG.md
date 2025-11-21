@@ -2,6 +2,12 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-21 06:30 ET
+
+- [fix][ux-stall] Hardened Supabase login flow with pre-checks, stall guard, and fallback redirect to /app/stream to eliminate infinite spinners
+- [fix][ux-stall] Added feature-flagged PostHog stall logging plus API timeouts to prevent silent waits across authenticated surfaces
+- [fix][ux-stall] Stream panel now surfaces stalled loads with retry/refresh affordances and records silent errors for debugging
+
 ## 2025-11-20 21:57 ET
 
 - [marketing] Complete landing page redesign following Fintask-inspired wireframe structure

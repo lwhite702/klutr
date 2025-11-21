@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useCallback, useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -19,6 +19,8 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Lightbulb, Mail, Lock, ArrowRight, Sparkles } from "lucide-react";
+import { useStallGuard } from "@/lib/hooks/useStallGuard";
+import { captureFlaggedEvent } from "@/lib/posthog/client";
 
 function LoginForm() {
   const router = useRouter();
@@ -26,15 +28,106 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("Checking your session…");
+  const [authChecked, setAuthChecked] = useState(false);
 
-  const redirect = searchParams.get("redirect") || "/app";
+  const redirect = useMemo(() => {
+    const value = searchParams.get("redirect") || "/app/stream";
+    return value.startsWith("/") ? value : "/app/stream";
+  }, [searchParams]);
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.info("[auth] event", event);
+      captureFlaggedEvent("auth_event", {
+        event,
+        hasSession: Boolean(session),
+        redirect,
+      });
+
+      if (event === "SIGNED_IN" && session) {
+        setStatusMessage("Signed in. Redirecting you now…");
+        setLoading(false);
+        router.replace(redirect);
+      }
+
+      if (event === "SIGNED_OUT") {
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      data.subscription.unsubscribe();
+    };
+  }, [redirect, router]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function hydrateSession() {
+      setLoading(true);
+      setStatusMessage("Verifying your session…");
+
+      try {
+        const { data, error } = await supabase.auth.getSession();
+
+        if (cancelled) return;
+
+        if (error) {
+          throw error;
+        }
+
+        if (data.session) {
+          setStatusMessage("Session found. Redirecting…");
+          router.replace(redirect);
+          return;
+        }
+
+        setStatusMessage("Ready when you are.");
+      } catch (error: any) {
+        captureFlaggedEvent("auth_stall", {
+          message: error?.message,
+          redirect,
+        });
+        toast.error("We couldn't confirm your session. Please sign in again.");
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+          setAuthChecked(true);
+        }
+      }
+    }
+
+    hydrateSession();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [redirect, router]);
+
+  const { stalled } = useStallGuard({
+    active: loading && !authChecked,
+    label: "auth-flow",
+    timeoutMs: 5500,
+    onTimeout: () => {
+      setStatusMessage("Still working… If this hangs, try the fallback redirect.");
+      captureFlaggedEvent("auth_stall", { redirect });
+    },
+  });
+
+  const forceRedirect = useCallback(() => {
+    setStatusMessage("Jumping ahead to the app…");
+    captureFlaggedEvent("auth_stall", { redirect, forced: true });
+    router.replace(redirect);
+  }, [redirect, router]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setStatusMessage("Signing you in…");
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -44,11 +137,17 @@ function LoginForm() {
       toast.success("Welcome back! Organizing your chaos...");
       router.push(redirect);
     } catch (error: any) {
+      captureFlaggedEvent("auth_stall", {
+        message: error?.message,
+        redirect,
+        surface: "password",
+      });
       toast.error(
         error.message || "Couldn't sign you in. Check your email and password."
       );
     } finally {
       setLoading(false);
+      setStatusMessage("Ready when you are.");
     }
   }
 
@@ -213,7 +312,7 @@ function LoginForm() {
                   {loading ? (
                     <span className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 animate-spin" />
-                      Signing in...
+                      {stalled ? "Still working…" : "Signing in..."}
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
@@ -253,6 +352,14 @@ function LoginForm() {
                 </div>
               </CardFooter>
             </form>
+            <div className="px-6 pb-6 text-sm text-center text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
+              <p className="mb-2">{statusMessage}</p>
+              {stalled && (
+                <Button variant="ghost" size="sm" onClick={forceRedirect}>
+                  Skip the spinner and go to your workspace
+                </Button>
+              )}
+            </div>
           </Card>
         </motion.div>
       </div>
