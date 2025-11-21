@@ -24,6 +24,11 @@ All notable changes to Klutr will be documented in this file.
 - [ui] Uses illustrations from barcelona and brooklyn directories exclusively
 - [build] Production build successful - all routes compile without errors
 
+## 2025-11-20 14:25 ET
+
+- [dx] Updated ESLint config to use Next.js flat plugin and added missing dependencies so lint runs reliably.
+- [docs] Added klutr-production-audit and klutr-bugs-and-debt reports for production readiness review.
+
 ## 2025-11-19 10:30 ET
 
 - [audit] Completed comprehensive production readiness audit (85% ready)
