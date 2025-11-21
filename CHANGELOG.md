@@ -2,6 +2,12 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-21 06:16 ET
+
+- [cleanup][teams-disabled] Added a global `teamsEnabled` runtime flag defaulting to false and gated BaseHub seeding to skip Team tiers while retained for future reuse
+- [cleanup][teams-disabled] Hid the Teams tier from marketing home and pricing pages, shifting pricing/use-case layouts to Free (Beta) and Pro only
+- [cleanup][teams-disabled] Refreshed marketing copy and mock data to remove team-collaboration promises while keeping individual upgrade flows focused on Pro
+
 ## 2025-11-20 21:57 ET
 
 - [marketing] Complete landing page redesign following Fintask-inspired wireframe structure

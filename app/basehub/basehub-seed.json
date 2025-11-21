@@ -153,6 +153,7 @@
       {
         "tierName": "Team",
         "price": "$20/mo/user",
+        "disabled": true,
         "features": [
           "Collaboration features",
           "Shared topics and threads",

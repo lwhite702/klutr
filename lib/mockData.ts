@@ -129,7 +129,7 @@ export const mockStackItems = {
     {
       id: "cw1",
       title: "Q4 Product Roadmap",
-      description: "Features: AI clustering, export options, team collaboration.",
+      description: "Features: AI clustering, export options, presentation-ready summaries.",
       tags: [{ label: "planning" }, { label: "work" }],
       pinned: true,
     },
