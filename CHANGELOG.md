@@ -2,6 +2,16 @@
 
 All notable changes to Klutr will be documented in this file.
 
+## 2025-11-19 10:30 ET
+
+- [audit] Completed comprehensive production readiness audit (85% ready)
+- [fix] Hidden Vault feature from sidebar as it is currently a UI placeholder
+- [fix] Refactored MindStormPanel to use `clientApi` and `useRouter` for robust navigation
+- [fix] Refactored StreamInput and Textarea to use `forwardRef` for reliable focus management
+- [fix] Updated StreamPage 'n' keyboard shortcut to use React refs instead of brittle DOM queries
+- [docs] Created `reports/klutr-production-audit.md` with detailed findings
+- [docs] Created `reports/klutr-bugs-and-debt.md` with known issues list
+
 ## 2025-11-17 17:29 ET
 
 - [ui] Integrated MynaHero component from external source

@@ -65,12 +65,12 @@ const pageItems = [
     icon: LayoutDashboard,
     color: brandColors.mint,
   },
-  {
-    href: "/app/vault",
-    label: "Vault",
-    icon: Lock,
-    color: brandColors.coral,
-  },
+  // {
+  //   href: "/app/vault",
+  //   label: "Vault",
+  //   icon: Lock,
+  //   color: brandColors.coral,
+  // },
   {
     href: "/app/nope",
     label: "Nope Bin",
@@ -132,8 +132,8 @@ export function SidebarNav() {
             style={isActive ? { borderLeftColor: brandColors.coral } : undefined}
             asChild
           >
-            <Link 
-              href={item.href} 
+            <Link
+              href={item.href}
               onClick={() => {
                 posthog.capture('sidebar_navigation_link_clicked', {
                   target_href: item.href,

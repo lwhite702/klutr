@@ -37,6 +37,7 @@ export default function StreamPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const streamInputRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
   const { user, loading: userLoading } = useCurrentUser();
   const { openPanel } = usePanelState();
@@ -91,8 +92,7 @@ export default function StreamPage() {
       key: "n",
       meta: true,
       handler: () => {
-        // Focus input (would need ref to StreamInput)
-        document.querySelector("textarea")?.focus();
+        streamInputRef.current?.focus();
       },
       description: "New drop",
     },
@@ -310,6 +310,7 @@ export default function StreamPage() {
                     />
                   </div>
                   <StreamInput
+                    ref={streamInputRef}
                     onSend={handleSend}
                     onFileUpload={handleFileUpload}
                   />

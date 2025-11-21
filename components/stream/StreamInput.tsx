@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, KeyboardEvent } from "react";
+import { useState, useRef, KeyboardEvent, forwardRef, useImperativeHandle } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Paperclip, Send } from "lucide-react";
@@ -12,23 +12,25 @@ interface StreamInputProps {
   placeholder?: string;
 }
 
-export function StreamInput({
+export const StreamInput = forwardRef<HTMLTextAreaElement, StreamInputProps>(({
   onSend,
   onFileUpload,
   placeholder = "Type your thoughts...",
-}: StreamInputProps) {
+}, ref) => {
   const [input, setInput] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const internalRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => internalRef.current as HTMLTextAreaElement);
 
   const handleSend = () => {
     if (input.trim()) {
       onSend(input.trim());
       setInput("");
       setIsExpanded(false);
-      if (textareaRef.current) {
-        textareaRef.current.style.height = "auto";
+      if (internalRef.current) {
+        internalRef.current.style.height = "auto";
       }
     }
   };
@@ -66,7 +68,7 @@ export function StreamInput({
       <div className="flex items-end gap-2">
         <div className="flex-1 relative">
           <Textarea
-            ref={textareaRef}
+            ref={internalRef}
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
@@ -116,5 +118,7 @@ export function StreamInput({
       )}
     </div>
   );
-}
+});
+
+StreamInput.displayName = "StreamInput";
 

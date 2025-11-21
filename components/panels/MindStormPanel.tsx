@@ -8,6 +8,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { PanelHeader } from "./PanelContainer"
 import { toast } from "sonner"
 import posthog from 'posthog-js'
+import { useRouter } from "next/navigation"
+import { apiGet, apiPost } from "@/lib/clientApi"
 
 interface Cluster {
   id: string
@@ -31,6 +33,8 @@ export function MindStormPanel() {
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
 
+  const router = useRouter()
+
   // Load clusters from API
   useEffect(() => {
     loadClusters()
@@ -39,10 +43,7 @@ export function MindStormPanel() {
   async function loadClusters() {
     try {
       setIsLoading(true)
-      const response = await fetch('/api/notes/clusters')
-      if (!response.ok) throw new Error('Failed to load clusters')
-      
-      const data = await response.json()
+      const data = await apiGet<{ clusters: Cluster[] }>('/api/notes/clusters')
       setClusters(data.clusters || [])
     } catch (error) {
       console.error('[MindStorm] Error loading clusters:', error)
@@ -54,17 +55,13 @@ export function MindStormPanel() {
 
   const handleRecluster = async () => {
     posthog.capture('mindstorm-recluster-clicked', { source: 'panel' })
-    
+
     try {
       setIsRefreshing(true)
-      const response = await fetch('/api/notes/clusters/refresh', {
-        method: 'POST',
-      })
-      
-      if (!response.ok) throw new Error('Failed to trigger reclustering')
-      
+      await apiPost('/api/notes/clusters/refresh', {})
+
       toast.success('Clustering started. This may take a few minutes.')
-      
+
       // Reload clusters after a delay
       setTimeout(() => {
         loadClusters()
@@ -81,7 +78,7 @@ export function MindStormPanel() {
     // Navigate to cluster view
     const cluster = clusters.find(c => c.id === clusterId)
     if (cluster) {
-      window.location.href = `/stacks/${encodeURIComponent(cluster.name)}`
+      router.push(`/stacks/${encodeURIComponent(cluster.name)}`)
     }
   }
 
@@ -110,7 +107,7 @@ export function MindStormPanel() {
           </Button>
         }
       />
-      
+
       <ScrollArea className="flex-1">
         <div className="p-6 space-y-4">
           {isLoading ? (
