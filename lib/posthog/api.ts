@@ -316,6 +316,42 @@ export async function createDefaultFeatureFlags(): Promise<void> {
       description: "AI classification for message topics and sentiment",
       active: true,
     },
+    {
+      key: FEATURE_FLAGS.KLUTR_MARKETING_REDESIGN,
+      name: "Klutr Marketing Redesign",
+      description: "Controls the redesigned Klutr marketing landing page",
+      active: false,
+    },
+    {
+      key: FEATURE_FLAGS.KLUTR_BETA_GATE_ENABLED,
+      name: "Klutr Beta Gate Enabled",
+      description: "Protect marketing routes behind the beta access gate",
+      active: false,
+    },
+    {
+      key: FEATURE_FLAGS.KLUTR_PERSONAS_SECTION,
+      name: "Klutr Personas Section",
+      description: "Toggle persona-driven storytelling on marketing pages",
+      active: false,
+    },
+    {
+      key: FEATURE_FLAGS.KLUTR_ROTATING_WORDS,
+      name: "Klutr Rotating Words",
+      description: "Toggle rotating hero words animation on marketing hero",
+      active: false,
+    },
+    {
+      key: FEATURE_FLAGS.KLUTR_FEATURE_ILLUSTRATIONS,
+      name: "Klutr Feature Illustrations",
+      description: "Enable feature illustration blocks on marketing pages",
+      active: false,
+    },
+    {
+      key: FEATURE_FLAGS.KLUTR_PATTERNS_ENABLED,
+      name: "Klutr Patterns Enabled",
+      description: "Enable decorative marketing patterns for layout balance",
+      active: false,
+    },
   ];
 
   console.log("[PostHog API] Creating default feature flags...");

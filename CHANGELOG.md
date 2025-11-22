@@ -711,3 +711,9 @@ _For full details, see the git commit history and documentation in `/docs`._
 ## 2025-11-21 06:20 ET
 
 - [ui] Restored the Stacks page with early-beta messaging and interactive controls instead of redirecting to Stream.
+
+## 2025-11-22 17:16 ET
+
+- [feature] Cleaned custom marketing illustrations for stream, MindStorm clusters, and insights with light and dark variants.
+- [infra] Added marketing feature flag keys and default PostHog seed entries for beta gate and redesign experiments.
+- [ui] Extended illustration mapping with custom theme-aware paths and descriptive alt text for new marketing artwork.
