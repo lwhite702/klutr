@@ -690,3 +690,13 @@ If you're upgrading from the previous version:
 ---
 
 _For full details, see the git commit history and documentation in `/docs`._
+
+## 2025-11-21 06:15 ET
+
+- [ui] Redirected Vault and Stacks app routes to Stream with beta pause messaging to remove unfinished experiences.
+- [marketing] Removed Vault/Stacks promotion across features and pricing pages and added a data ownership & security clarification section.
+- [docs] Updated in-app help content to explain the temporary pause of Vault and Stacks during beta.
+
+## 2025-11-21 06:20 ET
+
+- [ui] Restored the Stacks page with early-beta messaging and interactive controls instead of redirecting to Stream.

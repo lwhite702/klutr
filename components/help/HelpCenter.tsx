@@ -62,36 +62,12 @@ const helpArticles: HelpArticle[] = [
     tags: ["recluster", "mindstorm", "update"],
   },
   {
-    id: "stacks-overview",
-    section: "Stacks",
-    title: "What are stacks?",
+    id: "beta-status",
+    section: "Beta",
+    title: "Why did Vault and Stacks move?",
     content:
-      "Stacks are collections of related notes organized by topic, project, or theme. Browse your stacks to find notes grouped by tags and categories. Similar tags create related stacks you can explore.",
-    tags: ["stacks", "collections", "organization"],
-  },
-  {
-    id: "stacks-pin",
-    section: "Stacks",
-    title: "Pin important stacks",
-    content:
-      "Pin stacks you use frequently for quick access. Pinned stacks appear at the top of your list. Click the pin icon on any stack card to pin or unpin it.",
-    tags: ["pin", "stacks", "favorites"],
-  },
-  {
-    id: "vault-encryption",
-    section: "Vault",
-    title: "How encryption works",
-    content:
-      "Your vault encrypts notes on your device before uploading them to our servers. We use AES-GCM encryption and never see your plaintext content. Keys are derived from your password using PBKDF2.",
-    tags: ["encryption", "privacy", "vault"],
-  },
-  {
-    id: "vault-unlock",
-    section: "Vault",
-    title: "Unlocking your vault",
-    content:
-      "Enter your vault password to unlock and view your encrypted notes. Keys are derived from your password and never stored on our servers. If you lose your password, your vault contents cannot be recovered.",
-    tags: ["unlock", "password", "vault"],
+      "During beta we’re focusing on Stream, MindStorm, and Search. Vault and Stacks are temporarily routed to Stream while we tighten security reviews and clustering quality.",
+    tags: ["beta", "vault", "stacks"],
   },
   {
     id: "insights-overview",

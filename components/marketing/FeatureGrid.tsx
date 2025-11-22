@@ -58,7 +58,11 @@ const featureIcons: Record<string, React.ComponentType<{ className?: string }>> 
 }
 
 export default function FeatureGrid({ features }: FeatureGridProps) {
-  if (features.length === 0) {
+  const visibleFeatures = features.filter(
+    (feature) => !["Vault", "Stacks", "Smart Stacks"].includes(feature.name)
+  )
+
+  if (visibleFeatures.length === 0) {
     return (
       <section
         id="features"
@@ -75,8 +79,8 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
   // Split features into groups for different layouts
   // First 2-3 features get full-width alternating layout
   // Remaining features get card grid layout
-  const featuredFeatures = features.slice(0, 3)
-  const gridFeatures = features.slice(3)
+  const featuredFeatures = visibleFeatures.slice(0, 3)
+  const gridFeatures = visibleFeatures.slice(3)
 
   return (
     <section
