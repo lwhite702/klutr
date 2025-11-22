@@ -18,12 +18,12 @@ export async function generateMetadata(): Promise<Metadata> {
     title: meta?.seoTitle ?? "Features — Klutr",
     description:
       meta?.metaDescription ??
-      "Discover all the features that make Klutr the best AI-powered note-taking app. Stream, Boards, Muse, Vault, and more.",
+      "Discover the core features that make Klutr the best AI-powered note-taking app. Stream-first capture, automatic organization, and a rediscovery-friendly timeline.",
     openGraph: {
       title: meta?.seoTitle ?? "Features — Klutr",
       description:
         meta?.metaDescription ??
-        "Discover all the features that make Klutr the best AI-powered note-taking app. Stream, Boards, Muse, Vault, and more.",
+        "Discover the core features that make Klutr the best AI-powered note-taking app. Stream-first capture, automatic organization, and a rediscovery-friendly timeline.",
       url: "https://klutr.app/features",
       siteName: "Klutr",
     },
@@ -39,7 +39,9 @@ export const revalidate = 60;
 
 export default async function FeaturesPage() {
   const featuresContent = await getFeaturesContent();
-  const features = await getFeatures();
+  const features = (await getFeatures()).filter(
+    (feature) => !["Vault", "Stacks", "Smart Stacks"].includes(feature.name)
+  );
 
   // Use BaseHub featureGridBlock heading if available
   const heading = featuresContent.featureGridBlock?.heading || "Everything you need to organize your chaos";
@@ -57,7 +59,9 @@ export default async function FeaturesPage() {
             <p className="text-xl font-body text-[var(--klutr-text-primary-light)]/70 dark:text-[var(--klutr-text-primary-dark)]/70">
               Klutr is a conversational workspace where all your input—text,
               voice, images, files—flows naturally through a Stream interface
-              and gets automatically organized on the backend.
+              and gets automatically organized on the backend. We’re shipping
+              the reliable, everyday tools first while Vault and Stacks stay
+              paused during beta.
             </p>
           </AnimatedFadeIn>
 
@@ -95,19 +99,19 @@ export default async function FeaturesPage() {
                 ctaLink: "/login",
               },
               {
-                id: "vault-spotlight",
-                preheader: "Secure",
+                id: "ownership-spotlight",
+                preheader: "Trust",
                 title: (
                   <>
-                    Your encrypted <span className="text-[#FF6B6B]">Vault</span>
+                    Data ownership &amp; clarity
                   </>
                 ),
                 description:
-                  "Sensitive notes stay encrypted. On-device processing and end-to-end encryption keep your thoughts private. Only you can access what's in your Vault.",
-                imageSrc: "/illustrations/barcelona/Enter-Password-1--Streamline-Barcelona.svg",
-                imageAlt: "Encrypted vault for sensitive notes",
-                ctaText: "Learn About Vault",
-                ctaLink: "/login",
+                  "You control what you capture and how it’s used. During beta we’re focused on secure defaults, transparent storage, and exportability instead of unfinished encryption claims.",
+                imageSrc: "/illustrations/brooklyn/Success-3--Streamline-Brooklyn.svg",
+                imageAlt: "Data ownership and clarity",                
+                ctaText: "See how we handle data",
+                ctaLink: "/pricing#security",
               },
             ]}
             accentColor="coral"
@@ -151,8 +155,8 @@ export default async function FeaturesPage() {
               reverse={false}
             />
             <FeatureModule
-              title="Vault"
-              description="Your encrypted zone for sensitive notes."
+              title="Data ownership"
+              description="Clear exports, transparent storage, and user control while Vault is paused."
               reverse={true}
             />
           </div>

@@ -20,6 +20,8 @@ import { useRouter } from "next/navigation";
 import type { StreamDrop } from "@/lib/types/stream";
 import type { NoteDTO } from "@/lib/dto";
 import { usePanelState } from "@/lib/hooks/usePanelState";
+import { useStallGuard } from "@/lib/hooks/useStallGuard";
+import { captureFlaggedEvent } from "@/lib/posthog/client";
 
 interface StreamDropsResponse {
   drops: NoteDTO[];
@@ -41,6 +43,15 @@ export default function StreamPage() {
   const router = useRouter();
   const { user, loading: userLoading } = useCurrentUser();
   const { openPanel } = usePanelState();
+  const { stalled } = useStallGuard({
+    active: isLoading,
+    label: "stream-load",
+    timeoutMs: 6000,
+    onTimeout: () => {
+      setError("Stream is taking longer than usual. Tap retry to reload.");
+      captureFlaggedEvent("stuck_load", { surface: "stream", timeoutMs: 6000 });
+    },
+  });
 
   // Load drops on mount
   useEffect(() => {
@@ -102,7 +113,10 @@ export default function StreamPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await apiGet<StreamDropsResponse>("/api/stream/list");
+      const response = await apiGet<StreamDropsResponse>(
+        "/api/stream/list",
+        "stream-load"
+      );
       if (response.drops) {
         // Convert NoteDTO to StreamDrop format
         const streamDrops: StreamDrop[] = response.drops.map((drop) => ({
@@ -119,6 +133,10 @@ export default function StreamPage() {
       }
     } catch (err) {
       console.error("[v0] Load drops error:", err);
+      captureFlaggedEvent("silent_error", {
+        surface: "stream-load",
+        message: err instanceof Error ? err.message : "unknown",
+      });
       setError("Failed to load stream. Please try again.");
       setDrops([]);
     } finally {
@@ -182,19 +200,23 @@ export default function StreamPage() {
       setIsAnalyzing(true);
       for (const file of files) {
         // Upload file first
-        const uploadResult = await uploadFile(file, user.id);
+      const uploadResult = await uploadFile(file, user.id);
 
-        const dropType = await classifyDrop("", file.type);
+      const dropType = await classifyDrop("", file.type);
 
-        // Create drop with file URL
-        const response = await apiPost<NoteDTO>("/api/stream/create", {
+      // Create drop with file URL
+      const response = await apiPost<NoteDTO>(
+        "/api/stream/create",
+        {
           content: file.name,
           dropType,
           fileUrl: uploadResult.fileUrl,
           fileName: uploadResult.fileName,
           fileType: uploadResult.fileType,
           type: "misc",
-        });
+        },
+        "stream-upload"
+      );
 
         const newDrop: StreamDrop = {
           id: response.id,
@@ -276,7 +298,25 @@ export default function StreamPage() {
               <ScrollArea className="flex-1" ref={scrollRef}>
                 <div className="max-w-[1100px] mx-auto px-6 py-6">
                   {isLoading ? (
-                    <StreamSkeleton />
+                    <div className="space-y-3">
+                      <StreamSkeleton />
+                      {stalled && (
+                        <div className="text-center text-sm text-muted-foreground">
+                          <p className="mb-2">
+                            Stream load is taking longer than expected. You can retry now.
+                          </p>
+                          <button
+                            className="underline"
+                            onClick={() => {
+                              loadDrops();
+                              router.refresh();
+                            }}
+                          >
+                            Retry stream load
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   ) : error ? (
                     <div className="text-center py-16">
                       <p className="text-destructive text-lg mb-2">{error}</p>

@@ -2,11 +2,16 @@
 
 All notable changes to Klutr will be documented in this file.
 
-## 2025-11-21 06:16 ET
+a## 2025-11-21 06:16 ET
 
 - [cleanup][teams-disabled] Added a global `teamsEnabled` runtime flag defaulting to false and gated BaseHub seeding to skip Team tiers while retained for future reuse
 - [cleanup][teams-disabled] Hid the Teams tier from marketing home and pricing pages, shifting pricing/use-case layouts to Free (Beta) and Pro only
 - [cleanup][teams-disabled] Refreshed marketing copy and mock data to remove team-collaboration promises while keeping individual upgrade flows focused on Pro
+## 2025-11-21 06:30 ET
+
+- [fix][ux-stall] Hardened Supabase login flow with pre-checks, stall guard, and fallback redirect to /app/stream to eliminate infinite spinners
+- [fix][ux-stall] Added feature-flagged PostHog stall logging plus API timeouts to prevent silent waits across authenticated surfaces
+- [fix][ux-stall] Stream panel now surfaces stalled loads with retry/refresh affordances and records silent errors for debugging
 
 ## 2025-11-20 21:57 ET
 
@@ -696,3 +701,13 @@ If you're upgrading from the previous version:
 ---
 
 _For full details, see the git commit history and documentation in `/docs`._
+
+## 2025-11-21 06:15 ET
+
+- [ui] Redirected Vault and Stacks app routes to Stream with beta pause messaging to remove unfinished experiences.
+- [marketing] Removed Vault/Stacks promotion across features and pricing pages and added a data ownership & security clarification section.
+- [docs] Updated in-app help content to explain the temporary pause of Vault and Stacks during beta.
+
+## 2025-11-21 06:20 ET
+
+- [ui] Restored the Stacks page with early-beta messaging and interactive controls instead of redirecting to Stream.

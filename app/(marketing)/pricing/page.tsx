@@ -66,7 +66,7 @@ const faqItems = [
   {
     question: "Is my data secure?",
     answer:
-      "Absolutely. Klutr uses end-to-end encryption for Vault notes and Supabase Row-Level Security (RLS) to keep your data safe and private. We never see your plaintext vault contents.",
+      "Yes. We use Supabase Row-Level Security (RLS), scoped service roles, and encrypted storage to keep your workspace private. Vault is paused during beta while we complete the next security review.",
   },
   {
     question: "Can I import notes from other apps?",
@@ -111,14 +111,14 @@ const useCases = [
     icon: <Rocket className="w-7 h-7 text-white" />,
   },
   {
-    title: "For Teams",
+    title: "For Beta Builders",
     description:
-      "Collaborate on boards, share insights, manage team knowledge. Perfect for teams that need to organize collective chaos while maintaining individual workflows.",
+      "You like unfinished edges and want to influence the roadmap. Get rapid updates, clearer security notes, and early access to tagging and export tools.",
     features: [
-      "Shared boards for team collaboration",
-      "Role-based permissions for security",
-      "Team insights and analytics",
-      "Admin dashboard for management",
+      "Priority on beta feedback loops",
+      "Early access to manual tags and exports",
+      "Transparent data ownership controls",
+      "Stream-first workflow refinements",
     ],
     icon: <Users className="w-7 h-7 text-white" />,
   },
@@ -179,6 +179,41 @@ export default async function PricingPage() {
             >
               <Link href="/help">Contact Support</Link>
             </Button>
+          </div>
+        </section>
+
+        {/* Data ownership & security */}
+        <section
+          id="security"
+          className="relative container mx-auto px-6 max-w-[1440px] py-24"
+        >
+          <div className="rounded-3xl border bg-white/70 backdrop-blur shadow-lg p-10 space-y-6">
+            <div className="flex flex-col gap-2">
+              <h3 className="text-[40px] font-bold leading-tight text-black">
+                Data ownership &amp; security during beta
+              </h3>
+              <p className="text-lg text-muted-foreground">
+                We’re transparent about what’s live today and what’s temporarily paused.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6 text-left">
+              <div className="space-y-3">
+                <h4 className="text-xl font-semibold text-black">Live now</h4>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Supabase RLS on every table to isolate customer data</li>
+                  <li>Encrypted storage for files and uploads</li>
+                  <li>Exports for your workspace on request during beta</li>
+                </ul>
+              </div>
+              <div className="space-y-3">
+                <h4 className="text-xl font-semibold text-black">Paused / in-progress</h4>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                  <li>Vault encryption flows (rerouting to Stream until the review is done)</li>
+                  <li>Team roles and shared spaces</li>
+                  <li>Automated stacks refresh (returns after clustering upgrades)</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </section>
 
