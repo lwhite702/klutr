@@ -204,3 +204,34 @@ export function captureEvent(eventName: string, properties?: Record<string, any>
   client.capture(eventName, properties);
 }
 
+/**
+ * Capture an event only when a PostHog feature flag is enabled.
+ * Falls back to development-only logging when flags are disabled.
+ */
+export async function captureFlaggedEvent(
+  eventName: string,
+  properties?: Record<string, any>,
+  flagKey = "ux_stability_events"
+): Promise<void> {
+  const client = getPostHogClient();
+  if (!client) {
+    return;
+  }
+
+  try {
+    const enabled = await isFeatureEnabled(flagKey);
+
+    if (enabled || process.env.NODE_ENV === "development") {
+      client.capture(eventName, {
+        ...properties,
+        flagKey,
+        flagEnabled: enabled,
+      });
+    }
+  } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn(`[PostHog] Failed to send flagged event ${eventName}:`, error);
+    }
+  }
+}
+
