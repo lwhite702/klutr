@@ -5,6 +5,13 @@
  * Illustrations are organized by set in public/illustrations/
  */
 
+export type CustomIllustrationKey =
+  | 'stream-everything'
+  | 'mindstorm-clusters'
+  | 'insights-dashboard'
+
+type StandardIllustrationUseCase = Exclude<IllustrationUseCase, CustomIllustrationKey>
+
 export type IllustrationUseCase =
   | 'stream-capture'
   | 'ai-clustering'
@@ -35,14 +42,24 @@ export type IllustrationUseCase =
   | 'process-arrow'
   | 'connection-arrow'
   | 'flow-diagram'
+  | CustomIllustrationKey
 
-export type IllustrationStyle = 'ux-colors' | 'milano' | 'brooklyn' | 'barcelona' | 'london' | 'bruxelles' | 'notes-tasks' | 'arrow-flows'
+export type IllustrationStyle =
+  | 'ux-colors'
+  | 'milano'
+  | 'brooklyn'
+  | 'barcelona'
+  | 'london'
+  | 'bruxelles'
+  | 'notes-tasks'
+  | 'arrow-flows'
+  | 'custom'
 
 /**
  * Map use cases to UX Colors illustration file names
  * Based on Figma frame names from the UX Colors set
  */
-const UX_COLORS_MAPPING: Record<IllustrationUseCase, string | null> = {
+const UX_COLORS_MAPPING: Record<StandardIllustrationUseCase, string | null> = {
   'stream-capture': 'Cloud-Connecting-1--Streamline-Ux',
   'ai-clustering': 'Chatting-With-Bot-2--Streamline-Ux',
   'search': 'Fast-Email--Streamline-Ux', // Using fast-email as search placeholder
@@ -80,7 +97,7 @@ const UX_COLORS_MAPPING: Record<IllustrationUseCase, string | null> = {
  * Map use cases to Notes/Tasks icon file names
  * Based on Figma frame names from the Notes/Tasks Icons set
  */
-const NOTES_TASKS_MAPPING: Record<IllustrationUseCase, string | null> = {
+const NOTES_TASKS_MAPPING: Record<StandardIllustrationUseCase, string | null> = {
   'stream-capture': null,
   'ai-clustering': null,
   'search': null,
@@ -113,6 +130,21 @@ const NOTES_TASKS_MAPPING: Record<IllustrationUseCase, string | null> = {
   'flow-diagram': null,
 }
 
+const CUSTOM_MAPPING: Record<CustomIllustrationKey, { light: string; dark: string }> = {
+  'stream-everything': {
+    light: 'stream-everything',
+    dark: 'stream-everything-dark',
+  },
+  'mindstorm-clusters': {
+    light: 'mindstorm-clusters',
+    dark: 'mindstorm-clusters-dark',
+  },
+  'insights-dashboard': {
+    light: 'insights-dashboard',
+    dark: 'insights-dashboard-dark',
+  },
+}
+
 /**
  * Get illustration path for a use case
  * @param useCase - The use case identifier
@@ -123,10 +155,11 @@ const NOTES_TASKS_MAPPING: Record<IllustrationUseCase, string | null> = {
 export function getIllustrationPath(
   useCase: IllustrationUseCase,
   style: IllustrationStyle = 'ux-colors',
-  format: 'svg' | 'png' = 'svg'
+  format: 'svg' | 'png' = 'svg',
+  theme: 'light' | 'dark' = 'light'
 ): string | null {
   let fileName: string | null = null
-  
+
   if (style === 'ux-colors') {
     fileName = UX_COLORS_MAPPING[useCase] || null
   } else if (style === 'notes-tasks') {
@@ -135,6 +168,9 @@ export function getIllustrationPath(
     // Arrow flows mapping - use case name directly as file name
     const arrowFlowUseCases: IllustrationUseCase[] = ['arrow-flow', 'list-flow', 'process-arrow', 'connection-arrow', 'flow-diagram']
     fileName = arrowFlowUseCases.includes(useCase) ? useCase : null
+  } else if (style === 'custom') {
+    const mapping = CUSTOM_MAPPING[useCase as CustomIllustrationKey]
+    fileName = mapping ? mapping[theme] : null
   } else {
     fileName = `${useCase}-${style}` // Fallback naming for other styles
   }
@@ -143,7 +179,9 @@ export function getIllustrationPath(
     return null
   }
   
-  return `/illustrations/${style}/${fileName}.${format}`
+  const directory = style === 'custom' ? 'Custom' : style
+
+  return `/illustrations/${directory}/${fileName}.${format}`
 }
 
 /**
@@ -204,8 +242,14 @@ export function getIllustrationAltText(useCase: IllustrationUseCase): string {
     'process-arrow': 'Process arrow illustration',
     'connection-arrow': 'Connection arrow illustration',
     'flow-diagram': 'Flow diagram illustration',
+    'stream-everything':
+      'Stream everything instantly illustration - a vertical stream inbox with mixed media cards flowing downward.',
+    'mindstorm-clusters':
+      'MindStorm clustering illustration - a central cluster node with surrounding color-coded note groups connected by curved lines.',
+    'insights-dashboard':
+      'Insights dashboard illustration - a minimal analytics view with an upward line graph, weekly highlights card, and a resurfaced note card.',
   }
-  
+
   return altTextMap[useCase] || 'Illustration'
 }
 
