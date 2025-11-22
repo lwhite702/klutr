@@ -16,9 +16,9 @@ interface TrustSectionProps {
 
 export default function TrustSection({
   preheader = "Advantages",
-  headline = "A task manager you can trust for teams",
-  description = "Plan projects, stay on track, and deliver on time without overworking your team.",
-  ctaText = "Get Start",
+  headline = "A task manager you can trust to clear your chaos",
+  description = "Plan projects, stay on track, and deliver on time without juggling extra admin layers.",
+  ctaText = "Get Started",
   ctaLink = "/login",
   preheaderColor = "purple",
 }: TrustSectionProps) {

@@ -8,6 +8,7 @@
 
 import { readFileSync } from 'fs'
 import { join } from 'path'
+import { teamsEnabled } from '../lib/runtimeFlags'
 
 // Component IDs from BaseHub structure
 const COMPONENT_IDS = {
@@ -236,7 +237,10 @@ async function main() {
   // ===== PRICING PAGE =====
   console.log('\n=== PRICING PAGE ===')
   
-  const pricingTiers = seedData.pricing.pricingBlock
+  const pricingTiers = seedData.pricing.pricingBlock.filter(
+    (tier: { tierName: string; disabled?: boolean }) =>
+      !tier.disabled && (teamsEnabled || tier.tierName !== 'Team')
+  )
   for (let i = 0; i < pricingTiers.length; i++) {
     const tier = pricingTiers[i]
     creationPlan.simpleInstances.push({

@@ -16,6 +16,7 @@ import {
   AnimatedSection,
   AnimatedItem,
 } from "@/components/marketing/AnimatedSection";
+import { teamsEnabled } from "@/lib/runtimeFlags";
 import {
   Zap,
   Layers,
@@ -113,6 +114,64 @@ export default async function MarketingHomePage() {
       iconName: "Search",
     },
   ];
+
+  const pricingTiers = [
+    {
+      tier: "Free (Beta)",
+      price: "Free",
+      period: undefined,
+      features: [
+        "Capture, Stream, tagging",
+        "Basic organization",
+        "Gentle resurfacing",
+        "Up to 100 notes",
+        "Community support",
+      ],
+      cta: "Join Beta Free",
+      ctaLink: "/login",
+      isBeta: true,
+      betaBadgeText: "Join now. Save forever.",
+      lifetimeDiscountNote:
+        "All beta users receive a guaranteed lifetime discount at launch.",
+      highlighted: false,
+    },
+    {
+      tier: "Pro",
+      price: "$12",
+      period: "month",
+      features: [
+        "Everything in Free",
+        "MindStorm clustering",
+        "Weekly Insights",
+        "Unlimited notes",
+        "Priority support",
+      ],
+      cta: "Start Pro Trial",
+      ctaLink: "/login",
+      highlighted: true,
+    },
+    {
+      tier: "Team",
+      price: "$24",
+      period: "month",
+      features: [
+        "Everything in Pro",
+        "Team collaboration",
+        "Shared workspaces",
+        "Admin controls",
+        "Advanced analytics",
+        "Dedicated support",
+      ],
+      cta: "Contact Sales",
+      ctaLink: "/login",
+    },
+  ];
+
+  const visiblePricingTiers = pricingTiers.filter(
+    (tier) => teamsEnabled || tier.tier !== "Team"
+  );
+  const pricingGridColumns =
+    visiblePricingTiers.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3";
 
   return (
     <div className="min-h-screen bg-[var(--klutr-background)] dark:bg-[var(--klutr-surface-dark)] text-[var(--klutr-text-primary-light)] dark:text-[var(--klutr-text-primary-dark)]">
@@ -254,53 +313,10 @@ export default async function MarketingHomePage() {
                 Start free. Upgrade when you're ready.
               </p>
             </AnimatedItem>
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              <PricingCard
-                tier="Free (Beta)"
-                price="Free"
-                features={[
-                  "Capture, Stream, tagging",
-                  "Basic organization",
-                  "Gentle resurfacing",
-                  "Up to 100 notes",
-                  "Community support",
-                ]}
-                cta="Join Beta Free"
-                ctaLink="/login"
-                isBeta={true}
-                betaBadgeText="Join now. Save forever."
-                lifetimeDiscountNote="All beta users receive a guaranteed lifetime discount at launch."
-              />
-              <PricingCard
-                tier="Pro"
-                price="$12"
-                period="month"
-                features={[
-                  "Everything in Free",
-                  "MindStorm clustering",
-                  "Weekly Insights",
-                  "Unlimited notes",
-                  "Priority support",
-                ]}
-                cta="Start Pro Trial"
-                ctaLink="/login"
-                highlighted={true}
-              />
-              <PricingCard
-                tier="Team"
-                price="$24"
-                period="month"
-                features={[
-                  "Everything in Pro",
-                  "Team collaboration",
-                  "Shared workspaces",
-                  "Admin controls",
-                  "Advanced analytics",
-                  "Dedicated support",
-                ]}
-                cta="Contact Sales"
-                ctaLink="/login"
-              />
+            <div className={`grid ${pricingGridColumns} gap-8 max-w-6xl mx-auto`}>
+              {visiblePricingTiers.map((tier) => (
+                <PricingCard key={tier.tier} {...tier} />
+              ))}
             </div>
           </AnimatedSection>
         </section>

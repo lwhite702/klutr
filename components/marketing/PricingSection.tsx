@@ -4,6 +4,7 @@ import { useState } from "react"
 import { PricingTierCard } from "./PricingTierCard"
 import { BillingToggle } from "./BillingToggle"
 import { Lightbulb, Users, Rocket } from "lucide-react"
+import { teamsEnabled } from "@/lib/runtimeFlags"
 
 const pricingTiers = {
   monthly: [
@@ -113,6 +114,12 @@ const pricingTiers = {
 export function PricingSection() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("yearly")
 
+  const visiblePricingTiers = pricingTiers[billing].filter(
+    (tier) => teamsEnabled || tier.tierName !== "Team"
+  )
+  const columnClass =
+    visiblePricingTiers.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3"
+
   return (
     <>
       {/* Billing Toggle */}
@@ -124,8 +131,8 @@ export function PricingSection() {
       </div>
 
       {/* Pricing Tiers */}
-      <div className="grid md:grid-cols-3 gap-8 mb-24">
-        {pricingTiers[billing].map((tier, index) => (
+      <div className={`grid ${columnClass} gap-8 mb-24`}>
+        {visiblePricingTiers.map((tier, index) => (
           <PricingTierCard key={index} {...tier} />
         ))}
       </div>

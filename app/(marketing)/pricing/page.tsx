@@ -9,6 +9,7 @@ import { DecorativeBackground } from "@/components/marketing/DecorativeBackgroun
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Lightbulb, Users, Rocket } from "lucide-react";
+import { teamsEnabled } from "@/lib/runtimeFlags";
 
 export async function generateMetadata(): Promise<Metadata> {
   const meta = await getPageMetadata("pricing");
@@ -75,7 +76,7 @@ const faqItems = [
   {
     question: "What happens after the beta?",
     answer:
-      "Free Beta users will continue to have access to all beta features. Pro and Team tiers will launch with additional features like advanced insights and collaboration tools.",
+      "Free Beta users will continue to have access to all beta features. Pro will launch with additional features like advanced insights and faster processing tiers for individuals.",
   },
   {
     question: "Can I cancel anytime?",
@@ -123,6 +124,12 @@ const useCases = [
   },
 ];
 
+const visibleUseCases = useCases.filter(
+  (useCase) => teamsEnabled || useCase.title !== "For Teams"
+);
+const useCaseGridColumns =
+  visibleUseCases.length === 2 ? "md:grid-cols-2" : "md:grid-cols-3";
+
 export default async function PricingPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -147,8 +154,8 @@ export default async function PricingPage() {
 
         {/* Use Cases Section */}
         <section className="relative container mx-auto px-6 max-w-[1440px] py-24">
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {useCases.map((useCase, index) => (
+          <div className={`grid ${useCaseGridColumns} gap-8 mb-16`}>
+            {visibleUseCases.map((useCase, index) => (
               <UseCaseCard key={index} {...useCase} />
             ))}
           </div>

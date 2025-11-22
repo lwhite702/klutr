@@ -2,6 +2,11 @@
 
 All notable changes to Klutr will be documented in this file.
 
+a## 2025-11-21 06:16 ET
+
+- [cleanup][teams-disabled] Added a global `teamsEnabled` runtime flag defaulting to false and gated BaseHub seeding to skip Team tiers while retained for future reuse
+- [cleanup][teams-disabled] Hid the Teams tier from marketing home and pricing pages, shifting pricing/use-case layouts to Free (Beta) and Pro only
+- [cleanup][teams-disabled] Refreshed marketing copy and mock data to remove team-collaboration promises while keeping individual upgrade flows focused on Pro
 ## 2025-11-21 06:30 ET
 
 - [fix][ux-stall] Hardened Supabase login flow with pre-checks, stall guard, and fallback redirect to /app/stream to eliminate infinite spinners
